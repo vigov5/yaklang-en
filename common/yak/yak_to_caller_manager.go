@@ -114,7 +114,7 @@ func Fuzz_WithHotPatch(ctx context.Context, code string) mutate.FuzzConfigOpt {
 
 func FetchFunctionFromSourceCode(ctx context.Context, pluginContext *YakitPluginContext, timeout time.Duration, id string, code string, hook func(e *antlr4yak.Engine) error, functionNames ...string) (map[string]*YakFunctionCaller, error) {
 	var fTable = map[string]*YakFunctionCaller{}
-	engine := NewScriptEngine(1) // 因为需要在 hook 里传回执行引擎, 所以这里不能并发
+	engine := NewScriptEngine(1) // because the execution engine needs to be passed back in the hook, so it cannot be concurrent here
 	engine.RegisterEngineHooks(hook)
 	engine.RegisterEngineHooks(func(engine *antlr4yak.Engine) error {
 		if id != "" {
@@ -221,7 +221,7 @@ type CallerHooks struct {
 }
 
 type CallerHookDescription struct {
-	// 这两个是
+	// These two are
 	YakScriptId   string
 	YakScriptName string
 	VerboseName   string
@@ -757,7 +757,7 @@ func BindYakitPluginContextToEngine(nIns *antlr4yak.Engine, pluginContext *Yakit
 				log.Debugf("bind hook.NewMixPluginCaller to runtime: %v", runtimeId)
 				manager.SetRuntimeId(runtimeId)
 				manager.SetProxy(proxy)
-				manager.SetFeedback(func(result *ypb.ExecResult) error { // 临时解决方案
+				manager.SetFeedback(func(result *ypb.ExecResult) error { // temporary solution
 					yakitLib, ok := nIns.GetVar("yakit")
 					if ok && yakitLib != nil {
 						if v, ok := yakitLib.(map[string]interface{}); ok {
@@ -868,7 +868,7 @@ func (y *YakToCallerManager) Add(ctx context.Context, id string, params []*ypb.E
 	if err != nil {
 		return utils.Errorf(err.Error())
 	}
-	// 对于nasl插件还需要提取加载函数
+	// For the nasl plug-in, it also needs to be extracted Load function
 	if _, ok := ctx.Value("ctx_info").(map[string]any)["isNaslScript"]; ok {
 		f := func(name string) {
 			if !strings.HasSuffix(strings.ToLower(name), ".nasl") {
@@ -1014,7 +1014,7 @@ func (y *YakToCallerManager) CallPluginKeyByNameExWithAsync(forceSync bool, plug
 				log.Errorf("call failed: \n%v", err)
 			}
 		}()
-		if (pluginId == "" /*执行所有该类型的插件*/) || (i.Id == pluginId /*执行当前插件*/) {
+		if (pluginId == "" /*is executed directly sequentially to execute all plug-ins of this type*/) || (i.Id == pluginId /*to execute the current plug-in*/) {
 			var items []interface{}
 			for _, i := range itemsFuncs {
 				i := i
@@ -1033,14 +1033,14 @@ func (y *YakToCallerManager) CallPluginKeyByNameExWithAsync(forceSync bool, plug
 		}
 		//println(fmt.Sprintf("hook.Caller call [%v]'s %v", verbose, name))
 
-		// 没有设置并发控制，就直接顺序执行
+		// Without concurrency control set up,
 		if y.swg == nil || forceSync {
 			log.Debugf("Start Call Plugin: %v", verbose)
 			call(iRaw)
 			continue
 		}
 
-		// 设置了并发控制就这样
+		// Concurrency control is set up, just like this
 		i := iRaw
 		go func() {
 			defer func() {

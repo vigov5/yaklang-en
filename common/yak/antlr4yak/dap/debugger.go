@@ -18,24 +18,24 @@ type Thread struct {
 }
 
 type Source struct {
-	Name    string // 文件名
-	AbsPath string // 完整路径
+	Name    string // file name
+	AbsPath string // . Full path.
 }
 type DAPDebugger struct {
 	debugger *yakvm.Debugger // yak debugger
 	session  *DebugSession   // DAP session
 
-	initWG sync.WaitGroup // 用于等待初始化
+	initWG sync.WaitGroup // is used to wait for initialization
 
-	selectFrame *yakvm.Frame // 选择的frame
+	selectFrame *yakvm.Frame // The selected frame
 
-	finished   bool          // 是否程序已经结束
-	restart    bool          // 是否需要重启
-	timeout    time.Duration // 超时时间
-	inCallback bool          // 是否在回调状态
-	continueCh chan struct{} // 继续执行
+	finished   bool          // Whether the program has ended
+	restart    bool          // Whether it is necessary to restart
+	timeout    time.Duration // timeout
+	inCallback bool          // is in callback state
+	continueCh chan struct{} // Suspend the program at the beginning
 
-	source *Source // 源码相关
+	source *Source // Continue to execute
 }
 
 func (d *DAPDebugger) InitWGAdd() {
@@ -52,7 +52,7 @@ func (d *DAPDebugger) WaitProgramStart() {
 }
 
 func (d *DAPDebugger) Continue() {
-	// 如果在回调状态则写入continueCh,使callback立即返回,程序继续执行
+	// If it is in the callback state, write continueCh to make the callback return immediately, and the program continues to execute
 	if d.inCallback {
 		log.Debugf("[dap debugger] continue")
 		go func() {
@@ -189,7 +189,7 @@ func (d *DAPDebugger) OutCallbackState() {
 }
 
 func (d *DAPDebugger) Halt() error {
-	// 如果已经处在回调状态则直接返回
+	// If it is already in the callback state Then directly return to
 	if d.inCallback {
 		return nil
 	}
@@ -197,7 +197,7 @@ func (d *DAPDebugger) Halt() error {
 		return errors.New("program finished")
 	}
 
-	d.debugger.Pause() // 设置Pause,在执行下一个opcode的时候会停止
+	d.debugger.Pause() // Set Pause before executing the next opcode
 	return nil
 }
 
@@ -207,10 +207,10 @@ func (d *DAPDebugger) Init() func(g *yakvm.Debugger) {
 
 		d.debugger = g
 
-		// 表示初始化完成
+		// Indicates initialization is complete
 		d.initWG.Done()
 
-		// 一开始先将程序挂起
+		// suspends the program at the beginning
 		d.debugger.Callback()
 	}
 }
@@ -224,7 +224,7 @@ func (d *DAPDebugger) CallBack() func(g *yakvm.Debugger) {
 		desc := g.Description()
 		log.Debugf("[dap debugger] callback: %s", desc)
 
-		// 停止事件
+		// Stop event
 		session := d.session
 		stopReason := g.StopReason()
 		isPanic, isNormallyFinished := stopReason == "exception", stopReason == "finished"
@@ -244,7 +244,7 @@ func (d *DAPDebugger) CallBack() func(g *yakvm.Debugger) {
 
 		if isNormallyFinished && !d.finished {
 			d.finished = true
-			// 程序正常结束且不需要重启,发送terminated事件(真实client不需要发送,因为不想让client退出)
+			// The program ends normally and does not need to be restarted. Send the terminated event (the real client does not need to send it because you do not want the client to exit)
 			if !d.restart && !d.session.isRealClient {
 				d.session.send(&dap.TerminatedEvent{Event: *newEvent("terminated")})
 			}
@@ -254,7 +254,7 @@ func (d *DAPDebugger) CallBack() func(g *yakvm.Debugger) {
 		select {
 		case <-d.continueCh:
 			// case <-time.After(d.timeout):
-			// 	// todo: 超时处理
+			// 	// todo: Timeout processing
 			// 	return
 		}
 

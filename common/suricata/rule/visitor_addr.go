@@ -12,11 +12,11 @@ import (
 )
 
 type AddressRule struct {
-	// 这两个是修饰词
+	// These two are modifiers
 	Any      bool
 	Negative bool
 
-	// 这几个是终结词
+	// These two are terminal words
 	hostFilter *utils.HostsFilter
 
 	IPv4CIDR string

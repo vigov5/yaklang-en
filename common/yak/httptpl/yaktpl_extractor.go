@@ -306,7 +306,7 @@ func extractKVal(rsp []byte, shouldSplit bool) map[string]interface{} {
 			})
 		}
 	}
-	// 特殊处理 JSON
+	// Special handling of JSON
 	var skipJson = false
 	for _, bodyRaw := range jsonextractor.ExtractStandardJSON(string(body)) {
 		skipJson = true

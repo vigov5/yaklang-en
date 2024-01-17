@@ -61,77 +61,77 @@ NewThreadPool = func(size){
 }
 
 description = `
-服务器端请求伪造（Server Side Request Forgery，简称SSRF）是一种网络安全漏洞，由攻击者构造并促使服务器端发起请求。这种漏洞的存在可能使攻击者能够控制服务器以发起网络请求，从而实现对未经授权资源的访问。
+Server Side Request Forgery (SSRF) is a network security vulnerability that is caused by attacks. The author constructs and prompts the server to initiate a request. The existence of this vulnerability could allow an attacker to control the server to make network requests, thereby achieving access to unauthorized resources.
 
-漏洞利用：在存在SSRF漏洞的环境中，攻击者可以在服务器的上下文中进行网络交互。这种交互可能会导致攻击者访问到后端的系统，进而获取敏感信息，或者执行其他可能造成损害的操作。
+Vulnerability Exploit: In an environment where an SSRF vulnerability exists, an attacker can conduct network interactions in the context of the server. This interaction could allow an attacker to gain access to back-end systems, obtain sensitive information, or perform other potentially damaging operations.
 
-潜在风险：SSRF漏洞的存在不仅可能导致未经授权的资源访问，还可能使攻击者能够进行端口扫描，读取本地文件，甚至执行命令等行为。这些行为都可能对服务器的安全性和稳定性构成威胁。
+Potential risk: The existence of SSRF vulnerability may not only lead to future Authorized resource access may also enable attackers to perform port scans, read local files, and even execute commands. These behaviors may pose a threat to the security and stability of the server.
 
-防护措施：为预防SSRF漏洞，需要采取一系列的安全措施，例如限制服务器对外部网络的访问，对用户输入进行严格的验证和过滤，以及及时更新和修复已知的安全漏洞等。
+Protective measures: To prevent SSRF vulnerabilities, a series of security measures need to be taken, such as restricting the servers access to external networks, strictly verifying and filtering user input, and promptly updating and repairing known security vulnerabilities.
 `
 solution = `
-1. 尽量避免服务器端发起不必要的外部HTTP请求：如果不需要，尽量避免从服务器端发起外部HTTP请求。如果必须要发起，那么需要进行严格的输入验证和管理。
+1. Try to avoid unnecessary external HTTP requests from the server: If not necessary, try to avoid initiating external HTTP requests from the server. If it must be initiated, strict input validation and management are required.
 
-2. 限制出站请求：可以在服务器级别限制出站请求的目标和端口，禁止对内网或者敏感端口的访问。
+2. Limit outbound requests: OK Limit the destination and port of outbound requests at the server level, and prohibit access to the intranet or sensitive ports.
 
-3. 使用安全的编程实践：对于所有用户生成的输入，都应进行严格的验证和清理。特别是那些可能会用于网络请求的输入，更应该进行严格的白名单验证。
+3. Use safe programming practices: All user-generated input should be subject to strict validation and sanitization. Especially those inputs that may be used for network requests should undergo strict whitelist verification.
 
-4. 升级和打补丁：定期升级和打补丁可以修复已知的SSRF漏洞，防止攻击者利用这些漏洞进行攻击。
+4. Upgrading and patching: Regular upgrading and patching can repair known SSRF vulnerabilities and prevent attacks Attackers exploit these vulnerabilities.
 
-5. 使用Web应用防火墙（WAF）：WAF可以帮助识别和阻止SSRF攻击，增加了一个额外的防御层。
+5. Use a Web Application Firewall (WAF): A WAF can help identify and block SSRF attacks, adding an extra layer of defense.
 `
 
-# mirrorNewWebsitePathParams 每新出现一个网站路径且带有一些参数，参数通过常见位置和参数名去重，去重的第一个 HTTPFlow 在这里被调用
+# mirrorNewWebsitePathParams Each time a new website path appears with some parameters, the parameters pass through common locations and parameter names Deduplication, the first HTTPFlow deduplication is called here. The
 mirrorNewWebsitePathParams = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rsp /*[]byte*/, body /*[]byte*/) {
     paramName = ""
     pool = NewThreadPool(10)
     pool.consumer((id,data)=>{
         param = data
         paramName = param.Name()
-        yakit_output("SSRF基础测试: 参数名[%v]" % [paramName])
+        yakit_output("Basic SSRF test: Parameter name [%v]" % [paramName])
         domain,token,err = risk.NewDNSLogDomain()
         if err {
-            yakit_output("获取dnslog失败: ^v，跳过对参数 [%s] 的检测" % [err,paramName])
+            yakit_output("Failed to obtain dnslog: ^v, skipping the detection of parameter [%s]" % [err,paramName])
             return
         }
         payload = "http://%s"%domain
         result, err = param.Fuzz(payload).ExecFirst()
         if err != nil {
-            yakit_output("SSRF 发送请求失败")
+            yakit_output("SSRF failed to send the request.")
             return
         }
         if result.Error {
-            yakit_output("请求[%v]失败: %v" % [result.Url, result.Error])
+            yakit_output("Request [%v] failed: %v" % [result.Url, result.Error])
         } else {
             target = str.ParseStringUrlToWebsiteRootPath(result.Url)
             if risk.CheckDNSLogByToken(token)[1] == nil {
-                dnslogRiskTitle = "目标路径 %s 的 %s 参数收到 Dnslog 回显，可能存在SSRF漏洞" % [result.Url,paramName]
+                dnslogRiskTitle = "The %s parameter of the target path %s received Dnslog echo, and there may be an SSRF vulnerability." % [result.Url,paramName]
                 yakit_output(dnslogRiskTitle)
                 haveHttpReverse = false
-                middleReason = "未收到HTTP反连请求"
+                middleReason = "The HTTP reverse connection request was not received."
                 httpReverseToken = risk.NewLocalReverseHTTPUrl()
                 if httpReverseToken == ""{
-                    middleReason = "未配置 Yak Bridge 作为公网映射，无法获取带 Token 的 URL Callback"
+                    middleReason = "Yak Bridge is not configured as a public network mapping, and the URL with Token cannot be obtained Callback"
                 }else{
                     result, err = param.Fuzz(payload).ExecFirst()
                     if err != nil {
-                        yakit_output("SSRF 发送请求失败")
-                        middleReason = "发送HTTP反连测试请求失败"
+                        yakit_output("SSRF failed to send the request.")
+                        middleReason = "Failed to send HTTP reverse connection test request"
                     }else{
                         if result.Error {
-                            yakit_output("请求[%v]失败: %v" % [result.Url, result.Error])
-                            middleReason = "发送HTTP反连测试请求失败"
+                            yakit_output("Request [%v] failed: %v" % [result.Url, result.Error])
+                            middleReason = "Failed to send HTTP reverse connection test request"
                         }else{
                             haveHttpReverse = risk.HaveReverseRisk(httpReverseToken)
                         }
                     }
                 }
                 if haveHttpReverse{
-                    title = "目标路径 %s 的 %s 参数收到 HTTP 反连，存在 SSRF 漏洞" % [result.Url,paramName]
+                    title = "The %s parameter of the target path %s received an HTTP reverse connection, and there is an SSRF vulnerability." % [result.Url,paramName]
                     yakit_output(title)
                     risk.NewRisk(
                         result.Url,
-                        risk.titleVerbose("目标 %s 存在SSRF漏洞" % target),
+                        risk.titleVerbose("Target %s has SSRF vulnerability" % target),
                         risk.title(title),
                         risk.details({
                             "request": string(result.RequestRaw),
@@ -148,14 +148,14 @@ mirrorNewWebsitePathParams = func(isHttps /*bool*/, url /*string*/, req /*[]byte
                 }else{
                     risk.NewRisk(
                         result.Url,
-                        risk.titleVerbose("目标 %s 可能存在SSRF漏洞" % target),
+                        risk.titleVerbose("Target %s may have SSRF vulnerability" % target),
                         risk.details({
                             "request": string(result.RequestRaw),
                             "response": string(result.ResponseRaw),
                             "url": result.Url,
                         }),
                         risk.level("middle"),
-                        risk.title("收到Dnslog回显，但未收到HTTP回显(原因是 `%s`)，可能存在SSRF漏洞" % middleReason),
+                        risk.title("Received Dnslog echo, but did not receive HTTP echo (the reason is `%s`), there may be an SSRF vulnerability" % middleReason),
                         risk.payload(payload),
                         risk.parameter(paramName),
                         risk.token(token),
@@ -170,7 +170,7 @@ mirrorNewWebsitePathParams = func(isHttps /*bool*/, url /*string*/, req /*[]byte
     try {
         freq = fuzz.HTTPRequest(req, fuzz.https(isHttps))~
     } catch err {
-        yakit.Error("构造Fuzz Request失败: %v" % err)
+        yakit.Error("Failed to construct Fuzz Request: %v" % err)
         return
     }
     pool.productor(c=>{

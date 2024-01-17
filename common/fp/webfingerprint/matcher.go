@@ -228,7 +228,7 @@ func (f *Matcher) matchByRule(r *HTTPResponseInfo, ruleToUse *WebRule, config *C
 			}
 		}
 
-		// 匹配 HTTP Headers
+		// Match HTTP Headers
 		for _, h := range m.HTTPHeaders {
 			foreachHTTPHeaders(r.Header, func(s string, s2 string) bool {
 				cpe, err := h.Match(s, s2)
@@ -242,7 +242,7 @@ func (f *Matcher) matchByRule(r *HTTPResponseInfo, ruleToUse *WebRule, config *C
 			})
 		}
 
-		// 匹配页面内容 MD5
+		// Match page content MD5
 		for _, m := range m.MD5s {
 			cpe, err := m.Match(r.Body)
 			if err != nil {

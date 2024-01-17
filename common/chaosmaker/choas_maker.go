@@ -98,7 +98,7 @@ func (c *ChaosMaker) generate(r *rule.Storage) (chan []byte, error) {
 	case "http-request":
 		return c.httpreqGenerate(r)
 	case "tcp":
-		//TODO: 这里现在还没法处理TCP raw数据
+		//TODO: There is no way to process TCP raw data here yet
 		//raw, err := codec.DecodeBase64(r.RawTrafficBeyondIPPacketBase64)
 		//if err != nil {
 		//	return nil, err

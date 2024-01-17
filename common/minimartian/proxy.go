@@ -75,7 +75,7 @@ type Proxy struct {
 	ctxCacheInitOnce *sync.Once
 	ctxCache         *ttlcache.Cache
 
-	// 限制用户名和密码
+	// Restrict usernames and passwords
 	proxyUsername string
 	proxyPassword string
 

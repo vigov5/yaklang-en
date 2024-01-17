@@ -126,7 +126,7 @@ func TestGRPCMUSTPASS_LANGUAGE_InspectInformation_Cli(t *testing.T) {
 		)
 		cli.Int(
 			"arg2", 
-			cli.setVerboseName("参数2"),
+			cli.setVerboseName("parameter 2"),
 			cli.setCliGroup("group2"),
 			cli.setDefault(1), 
 			cli.setHelp("help information 2"),
@@ -148,7 +148,7 @@ func TestGRPCMUSTPASS_LANGUAGE_InspectInformation_Cli(t *testing.T) {
 					Field:        "arg2",
 					DefaultValue: "1",
 					TypeVerbose:  "uint",
-					FieldVerbose: "参数2",
+					FieldVerbose: "parameter 2",
 					Help:         "help information 2",
 					Required:     false,
 					Group:        "group2",
@@ -227,7 +227,7 @@ func TestGRPCMUSTPASS_LANGUAGE_GetCliCode(t *testing.T) {
 					Field:        "arg2",
 					DefaultValue: "1",
 					TypeVerbose:  "uint",
-					FieldVerbose: "参数2",
+					FieldVerbose: "parameter 2",
 					Help:         "help information 2",
 					Required:     false,
 					Group:        "group2",
@@ -366,7 +366,7 @@ func TestGRPCMUSTPASS_LANGUAGE_CLIALL(t *testing.T) {
 	)
 	cli.Int(
 		"int-arg2", 
-		cli.setVerboseName("参数2"),
+		cli.setVerboseName("parameter 2"),
 		cli.setCliGroup("group2"),
 		cli.setDefault(1), 
 		cli.setHelp("help information 2"),
@@ -474,8 +474,8 @@ func TestGRPCMUSTPASS_LANGUAGE_GetCliGRPC(t *testing.T) {
 				Field:        "arg",
 				DefaultValue: "\"aaa\"",
 				TypeVerbose:  "string",
-				FieldVerbose: "参数1",
-				Help:         "这个是参数1",
+				FieldVerbose: "parameter 1",
+				Help:         "This is parameter 1",
 			},
 		},
 	})
@@ -603,7 +603,7 @@ func TestGRPCMUSTPASS_LANGUAGE_InspectInformation_Risk(t *testing.T) {
 		cveresources.CreateOrUpdateCVE(db, cve, &cveresources.CVE{
 			CVE:               "CVE-9090-1234",
 			DescriptionMain:   "description",
-			DescriptionMainZh: "中文描述",
+			DescriptionMainZh: "Chinese description",
 			Solution:          "solution",
 			Severity:          "high",
 		})
@@ -616,7 +616,7 @@ func TestGRPCMUSTPASS_LANGUAGE_InspectInformation_Risk(t *testing.T) {
 			{
 				Level:       "high",
 				CVE:         cve,
-				Description: "中文描述",
+				Description: "Chinese description",
 				Solution:    "solution",
 			},
 		}

@@ -23,13 +23,13 @@ func ParseNmapServiceProbeToRuleMap(raw []byte) (result map[*NmapProbe][]*NmapMa
 			continue
 		}
 
-		// 跳过注释
+		// Skip comments
 		if strings.HasPrefix(line, "#") {
 			//log.Debugf("parse comment: %s", line)
 			continue
 		}
 
-		// 解析 Probe
+		// Parse Probe
 		if strings.HasPrefix(line, "Probe") {
 			probe, err := parseNmapProbe(line)
 			if err != nil {

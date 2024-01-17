@@ -41,16 +41,16 @@ var BruteUtil = cli.Command{
 		},
 		cli.BoolFlag{
 			Name:  "ok-to-stop",
-			Usage: "如果一个目标发现了成功的结果，则停止对这个目标的爆破",
+			Usage: "If a target finds a successful result, stop blasting",
 		},
 		cli.IntFlag{
 			Name:  "finished-to-end",
-			Usage: "爆破的结果如果多次显示'Finished' 就停止爆破，这个选项控制阈值",
+			Usage: "Exploded results if displayed multiple times'Finished' on this target. This option controls the threshold.",
 			Value: 10,
 		},
 		cli.StringFlag{
 			Name:  "divider",
-			Usage: "用户(username), 密码(password)，输入的分隔符，默认是（,）",
+			Usage: "User (username), password (password), input separator, the default is (,)",
 			Value: ",",
 		},
 	},
@@ -98,13 +98,13 @@ var BruteUtil = cli.Command{
 		log.Info("------------------------------------------------")
 
 		if len(succeedResult) <= 0 {
-			log.Info("没有爆破到可用结果")
+			log.Info("does not blast to Available results")
 			return nil
 		}
 
 		table := tablewriter.NewWriter(os.Stdout)
 		table.SetHeader([]string{
-			"服务类型", "目标", "用户名", "密码",
+			"Service type", "target", "User name", "Password",
 		})
 		for _, i := range succeedResult {
 			if i.OnlyNeedPassword {

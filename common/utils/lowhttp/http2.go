@@ -61,17 +61,17 @@ func HTTPRequestToHTTP2(schema string, host string, conn net.Conn, raw []byte, n
 	frame := http2.NewFramer(bw, br)
 	frame.MaxHeaderListSize = 10 << 20
 
-	// 写 preface 新链接必备
+	// Write preface.
 	_, err := bw.Write([]byte(http2.ClientPreface))
 	if err != nil {
 		return nil, utils.Errorf("yak.h2 preface failed: %s", err)
 	}
 
-	// 写入协商配置设置
-	// 这些配置大多来源于
+	// . Write negotiation configuration settings
+	// Most of these configurations come from
 	err = frame.WriteSettings([]http2.Setting{
 		{ID: http2.SettingEnablePush, Val: 0},
-		{ID: http2.SettingInitialWindowSize, Val: transportDefaultConnFlow}, // 这是默认值
+		{ID: http2.SettingInitialWindowSize, Val: transportDefaultConnFlow}, // is the default value.
 		{ID: http2.SettingMaxConcurrentStreams, Val: 100},
 		//{ID: http2.SettingMaxHeaderListSize, Val: 1000},
 	}...)
@@ -79,14 +79,14 @@ func HTTPRequestToHTTP2(schema string, host string, conn net.Conn, raw []byte, n
 		return nil, utils.Errorf("yak.h2 write setting failed")
 	}
 
-	// 写入 WindowUpdate
+	// writes WindowUpdate.
 	err = frame.WriteWindowUpdate(0, transportDefaultConnFlow)
 	if err != nil {
 		return nil, utils.Errorf("yak.h2 write windows update")
 	}
 	bw.Flush()
 
-	// 接下来处理 hpack 形式的 header
+	// next processes the header in hpack form.
 	var hbuf bytes.Buffer
 	henc := hpack.NewEncoder(&hbuf)
 	var requestHeaders []hpack.HeaderField
@@ -95,7 +95,7 @@ func HTTPRequestToHTTP2(schema string, host string, conn net.Conn, raw []byte, n
 	}
 
 	var methodReq = http.MethodGet
-	// 解析 request
+	// parse request
 	_, body := SplitHTTPHeadersAndBodyFromPacketEx(raw, func(method string, requestUri string, proto string) error {
 		f(":authority", host)
 		if method == "" {
@@ -128,20 +128,20 @@ func HTTPRequestToHTTP2(schema string, host string, conn net.Conn, raw []byte, n
 					requestHeaders[targetIndex].Value = value
 				}
 			case "content-length":
-				// 需要自动修复
+				// Need to automatically repair
 				if noFixContentLength {
 					f("content-length", value)
 				}
 			case "connection", "proxy-connection",
 				"transfer-encoding", "upgrade",
-				"keep-alive": // 按理说这些也不应该出现，但谁知道呢？
+				"keep-alive": // Logically speaking, these shouldnt appear, but who knows?
 
 				/**
 				case "cookie":
 					// Per 8.1.2.5 To allow for better compression efficiency, the
 					// Cookie header field MAY be split into separate header fields,
 					// each with one or more cookie-pairs.
-					//      V1ll4n: 但是，多个 Cookie 对也可以生效，不冲突，可以选择不处理，那就不处理了！
+					//      . V1ll4n: However, multiple cookie pairs can also take effect without conflict. You can choose not to process it, then it will not be processed. !
 					for {
 						p := strings.IndexByte(value, ';')
 						if p < 0 {
@@ -173,16 +173,16 @@ func HTTPRequestToHTTP2(schema string, host string, conn net.Conn, raw []byte, n
 	}
 
 	streamId := uint32(1)
-	// streamId 默认是 1 就好，反正连接这个会断掉给他
-	// cl 的话，如果是 0 就说明没后续了，stream 就不结束
-	// maxFrameSize 用默认值就好，标准库就是这个
+	// streamId defaults to 1. Anyway, the connection will be disconnected.
+	// cl. If it is 0, it means there is no follow-up. , the stream will not end
+	// maxFrameSize just use the default value, the standard library is this
 	endRequestStream := cl <= 0
 	err = h2FramerWriteHeaders(frame, streamId, endRequestStream, 16<<10, hbuf.Bytes())
 	if err != nil {
 		return nil, utils.Errorf("yak.h2 framer write headers failed: %s", err)
 	}
 
-	// 清除一下缓冲区
+	// Clear the buffer
 	err = bw.Flush()
 	if err != nil {
 		log.Warnf("h2 conn flush(header) error: %s", err)
@@ -198,7 +198,7 @@ func HTTPRequestToHTTP2(schema string, host string, conn net.Conn, raw []byte, n
 	var statusCode int
 	var headers []hpack.HeaderField
 	var responseBody bytes.Buffer
-	// 处理响应的信息
+	// processes response information
 	var pseudoHeaders []hpack.HeaderField
 	var endStream bool
 	var lastError []error
@@ -282,7 +282,7 @@ func HTTP2RequestToHTTP(framer *http2.Framer) ([]byte, error) {
 	var statusCode int
 	var headers []hpack.HeaderField
 	var requestBody bytes.Buffer
-	// 处理响应的信息
+	// processes response information
 	var pseudoHeaders []hpack.HeaderField
 	var endStream bool
 	var lastError []error

@@ -52,7 +52,7 @@ func (s *SubdomainScanner) brute(
 				return
 			}
 
-			// 设置黑名单，过滤统配情况
+			// Set the blacklist and filter the allocation situation
 			for _, bip := range blacklistIP {
 				if bip == ip {
 					s.logger.Debugf("maybe [%s] - [%s] from %s is detected by wildcard checking", target, ip, server)
@@ -106,7 +106,7 @@ func (s *SubdomainScanner) BruteWithSubDictionarySelection(ctx context.Context, 
 	wg := sync.WaitGroup{}
 	s.brute(ctx, target, useSubDictionary,
 
-		// 设置回调
+		// Set callback
 		func(domain string, ip string, fromServer string) {
 			s.onResult(&SubdomainResult{
 				FromDNSServer: fromServer,
@@ -116,12 +116,12 @@ func (s *SubdomainScanner) BruteWithSubDictionarySelection(ctx context.Context, 
 				Domain:        domain,
 			})
 
-			// 如果不允许递归则，退出回调
+			// If recursion is not allowed, exit the callback
 			if !s.config.AllowToRecursive {
 				return
 			}
 
-			// 如果允许递归，则继续调用该函数进行递归
+			// If recursion is allowed, continue to call this function for recursion
 			nxtDepth := depth + 1
 			wg.Add(1)
 			go func() {
@@ -130,7 +130,7 @@ func (s *SubdomainScanner) BruteWithSubDictionarySelection(ctx context.Context, 
 			}()
 		},
 
-		// 这里是 IP 黑名单
+		// Here is the IP blacklist
 		blacklistIP,
 	)
 

@@ -1,16 +1,16 @@
 /*
-命令执行:
+command execution:
 ping -c {pos}
 
-一般有两种情况，相对比较安全的场景：
-1. 默认原值换成一个不安全的值：a{}
+generally has two situations, relatively safe scenarios:
+1. Change the default original value to an unsafe value: a{}
 */
 
-# mirrorNewWebsitePathParams 每新出现一个网站路径且带有一些参数，参数通过常见位置和参数名去重，去重的第一个 HTTPFlow 在这里被调用
+# mirrorNewWebsitePathParams Each time a new website path appears with some parameters, the parameters pass through common locations and parameter names Deduplication, the first HTTPFlow deduplication is called here. The
 mirrorNewWebsitePathParams = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rsp /*[]byte*/, body /*[]byte*/) {
     freq = fuzz.HTTPRequest(req, fuzz.https(isHttps))~
     for param in freq.GetCommonParams() {
-        // 不要测试 cookie 了
+        // Do not test cookies
         if "cookie" in f`${param.Position()}`.Lower() {
             log.info("skip: %v", param.String())
             continue
@@ -27,13 +27,13 @@ mirrorNewWebsitePathParams = func(isHttps /*bool*/, url /*string*/, req /*[]byte
             continue
         }
 
-        // 构造一个随机字符串命令注入；这样会造成第一个cmd错误，导致 false||cmd2，执行第二个命令
+        // constructs a random string command injection; this will cause the first cmd error, resulting in false||cmd2, execute the second command
         negativeValue = f`a${randstr(20)}`.Lower()
         if checkBashExpr(negativeValue, param, "||", "") || checkWindowsCmdExpr(negativeValue, param, "||", "") || checkWindowsPowershellExpr(negativeValue, param, "||", "") {
             return
         }
 
-        // 使用原值构造命令注入，会造成第一个请求是正常的，导致 true&&cmd2 执行第二个命令
+        // uses the original value to construct command injection, which will cause the first request to be normal, causing true&&cmd2 to execute the second command
         if checkBashExpr(originValue, param, "&&", "") || checkWindowsCmdExpr(negativeValue, param, "||", "")  || checkWindowsPowershellExpr(negativeValue, param, "||", "") {
             return
         }
@@ -41,24 +41,24 @@ mirrorNewWebsitePathParams = func(isHttps /*bool*/, url /*string*/, req /*[]byte
     }
 }
 
-description = `命令注入（Command Injection）是一种常见的安全攻击方式，它发生在应用程序未能正确地验证用户输入的情况下。攻击者通过这种漏洞，可以在服务器上执行任意的系统命令，从而控制服务器或访问敏感信息。
+description = `Command Injection (Command Injection) is a common security attack method that occurs when an application fails to properly validate user input. Through this vulnerability, an attacker can execute arbitrary system commands on the server, thereby controlling the server or accessing sensitive information. Potential risks of
 
-攻击方式：命令注入通常发生在应用程序直接使用用户输入来构造系统命令的情况下。攻击者可以通过输入特殊字符或命令，使得原本的命令被改变，从而执行攻击者想要的操作。
+Attack method: Command injection usually occurs when an application directly uses user input to construct system commands. An attacker can enter special characters or commands to cause the original commands to be changed to perform the operations the attacker wants.
 
-潜在风险：命令注入的风险极高，因为它可以让攻击者执行任意命令，包括读取、修改、删除数据，甚至控制整个系统。这种攻击方式对系统的安全性和稳定性构成极大威胁。
+: Command injection is extremely risky because it allows attackers to execute arbitrary commands, including reading, modifying, deleting data, and even controlling the entire system. This attack method poses a great threat to the security and stability of the system.
 
-防护措施：防止命令注入的主要方法是对用户输入进行严格的验证和过滤。任何用于构造系统命令的输入都应该被视为潜在的安全风险。此外，应用程序还应该限制其执行系统命令的能力，例如，运行在低权限的用户账户下，或者使用安全的API来代替直接执行系统命令。
+protection measures: The main method to prevent command injection is strict validation and filtering of user input. Any input used to construct system commands should be considered a potential security risk. Additionally, applications should limit their ability to execute system commands, for example, by running under a low-privilege user account or using secure APIs instead of executing system commands directly.
 `
 solution = `
-1. 输入验证：对所有用户输入进行严格的验证和过滤，特别是那些可能会用于构造系统命令的输入。可以使用白名单或者正则表达式等方法来验证输入的合法性。
+1. Input validation: Strictly validate and filter all user input, especially those that may be used to construct system commands. You can use methods such as whitelists or regular expressions to verify the legality of the input.
 
-2. 最小权限原则：应用程序应该以最小的权限运行，这样即使出现命令注入，攻击者也无法执行一些高权限的系统命令。
+2. Principle of least privilege: Applications should run with the least privileges, so that even if command injection occurs, the attacker cannot execute some high-privilege system commands.
 
-3. 使用安全的API：尽量避免直接执行系统命令，而是使用那些能够进行必要安全检查的安全API。
+3. Use safe APIs: Try to avoid directly executing system commands, but use safe APIs that can perform necessary security checks.
 
-4. 参数化命令：在构造系统命令时，应尽量使用参数化命令，而不是字符串拼接，这样可以避免命令注入。
+4. Parameterized command : When constructing system commands, you should try to use parameterized commands instead of string concatenation to avoid command injection.
 
-5. 错误处理：不应该向用户显示详细的错误信息，以防止攻击者利用这些信息进行攻击。
+5. Error handling: Detailed error messages should not be displayed to users to prevent attackers from using this information for attacks.
 `
 
 checkBashExpr = (prefix, param, boundrayPrefix, boundraySuffix) => {
@@ -75,9 +75,9 @@ checkBashExpr = (prefix, param, boundrayPrefix, boundraySuffix) => {
                 risk.NewRisk(
                     rsp.Url,
                     risk.title("Command Injection in %v (%v: %v)" % [rsp.Url, param.Position(), param.Name()]),
-                    risk.titleVerbose(f"命令注入：${rsp.Url} (${param.Position()}: ${param.Name()})"),
+                    risk.titleVerbose(f"Command Injection:${rsp.Url} (${param.Position()}: ${param.Name()})"),
                     risk.severity("critical"),
-                    risk.type("command-injection"), risk.typeVerbose("命令注入"),
+                    risk.type("command-injection"), risk.typeVerbose("Command Injection"),
                     risk.request(rsp.RequestRaw), risk.response(rsp.ResponseRaw),
                     risk.payload(f`PAYLOAD: ${payload} EXPECT: ${result.result}`), risk.parameter(param.String()),
                     risk.description(description),
@@ -106,9 +106,9 @@ checkWindowsPowershellExpr = (prefix, param, boundaryPrefix, boundarySuffix) => 
                 risk.NewRisk(
                     rsp.Url,
                     risk.title("Command Injection in %v (%v: %v)" % [rsp.Url, param.Position(), param.Name()]),
-                    risk.titleVerbose(f"命令注入：${rsp.Url} (${param.Position()}: ${param.Name()})"),
+                    risk.titleVerbose(f"Command Injection:${rsp.Url} (${param.Position()}: ${param.Name()})"),
                     risk.severity("critical"),
-                    risk.type("command-injection"), risk.typeVerbose("命令注入"),
+                    risk.type("command-injection"), risk.typeVerbose("Command Injection"),
                     risk.request(rsp.RequestRaw), risk.response(rsp.ResponseRaw),
                     risk.payload(f`PAYLOAD: ${payload} EXPECT: ${result.result}`), risk.parameter(param.String()),
                     risk.description(description),
@@ -137,9 +137,9 @@ checkWindowsCmdExpr = (prefix, param, boundrayPrefix, boundraySuffix) => {
                 risk.NewRisk(
                     rsp.Url,
                     risk.title("Command(Windows) Injection in %v (%v: %v)" % [rsp.Url, param.Position(), param.Name()]),
-                    risk.titleVerbose(f"Windows命令注入：${rsp.Url} (${param.Position()}: ${param.Name()})"),
+                    risk.titleVerbose(f"Windows Command Injection:${rsp.Url} (${param.Position()}: ${param.Name()})"),
                     risk.severity("critical"),
-                    risk.type("command-injection"), risk.typeVerbose("命令注入"),
+                    risk.type("command-injection"), risk.typeVerbose("Command Injection"),
                     risk.request(rsp.RequestRaw), risk.response(rsp.ResponseRaw),
                     risk.payload(f`PAYLOAD: ${payload} EXPECT: ${result.result}`), risk.parameter(param.String()),
                     risk.description(description),

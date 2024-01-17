@@ -441,10 +441,10 @@ func (b *BehidnerResourceSystemAction) Head(params *ypb.RequestYakURLParams) (*y
 	panic("implement me")
 }
 
-// calculateNewPath 计算基于当前路径和给定命令的新路径。
+// calculateNewPath calculates a new path based on the current path and the given command.
 func calculateNewPath(currentPath string, commandPath string) (string, error) {
-	// 使用filepath.Join合并路径，它会自动处理不同的路径分隔符问题。
-	// 然后使用filepath.Clean来清理路径，例如解析 '..' 和 '.'。
+	// to merge the paths using filepath.Join, which automatically handles different path separator issues.
+	// then use filepath.Clean to clean the path, e.g. parse '..' and '.'。
 	var newPath string
 	if filepath.IsAbs(commandPath) {
 		newPath = filepath.Clean(commandPath)
@@ -484,7 +484,7 @@ func (b *BehidnerResourceSystemAction) Do(params *ypb.RequestYakURLParams) (*ypb
 			resource.Path = path
 			resource.Extra = extra
 		} else {
-			// Todo 特征还是比较明显的
+			// Todo features are quite obvious.
 			fullCommand := "cd " + path + " && " + command
 			raw, err := manager.CommandExec(fullCommand)
 			if err != nil {

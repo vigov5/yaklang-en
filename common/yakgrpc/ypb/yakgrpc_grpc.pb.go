@@ -358,14 +358,14 @@ type YakClient interface {
 	// version
 	Version(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*VersionResponse, error)
 	YakVersionAtLeast(ctx context.Context, in *YakVersionAtLeastRequest, opts ...grpc.CallOption) (*GeneralResponse, error)
-	// echo 通常用于测试服务是否通畅
+	// echo is usually used to test whether the service is smooth
 	Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResposne, error)
-	// 中间人劫持
+	// middleman hijacks
 	MITM(ctx context.Context, opts ...grpc.CallOption) (Yak_MITMClient, error)
 	SetMITMFilter(ctx context.Context, in *SetMITMFilterRequest, opts ...grpc.CallOption) (*SetMITMFilterResponse, error)
 	GetMITMFilter(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*SetMITMFilterRequest, error)
 	DownloadMITMCert(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*MITMCert, error)
-	// 开启端口
+	// open port
 	OpenPort(ctx context.Context, opts ...grpc.CallOption) (Yak_OpenPortClient, error)
 	// Exec
 	Exec(ctx context.Context, in *ExecRequest, opts ...grpc.CallOption) (Yak_ExecClient, error)
@@ -403,7 +403,7 @@ type YakClient interface {
 	YakScriptRiskTypeList(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*YakScriptRiskTypeListResponse, error)
 	SaveNewYakScript(ctx context.Context, in *SaveNewYakScriptRequest, opts ...grpc.CallOption) (*YakScript, error)
 	SaveYakScriptToOnline(ctx context.Context, in *SaveYakScriptToOnlineRequest, opts ...grpc.CallOption) (Yak_SaveYakScriptToOnlineClient, error)
-	// 结构变化,接口废弃
+	// Structural changes, interface abandonment
 	ExportLocalYakScript(ctx context.Context, in *ExportLocalYakScriptRequest, opts ...grpc.CallOption) (*ExportLocalYakScriptResponse, error)
 	ExportLocalYakScriptStream(ctx context.Context, in *ExportLocalYakScriptRequest, opts ...grpc.CallOption) (Yak_ExportLocalYakScriptStreamClient, error)
 	ImportYakScript(ctx context.Context, in *ImportYakScriptRequest, opts ...grpc.CallOption) (Yak_ImportYakScriptClient, error)
@@ -420,7 +420,7 @@ type YakClient interface {
 	HTTPFlowsExtract(ctx context.Context, in *HTTPFlowsExtractRequest, opts ...grpc.CallOption) (*Empty, error)
 	GetHTTPFlowBare(ctx context.Context, in *HTTPFlowBareRequest, opts ...grpc.CallOption) (*HTTPFlowBareResponse, error)
 	ExportHTTPFlows(ctx context.Context, in *ExportHTTPFlowsRequest, opts ...grpc.CallOption) (*QueryHTTPFlowResponse, error)
-	// 从一个 FuzzerRequest 中提取 Url
+	// extracts Url from a FuzzerRequest.
 	ExtractUrl(ctx context.Context, in *FuzzerRequest, opts ...grpc.CallOption) (*ExtractedUrl, error)
 	// Fuzzer
 	GetHistoryHTTPFuzzerTask(ctx context.Context, in *GetHistoryHTTPFuzzerTaskRequest, opts ...grpc.CallOption) (*HistoryHTTPFuzzerTaskDetail, error)
@@ -446,24 +446,24 @@ type YakClient interface {
 	QueryFuzzerLabel(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*QueryFuzzerLabelResponse, error)
 	DeleteFuzzerLabel(ctx context.Context, in *DeleteFuzzerLabelRequest, opts ...grpc.CallOption) (*Empty, error)
 	// HTTPFuzzerResponse
-	// 这个挺特殊的，因为数据包太多了，会卡，所以后端会保存一份，通过这个接口做缓存查询
+	// is quite special. Because there are too many data packets, it will get stuck, so the backend A copy will be saved and cached query can be done through this interface.
 	QueryHTTPFuzzerResponseByTaskId(ctx context.Context, in *QueryHTTPFuzzerResponseByTaskIdRequest, opts ...grpc.CallOption) (*QueryHTTPFuzzerResponseByTaskIdResponse, error)
 	// WebSocket
 	CreateWebsocketFuzzer(ctx context.Context, opts ...grpc.CallOption) (Yak_CreateWebsocketFuzzerClient, error)
 	QueryWebsocketFlowByHTTPFlowWebsocketHash(ctx context.Context, in *QueryWebsocketFlowByHTTPFlowWebsocketHashRequest, opts ...grpc.CallOption) (*WebsocketFlows, error)
 	DeleteWebsocketFlowByHTTPFlowWebsocketHash(ctx context.Context, in *DeleteWebsocketFlowByHTTPFlowWebsocketHashRequest, opts ...grpc.CallOption) (*Empty, error)
 	DeleteWebsocketFlowAll(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
-	// FuzzerResponse 对象转 HTTPFlow：以便分析和模糊测试
+	// FuzzerResponse Object conversion to HTTPFlow: for analysis and fuzz testing
 	ConvertFuzzerResponseToHTTPFlow(ctx context.Context, in *FuzzerResponse, opts ...grpc.CallOption) (*HTTPFlow, error)
-	// 渲染 Fuzzer 模版
+	// render Fuzzer template
 	StringFuzzer(ctx context.Context, in *StringFuzzerRequest, opts ...grpc.CallOption) (*StringFuzzerResponse, error)
-	// 分析一个 HTTP 请求详情
+	// analyze an HTTP request details
 	HTTPRequestAnalyzer(ctx context.Context, in *HTTPRequestAnalysisMaterial, opts ...grpc.CallOption) (*HTTPRequestAnalysis, error)
-	// 编码解码
+	// Encoding and decoding
 	Codec(ctx context.Context, in *CodecRequest, opts ...grpc.CallOption) (*CodecResponse, error)
 	NewCodec(ctx context.Context, in *CodecRequestFlow, opts ...grpc.CallOption) (*CodecResponse, error)
 	PacketPrettifyHelper(ctx context.Context, in *PacketPrettifyHelperRequest, opts ...grpc.CallOption) (*PacketPrettifyHelperResponse, error)
-	// Payload 相关接口
+	// Payload related interfaces
 	// database payload group
 	QueryPayload(ctx context.Context, in *QueryPayloadRequest, opts ...grpc.CallOption) (*QueryPayloadResponse, error)
 	QueryPayloadFromFile(ctx context.Context, in *QueryPayloadFromFileRequest, opts ...grpc.CallOption) (*QueryPayloadFromFileResponse, error)
@@ -493,24 +493,24 @@ type YakClient interface {
 	ExportAllPayloadFromFile(ctx context.Context, in *GetAllPayloadRequest, opts ...grpc.CallOption) (Yak_ExportAllPayloadFromFileClient, error)
 	// create folder
 	CreatePayloadFolder(ctx context.Context, in *NameRequest, opts ...grpc.CallOption) (*Empty, error)
-	// 去重
+	// Remove duplicates.
 	RemoveDuplicatePayloads(ctx context.Context, in *NameRequest, opts ...grpc.CallOption) (Yak_RemoveDuplicatePayloadsClient, error)
-	// 转换为数据库保存
+	// convert to database to save
 	CoverPayloadGroupToDatabase(ctx context.Context, in *NameRequest, opts ...grpc.CallOption) (Yak_CoverPayloadGroupToDatabaseClient, error)
 	ConvertPayloadGroupToDatabase(ctx context.Context, in *NameRequest, opts ...grpc.CallOption) (Yak_ConvertPayloadGroupToDatabaseClient, error)
-	// 迁移旧的payload
+	// migrate old payload
 	MigratePayloads(ctx context.Context, in *Empty, opts ...grpc.CallOption) (Yak_MigratePayloadsClient, error)
-	// 自动生成补全
+	// Automatically generate completion
 	GetYakitCompletionRaw(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*YakitCompletionRawResponse, error)
 	GetYakVMBuildInMethodCompletion(ctx context.Context, in *GetYakVMBuildInMethodCompletionRequest, opts ...grpc.CallOption) (*GetYakVMBuildInMethodCompletionResponse, error)
 	StaticAnalyzeError(ctx context.Context, in *StaticAnalyzeErrorRequest, opts ...grpc.CallOption) (*StaticAnalyzeErrorResponse, error)
 	YaklangCompileAndFormat(ctx context.Context, in *YaklangCompileAndFormatRequest, opts ...grpc.CallOption) (*YaklangCompileAndFormatResponse, error)
 	YaklangLanguageSuggestion(ctx context.Context, in *YaklangLanguageSuggestionRequest, opts ...grpc.CallOption) (*YaklangLanguageSuggestionResponse, error)
-	// 从代码中提取yaklang数据
+	// Extract yaklang data from the code
 	YaklangInspectInformation(ctx context.Context, in *YaklangInspectInformationRequest, opts ...grpc.CallOption) (*YaklangInspectInformationResponse, error)
-	// 进行数据迁移使用
+	// perform data migration using
 	YaklangGetCliCodeFromDatabase(ctx context.Context, in *YaklangGetCliCodeFromDatabaseRequest, opts ...grpc.CallOption) (*YaklangGetCliCodeFromDatabaseResponse, error)
-	// 端口扫描的封装
+	// port scanning package
 	PortScan(ctx context.Context, in *PortScanRequest, opts ...grpc.CallOption) (Yak_PortScanClient, error)
 	ViewPortScanCode(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*SimpleScript, error)
 	SimpleDetect(ctx context.Context, in *RecordPortScanRequest, opts ...grpc.CallOption) (Yak_SimpleDetectClient, error)
@@ -519,7 +519,7 @@ type YakClient interface {
 	GetSimpleDetectUnfinishedTaskByUid(ctx context.Context, in *GetExecBatchYakScriptUnfinishedTaskByUidRequest, opts ...grpc.CallOption) (*RecordPortScanRequest, error)
 	PopSimpleDetectUnfinishedTaskByUid(ctx context.Context, in *GetExecBatchYakScriptUnfinishedTaskByUidRequest, opts ...grpc.CallOption) (*RecordPortScanRequest, error)
 	RecoverSimpleDetectUnfinishedTask(ctx context.Context, in *RecoverExecBatchYakScriptUnfinishedTaskRequest, opts ...grpc.CallOption) (Yak_RecoverSimpleDetectUnfinishedTaskClient, error)
-	// 资产管理
+	// asset management
 	QueryPorts(ctx context.Context, in *QueryPortsRequest, opts ...grpc.CallOption) (*QueryPortsResponse, error)
 	DeletePorts(ctx context.Context, in *DeletePortsRequest, opts ...grpc.CallOption) (*Empty, error)
 	QueryHosts(ctx context.Context, in *QueryHostsRequest, opts ...grpc.CallOption) (*QueryHostsResponse, error)
@@ -557,7 +557,7 @@ type YakClient interface {
 	StartBasicCrawler(ctx context.Context, in *StartBasicCrawlerRequest, opts ...grpc.CallOption) (*ExecResult, error)
 	ViewBasicCrawlerCode(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*SimpleScript, error)
 	GenerateWebsiteTree(ctx context.Context, in *GenerateWebsiteTreeRequest, opts ...grpc.CallOption) (*GenerateWebsiteTreeResponse, error)
-	// 对插件结果的操作
+	// operate on plug-in results
 	QueryYakScriptExecResult(ctx context.Context, in *QueryYakScriptExecResultRequest, opts ...grpc.CallOption) (*QueryYakScriptExecResultResponse, error)
 	QueryYakScriptNameInExecResult(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*YakScriptNames, error)
 	DeleteYakScriptExecResult(ctx context.Context, in *DeleteYakScriptExecResultRequest, opts ...grpc.CallOption) (*Empty, error)
@@ -619,28 +619,28 @@ type YakClient interface {
 	RequireRandomPortToken(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*RandomPortInfo, error)
 	QueryRandomPortTrigger(ctx context.Context, in *QueryRandomPortTriggerRequest, opts ...grpc.CallOption) (*RandomPortTriggerNotification, error)
 	QuerySupportedDnsLogPlatforms(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*QuerySupportedDnsLogPlatformsResponse, error)
-	// 获取 Tags
+	// to obtain Tags.
 	GetAvailableYakScriptTags(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Fields, error)
 	ForceUpdateAvailableYakScriptTags(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
-	// 通用的漏洞检测技术方案
+	// general vulnerability detection Technical solution
 	ExecYakitPluginsByYakScriptFilter(ctx context.Context, in *ExecYakitPluginsByYakScriptFilterRequest, opts ...grpc.CallOption) (Yak_ExecYakitPluginsByYakScriptFilterClient, error)
 	// GenerateYakCodeByPacket
 	GenerateYakCodeByPacket(ctx context.Context, in *GenerateYakCodeByPacketRequest, opts ...grpc.CallOption) (*GenerateYakCodeByPacketResponse, error)
 	// CSRF Generator
 	GenerateCSRFPocByPacket(ctx context.Context, in *GenerateCSRFPocByPacketRequest, opts ...grpc.CallOption) (*GenerateCSRFPocByPacketResponse, error)
-	// MITM 衍生功能：
-	// Replacers 管理
+	// MITM derivative function:
+	// Replacers Manage
 	ExportMITMReplacerRules(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ExportMITMReplacerRulesResponse, error)
 	ImportMITMReplacerRules(ctx context.Context, in *ImportMITMReplacerRulesRequest, opts ...grpc.CallOption) (*Empty, error)
 	GetCurrentRules(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*MITMContentReplacers, error)
 	SetCurrentRules(ctx context.Context, in *MITMContentReplacers, opts ...grpc.CallOption) (*Empty, error)
 	GenerateURL(ctx context.Context, in *GenerateURLRequest, opts ...grpc.CallOption) (*GenerateURLResponse, error)
 	ExtractDataToFile(ctx context.Context, opts ...grpc.CallOption) (Yak_ExtractDataToFileClient, error)
-	// 尝试自动解码
+	// try to automatically decode
 	AutoDecode(ctx context.Context, in *AutoDecodeRequest, opts ...grpc.CallOption) (*AutoDecodeResponse, error)
 	GetSystemProxy(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetSystemProxyResult, error)
 	SetSystemProxy(ctx context.Context, in *SetSystemProxyRequest, opts ...grpc.CallOption) (*Empty, error)
-	// 设置通用存储
+	// sets general storage.
 	GetKey(ctx context.Context, in *GetKeyRequest, opts ...grpc.CallOption) (*GetKeyResult, error)
 	SetKey(ctx context.Context, in *SetKeyRequest, opts ...grpc.CallOption) (*Empty, error)
 	DelKey(ctx context.Context, in *GetKeyRequest, opts ...grpc.CallOption) (*Empty, error)
@@ -659,11 +659,11 @@ type YakClient interface {
 	GetYakScriptTagsAndType(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetYakScriptTagsAndTypeResponse, error)
 	DeleteLocalPluginsByWhere(ctx context.Context, in *DeleteLocalPluginsByWhereRequest, opts ...grpc.CallOption) (*Empty, error)
 	DownloadOnlinePluginByScriptNames(ctx context.Context, in *DownloadOnlinePluginByScriptNamesRequest, opts ...grpc.CallOption) (*DownloadOnlinePluginByScriptNamesResponse, error)
-	// NewOnline 插件下载
+	// NewOnline plug-in download.
 	DownloadOnlinePlugins(ctx context.Context, in *DownloadOnlinePluginsRequest, opts ...grpc.CallOption) (Yak_DownloadOnlinePluginsClient, error)
 	DownloadOnlinePluginBatch(ctx context.Context, in *DownloadOnlinePluginsRequest, opts ...grpc.CallOption) (*Empty, error)
 	DownloadOnlinePluginByPluginName(ctx context.Context, in *DownloadOnlinePluginByScriptNamesRequest, opts ...grpc.CallOption) (*DownloadOnlinePluginByScriptNamesResponse, error)
-	// 新的扫描模式
+	// new scanning mode
 	ExecPacketScan(ctx context.Context, in *ExecPacketScanRequest, opts ...grpc.CallOption) (Yak_ExecPacketScanClient, error)
 	GetEngineDefaultProxy(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*DefaultProxyResult, error)
 	SetEngineDefaultProxy(ctx context.Context, in *DefaultProxyResult, opts ...grpc.CallOption) (*Empty, error)
@@ -672,26 +672,26 @@ type YakClient interface {
 	// license
 	GetLicense(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetLicenseResponse, error)
 	CheckLicense(ctx context.Context, in *CheckLicenseRequest, opts ...grpc.CallOption) (*Empty, error)
-	// Response Body 的魔法操作
+	// Response Body magic operations
 	GetRequestBodyByHTTPFlowID(ctx context.Context, in *DownloadBodyByHTTPFlowIDRequest, opts ...grpc.CallOption) (*Bytes, error)
 	GetResponseBodyByHTTPFlowID(ctx context.Context, in *DownloadBodyByHTTPFlowIDRequest, opts ...grpc.CallOption) (*Bytes, error)
 	GetHTTPPacketBody(ctx context.Context, in *GetHTTPPacketBodyRequest, opts ...grpc.CallOption) (*Bytes, error)
-	// 注册一个 Facades HTTP 响应
+	// register a Facades HTTP response
 	RegisterFacadesHTTP(ctx context.Context, in *RegisterFacadesHTTPRequest, opts ...grpc.CallOption) (*RegisterFacadesHTTPResponse, error)
-	// 重置到恢复出厂设置
+	// re- Set to restore factory settings
 	ResetAndInvalidUserData(ctx context.Context, in *ResetAndInvalidUserDataRequest, opts ...grpc.CallOption) (*Empty, error)
 	// Yaklang Shell
-	// 创建一个交互式 Shell
+	// Create an interactive Shell
 	CreateYaklangShell(ctx context.Context, opts ...grpc.CallOption) (Yak_CreateYaklangShellClient, error)
-	// 接入标准输出和标准错误流
+	// Access the standard output and standard error streams
 	AttachCombinedOutput(ctx context.Context, in *AttachCombinedOutputRequest, opts ...grpc.CallOption) (Yak_AttachCombinedOutputClient, error)
-	// 判断当前引擎对网卡是否有操作权限？
-	// 主要是能否发包等敏感操作
-	// Windows 判断是否是管理员即可 I Am Admin
-	// Linux 和 MacOS 应该尝试 pcap 打开网卡就行
+	// determines whether the current engine has operating authority for the network card?
+	// is mainly used for sensitive operations such as whether to send packets.
+	// Windows can determine whether you are an administrator I Am Admin
+	// Linux and MacOS should try pcap. Just open the network card.
 	IsPrivilegedForNetRaw(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*IsPrivilegedForNetRawResponse, error)
 	PromotePermissionForUserPcap(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
-	// 操作项目的相关接口，通过设置 ProjectDatabase
+	// operation project related interface, by setting ProjectDatabase
 	SetCurrentProject(ctx context.Context, in *SetCurrentProjectRequest, opts ...grpc.CallOption) (*Empty, error)
 	GetCurrentProject(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ProjectDescription, error)
 	GetProjects(ctx context.Context, in *GetProjectsRequest, opts ...grpc.CallOption) (*GetProjectsResponse, error)
@@ -702,23 +702,23 @@ type YakClient interface {
 	GetDefaultProject(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ProjectDescription, error)
 	QueryProjectDetail(ctx context.Context, in *QueryProjectDetailRequest, opts ...grpc.CallOption) (*ProjectDescription, error)
 	GetTemporaryProject(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ProjectDescription, error)
-	// 导入导出项目，带密码，带进度
+	// Import and export projects with passwords and progress
 	ExportProject(ctx context.Context, in *ExportProjectRequest, opts ...grpc.CallOption) (Yak_ExportProjectClient, error)
 	ImportProject(ctx context.Context, in *ImportProjectRequest, opts ...grpc.CallOption) (Yak_ImportProjectClient, error)
-	// 迁移旧数据库
+	// migrates the old database.
 	MigrateLegacyDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
-	// 从规则中提取数据
+	// extracts data from rules.
 	QueryMITMRuleExtractedData(ctx context.Context, in *QueryMITMRuleExtractedDataRequest, opts ...grpc.CallOption) (*QueryMITMRuleExtractedDataResponse, error)
 	// ChaosMakerRule: Bas
 	ImportChaosMakerRules(ctx context.Context, in *ImportChaosMakerRulesRequest, opts ...grpc.CallOption) (*Empty, error)
 	QueryChaosMakerRule(ctx context.Context, in *QueryChaosMakerRuleRequest, opts ...grpc.CallOption) (*QueryChaosMakerRuleResponse, error)
 	DeleteChaosMakerRuleByID(ctx context.Context, in *DeleteChaosMakerRuleByIDRequest, opts ...grpc.CallOption) (*Empty, error)
 	ExecuteChaosMakerRule(ctx context.Context, in *ExecuteChaosMakerRuleRequest, opts ...grpc.CallOption) (Yak_ExecuteChaosMakerRuleClient, error)
-	// 这个接口是判断 BAS Agent 远程端口是否可用的，使用 Vulinbox ws agent 协议连接
+	// This interface is used to determine whether the BAS Agent remote port is available. Use the Vulinbox ws agent protocol to connect to
 	// ConnectVulinboxAgent is the same as IsRemoteAddrAvailable
 	IsRemoteAddrAvailable(ctx context.Context, in *IsRemoteAddrAvailableRequest, opts ...grpc.CallOption) (*IsRemoteAddrAvailableResponse, error)
 	ConnectVulinboxAgent(ctx context.Context, in *IsRemoteAddrAvailableRequest, opts ...grpc.CallOption) (*IsRemoteAddrAvailableResponse, error)
-	// vulinbox agent 的操作接口
+	// vulinbox agent operation interface
 	GetRegisteredVulinboxAgent(ctx context.Context, in *GetRegisteredAgentRequest, opts ...grpc.CallOption) (*GetRegisteredAgentResponse, error)
 	DisconnectVulinboxAgent(ctx context.Context, in *DisconnectVulinboxAgentRequest, opts ...grpc.CallOption) (*Empty, error)
 	// CVE
@@ -743,9 +743,9 @@ type YakClient interface {
 	InstallVulinbox(ctx context.Context, in *InstallVulinboxRequest, opts ...grpc.CallOption) (Yak_InstallVulinboxClient, error)
 	StartVulinbox(ctx context.Context, in *StartVulinboxRequest, opts ...grpc.CallOption) (Yak_StartVulinboxClient, error)
 	GenQualityInspectionReport(ctx context.Context, in *GenQualityInspectionReportRequest, opts ...grpc.CallOption) (Yak_GenQualityInspectionReportClient, error)
-	// 通过他可以构造一个 HTTP 请求
-	// 这个请求可能是一个，也可能是一系列
-	// 一般用来调试插件等
+	// Through it, you can construct an HTTP request.
+	// This request may be one, or It may be a series of
+	// is generally used to debug plug-ins, etc.
 	HTTPRequestBuilder(ctx context.Context, in *HTTPRequestBuilderParams, opts ...grpc.CallOption) (*HTTPRequestBuilderResponse, error)
 	// rpc QueryHTTPRequestBuilder(QueryHTTPRequestBuilderRequest) returns (QueryHTTPRequestBuilderResponse);
 	// rpc DeleteHTTPRequestBuilder(DeleteHTTPRequestBuilderRequest) returns (Empty);
@@ -753,7 +753,7 @@ type YakClient interface {
 	SmokingEvaluatePlugin(ctx context.Context, in *SmokingEvaluatePluginRequest, opts ...grpc.CallOption) (*SmokingEvaluatePluginResponse, error)
 	SmokingEvaluatePluginBatch(ctx context.Context, in *SmokingEvaluatePluginBatchRequest, opts ...grpc.CallOption) (Yak_SmokingEvaluatePluginBatchClient, error)
 	GetSystemDefaultDnsServers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*DefaultDnsServerResponse, error)
-	// 诊断网络发生的问题
+	// diagnose network problems
 	DiagnoseNetwork(ctx context.Context, in *DiagnoseNetworkRequest, opts ...grpc.CallOption) (Yak_DiagnoseNetworkClient, error)
 	DiagnoseNetworkDNS(ctx context.Context, in *DiagnoseNetworkDNSRequest, opts ...grpc.CallOption) (Yak_DiagnoseNetworkDNSClient, error)
 	TraceRoute(ctx context.Context, in *TraceRouteRequest, opts ...grpc.CallOption) (Yak_TraceRouteClient, error)
@@ -771,7 +771,7 @@ type YakClient interface {
 	QueryTrafficTCPReassembled(ctx context.Context, in *QueryTrafficTCPReassembledRequest, opts ...grpc.CallOption) (*QueryTrafficTCPReassembledResponse, error)
 	ParseTraffic(ctx context.Context, in *ParseTrafficRequest, opts ...grpc.CallOption) (*ParseTrafficResponse, error)
 	DuplexConnection(ctx context.Context, opts ...grpc.CallOption) (Yak_DuplexConnectionClient, error)
-	// 混合批量扫描
+	// hybrid batch scan
 	HybridScan(ctx context.Context, opts ...grpc.CallOption) (Yak_HybridScanClient, error)
 	QueryHybridScanTask(ctx context.Context, in *QueryHybridScanTaskRequest, opts ...grpc.CallOption) (*QueryHybridScanTaskResponse, error)
 	DeleteHybridScanTask(ctx context.Context, in *DeleteHybridScanTaskRequest, opts ...grpc.CallOption) (*Empty, error)
@@ -5135,14 +5135,14 @@ type YakServer interface {
 	// version
 	Version(context.Context, *Empty) (*VersionResponse, error)
 	YakVersionAtLeast(context.Context, *YakVersionAtLeastRequest) (*GeneralResponse, error)
-	// echo 通常用于测试服务是否通畅
+	// echo is usually used to test whether the service is smooth
 	Echo(context.Context, *EchoRequest) (*EchoResposne, error)
-	// 中间人劫持
+	// middleman hijacks
 	MITM(Yak_MITMServer) error
 	SetMITMFilter(context.Context, *SetMITMFilterRequest) (*SetMITMFilterResponse, error)
 	GetMITMFilter(context.Context, *Empty) (*SetMITMFilterRequest, error)
 	DownloadMITMCert(context.Context, *Empty) (*MITMCert, error)
-	// 开启端口
+	// open port
 	OpenPort(Yak_OpenPortServer) error
 	// Exec
 	Exec(*ExecRequest, Yak_ExecServer) error
@@ -5180,7 +5180,7 @@ type YakServer interface {
 	YakScriptRiskTypeList(context.Context, *Empty) (*YakScriptRiskTypeListResponse, error)
 	SaveNewYakScript(context.Context, *SaveNewYakScriptRequest) (*YakScript, error)
 	SaveYakScriptToOnline(*SaveYakScriptToOnlineRequest, Yak_SaveYakScriptToOnlineServer) error
-	// 结构变化,接口废弃
+	// Structural changes, interface abandonment
 	ExportLocalYakScript(context.Context, *ExportLocalYakScriptRequest) (*ExportLocalYakScriptResponse, error)
 	ExportLocalYakScriptStream(*ExportLocalYakScriptRequest, Yak_ExportLocalYakScriptStreamServer) error
 	ImportYakScript(*ImportYakScriptRequest, Yak_ImportYakScriptServer) error
@@ -5197,7 +5197,7 @@ type YakServer interface {
 	HTTPFlowsExtract(context.Context, *HTTPFlowsExtractRequest) (*Empty, error)
 	GetHTTPFlowBare(context.Context, *HTTPFlowBareRequest) (*HTTPFlowBareResponse, error)
 	ExportHTTPFlows(context.Context, *ExportHTTPFlowsRequest) (*QueryHTTPFlowResponse, error)
-	// 从一个 FuzzerRequest 中提取 Url
+	// extracts Url from a FuzzerRequest.
 	ExtractUrl(context.Context, *FuzzerRequest) (*ExtractedUrl, error)
 	// Fuzzer
 	GetHistoryHTTPFuzzerTask(context.Context, *GetHistoryHTTPFuzzerTaskRequest) (*HistoryHTTPFuzzerTaskDetail, error)
@@ -5223,24 +5223,24 @@ type YakServer interface {
 	QueryFuzzerLabel(context.Context, *Empty) (*QueryFuzzerLabelResponse, error)
 	DeleteFuzzerLabel(context.Context, *DeleteFuzzerLabelRequest) (*Empty, error)
 	// HTTPFuzzerResponse
-	// 这个挺特殊的，因为数据包太多了，会卡，所以后端会保存一份，通过这个接口做缓存查询
+	// is quite special. Because there are too many data packets, it will get stuck, so the backend A copy will be saved and cached query can be done through this interface.
 	QueryHTTPFuzzerResponseByTaskId(context.Context, *QueryHTTPFuzzerResponseByTaskIdRequest) (*QueryHTTPFuzzerResponseByTaskIdResponse, error)
 	// WebSocket
 	CreateWebsocketFuzzer(Yak_CreateWebsocketFuzzerServer) error
 	QueryWebsocketFlowByHTTPFlowWebsocketHash(context.Context, *QueryWebsocketFlowByHTTPFlowWebsocketHashRequest) (*WebsocketFlows, error)
 	DeleteWebsocketFlowByHTTPFlowWebsocketHash(context.Context, *DeleteWebsocketFlowByHTTPFlowWebsocketHashRequest) (*Empty, error)
 	DeleteWebsocketFlowAll(context.Context, *Empty) (*Empty, error)
-	// FuzzerResponse 对象转 HTTPFlow：以便分析和模糊测试
+	// FuzzerResponse Object conversion to HTTPFlow: for analysis and fuzz testing
 	ConvertFuzzerResponseToHTTPFlow(context.Context, *FuzzerResponse) (*HTTPFlow, error)
-	// 渲染 Fuzzer 模版
+	// render Fuzzer template
 	StringFuzzer(context.Context, *StringFuzzerRequest) (*StringFuzzerResponse, error)
-	// 分析一个 HTTP 请求详情
+	// analyze an HTTP request details
 	HTTPRequestAnalyzer(context.Context, *HTTPRequestAnalysisMaterial) (*HTTPRequestAnalysis, error)
-	// 编码解码
+	// Encoding and decoding
 	Codec(context.Context, *CodecRequest) (*CodecResponse, error)
 	NewCodec(context.Context, *CodecRequestFlow) (*CodecResponse, error)
 	PacketPrettifyHelper(context.Context, *PacketPrettifyHelperRequest) (*PacketPrettifyHelperResponse, error)
-	// Payload 相关接口
+	// Payload related interfaces
 	// database payload group
 	QueryPayload(context.Context, *QueryPayloadRequest) (*QueryPayloadResponse, error)
 	QueryPayloadFromFile(context.Context, *QueryPayloadFromFileRequest) (*QueryPayloadFromFileResponse, error)
@@ -5270,24 +5270,24 @@ type YakServer interface {
 	ExportAllPayloadFromFile(*GetAllPayloadRequest, Yak_ExportAllPayloadFromFileServer) error
 	// create folder
 	CreatePayloadFolder(context.Context, *NameRequest) (*Empty, error)
-	// 去重
+	// Remove duplicates.
 	RemoveDuplicatePayloads(*NameRequest, Yak_RemoveDuplicatePayloadsServer) error
-	// 转换为数据库保存
+	// convert to database to save
 	CoverPayloadGroupToDatabase(*NameRequest, Yak_CoverPayloadGroupToDatabaseServer) error
 	ConvertPayloadGroupToDatabase(*NameRequest, Yak_ConvertPayloadGroupToDatabaseServer) error
-	// 迁移旧的payload
+	// migrate old payload
 	MigratePayloads(*Empty, Yak_MigratePayloadsServer) error
-	// 自动生成补全
+	// Automatically generate completion
 	GetYakitCompletionRaw(context.Context, *Empty) (*YakitCompletionRawResponse, error)
 	GetYakVMBuildInMethodCompletion(context.Context, *GetYakVMBuildInMethodCompletionRequest) (*GetYakVMBuildInMethodCompletionResponse, error)
 	StaticAnalyzeError(context.Context, *StaticAnalyzeErrorRequest) (*StaticAnalyzeErrorResponse, error)
 	YaklangCompileAndFormat(context.Context, *YaklangCompileAndFormatRequest) (*YaklangCompileAndFormatResponse, error)
 	YaklangLanguageSuggestion(context.Context, *YaklangLanguageSuggestionRequest) (*YaklangLanguageSuggestionResponse, error)
-	// 从代码中提取yaklang数据
+	// Extract yaklang data from the code
 	YaklangInspectInformation(context.Context, *YaklangInspectInformationRequest) (*YaklangInspectInformationResponse, error)
-	// 进行数据迁移使用
+	// perform data migration using
 	YaklangGetCliCodeFromDatabase(context.Context, *YaklangGetCliCodeFromDatabaseRequest) (*YaklangGetCliCodeFromDatabaseResponse, error)
-	// 端口扫描的封装
+	// port scanning package
 	PortScan(*PortScanRequest, Yak_PortScanServer) error
 	ViewPortScanCode(context.Context, *Empty) (*SimpleScript, error)
 	SimpleDetect(*RecordPortScanRequest, Yak_SimpleDetectServer) error
@@ -5296,7 +5296,7 @@ type YakServer interface {
 	GetSimpleDetectUnfinishedTaskByUid(context.Context, *GetExecBatchYakScriptUnfinishedTaskByUidRequest) (*RecordPortScanRequest, error)
 	PopSimpleDetectUnfinishedTaskByUid(context.Context, *GetExecBatchYakScriptUnfinishedTaskByUidRequest) (*RecordPortScanRequest, error)
 	RecoverSimpleDetectUnfinishedTask(*RecoverExecBatchYakScriptUnfinishedTaskRequest, Yak_RecoverSimpleDetectUnfinishedTaskServer) error
-	// 资产管理
+	// asset management
 	QueryPorts(context.Context, *QueryPortsRequest) (*QueryPortsResponse, error)
 	DeletePorts(context.Context, *DeletePortsRequest) (*Empty, error)
 	QueryHosts(context.Context, *QueryHostsRequest) (*QueryHostsResponse, error)
@@ -5334,7 +5334,7 @@ type YakServer interface {
 	StartBasicCrawler(context.Context, *StartBasicCrawlerRequest) (*ExecResult, error)
 	ViewBasicCrawlerCode(context.Context, *Empty) (*SimpleScript, error)
 	GenerateWebsiteTree(context.Context, *GenerateWebsiteTreeRequest) (*GenerateWebsiteTreeResponse, error)
-	// 对插件结果的操作
+	// operate on plug-in results
 	QueryYakScriptExecResult(context.Context, *QueryYakScriptExecResultRequest) (*QueryYakScriptExecResultResponse, error)
 	QueryYakScriptNameInExecResult(context.Context, *Empty) (*YakScriptNames, error)
 	DeleteYakScriptExecResult(context.Context, *DeleteYakScriptExecResultRequest) (*Empty, error)
@@ -5396,28 +5396,28 @@ type YakServer interface {
 	RequireRandomPortToken(context.Context, *Empty) (*RandomPortInfo, error)
 	QueryRandomPortTrigger(context.Context, *QueryRandomPortTriggerRequest) (*RandomPortTriggerNotification, error)
 	QuerySupportedDnsLogPlatforms(context.Context, *Empty) (*QuerySupportedDnsLogPlatformsResponse, error)
-	// 获取 Tags
+	// to obtain Tags.
 	GetAvailableYakScriptTags(context.Context, *Empty) (*Fields, error)
 	ForceUpdateAvailableYakScriptTags(context.Context, *Empty) (*Empty, error)
-	// 通用的漏洞检测技术方案
+	// general vulnerability detection Technical solution
 	ExecYakitPluginsByYakScriptFilter(*ExecYakitPluginsByYakScriptFilterRequest, Yak_ExecYakitPluginsByYakScriptFilterServer) error
 	// GenerateYakCodeByPacket
 	GenerateYakCodeByPacket(context.Context, *GenerateYakCodeByPacketRequest) (*GenerateYakCodeByPacketResponse, error)
 	// CSRF Generator
 	GenerateCSRFPocByPacket(context.Context, *GenerateCSRFPocByPacketRequest) (*GenerateCSRFPocByPacketResponse, error)
-	// MITM 衍生功能：
-	// Replacers 管理
+	// MITM derivative function:
+	// Replacers Manage
 	ExportMITMReplacerRules(context.Context, *Empty) (*ExportMITMReplacerRulesResponse, error)
 	ImportMITMReplacerRules(context.Context, *ImportMITMReplacerRulesRequest) (*Empty, error)
 	GetCurrentRules(context.Context, *Empty) (*MITMContentReplacers, error)
 	SetCurrentRules(context.Context, *MITMContentReplacers) (*Empty, error)
 	GenerateURL(context.Context, *GenerateURLRequest) (*GenerateURLResponse, error)
 	ExtractDataToFile(Yak_ExtractDataToFileServer) error
-	// 尝试自动解码
+	// try to automatically decode
 	AutoDecode(context.Context, *AutoDecodeRequest) (*AutoDecodeResponse, error)
 	GetSystemProxy(context.Context, *Empty) (*GetSystemProxyResult, error)
 	SetSystemProxy(context.Context, *SetSystemProxyRequest) (*Empty, error)
-	// 设置通用存储
+	// sets general storage.
 	GetKey(context.Context, *GetKeyRequest) (*GetKeyResult, error)
 	SetKey(context.Context, *SetKeyRequest) (*Empty, error)
 	DelKey(context.Context, *GetKeyRequest) (*Empty, error)
@@ -5436,11 +5436,11 @@ type YakServer interface {
 	GetYakScriptTagsAndType(context.Context, *Empty) (*GetYakScriptTagsAndTypeResponse, error)
 	DeleteLocalPluginsByWhere(context.Context, *DeleteLocalPluginsByWhereRequest) (*Empty, error)
 	DownloadOnlinePluginByScriptNames(context.Context, *DownloadOnlinePluginByScriptNamesRequest) (*DownloadOnlinePluginByScriptNamesResponse, error)
-	// NewOnline 插件下载
+	// NewOnline plug-in download.
 	DownloadOnlinePlugins(*DownloadOnlinePluginsRequest, Yak_DownloadOnlinePluginsServer) error
 	DownloadOnlinePluginBatch(context.Context, *DownloadOnlinePluginsRequest) (*Empty, error)
 	DownloadOnlinePluginByPluginName(context.Context, *DownloadOnlinePluginByScriptNamesRequest) (*DownloadOnlinePluginByScriptNamesResponse, error)
-	// 新的扫描模式
+	// new scanning mode
 	ExecPacketScan(*ExecPacketScanRequest, Yak_ExecPacketScanServer) error
 	GetEngineDefaultProxy(context.Context, *Empty) (*DefaultProxyResult, error)
 	SetEngineDefaultProxy(context.Context, *DefaultProxyResult) (*Empty, error)
@@ -5449,26 +5449,26 @@ type YakServer interface {
 	// license
 	GetLicense(context.Context, *Empty) (*GetLicenseResponse, error)
 	CheckLicense(context.Context, *CheckLicenseRequest) (*Empty, error)
-	// Response Body 的魔法操作
+	// Response Body magic operations
 	GetRequestBodyByHTTPFlowID(context.Context, *DownloadBodyByHTTPFlowIDRequest) (*Bytes, error)
 	GetResponseBodyByHTTPFlowID(context.Context, *DownloadBodyByHTTPFlowIDRequest) (*Bytes, error)
 	GetHTTPPacketBody(context.Context, *GetHTTPPacketBodyRequest) (*Bytes, error)
-	// 注册一个 Facades HTTP 响应
+	// register a Facades HTTP response
 	RegisterFacadesHTTP(context.Context, *RegisterFacadesHTTPRequest) (*RegisterFacadesHTTPResponse, error)
-	// 重置到恢复出厂设置
+	// re- Set to restore factory settings
 	ResetAndInvalidUserData(context.Context, *ResetAndInvalidUserDataRequest) (*Empty, error)
 	// Yaklang Shell
-	// 创建一个交互式 Shell
+	// Create an interactive Shell
 	CreateYaklangShell(Yak_CreateYaklangShellServer) error
-	// 接入标准输出和标准错误流
+	// Access the standard output and standard error streams
 	AttachCombinedOutput(*AttachCombinedOutputRequest, Yak_AttachCombinedOutputServer) error
-	// 判断当前引擎对网卡是否有操作权限？
-	// 主要是能否发包等敏感操作
-	// Windows 判断是否是管理员即可 I Am Admin
-	// Linux 和 MacOS 应该尝试 pcap 打开网卡就行
+	// determines whether the current engine has operating authority for the network card?
+	// is mainly used for sensitive operations such as whether to send packets.
+	// Windows can determine whether you are an administrator I Am Admin
+	// Linux and MacOS should try pcap. Just open the network card.
 	IsPrivilegedForNetRaw(context.Context, *Empty) (*IsPrivilegedForNetRawResponse, error)
 	PromotePermissionForUserPcap(context.Context, *Empty) (*Empty, error)
-	// 操作项目的相关接口，通过设置 ProjectDatabase
+	// operation project related interface, by setting ProjectDatabase
 	SetCurrentProject(context.Context, *SetCurrentProjectRequest) (*Empty, error)
 	GetCurrentProject(context.Context, *Empty) (*ProjectDescription, error)
 	GetProjects(context.Context, *GetProjectsRequest) (*GetProjectsResponse, error)
@@ -5479,23 +5479,23 @@ type YakServer interface {
 	GetDefaultProject(context.Context, *Empty) (*ProjectDescription, error)
 	QueryProjectDetail(context.Context, *QueryProjectDetailRequest) (*ProjectDescription, error)
 	GetTemporaryProject(context.Context, *Empty) (*ProjectDescription, error)
-	// 导入导出项目，带密码，带进度
+	// Import and export projects with passwords and progress
 	ExportProject(*ExportProjectRequest, Yak_ExportProjectServer) error
 	ImportProject(*ImportProjectRequest, Yak_ImportProjectServer) error
-	// 迁移旧数据库
+	// migrates the old database.
 	MigrateLegacyDatabase(context.Context, *Empty) (*Empty, error)
-	// 从规则中提取数据
+	// extracts data from rules.
 	QueryMITMRuleExtractedData(context.Context, *QueryMITMRuleExtractedDataRequest) (*QueryMITMRuleExtractedDataResponse, error)
 	// ChaosMakerRule: Bas
 	ImportChaosMakerRules(context.Context, *ImportChaosMakerRulesRequest) (*Empty, error)
 	QueryChaosMakerRule(context.Context, *QueryChaosMakerRuleRequest) (*QueryChaosMakerRuleResponse, error)
 	DeleteChaosMakerRuleByID(context.Context, *DeleteChaosMakerRuleByIDRequest) (*Empty, error)
 	ExecuteChaosMakerRule(*ExecuteChaosMakerRuleRequest, Yak_ExecuteChaosMakerRuleServer) error
-	// 这个接口是判断 BAS Agent 远程端口是否可用的，使用 Vulinbox ws agent 协议连接
+	// This interface is used to determine whether the BAS Agent remote port is available. Use the Vulinbox ws agent protocol to connect to
 	// ConnectVulinboxAgent is the same as IsRemoteAddrAvailable
 	IsRemoteAddrAvailable(context.Context, *IsRemoteAddrAvailableRequest) (*IsRemoteAddrAvailableResponse, error)
 	ConnectVulinboxAgent(context.Context, *IsRemoteAddrAvailableRequest) (*IsRemoteAddrAvailableResponse, error)
-	// vulinbox agent 的操作接口
+	// vulinbox agent operation interface
 	GetRegisteredVulinboxAgent(context.Context, *GetRegisteredAgentRequest) (*GetRegisteredAgentResponse, error)
 	DisconnectVulinboxAgent(context.Context, *DisconnectVulinboxAgentRequest) (*Empty, error)
 	// CVE
@@ -5520,9 +5520,9 @@ type YakServer interface {
 	InstallVulinbox(*InstallVulinboxRequest, Yak_InstallVulinboxServer) error
 	StartVulinbox(*StartVulinboxRequest, Yak_StartVulinboxServer) error
 	GenQualityInspectionReport(*GenQualityInspectionReportRequest, Yak_GenQualityInspectionReportServer) error
-	// 通过他可以构造一个 HTTP 请求
-	// 这个请求可能是一个，也可能是一系列
-	// 一般用来调试插件等
+	// Through it, you can construct an HTTP request.
+	// This request may be one, or It may be a series of
+	// is generally used to debug plug-ins, etc.
 	HTTPRequestBuilder(context.Context, *HTTPRequestBuilderParams) (*HTTPRequestBuilderResponse, error)
 	// rpc QueryHTTPRequestBuilder(QueryHTTPRequestBuilderRequest) returns (QueryHTTPRequestBuilderResponse);
 	// rpc DeleteHTTPRequestBuilder(DeleteHTTPRequestBuilderRequest) returns (Empty);
@@ -5530,7 +5530,7 @@ type YakServer interface {
 	SmokingEvaluatePlugin(context.Context, *SmokingEvaluatePluginRequest) (*SmokingEvaluatePluginResponse, error)
 	SmokingEvaluatePluginBatch(*SmokingEvaluatePluginBatchRequest, Yak_SmokingEvaluatePluginBatchServer) error
 	GetSystemDefaultDnsServers(context.Context, *Empty) (*DefaultDnsServerResponse, error)
-	// 诊断网络发生的问题
+	// diagnose network problems
 	DiagnoseNetwork(*DiagnoseNetworkRequest, Yak_DiagnoseNetworkServer) error
 	DiagnoseNetworkDNS(*DiagnoseNetworkDNSRequest, Yak_DiagnoseNetworkDNSServer) error
 	TraceRoute(*TraceRouteRequest, Yak_TraceRouteServer) error
@@ -5548,7 +5548,7 @@ type YakServer interface {
 	QueryTrafficTCPReassembled(context.Context, *QueryTrafficTCPReassembledRequest) (*QueryTrafficTCPReassembledResponse, error)
 	ParseTraffic(context.Context, *ParseTrafficRequest) (*ParseTrafficResponse, error)
 	DuplexConnection(Yak_DuplexConnectionServer) error
-	// 混合批量扫描
+	// hybrid batch scan
 	HybridScan(Yak_HybridScanServer) error
 	QueryHybridScanTask(context.Context, *QueryHybridScanTaskRequest) (*QueryHybridScanTaskResponse, error)
 	DeleteHybridScanTask(context.Context, *DeleteHybridScanTaskRequest) (*Empty, error)

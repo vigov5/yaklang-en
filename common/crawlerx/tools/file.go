@@ -10,29 +10,29 @@ import (
 	"time"
 )
 
-// 读取文件到二进制
+// Read file into binary
 func ReadFile(path string) ([]byte, error) {
 	content, err := os.ReadFile(path)
 	return content, err
 }
 
-// 写入二进制到文件
+// Write binary to file
 func WriteFile(fileName string, strTest []byte) error {
 	var f *os.File
 	var err error
-	if CheckFileExist(fileName) { //文件存在
-		f, err = os.OpenFile(fileName, os.O_APPEND, 0666) //打开文件
+	if CheckFileExist(fileName) { //The file exists
+		f, err = os.OpenFile(fileName, os.O_APPEND, 0666) //Open file
 		if err != nil {
 			return err
 		}
-	} else { //文件不存在
-		f, err = os.Create(fileName) //创建文件
+	} else { //The file does not exist
+		f, err = os.Create(fileName) //Create file
 		if err != nil {
 			return err
 		}
 	}
 	defer f.Close()
-	//将文件写进去
+	//Write file into
 	_, err1 := io.WriteString(f, string(strTest))
 	if err1 != nil {
 		return err1
@@ -40,7 +40,7 @@ func WriteFile(fileName string, strTest []byte) error {
 	return nil
 }
 
-// 验证文件（目录）是否存在
+// Verify whether the file (directory) exists
 func CheckFileExist(fileName string) bool {
 	_, err := os.Stat(fileName)
 	if err != nil {
@@ -52,7 +52,7 @@ func CheckFileExist(fileName string) bool {
 	return true
 }
 
-// 判断所给路径是否为文件夹
+// Determine whether the given path is a folder
 func IsDir(path string) bool {
 	s, err := os.Stat(path)
 	if err != nil {
@@ -61,12 +61,12 @@ func IsDir(path string) bool {
 	return s.IsDir()
 }
 
-// 判断所给路径是否为文件
+// Determine whether the given path is a file
 func IsFile(path string) bool {
 	return !IsDir(path)
 }
 
-// 调用os.MkdirAll递归创建文件夹
+// Call os.MkdirAll to recursively create the folder
 func CreateDir(path string) error {
 	if !CheckFileExist(path) {
 		err := os.MkdirAll(path, os.ModePerm)
@@ -75,12 +75,12 @@ func CreateDir(path string) error {
 	return nil
 }
 
-// 删除文件
+// Delete file
 func RemoveFile(path string) error {
 	return os.Remove(path)
 }
 
-// 获取一个随机的临时文件名
+// Get a random temporary file name
 func GetFileTmpName(preString string, rand int) string {
 	timeUnixNano := time.Now().UnixNano()
 	timeString := strconv.FormatInt(timeUnixNano, 10)

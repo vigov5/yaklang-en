@@ -424,7 +424,7 @@ var CLASS_NAMES = []string{
 	"org.apache.coyote.util.ViewMatcher",
 }
 
-// RandomClassName 随机类名
+// RandomClassName Random class name
 func RandomClassName() string {
 	rand.Seed(time.Now().Unix())
 	className := CLASS_NAMES[rand.Intn(len(CLASS_NAMES))]
@@ -462,7 +462,7 @@ func EncryptForJava(code []byte, key []byte) ([]byte, error) {
 	return codec.AESECBEncrypt(key, code, nil)
 }
 
-// DecryptForJava TODO 解密前判断下长度，不然可能会 panic
+// DecryptForJava TODO Determine the length before decrypting, otherwise it may panic
 func DecryptForJava(code []byte, key []byte) ([]byte, error) {
 	return codec.AESECBDecrypt(key, code, nil)
 }

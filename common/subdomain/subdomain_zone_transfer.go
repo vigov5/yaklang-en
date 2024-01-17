@@ -30,7 +30,7 @@ func (s *SubdomainScanner) ZoneTransfer(ctx context.Context, target string) {
 		req := &dns.Msg{}
 		req.SetAxfr(dns.Fqdn(target))
 
-		// 这里有点复杂 AXFR
+		// Its a bit complicated here AXFR
 		// https://github.com/OWASP/Amass/blob/9ccc0c034eafca74a621ac6850d130f1faad5fa7/resolvers/zone.go#L64
 		conn, err := netx.DialTCPTimeout(10*time.Second, utils.ToNsServer(nameserver))
 		if err != nil {

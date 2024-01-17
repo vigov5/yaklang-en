@@ -53,7 +53,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/tevino/abool"
 
-	_ "github.com/yaklang/yaklang/common/yak/yaklang/lib/builtin" // 导入 builtin 包
+	_ "github.com/yaklang/yaklang/common/yak/yaklang/lib/builtin" // Import builtin package
 )
 
 var (
@@ -99,7 +99,7 @@ func initYaklangLib() {
 	importGlobal(GlobalEvalExports)
 	// yaklang.Import("", yaklib.GlobalExport)
 	yaklang.Import("yakit", yaklib.YakitExports)
-	// 基础库
+	// Basic library
 	yaklang.Import("str", yaklib.StringsExport)
 	yaklang.Import("math", yaklib.MathExport)
 	yaklang.Import("os", yaklib.SystemExports)
@@ -115,7 +115,7 @@ func initYaklangLib() {
 	yaklang.Import("context", yaklib.ContextExports)
 	yaklang.Import("time", yaklib.TimeExports)
 	yaklang.Import("timezone", yaklib.TimeZoneExports)
-	yaklang.Import("codec", yaklib.CodecExports) // 编码解码
+	yaklang.Import("codec", yaklib.CodecExports) // Encoding and decoding
 	yaklang.Import("log", yaklib.LogExports)
 	// yaklang.Import("net", yaklib.Ne)
 	yaklang.Import("hids", hids.Exports)
@@ -128,46 +128,46 @@ func initYaklangLib() {
 	yaklang.Import("mitm", yaklib.MitmExports)
 	yaklang.Import("tls", yaklib.TlsExports)
 
-	// CLI 解析
+	// CLI Parses
 	yaklang.Import("cli", yaklib.CliExports)
 
-	// Fuzz 模糊测试
+	// Fuzz fuzz test
 	yaklang.Import("fuzz", yaklib.FuzzExports)
 
-	// xhtml xss检测基础工具
+	// xhtml xss detection basic tool
 	yaklang.Import("xhtml", xhtml.Exports)
 
-	// 基础 http 网络请求的库
+	// Basic http network request library
 	yaklang.Import("http", yaklib.HttpExports)
 	yaklang.Import("httpserver", yaklib.HttpServeExports)
 	yaklang.Import("httpool", yaklib.HttpPoolExports)
 
 	yaklang.Import("dictutil", yaklib.DictUtilExports)
 
-	// 漏洞工具的库
+	// Vulnerability tool Library
 	yaklang.Import("tools", tools.Exports)
 
-	// 基础网络io库
+	// Basic network io library
 	yaklang.Import("tcp", yaklib.TcpExports)
 	yaklang.Import("udp", yaklib.UDPExport)
 
-	// SYN 扫描库
+	// SYN scanning library
 	yaklang.Import("synscan", tools.SynPortScanExports)
 	yaklang.Import("finscan", tools.FinPortScanExports)
 
-	// 指纹扫描库
+	// Fingerprint scanning library
 	yaklang.Import("servicescan", tools.FingerprintScanExports)
 
-	// 子域名扫描库
+	// for executing system commands Subdomain name scanning library
 	yaklang.Import("subdomain", tools.SubDomainExports)
 
-	// 执行系统命令的库
+	// Library
 	yaklang.Import("exec", yaklib.ExecExports)
 
-	// 爆破
+	// Exploding
 	yaklang.Import("brute", tools.BruterExports)
 
-	// dns 库
+	// dns library
 	yaklang.Import("dns", yaklib.DnsExports)
 
 	// ping
@@ -176,7 +176,7 @@ func initYaklangLib() {
 	// traceroute
 	yaklang.Import("traceroute", yaklib.TracerouteExports)
 
-	// shodan / quake / fofa 库
+	// shodan / quake / fofa library
 	yaklang.Import("spacengine", yaklib.SpaceEngineExports)
 
 	// json
@@ -211,34 +211,34 @@ func initYaklangLib() {
 	// xml
 	yaklang.Import("xml", yaklib.XMLExports)
 
-	// hooks // 负责加载插件中的插件机制
+	// hooks // is responsible for loading plug-ins Plug-in mechanism in
 	yaklang.Import("hook", HooksExports)
 
-	// 辅助函数库
+	// auxiliary function library
 	yaklang.Import("x", yaklib.FunkExports)
 
-	// java 反序列化生成
+	// java Deserialization generates
 	yaklang.Import("yso", yso.Exports)
 	yaklang.Import("facades", facades.FacadesExports)
 
-	// t3反序列化利用
+	// t3 deserialization uses
 	yaklang.Import("t3", t3.Exports)
 	yaklang.Import("iiop", iiop.Exports)
 	yaklang.Import("js", yaklib.JSOttoExports)
 
 	yaklang.Import("db", yaklib.DatabaseExports)
 
-	// 判别
+	// Discrimination
 	yaklang.Import("judge", comparer.Exports)
 
 	//
 	yaklang.Import("smb", yaklib.SambaExports)
 	yaklang.Import("ldap", yaklib.LdapExports)
 
-	// zip 解压包
+	// zip Unzip package
 	yaklang.Import("zip", yaklib.ZipExports)
 
-	// gzip 增加 gzip 压缩
+	// gzip Add gzip Compression
 	yaklang.Import("gzip", yaklib.GzipExports)
 
 	// redis
@@ -288,17 +288,17 @@ func initYaklangLib() {
 	// openapi
 	yaklang.Import("openapi", openapi.Exports)
 
-	// 手动为一些缺失的导出的接口注入注释
+	// Manually inject comments for some missing exported interfaces
 	// yakdoc.RegisterHook(func(h *yakdoc.DocumentHelper) {
 	// })
 }
 
 type ScriptEngine struct {
 	swg    *utils.SizedWaitGroup
-	logger **yaklib.YakLogger // 由于logger是要对client设置的，而client可以通过hook设置，所以这里用个二级指针，方便修改 logger
+	logger **yaklib.YakLogger // Since the logger needs to be set for the client, and the client can be set through hooks, a secondary pointer is used here to facilitate the modification of the logger.
 	tasks  *sync.Map
 
-	// 设定几个 hook
+	// Set up several hooks
 	RegisterLogHook          yaklib.RegisterOutputFuncType
 	UnregisterLogHook        yaklib.UnregisterOutputFuncType
 	RegisterLogConsoleHook   yaklib.RegisterOutputFuncType
@@ -313,7 +313,7 @@ type ScriptEngine struct {
 	UnregisterAlertHook      yaklib.UnregisterOutputFuncType
 
 	engineHooks []func(engine *antlr4yak.Engine) error
-	// 存储yakc密钥
+	// Store yakc key
 	cryptoKey []byte
 	// debug
 	debug         bool
@@ -478,7 +478,7 @@ func (e *ScriptEngine) exec(ctx context.Context, id string, code string, params 
 	engine.SetVar("YAK_FILENAME", "")
 	engine.SetVar("YAK_DIR", "")
 
-	// 设置参数获取函数
+	// Set parameters to get the function
 	paramGetter := func(key string) interface{} {
 		if params == nil {
 			return ""
@@ -506,7 +506,7 @@ func (e *ScriptEngine) exec(ctx context.Context, id string, code string, params 
 		engine.SetVar("YAK_DIR", filepath.Dir(fmt.Sprint(yakAbsFile)))
 	}
 
-	// getParam 和 param 获取参数内容
+	// getParam and param Get parameter content
 	engine.SetVar("getParam", paramGetter)
 	engine.SetVar("getParams", paramGetter)
 	engine.SetVar("param", paramGetter)
@@ -528,10 +528,10 @@ func (e *ScriptEngine) exec(ctx context.Context, id string, code string, params 
 		"Debug":    logger.Debugf,
 		"Warn":     logger.Warnf,
 		"Error":    logger.Errorf,
-	}) // 设置 log 库
+	}) // Set up log library
 	(*e.logger).SetEngine(engine)
 	clientIns := *yaklib.GetYakitClientInstance()
-	client := &clientIns // 设置全局 client 的 log
+	client := &clientIns // Set up global client log
 	client.SetYakLog(*e.logger)
 	yaklib.SetEngineClient(engine, client)
 

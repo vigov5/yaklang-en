@@ -37,11 +37,11 @@ func TestMisc_Mutate(t *testing.T) {
 
 	cases := []YakTestCase{
 		{
-			Name: "测试 mutate.Fuzz",
+			Name: "Test mutate.Fuzz",
 			Src:  "res = (fuzz.HTTPRequest(`GET / HTTP/1.1\nHost: www.baidu.com\n\n`)[0]).ExecFirst()[0]; desc(res)",
 		},
 		{
-			Name: "测试 mutate.Strings",
+			Name: "Test mutate.Strings",
 			Src: `
 assert(len( fuzz.Strings("{{int(1-3)}}")) == 3);
 assert(len( fuzz.Strings(["{{int(1-3)}}", "{{int(1-10)}}", "111"])) == 14);
@@ -49,7 +49,7 @@ assert(len( fuzz.Strings(["{{int(1-3)}}", "{{int(1-10)}}"])) == 13);
 `,
 		},
 		{
-			Name: "测试 mutate.StringsFunc",
+			Name: "Test mutate.StringsFunc",
 			Src: `
 assert(fuzz.StringsFunc("{{int(1)}}", func(i){
 	desc(i)
@@ -57,7 +57,7 @@ assert(fuzz.StringsFunc("{{int(1)}}", func(i){
 `,
 		},
 		{
-			Name: "测试 mutate.StringsFunc2",
+			Name: "Test mutate.StringsFunc2",
 			Src: `
 assert(fuzz.StringsFunc("{{params(tar)}}", func(i){
 	dump(i.Result)
@@ -68,5 +68,5 @@ assert(fuzz.StringsFunc("{{params(tar)}}", func(i){
 		},
 	}
 
-	Run("fuzz 可用性测试(外部网络): ExecFirst", t, cases...)
+	Run("fuzz Usability test (external network): ExecFirst", t, cases...)
 }

@@ -16,7 +16,7 @@ type AliveHost struct {
 	IP        string `json:"ip"`
 	IPInteger int64  `json:"ip_integer"`
 
-	// 设置运行时 ID 为了关联具体漏洞
+	// Set runtime ID in order to correlate specific vulnerabilities
 	RuntimeId string `json:"runtime_id"`
 }
 

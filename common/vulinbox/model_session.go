@@ -18,7 +18,7 @@ func (v *VulinUser) CreateSession(dbm *dbm) (session Session, err error) {
 		Username: v.Username,
 		Role:     v.Role,
 	}
-	// 插入会话记录到数据库
+	// Insert session records into database
 	if err := dbm.db.Create(&session).Error; err != nil {
 		return session, err
 	}

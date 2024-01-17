@@ -17,13 +17,13 @@ type CWE struct {
 	Name   string
 	NameZh string
 
-	// 描述 CWE 之间的关系
-	Parent   string `json:"parent"`   // 父子关系
-	Siblings string `json:"siblings"` // 兄弟关系
-	InferTo  string `json:"infer_to"` // 推导关系(有上一个问题，多半也会有这个问题)
-	Requires string `json:"requires"` // 依赖关系
+	// Description of the relationship between CWE
+	Parent   string `json:"parent"`   // Parent-child relationship
+	Siblings string `json:"siblings"` // brother relationship
+	InferTo  string `json:"infer_to"` // Derivation relationship (there is the previous problem, and this problem will probably also occur)
+	Requires string `json:"requires"` // Dependencies
 
-	Status                string // CWE 发布状态 draft / incomplete / stable
+	Status                string // CWE release status draft / incomplete / stable
 	Stable                bool
 	Incomplete            bool
 	Description           string
@@ -31,9 +31,9 @@ type CWE struct {
 	ExtendedDescription   string
 	ExtendedDescriptionZh string
 	Abstraction           string // base / varint
-	RelativeLanguage      string // 可能出现的语言
-	CWESolution           string // 修复方案
-	CVEExamples           string // 典型 CVE 案例
+	RelativeLanguage      string // Possible languages 
+	CWESolution           string // Repair solution
+	CVEExamples           string // Typical CVE case
 	CAPECVectors          string
 }
 
@@ -53,11 +53,11 @@ func StatusVerbose(i string) string {
 	i = strings.ToLower(i)
 	switch i {
 	case "draft":
-		return "草案"
+		return "Draft"
 	case "incomplete":
-		return "不完整"
+		return "Incomplete"
 	case "stable":
-		return "稳定"
+		return "Stable"
 	default:
 		return "-"
 	}

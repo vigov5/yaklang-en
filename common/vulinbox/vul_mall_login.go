@@ -22,22 +22,22 @@ var mallUserProfilePage []byte
 
 func (s *VulinServer) mallUserRoute() {
 	// var router = s.router
-	// malloginGroup := router.PathPrefix("/mall").Name("购物商城").Subrouter()
+	// malloginGroup := router.PathPrefix("/mall").Name("shopping mall").Subrouter()
 	mallloginRoutes := []*VulInfo{
-		//登陆功能
+		//Login function
 		{
 			DefaultQuery: "",
 			Path:         "/user/login",
-			// Title:        "商城登陆",
+			// Title:        "Mall login",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == http.MethodGet {
-					// 返回登录页面
+					// Return to the login page
 					writer.Header().Set("Content-Type", "text/html")
 					writer.Write(mallLoginPage)
 					return
 				}
 
-				// 解析请求体中的 JSON 数据
+				// Parse the JSON data in the request body
 				var loginRequest struct {
 					Username string `json:"username"`
 					Password string `json:"password"`
@@ -53,14 +53,14 @@ func (s *VulinServer) mallUserRoute() {
 				username := loginRequest.Username
 				password := loginRequest.Password
 
-				// 在这里执行用户登录逻辑，验证用户名和密码是否正确
-				// 检查数据库中是否存在匹配的用户信息
+				// Execute user login logic here to verify whether the user name and password are correct
+				// Check whether there is a match in the database User information
 				if username == "" || password == "" {
 					writer.WriteHeader(400)
 					writer.Write([]byte("username or password cannot be empty"))
 					return
 				}
-				// sql 注入 , 万能密码
+				// sql injection, universal password
 				users, err := s.database.GetUserByUnsafe(username, password)
 				if err != nil {
 					writer.WriteHeader(500)
@@ -69,7 +69,7 @@ func (s *VulinServer) mallUserRoute() {
 				}
 				user := users[0]
 
-				// 假设验证通过，返回登录成功消息
+				// Assuming the verification is passed, return the login success message
 				response := struct {
 					Id      uint   `json:"id"`
 					Success bool   `json:"success"`
@@ -104,18 +104,18 @@ func (s *VulinServer) mallUserRoute() {
 			},
 			RiskDetected: true,
 		},
-		//注册功能
+		//Registration function
 		{
 			DefaultQuery: "",
 			Path:         "/user/register",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == http.MethodGet {
-					// 返回登录页面
+					// Return to the login page
 					writer.Header().Set("Content-Type", "text/html")
 					writer.Write(mallRegisterPage)
 					return
 				} else if request.Method == http.MethodPost {
-					// 解析请求体中的 JSON 数据
+					// Parse the JSON data in the request body
 					user := &VulinUser{
 						Role: "user",
 					}
@@ -132,7 +132,7 @@ func (s *VulinServer) mallUserRoute() {
 					filterRemake = strings.ReplaceAll(filterRemake, "script", "")
 					user.Remake = filterRemake
 
-					// 在这里执行用户注册逻辑，将用户信息存储到数据库
+					// Execute user registration logic here and store user information into the database
 					err = s.database.CreateUser(user)
 					if err != nil {
 						writer.Write([]byte(err.Error()))
@@ -140,7 +140,7 @@ func (s *VulinServer) mallUserRoute() {
 						return
 					}
 
-					// 假设验证通过，返回登录成功消息
+					// Assuming the verification is passed, return the login success message
 					responseData, err := json.Marshal(user)
 					if err != nil {
 						writer.Write([]byte(err.Error()))
@@ -170,7 +170,7 @@ func (s *VulinServer) mallUserRoute() {
 				}
 			},
 		},
-		//用户信息
+		//User information
 		{
 			DefaultQuery: "",
 			Path:         "/user/profile",
@@ -180,7 +180,7 @@ func (s *VulinServer) mallUserRoute() {
 					return
 				}
 
-				// 通过 id 获取用户信息
+				// Get the user by id Information
 				var a = request.URL.Query().Get("id")
 				i, err := strconv.ParseInt(a, 10, 64)
 				if err != nil {
@@ -195,20 +195,20 @@ func (s *VulinServer) mallUserRoute() {
 					return
 				}
 
-				// 水平越权
+				// Horizontal override
 				if realUser.Role != "admin" && realUser.Role != userInfo.Role {
 					writer.Write([]byte("Not Enough Permissions"))
 					writer.WriteHeader(http.StatusBadRequest)
 					return
 				}
 
-				// 返回用户个人页面
+				// Return to user personal page
 				writer.Header().Set("Content-Type", "text/html")
 				tmpl, err := template.New("userProfile").Parse(string(mallUserProfilePage))
 
-				//获取购物车商品数量
+				//Get the number of items in the shopping cart
 				Cartsum, err := s.database.GetUserCartCount(int(userInfo.ID))
-				//个人信息页面显示购物车商品数量
+				//The personal information page displays the number of items in the shopping cart
 				type UserProfile struct {
 					ID       int
 					Username string
@@ -224,13 +224,13 @@ func (s *VulinServer) mallUserRoute() {
 
 				if err != nil {
 					writer.WriteHeader(http.StatusInternalServerError)
-					log.Println("执行模板失败:", err)
+					log.Println("Execution template fails:", err)
 					writer.Write([]byte("Internal error, cannot render user profile"))
 					return
 				}
 			},
 		},
-		//退出登陆
+		//Log out
 		{
 			DefaultQuery: "",
 			Path:         "/user/logout",

@@ -17,7 +17,7 @@ import (
 )
 
 func MigrateLegacyDatabase() error {
-	// 自动迁移数据库，主要在于个人配置数据与插件数据自动迁移
+	// . Automatically migrate the database, mainly to automatically migrate personal configuration data and plug-in data.
 	projectDB := consts.GetGormProjectDatabase()
 	profileDB := consts.GetGormProfileDatabase()
 
@@ -37,7 +37,7 @@ func MigrateLegacyDatabase() error {
 				kv.Model = gorm.Model{}
 				profileDB.Save(kv)
 			}
-			// 迁移之后移除缓存
+			// After migration, remove the cache
 			projectDB.Where("true").Delete(&GeneralStorage{})
 		}
 	}
@@ -63,7 +63,7 @@ func MigrateLegacyDatabase() error {
 					continue
 				}
 			}
-			// 迁移之后移除缓存
+			// After migration, remove the cache
 			projectDB.Where("true").Delete(&YakScript{})
 		}
 	}
@@ -101,19 +101,19 @@ type GeneralStorage struct {
 
 	Key string `json:"key" gorm:"unique_index"`
 
-	// 经过 JSON + Strconv
+	// . Pass JSON + Strconv
 	Value string `json:"value"`
 
-	// 过期时间
+	// expiration time
 	ExpiredAt time.Time
 
 	// YAKIT SUBPROC_ENV
 	ProcessEnv bool
 
-	// 帮助信息，描述这个变量是干嘛的
+	// of this process helps information, describing what this variable does.
 	Verbose string
 
-	// 描述变量所在的组是啥
+	// . What is the group of the description variable?
 	Group string
 }
 
@@ -192,7 +192,7 @@ func init() {
 	})
 }
 
-// RefreshProcessEnv 在数据库初始化的时候执行这个，可以快速更新本进程的环境变量
+// RefreshProcessEnv. Execute this during database initialization, which can be quickly updated. The environment variable
 func RefreshProcessEnv(db *gorm.DB) {
 	refreshLock.Lock()
 	defer refreshLock.Unlock()
@@ -204,7 +204,7 @@ func RefreshProcessEnv(db *gorm.DB) {
 		key.EnableProcessEnv()
 	}
 
-	// 刷新 DNS 服务器
+	// . Refresh the DNS server
 	// consts.RefreshDNSServer()
 }
 

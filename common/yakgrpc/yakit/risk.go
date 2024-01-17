@@ -40,20 +40,20 @@ type Risk struct {
 	Details         string `json:"details"`
 	Severity        string `json:"severity"`
 
-	// 来源于哪个插件？
+	// come from?
 	FromYakScript string `json:"from_yak_script"`
 
-	// 等待验证中？
+	// Waiting for verification? Which plug-in does
 	WaitingVerified bool `json:"waiting_verified"`
-	// 用于验证的 ReverseToken
+	// ReverseToken used for verification
 	ReverseToken string `json:"reverse_token"`
 
-	// 设置运行时 ID 为了关联具体漏洞
+	// Set runtime ID in order to correlate specific vulnerabilities
 	RuntimeId      string `json:"runtime_id"`
 	QuotedRequest  string `json:"quoted_request"`
 	QuotedResponse string `json:"quoted_response"`
 
-	// 潜在威胁：用于输出合规性质的漏洞内容
+	// Potential threats: Used to output vulnerability content of a compliance nature
 	IsPotential bool `json:"is_potential"`
 
 	CVE                 string `json:"cve"`
@@ -141,7 +141,7 @@ func (p *Risk) BeforeSave() error {
 	}
 
 	if p.RiskTypeVerbose == "" {
-		p.RiskTypeVerbose = "信息"
+		p.RiskTypeVerbose = "information"
 	}
 
 	return nil
@@ -232,7 +232,7 @@ func FixRiskType(db *gorm.DB) {
 		"risk_type": "default",
 	})
 
-	// 修复 nuclei 漏洞保存格式
+	// Fix nuclei vulnerability saving format
 }
 
 func FilterByQueryRisks(db *gorm.DB, params *ypb.QueryRisksRequest) (_ *gorm.DB, _ error) {
@@ -245,7 +245,7 @@ func FilterByQueryRisks(db *gorm.DB, params *ypb.QueryRisksRequest) (_ *gorm.DB,
 		"title", "title_verbose", "risk_type", "risk_type_verbose",
 		"parameter", "payload", "details",
 	}, params.GetSearch(), false)
-	// 搜索风险类型
+	// Search risk type
 	db = bizhelper.FuzzQueryStringArrayOrPrefixLike(
 		db, "risk_type",
 		utils.PrettifyListFromStringSplitEx(params.GetRiskType()),
@@ -455,7 +455,7 @@ func QueryNewRisk(db *gorm.DB, req *ypb.QueryNewRiskRequest, newRisk bool, isRea
 	if newRisk {
 		db = db.Where("id > ?", req.AfterId)
 	}
-	// 未读
+	// Unread
 	if !isRead {
 		db = db.Where("is_read = false")
 	}

@@ -149,10 +149,10 @@ func (h *RouteMux) ServeLDAP(w ResponseWriter, r *Message) {
 		}
 
 		if route.label != "" {
-			log.Printf("")
-			log.Printf(" ROUTE MATCH ; %s", route.label)
-			log.Printf("")
-			// log.Printf(" ROUTE MATCH ; %s", runtime.FuncForPC(reflect.ValueOf(route.handler).Pointer()).Name())
+			log.Printf("ďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁż")
+			log.Printf("ďŁżďŁżďŁżďŁż ROUTE MATCH ; %s", route.label)
+			log.Printf("ďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁżďŁż")
+			// log.Printf("ďŁżďŁżďŁżďŁż ROUTE MATCH ; %s", runtime.FuncForPC(reflect.ValueOf(route.handler).Pointer()).Name())
 		}
 
 		route.handler(w, r)

@@ -27,14 +27,14 @@ import (
 var (
 	remoteAddrConvertor = ttlcache.NewCache()
 
-	// 全局反连配置
+	// Global anti-connection configuration
 	globalReverseServerStarted = utils.NewBool(false)
 	localReverseHost           string
 	remoteReverseIP            string
 	remoteReversePort          int
 	remoteAddr                 string
 	remoteSecret               string
-	//所有已创建的FacadeServer
+	//All created FacadeServers
 	facadeServers    map[string]*facades.FacadeServer
 	facadeServersMux *sync.Mutex
 )
@@ -194,7 +194,7 @@ func (s *Server) StartFacades(req *ypb.StartFacadesParams, stream ypb.Yak_StartF
 	var err error
 	_ = err
 
-	// 判断一下本地是有服务器应该启动
+	// Determine whether there is a local server and start it
 	if !req.EnableDNSLogServer && req.GetLocalFacadePort() <= 0 {
 		_ = stream.Send(yaklib.NewYakitLogExecResult("warning", "no reverse server enabled"))
 		return utils.Errorf("no dns/rmi/http(s)(facades) enabled...")
@@ -207,9 +207,9 @@ func (s *Server) StartFacades(req *ypb.StartFacadesParams, stream ypb.Yak_StartF
 		}
 	}
 
-	// 验证远程 Bridge 是否生效
+	// Verify whether the remote Bridge is effective
 	if req.GetVerify() {
-		// 验证域名是否可用
+		// Verify whether the domain name is available
 		log.Infof("start to verify external domain: %v", req.GetExternalDomain())
 		r, err := s.VerifyTunnelServerDomain(ctx, &ypb.VerifyTunnelServerDomainParams{
 			ConnectParams: req.GetConnectParam(),
@@ -227,10 +227,10 @@ func (s *Server) StartFacades(req *ypb.StartFacadesParams, stream ypb.Yak_StartF
 
 	//
 	if req.EnableDNSLogServer {
-		// 启动 dns log 服务器
+		// Start dns log server
 		if req.GetDNSLogRemotePort() > 0 {
 
-			// 连接服务端，启动端口转发
+			// Connect to the server and start port forwarding
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
@@ -263,7 +263,7 @@ func (s *Server) StartFacades(req *ypb.StartFacadesParams, stream ypb.Yak_StartF
 
 		}
 
-		// 启动 DNS 服务器
+		// Start the DNS server
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -295,7 +295,7 @@ func (s *Server) StartFacades(req *ypb.StartFacadesParams, stream ypb.Yak_StartF
 	if req.LocalFacadePort > 0 {
 
 		if req.GetFacadeRemotePort() > 0 {
-			// 连接服务端，启动端口转发
+			// Connect to the server and start port forwarding
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
@@ -341,7 +341,7 @@ func (s *Server) StartFacades(req *ypb.StartFacadesParams, stream ypb.Yak_StartF
 			_, _ = yakit.NewRisk(
 				n.RemoteAddr,
 				yakit.WithRiskParam_Title(fmt.Sprintf("reverse [%v] connection from %s", n.Type, n.RemoteAddr)),
-				yakit.WithRiskParam_TitleVerbose(fmt.Sprintf(`接收到来自 [%v] 的反连[%v]`, n.RemoteAddr, n.Type)),
+				yakit.WithRiskParam_TitleVerbose(fmt.Sprintf(`received reverse connection [%v] from [%v]`, n.RemoteAddr, n.Type)),
 				yakit.WithRiskParam_RiskType(fmt.Sprintf(`reverse-%v`, n.Type)),
 				yakit.WithRiskParam_Details(n),
 			)
@@ -367,7 +367,7 @@ func (s *Server) StartFacades(req *ypb.StartFacadesParams, stream ypb.Yak_StartF
 
 func (s *Server) StartFacadesWithYsoObject(req *ypb.StartFacadesWithYsoParams, stream ypb.Yak_StartFacadesWithYsoObjectServer) error {
 	ctx := stream.Context()
-	//校验必要参数
+	//Verify necessary parameters
 	reversePort := req.GetReversePort()
 	if reversePort <= 0 {
 		return utils.Errorf("reversePort is not valid")
@@ -377,19 +377,19 @@ func (s *Server) StartFacadesWithYsoObject(req *ypb.StartFacadesWithYsoParams, s
 		return utils.Error("not set class params")
 	}
 
-	////生成Class
+	////Generate Class
 	//bytesRsp, err := s.GenerateYsoBytes(ctx, optionsReqMsg)
 	//if err != nil {
 	//	return utils.Errorf("generate class error: %v", err)
 	//}
 
-	//如果启用公网反连，公网服务器监听指定端口，本地监听随机端口，否则本地监听指定端口
+	//If public network reverse connection is enabled, the public network server listens to the specified port and locally to a random port, otherwise it listens to the specified port locally
 	wg := new(sync.WaitGroup)
 	var globalError error
 	var listenPort int
 	if req.GetIsRemote() {
 		listenPort = utils.GetRandomAvailableTCPPort()
-		//启动端口流量转发
+		//Start port traffic forwarding
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -421,7 +421,7 @@ func (s *Server) StartFacadesWithYsoObject(req *ypb.StartFacadesWithYsoParams, s
 		listenPort = int(reversePort)
 	}
 
-	//启动Facade Server
+	//Start the Facade Server
 	reverseHost := req.GetReverseHost()
 	//var className, classPath string
 	//if strings.HasSuffix(bytesRsp.GetFileName(), ".class") {
@@ -462,7 +462,7 @@ func (s *Server) StartFacadesWithYsoObject(req *ypb.StartFacadesWithYsoParams, s
 		_, _ = yakit.NewRisk(
 			n.RemoteAddr,
 			yakit.WithRiskParam_Title(fmt.Sprintf("reverse [%v] connection from %s", n.Type, n.RemoteAddr)),
-			yakit.WithRiskParam_TitleVerbose(fmt.Sprintf(`接收到来自 [%v] 的反连[%v]`, n.RemoteAddr, n.Type)),
+			yakit.WithRiskParam_TitleVerbose(fmt.Sprintf(`received reverse connection [%v] from [%v]`, n.RemoteAddr, n.Type)),
 			yakit.WithRiskParam_RiskType(fmt.Sprintf(`reverse-%v`, n.Type)),
 			yakit.WithRiskParam_Details(n),
 		)
@@ -477,11 +477,11 @@ func (s *Server) StartFacadesWithYsoObject(req *ypb.StartFacadesWithYsoParams, s
 		defer wg.Done()
 		err := server.ServeWithContext(stream.Context())
 		if err != nil {
-			//客户端关闭
+			//Client close
 			if strings.Contains(err.Error(), "use of closed network connection") {
 				log.Info("connection closed")
 			} else {
-				//启动失败
+				//Failed to start
 				err := utils.Errorf("start facade server error: %v", err)
 				stream.Send(yaklib.NewYakitLogExecResult("error", err.Error()))
 			}

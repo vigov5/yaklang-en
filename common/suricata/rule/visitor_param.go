@@ -311,13 +311,13 @@ func (v *RuleSyntaxVisitor) VisitParams(i *parser.ParamsContext, rule *Rule) {
 			rule.ContentRuleConfig.IPConfig.Tos = vStr
 		case "flags":
 			/*
-				S: 匹配TCP SYN标志位
-				F: 匹配TCP FIN标志位
-				R: 匹配TCP RST标志位
-				P: 匹配TCP PUSH标志位
-				U: 匹配TCP URG标志位
-				E: 匹配TCP ECE标志位
-				C: 匹配TCP CWR标志位
+				S: Match the TCP SYN flag bit
+				F: Match the TCP FIN flag bit
+				R: Match the TCP RST flag bit
+				P: Matches the TCP PUSH flag
+				U: Match the TCP URG flag bit
+				E: Match the TCP ECE flag bit
+				C: Match the TCP CWR flag bit
 			*/
 			if rule.ContentRuleConfig.TcpConfig == nil {
 				rule.ContentRuleConfig.TcpConfig = &TCPLayerRule{}

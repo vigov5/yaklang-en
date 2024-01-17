@@ -48,7 +48,7 @@ func ResourceLocations(resResources ...string) []string {
 
 var Exports = map[string]interface{}{
 
-	// 子域名扫描
+	// Subdomain scanning
 	//"ScanSubDomain": palmscanlib.ScanSubDomainQuick,
 	//"NewSubFinder": func() (*SubFinderInstance, error) {
 	//	return NewSubFinderInstance()

@@ -69,19 +69,19 @@ func (l *LuaTranslator) VisitFuncNameAndBody(name lua.IFuncnameContext, body lua
 
 	function := yakvm.NewFunction(l.codes, l.currentSymtbl)
 
-	// 设置函数名，创建新符号，并且把新符号告诉函数，以便后续处理
+	// Set the function name, create a new symbol, and tell the new symbol to the function for subsequent processing
 	function.SetName(funcName)
 	function.SetSymbol(funcSymbolId)
 	function.SetSourceCode(l.sourceCode)
 
-	//恢复code stack
+	//Restore the code stack
 	recoverCodeStack()
 
 	if function == nil {
 		panic("BUG: cannot create lua function from compiler")
 	}
 	function.SetParamSymbols(paramsSymbol)
-	// TODO: 这里看一下yak的可变函数行为模式和lua的区别看看要不要更改
+	// TODO: Lets take a look at the difference between yaks variable function behavior mode and lua to see if it needs to be changed.
 	function.SetIsVariableParameter(isVariable)
 	funcVal := &yakvm.Value{
 		TypeVerbose: "anonymous-function",
@@ -89,14 +89,14 @@ func (l *LuaTranslator) VisitFuncNameAndBody(name lua.IFuncnameContext, body lua
 	}
 
 	if funcName != "" {
-		// 如果有函数名的话，进行快速赋值
+		// If there is a function name, perform quick assignment
 		funcVal.TypeVerbose = "named-function"
 		l.pushLeftRef(function.GetSymbolId())
 		l.pushValue(funcVal)
 		l.pushGlobalFastAssign()
 		l.pushOpPop()
 	} else {
-		// 闭包函数，直接push到栈中
+		// closure function, push directly to the stack.
 		l.pushValueWithCopy(funcVal)
 	}
 
@@ -185,11 +185,11 @@ func (l *LuaTranslator) VisitLocalFuncNameAndBody(name string, body lua.IFuncbod
 	function := yakvm.NewFunction(l.codes, l.currentSymtbl)
 	function.SetSourceCode(l.sourceCode)
 
-	// 设置函数名，创建新符号，并且把新符号告诉函数，以便后续处理
+	// Set the function name, create a new symbol, and tell the new symbol to the function for subsequent processing
 	function.SetName(funcName)
 	function.SetSymbol(funcSymbolId)
 
-	//恢复code stack
+	//Restore the code stack
 	recoverCodeStack()
 
 	if function == nil {
@@ -203,14 +203,14 @@ func (l *LuaTranslator) VisitLocalFuncNameAndBody(name string, body lua.IFuncbod
 	}
 
 	if funcName != "" {
-		// 如果有函数名的话，进行快速赋值
+		// If there is a function name, perform quick assignment
 		funcVal.TypeVerbose = "named-function"
 		l.pushLeftRef(function.GetSymbolId())
 		l.pushValue(funcVal)
 		l.pushLocalFastAssign()
 		l.pushOpPop()
 	} else {
-		// 闭包函数，直接push到栈中
+		// closure function, push directly to the stack.
 		l.pushValueWithCopy(funcVal)
 	}
 
@@ -259,11 +259,11 @@ func (l *LuaTranslator) VisitFunctionDef(def lua.IFunctiondefContext) interface{
 	function := yakvm.NewFunction(l.codes, l.currentSymtbl)
 	function.SetSourceCode(l.sourceCode)
 
-	// 设置函数名，创建新符号，并且把新符号告诉函数，以便后续处理
+	// Set the function name, create a new symbol, and tell the new symbol to the function for subsequent processing
 	function.SetName(funcName)
 	function.SetSymbol(funcSymbolId)
 
-	//恢复code stack
+	//Restore the code stack
 	recoverCodeStack()
 
 	if function == nil {
@@ -277,13 +277,13 @@ func (l *LuaTranslator) VisitFunctionDef(def lua.IFunctiondefContext) interface{
 	}
 
 	if funcName != "" {
-		// 如果有函数名的话，进行快速赋值
+		// If there is a function name, perform quick assignment
 		funcVal.TypeVerbose = "named-function"
 		l.pushLeftRef(function.GetSymbolId())
 		l.pushValue(funcVal)
 		l.pushGlobalFastAssign()
 	} else {
-		// 闭包函数，直接push到栈中
+		// closure function, push directly to the stack.
 		l.pushValueWithCopy(funcVal)
 	}
 

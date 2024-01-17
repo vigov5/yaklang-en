@@ -47,7 +47,7 @@ func (p *PortListener) handleFromPcap(ctx context.Context, ip string, port int) 
 				return nil
 			}
 
-			// 限制 IP
+			// Limit IP
 			if ip != "" {
 				nLayer := packet.NetworkLayer()
 				if nLayer.LayerType() == layers.LayerTypeIPv4 {
@@ -67,7 +67,7 @@ func (p *PortListener) handleFromPcap(ctx context.Context, ip string, port int) 
 				}
 			}
 
-			// 限制 TCP
+			// Limit TCP
 			tLayer := packet.TransportLayer()
 			if tLayer != nil && tLayer.LayerType() == layers.LayerTypeTCP {
 				if tcpLayer, ok := tLayer.(*layers.TCP); ok && tcpLayer != nil {

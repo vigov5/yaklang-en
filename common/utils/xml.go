@@ -64,7 +64,7 @@ func (m *StringMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 
 			top := stack[len(stack)-1]
 			if _, ok := top[name]; ok {
-				// 处理相同标签名的情况
+				// Handle the case of the same tag name
 				switch v := top[name].(type) {
 				case []interface{}:
 					top[name] = append(v, node)

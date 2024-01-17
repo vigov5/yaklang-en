@@ -143,10 +143,10 @@ func (b *astbuilder) buildAllVariableDeclaration(stmt *JS.VariableDeclarationLis
 		// if mI.GetText() {
 		// 	declare = "c"
 		// } else if m.Var() != nil {
-		// 	// 定义域特殊，允许重赋值，宽松的很
+		// 	// The domain is special and reassignment is allowed, which is very loose
 		// 	declare = "v"
 		// } else if m.Let_() != nil {
-		// 	// 脑子正常的定义域处理，不允许重复定义
+		// 	// . The brains normal definition domain processing does not allow repeated definition of
 		// 	declare = "l"
 		// } else {
 		// 	// strict mode ?
@@ -187,13 +187,13 @@ func (b *astbuilder) buildVariableDeclaration(stmtIf JS.IVariableDeclarationCont
 			}
 		}
 
-		// 返回一个any
+		// . Returns an any
 		return ssa.NewAny(), nil
 	} else {
 		assignValue := func() (ssa.Value, ssa.LeftValue) {
 			var lValue ssa.LeftValue
 
-			// 得到一个左值
+			// of the rvalue. Get an lvalue
 			if as, ok := stmt.Assignable().(*JS.AssignableContext); ok {
 				// lValue = b.buildAssignableContext(as)
 				if i := as.Identifier(); i != nil {
@@ -425,11 +425,11 @@ func (b *astbuilder) buildOnlyRightSingleExpression(stmt JS.ISingleExpressionCon
 
 	// advanced expression
 	// 处理的时候需要知道哪些是高级逻辑：
-	// 高级逻辑需要处理成类似 “分支” 的行为，一般都会牵扯类似“短路”特性；
-	// 也不是说长得像二元运算就一定是二元运算
-	// 例如：false && dump() 这个表达式，dump()是不会执行的，因为false && dump()的结果一定是false
+	// on the lvalue side. The advanced logic needs to be processed into a feature similar to “. Branch” behavior, which generally involves“. Short-circuit”特性；
+	// . It does not mean that it must be a binary operation
+	// is missing For example: false && dump() This expression, dump() will not Executed, because the result of false && dump() must be false
 	handlePrimaryBinaryOperation := func() ssa.Value {
-		// 数学运算
+		// mathematical operations
 		single, opcode, IsBinOp := getBinaryOp()
 		if IsBinOp {
 			op1 := getValue(single, 0)
@@ -447,7 +447,7 @@ func (b *astbuilder) buildOnlyRightSingleExpression(stmt JS.ISingleExpressionCon
 	}
 
 	handlePrimaryUnaryOperation := func() ssa.Value {
-		// 比特运算
+		// bit operations
 		single, opcode, IsUnOp := getUnaryOp()
 		if IsUnOp {
 			op, _ := b.buildSingleExpression(single.SingleExpression(), false)
@@ -464,7 +464,7 @@ func (b *astbuilder) buildOnlyRightSingleExpression(stmt JS.ISingleExpressionCon
 
 	//advanced expression
 	handlerAdvancedExpression := func(cond func(string) ssa.Value, trueExpr, falseExpr func() ssa.Value) ssa.Value {
-		// 逻辑运算聚合产生phi指令
+		// Logical operation aggregation generates phi instruction
 		id := uuid.NewString()
 
 		ifb := b.BuildIf()
@@ -511,7 +511,7 @@ func (b *astbuilder) buildOnlyRightSingleExpression(stmt JS.ISingleExpressionCon
 		// function call
 		return b.EmitCall(b.buildArgumentsExpression(s))
 	case *JS.PostUnaryExpressionContext:
-		// TODO: error 后返回nil会不会报错
+		// TODO: error, will it return nil? Report an error
 		if expr := s.SingleExpression(); expr != nil {
 			_, lValue := b.buildSingleExpression(expr, true)
 			if v := lValue.GetValue(b.FunctionBuilder); v == nil {
@@ -537,7 +537,7 @@ func (b *astbuilder) buildOnlyRightSingleExpression(stmt JS.ISingleExpressionCon
 					return b.EmitTypeValue(rv.GetType())
 				}
 			} else if Unop.GetText() == "delete" {
-				// TODO:删除元素列表？
+				// TODO: Delete element list? What are the advanced logics that you need to know when processing
 				if expr := s.SingleExpression(); expr != nil {
 					rv, _ := b.buildSingleExpression(expr, false)
 					return rv
@@ -650,7 +650,7 @@ func (b *astbuilder) buildOnlyRightSingleExpression(stmt JS.ISingleExpressionCon
 	case *JS.ThisExpressionContext:
 		return ssa.NewParam("this", false, b.FunctionBuilder)
 	case *JS.IdentifierExpressionContext:
-	// identify是左值那边的
+	// . Identify is the
 	// 	rv, _ :=  b.buildIdentifierExpression(s.GetText(), false)
 	// 	return rv
 	case *JS.SuperExpressionContext:
@@ -679,9 +679,9 @@ func (b *astbuilder) buildOnlyRightSingleExpression(stmt JS.ISingleExpressionCon
 }
 
 func (b *astbuilder) buildSingleExpressionEx(stmt JS.ISingleExpressionContext, IslValue bool) (ssa.Value, ssa.LeftValue) {
-	//可能是左值也可能是右值的
+	//if it looks like a binary operation. It may be The lvalue may also be the
 
-	//标识符
+	//Identifier
 	if s, ok := stmt.(*JS.IdentifierExpressionContext); ok {
 		i := s.GetText()
 		value, lValue := b.buildIdentifierExpression(i, IslValue, false)
@@ -1236,7 +1236,7 @@ func (b *astbuilder) buildIdentifierName(stmt *JS.IdentifierNameContext) ssa.Val
 //
 //	expr -> rValue, lValue
 func (b *astbuilder) buildExpressionSequence(stmt *JS.ExpressionSequenceContext) ssa.Value {
-	// 需要修改改函数及引用，不存在if中存在多个singleExpression的情况
+	// , and need to modify the function and Quote, there is no case where there are multiple singleExpressions in if
 	// compelte
 
 	recoverRange := b.SetRange(stmt.BaseParserRuleContext)
@@ -1351,14 +1351,14 @@ func (b *astbuilder) buildDoStatement(stmt *JS.DoStatementContext) {
 	recoverRange := b.SetRange(stmt.BaseParserRuleContext)
 	defer recoverRange()
 
-	// do while需要分次
+	// do while needs to divide
 
-	// 先进行一次do
+	// . First do
 	if s, ok := stmt.Statement().(*JS.StatementContext); ok {
 		b.buildStatement(s)
 	}
 
-	// 构建循环进行条件判断
+	// constructing loops for conditional judgment
 	loop := b.BuildLoop()
 
 	var cond *JS.ExpressionSequenceContext
@@ -1395,7 +1395,7 @@ func (b *astbuilder) buildwhileStatement(stmt *JS.WhileStatementContext) {
 	recoverRange := b.SetRange(stmt.BaseParserRuleContext)
 	defer recoverRange()
 
-	// 构建循环进行条件判断
+	// constructing loops for conditional judgment
 	loop := b.BuildLoop()
 
 	var cond *JS.ExpressionSequenceContext
@@ -1474,10 +1474,10 @@ func (b *astbuilder) buildForStatement(stmt *JS.ForStatementContext) {
 		}
 	}
 
-	// 构建条件
+	// , build the condition
 	loop.BuildCondition(func() ssa.Value {
 		var condition ssa.Value
-		// 没有条件就是永真
+		// is always true without conditions
 		if cond == nil {
 			condition = ssa.NewConst(true)
 		} else {
@@ -1499,7 +1499,7 @@ func (b *astbuilder) buildForStatement(stmt *JS.ForStatementContext) {
 	loop.Finish()
 }
 
-// for in 取key
+// for in, get the key
 func (b *astbuilder) buildForInStatement(stmt *JS.ForInStatementContext) {
 	recoverRange := b.SetRange(stmt.BaseParserRuleContext)
 	defer recoverRange()
@@ -1536,7 +1536,7 @@ func (b *astbuilder) buildForInStatement(stmt *JS.ForInStatementContext) {
 	loop.Finish()
 }
 
-// for of 取值
+// for of, get the value
 func (b *astbuilder) buildForOfStatement(stmt *JS.ForOfStatementContext) {
 	// todo: handle await
 

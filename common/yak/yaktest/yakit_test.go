@@ -15,12 +15,12 @@ func TestMisc_YAKIT(t *testing.T) {
 
 	cases := []YakTestCase{
 		{
-			Name: "测试 yakit.File",
+			Name: "test yakit.File",
 			Src:  fmt.Sprintf(`yakit.File("/etc/hosts", "HOSTS", "this is hosts")`),
 		},
 	}
 
-	Run("yakit.File 可用性测试", t, cases...)
+	Run("yakit.File Usability Test", t, cases...)
 }
 
 func TestMisc_YAKIT2(t *testing.T) {
@@ -32,7 +32,7 @@ func TestMisc_YAKIT2(t *testing.T) {
 
 	cases := []YakTestCase{
 		{
-			Name: "测试 ",
+			Name: "Test ",
 			Src: `println()))
 a = 123;
 a()
@@ -40,5 +40,5 @@ a()
 		},
 	}
 
-	Run("))))))测试", t, cases...)
+	Run(")))))) Test", t, cases...)
 }

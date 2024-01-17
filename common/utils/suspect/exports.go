@@ -10,7 +10,7 @@ import (
 	"github.com/yaklang/yaklang/common/utils/lowhttp"
 )
 
-// IsAlpha 尝试将传入的参数转换为字符串，然后判断其是否都由英文字母组成
+// IsAlpha tries to convert the incoming parameters into a string, and then determines whether they are all composed of English letters.
 // Example:
 // ```
 // str.IsAlpha("abc") // true
@@ -20,7 +20,7 @@ func isAlpha(i interface{}) bool {
 	return utils.MatchAllOfRegexp(i, `[a-zA-Z]+`)
 }
 
-// IsDigit 尝试将传入的参数转换为字符串，然后判断其是否都由数字组成
+// IsDigit tries to convert the incoming parameter into a string, and then determines its Whether they are all composed of numbers
 // Example:
 // ```
 // str.IsDigit("123") // true
@@ -30,7 +30,7 @@ func isDigit(i interface{}) bool {
 	return utils.MatchAllOfRegexp(i, `[0-9]+`)
 }
 
-// IsAlphaNum / IsAlNum 尝试将传入的参数转换为字符串，然后判断其是否都由英文字母和数字组成
+// IsAlphaNum / IsAlNum tries to convert the incoming parameters into strings, and then determines whether they are all composed of
 // Example:
 // ```
 // str.IsAlphaNum("abc123") // true
@@ -40,7 +40,7 @@ func isAlphaNum(i interface{}) bool {
 	return utils.MatchAllOfRegexp(i, `[a-zA-Z0-9]+`)
 }
 
-// IsTLSServer 尝试访问传入的host，然后判断其是否为 TLS 服务。第一个参数为 host，后面可以传入零个或多个参数，为代理地址
+// IsTLSServer attempts to access the incoming parameters. host, and then determine whether it is a TLS service. The first parameter is host, and zero or more parameters can be passed in later, which is the proxy address.
 // Example:
 // ```
 // str.IsTLSServer("www.yaklang.com:443") // true
@@ -50,7 +50,7 @@ func isTLSServer(addr string, proxies ...string) bool {
 	return netx.IsTLSService(addr, proxies...)
 }
 
-// IsHttpURL 尝试将传入的参数转换为字符串，然后猜测其是否为 http(s) 协议的 URL
+// IsHttpURL Try to convert the incoming parameters into a string, and then guess whether it is a URL of the http(s) protocol
 // Example:
 // ```
 // str.IsHttpURL("http://www.yaklang.com") // true
@@ -61,7 +61,7 @@ func isHttpURL(i interface{}) bool {
 	return IsFullURL(i)
 }
 
-// IsUrlPath 尝试将传入的参数转换为字符串，然后猜测其是否为 URL 路径
+// IsUrlPath Try to convert the incoming parameter to String and then guess if it is a URL Path
 // Example:
 // ```
 // str.IsUrlPath("/index.php") // true
@@ -71,7 +71,7 @@ func isUrlPath(i interface{}) bool {
 	return IsURLPath(i)
 }
 
-// IsHtmlResponse 猜测传入的参数是否为原始 HTTP 响应报文
+// IsHtmlResponse Guess whether the incoming parameter is an original HTTP response message
 // Example:
 // ```
 // str.IsHtmlResponse("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<html></html>") // true
@@ -102,10 +102,10 @@ func isHtmlResponse(i interface{}) bool {
 	}
 }
 
-// IsServerError 猜测传入的参数是否为服务器错误
+// IsServerError Guess whether the incoming parameter is a server error
 // Example:
 // ```
-// str.IsServerError(`Fatal error: Uncaught Error: Call to undefined function sum() in F:\xampp\htdocs\test.php:7 Stack trace: #0 {main} thrown in <path> on line 7`) // true，这是PHP报错信息
+// str.IsServerError(`Fatal error: Uncaught Error: Call to undefined function sum() in F:\xampp\htdocs\test.php:7 Stack trace: #0 {main} thrown in <path> on line 7`) // true, this is the PHP error message
 // ```
 func isServerError(i interface{}) bool {
 	switch ret := i.(type) {
@@ -118,7 +118,7 @@ func isServerError(i interface{}) bool {
 	}
 }
 
-// ExtractChineseIDCards 尝试将传入的参数转换为字符串，然后提取字符串中的身份证号
+// ExtractChineseIDCards tries to convert the incoming parameter into a string, and then extracts the ID number in the string.
 // Example:
 // ```
 // str.ExtractChineseIDCards("Your ChineseID is: 110101202008027420?") // ["110101202008027420"]
@@ -134,7 +134,7 @@ func extractChineseIDCards(i interface{}) []string {
 	}
 }
 
-// IsJsonResponse 尝试将传入的参数转换为字符串，然后猜测传入的参数是否为 JSON 格式的原始 HTTP 响应报文，这是通过判断Content-Type请求头实现的
+// IsJsonResponse attempts to convert the incoming parameters into strings, and then guesses whether the incoming parameters are original HTTP response messages in JSON format. This is achieved by judging the Content-Type request header.
 // Example:
 // ```
 // str.IsJsonResponse("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"code\": 0}") // true
@@ -164,50 +164,50 @@ func isJsonResponse(i interface{}) bool {
 	}
 }
 
-// IsRedirectParam 根据传入的参数名和参数值猜测是否为重定向参数
+// IsRedirectParam guesses whether it is a redirection parameter based on the passed parameter name and parameter value.
 // Example:
 // ```
-// str.IsRedirectParam("to","http://www.yaklang.com") // true，因为参数值为完整的 URL
-// str.IsRedirectParam("target","/index.php") // true，因为参数值为一个 URL 路径而且参数名为常见的跳转的参数名
+// str.IsRedirectParam("to","http://www.yaklang.com") // true because the parameter value is a complete URL
+// str.IsRedirectParam("target","/index.php") // true, because the parameter value is a URL path and the parameter name is a common jump parameter name
 // str.IsRedirectParam("id", "1") // false
 // ```
 func isRedirectParam(key, value string) bool {
 	return BeUsedForRedirect(key, value)
 }
 
-// IsJSONPParam 根据传入的参数名和参数值猜测是否为 JSONP 参数
+// IsJSONPParam guesses whether it is a JSONP parameter based on the parameter name and value passed in.
 // Example:
 // ```
-// str.IsJSONPParam("callback","jquery1.0.min.js") // true，因为参数名为常见的 JSONP 参数名，且参数值为常见的JS文件名
-// str.IsJSONPParam("f","jquery1.0.min.js") // true，因为参数值为常见的 JS 文件名
+// str.IsJSONPParam("callback","jquery1.0.min.js") // true, because the parameter name is a common JSONP parameter name, and the parameter value is a common JS File name
+// str.IsJSONPParam("f","jquery1.0.min.js") // true, because the parameter value is a common JS file name
 // str.IsJSONPParam("id","1") // false
 // ```
 func isJSONPParam(key, value string) bool {
 	return IsJSONPParam(key, value)
 }
 
-// IsUrlParam 根据传入的参数名和参数值猜测是否为 URL 参数
+// composed of English letters and numbers. IsUrlParam guesses whether it is a URL parameter based on the incoming parameter name and parameter value.
 // Example:
 // ```
-// str.IsUrlParam("url","http://www.yaklang.com") // true，因为参数名为常见的 URL 参数名，且参数值为完整的URL
+// str.IsUrlParam("url","http://www.yaklang.com") // true, because the parameter name is a common URL parameter name, and the parameter value is a complete URL
 // str.IsUrlParam("id","1") // false
 // ```
 func isURLParam(key, value string) bool {
 	return IsGenericURLParam(key, value)
 }
 
-// IsXmlParam 根据传入的参数名和参数值猜测是否为 XML 参数
+// IsXmlParam guesses whether it is an XML parameter based on the incoming parameter name and parameter value
 // Example:
 // ```
-// str.IsXmlParam("xml","<xml></xml>") // true，因为参数名为常见的 XML 参数名，且参数值为 XML 格式的字符串
-// str.IsXmlParam("X","<xml></xml>") // true，因为参数值为 XML 格式的字符串
+// str.IsXmlParam("xml","<xml></xml>") // true, because the parameter name is common. XML parameter name, and the parameter value is a string in XML format
+// str.IsXmlParam("X","<xml></xml>") // true because the parameter value is an XML format string
 // str.IsXmlParam("id","1") // false
 // ```
 func isXMLParam(key, value string) bool {
 	return IsXMLParam(key, value)
 }
 
-// IsSensitiveJson  尝试将传入的参数转换为字符串，然后猜测其是否为敏感的 JSON 数据
+// IsSensitiveJson tries to convert the incoming parameter into a string, and then guesses whether it is sensitive JSON data
 // Example:
 // ```
 // str.IsSensitiveJson(`{"password":"123456"}`) // true
@@ -225,7 +225,7 @@ func isSensitiveJson(i interface{}) bool {
 	}
 }
 
-// IsSensitiveTokenField 尝试将传入的参数转换为字符串，然后猜测其是否是 token 字段
+// IsSensitiveTokenField tries to convert the incoming parameters into strings, and then guesses whether they are tokens. Field
 // Example:
 // ```
 // str.IsSensitiveTokenField("token") // true
@@ -243,7 +243,7 @@ func isSensitiveTokenField(i interface{}) bool {
 	}
 }
 
-// IsPasswordField 尝试将传入的参数转换为字符串，然后猜测其是否是 password 字段
+// IsPasswordField tries to convert the incoming parameter into a string, and then guesses whether it is a password field.
 // Example:
 // ```
 // str.IsPasswordField("password") // true
@@ -261,7 +261,7 @@ func isPasswordField(i interface{}) bool {
 	}
 }
 
-// IsUsernameField 尝试将传入的参数转换为字符串，然后猜测其是否是 username 字段
+// IsUsernameField Try to convert the incoming parameter into a string, Then guess whether it is the username field
 // Example:
 // ```
 // str.IsUsernameField("username") // true
@@ -279,7 +279,7 @@ func isUsernameField(i interface{}) bool {
 	}
 }
 
-// IsSQLColumnField 尝试将传入的参数转换为字符串，然后猜测其是否是 SQL 查询字段
+// IsSQLColumnField Try to convert the incoming parameter to a string and then guess if it is SQL query field
 // Example:
 // ```
 // str.IsSQLColumnField("sort") // true
@@ -297,7 +297,7 @@ func isSQLColumnField(i interface{}) bool {
 	}
 }
 
-// IsCaptchaField 尝试将传入的参数转换为字符串，然后猜测其是否是验证码字段
+// IsCaptchaField tries to convert the incoming parameter into a string, and then guesses whether it is Is the verification code field
 // Example:
 // ```
 // str.IsCaptchaField("captcha") // true
@@ -315,7 +315,7 @@ func isCaptchaField(i interface{}) bool {
 	}
 }
 
-// IsBase64Value 尝试将传入的参数转换为字符串，然后猜测其是否是 Base64 编码的数据
+// IsBase64Value tries to convert the incoming parameter into a string, and then guesses whether it is Base64 encoded data.
 // Example:
 // ```
 // str.IsBase64Value("MTI=") // true
@@ -332,7 +332,7 @@ func isBase64Value(i interface{}) bool {
 	}
 }
 
-// IsPlainBase64Value 尝试将传入的参数转换为字符串，然后猜测其是否是 Base64 编码的数据，它相比于 IsBase64Value 多了一层判断，即判断 base64 解码后的数据是否为可见字符串
+// IsPlainBase64Value tries to convert the passed parameters into a string. Then guess whether it is Base64-encoded data. It has one more layer of judgment compared to IsBase64Value, that is, whether the base64-decoded data is a visible string.
 // Example:
 // ```
 // str.IsPlainBase64Value("MTI=") // true
@@ -349,7 +349,7 @@ func isPlainBase64Value(i interface{}) bool {
 	}
 }
 
-// IsMD5Value 尝试将传入的参数转换为字符串，然后猜测其是否是 MD5 编码的数据
+// IsMD5Value tries to convert the incoming parameter into a string, and then guesses whether it is MD5 Encoded data
 // Example:
 // ```
 // str.IsMD5Value("202cb962ac59075b964b07152d234b70") // true
@@ -366,7 +366,7 @@ func isMD5Value(i interface{}) bool {
 	}
 }
 
-// IsSha256Value 尝试将传入的参数转换为字符串，然后猜测其是否是 SHA256 编码的数据
+// IsSha256Value Try to convert the incoming parameter to a string and then guess if it is SHA256 encoded data
 // Example:
 // ```
 // str.IsSha256Value("a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3") // true
@@ -383,7 +383,7 @@ func isSha256Value(i interface{}) bool {
 	}
 }
 
-// IsXmlRequest 猜测传入的参数是否为请求头是 XML 格式的原始 HTTP 请求报文
+// IsXmlRequest guesses whether the incoming parameter is a request header that is an original HTTP request message in XML format
 // Example:
 // ```
 // str.IsXmlRequest("POST / HTTP/1.1\r\nContent-Type: application/xml\r\n\r\n<xml></xml>") // true
@@ -403,7 +403,7 @@ func isXMLRequest(i interface{}) bool {
 	}
 }
 
-// IsXmlValue 尝试将传入的参数转换为字符串，然后猜测其是否是 XML 格式的数据
+// IsXmlValue tries to convert the incoming parameter is a string, and then guesses whether it is XML format data.
 // Example:
 // ```
 // str.IsXmlValue("<xml></xml>") // true

@@ -10,7 +10,7 @@ import (
 	"github.com/yaklang/yaklang/common/utils"
 )
 
-// ReadAll 读取 Reader 中的所有字节，返回读取到的数据和错误
+// exists. ReadAll reads all bytes in the Reader, and returns the read The data and error
 // Example:
 // ```
 // data, err = ioutil.ReadAll(reader)
@@ -19,20 +19,20 @@ func _readAll(r io.Reader) ([]byte, error) {
 	return io.ReadAll(r)
 }
 
-// ReadFile 读取指定文件中的所有内容，返回读取到的数据和错误
+// ReadFile Reads all contents in the specified file and returns read Incoming data and errors
 // Example:
 // ```
-// // 假设存在文件 /tmp/test.txt，内容为 "hello yak"
+// // . Assume that the file /tmp/test.txt, the content is "hello yak"
 // data, err = ioutil.ReadFile("/tmp/test.txt") // data = b"hello yak", err = nil
 // ```
 func _readFile(path string) ([]byte, error) {
 	return os.ReadFile(path)
 }
 
-// ReadEvery1s 每秒读取 Reader 一次，直到读取到 EOF 或者回调函数返回 false
+// ReadEvery1s Reads the Reader once per second until EOF is read or the callback function returns false
 // Example:
 // ```
-// r, w, err = io.Pipe() // 创建一个管道，返回一个读取端和一个写入端以及错误
+// r, w, err = io.Pipe() // creates a pipe, returns a reading end and a writing end and an error
 // die(err)
 // go func{
 // for {
@@ -49,7 +49,7 @@ func _readEvery1s(c context.Context, reader io.Reader, f func([]byte) bool) {
 	utils.ReadWithContextTickCallback(c, reader, f, 1*time.Second)
 }
 
-// LimitReader 返回一个 Reader，该 Reader 从 r 中读取字节，但在读取 n 个字节后就会返回 EOF
+// LimitReader returns a Reader that reads bytes from r, but returns EOF after n bytes have been read
 // Example:
 // ```
 // lr = io.LimitReader(reader, 1024)
@@ -58,39 +58,39 @@ func _limitReader(r io.Reader, n int64) io.Reader {
 	return io.LimitReader(r, n)
 }
 
-// TeeReader 返回一个 Reader，该 Reader 从 r 中读取字节，并将读取到的字节写入 w 中
-// 该 Reader 通常用于保存已经读取的数据副本
+// TeeReader returns a Reader that reads bytes from r and writes the read bytes into w.
+// This Reader is usually used to save a copy of the data that has been read.
 // Example:
 // ```
 // tr = io.TeeReader(reader, buf)
 // io.ReadAll(tr)
-// // 现在 buf 中也保存了 reader 中的读到的所有数据
+// // . Now buf also saves all the data read in the reader.
 // ```
 func _teeReader(r io.Reader, w io.Writer) io.Reader {
 	return io.TeeReader(r, w)
 }
 
-// MultiReader 返回一个 Reader，该 Reader 从多个 Reader 中读取数据
+// MultiReader Returns a Reader that reads data from multiple Readers
 // Example:
 // ```
-// mr = io.MultiReader(reader1, reader2) // 读取 mr 即按照顺序读取 reader1 和 reader2 中的数据
+// mr = io.MultiReader(reader1, reader2) // reads mr, that is, reads the data in reader1 and reader2 in order.
 // io.ReadAll(mr)
 // ```
 func _multiReader(readers ...io.Reader) io.Reader {
 	return io.MultiReader(readers...)
 }
 
-// NopCloser 返回一个 ReadCloser，该 ReadCloser 从 r 中读取数据，并实现了一个空的 Close 方法
+// NopCloser returns a ReadCloser, which reads data from r and implements an empty Close method.
 // Example:
 // ```
 // r = io.NopCloser(reader)
-// r.Close() // 什么都不做
+// r.Close() // Do nothing
 // ```
 func _nopCloser(r io.Reader) io.ReadCloser {
 	return io.NopCloser(r)
 }
 
-// Pipe 创建一个管道，返回一个读取端和一个写入端以及错误
+// Pipe creates a pipe and returns a read Get end and a write end and error
 // Example:
 // ```
 // r, w, err = os.Pipe()
@@ -109,7 +109,7 @@ func _ioPipe() (r *os.File, w *os.File, err error) {
 	return os.Pipe()
 }
 
-// Copy 将 reader 中的数据拷贝到 writer 中，直到读取到 EOF 或者发生错误，返回拷贝的字节数和错误
+// Copy copies the data in the reader to the writer. , until EOF is read or an error occurs, the number of bytes copied and the error are returned.
 // Example:
 // ```
 // n, err = io.Copy(writer, reader)
@@ -118,7 +118,7 @@ func _copy(writer io.Writer, reader io.Reader) (written int64, err error) {
 	return io.Copy(writer, reader)
 }
 
-// CopyN 将 reader 中的数据拷贝到 writer 中，直到读取到 EOF 或者拷贝了 n 个字节，返回拷贝的字节数和错误
+// CopyN Copy the data in the reader to the writer until EOF is read or n bytes are copied, Return the number of bytes copied and error
 // Example:
 // ```
 // n, err = io.CopyN(writer, reader, 1024)
@@ -127,7 +127,7 @@ func _copyN(writer io.Writer, reader io.Reader, n int64) (written int64, err err
 	return io.CopyN(writer, reader, n)
 }
 
-// WriteString 将字符串 s 写入 writer 中，返回写入的字节数和错误
+// WriteString writes the string s into the writer, and returns the number of bytes written and the error
 // Example:
 // ```
 // n, err = io.WriteString(writer, "hello yak")
@@ -136,7 +136,7 @@ func _writeString(writer io.Writer, s string) (n int, err error) {
 	return io.WriteString(writer, s)
 }
 
-// ReadStable 从 reader 中稳定地读取数据，直到读取到 EOF 或者超时，返回读取到的数据
+// ReadStable steadily reads data from the reader until EOF or timeout is read, and returns the read data
 // Example:
 // ```
 // data = io.ReadStable(reader, 60)
@@ -145,10 +145,10 @@ func _readStable(reader io.Reader, float float64) []byte {
 	return utils.StableReader(reader, utils.FloatSecondDuration(float), 10*1024*1024)
 }
 
-// Discard 是一个 writer，它将所有写入的数据都丢弃掉
+// . Discard is a writer. , it discards all written data.
 var Discard = ioutil.Discard
 
-// EOF 是一个错误，表示读取到了 EOF
+// EOF is an error, indicating that EOF was read.
 var EOF = io.EOF
 
 var IoExports = map[string]interface{}{
@@ -156,7 +156,7 @@ var IoExports = map[string]interface{}{
 	"ReadFile":    _readFile,
 	"ReadEvery1s": _readEvery1s,
 
-	// 继承自 io
+	// inherits from io
 	"LimitReader": _limitReader,
 	"TeeReader":   _teeReader,
 	"MultiReader": _multiReader,

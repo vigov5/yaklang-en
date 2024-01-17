@@ -138,7 +138,7 @@ func TestFunction2(t *testing.T) {
 		# return 123;
 	}
 
-if (!port = get_app_port(cpe: 1))dump("获取端口失败");
+if (!port = get_app_port(cpe: 1))dump("Failed to get port");
 `)
 }
 

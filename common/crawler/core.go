@@ -44,7 +44,7 @@ type Crawler struct {
 	linkCounter            int64
 	handlingRequestCounter int
 
-	// 请求通道
+	// request channel
 	reqChan chan *Req
 
 	requestedHash *sync.Map
@@ -59,7 +59,7 @@ type Crawler struct {
 	loginOnce *sync.Once // := new(sync.Once)
 }
 
-// Hash 返回当前请求的哈希值，其值由请求的URL与请求方法组成
+// Hash returns the hash value of the current request, which consists of the requested URL and the request method.
 // Example:
 // ```
 // req.Hash()
@@ -68,7 +68,7 @@ func (r *Req) Hash() string {
 	return utils.CalcSha1(r.request.URL.String(), r.request.Method)
 }
 
-// IsLoginForm 判断当前请求是否是一个登录表单
+// IsLoginForm Determines whether the current request is a login form
 // Example:
 // ```
 // req.IsLoginForm()
@@ -77,7 +77,7 @@ func (r *Req) IsLoginForm() bool {
 	return r.maybeLoginForm
 }
 
-// IsUploadForm 判断当前请求是否是一个上传表单
+// IsUploadForm Determines whether the current request is an upload form
 // Example:
 // ```
 // req.IsUploadForm()
@@ -86,7 +86,7 @@ func (r *Req) IsUploadForm() bool {
 	return r.maybeUploadForm
 }
 
-// IsForm 判断当前请求是否是一个表单
+// IsForm Determines whether the current request is a form
 // Example:
 // ```
 // req.IsForm()
@@ -96,7 +96,7 @@ func (r *Req) IsForm() bool {
 }
 
 type Req struct {
-	// 当前请求所属深度
+	// The depth of the current request
 	depth int
 
 	url         string
@@ -106,20 +106,20 @@ type Req struct {
 	response    *http.Response
 	responseRaw []byte
 
-	// 如果请求失败了，原因是
+	// If the request fails, the reason is
 	err error
 
-	// 如果有的话，寻找 html/js 信息
+	// If so, look for html/js information
 	responseBody   []byte
 	responseHeader string
 
-	// 请求计数，请求过几次成功了
+	// Request count, how many times the request was successful
 	requestedCounter int
 
-	// 是不是从表单解析出来的？
+	// is from Parsed from the form?
 	isForm bool
 
-	// 这个请求是不是可能和登录相关？
+	// Is this request possibly related to login?
 	maybeLoginForm     bool
 	maybeLoginUsername string
 	maybeLoginPassword string
@@ -127,8 +127,8 @@ type Req struct {
 
 	baseURL *url.URL
 
-	// 私有，判断是否是 "同域"
-	// 这个 "域" 简单暴力，仅检测 host 部分是不是类似？*origin-domain* glob 语法
+	// Private, determines whether it is "Same domain"
+	// This "domain" simple brute force, only detecting the host part?*origin-domain* glob syntax
 	_selfDomainGlobs []glob.Glob
 
 	// default
@@ -176,7 +176,7 @@ func HostToWildcardGlobs(host string) []glob.Glob {
 	return globsIns
 }
 
-// SameWildcardOrigin 判断当前请求与传入的请求是否是同域的
+// SameWildcardOrigin Determine whether the current request and the incoming request are in the same domain
 // Example:
 // ```
 // req1.SameWildcardOrigin(req2)
@@ -205,7 +205,7 @@ func (r *Req) SameWildcardOrigin(s *Req) bool {
 	return false
 }
 
-// AbsoluteURL 根据当前请求的URL，将传入的相对路径转换为绝对路径
+// AbsoluteURL According to the current requested URL, Convert the incoming relative path to an absolute path
 // Example:
 // ```
 // req.AbsoluteURL("/a/b/c")
@@ -235,8 +235,8 @@ func (r *Req) AbsoluteURL(u string) string {
 	return absURL.String()
 }
 
-// Start 启动爬虫爬取某个URL，它还可以接收零个到多个选项函数，用于影响爬取行为
-// 返回一个Req结构体引用管道与错误
+// Start starts the crawler to crawl a certain URL. It can also receive zero to more option functions to affect the crawling behavior.
+// Returns a Req structure reference pipe and error
 // Example:
 // ```
 // ch, err := crawler.Start("https://www.baidu.com", crawler.concurrent(10))
@@ -273,7 +273,7 @@ func NewCrawler(urls string, opts ...ConfigOpt) (*Crawler, error) {
 	config := &Config{}
 	config.init()
 
-	// 把自己的域名加在里面
+	// Add your own domain name to it
 	for _, u := range urlList {
 		urlIns, err := url.Parse(u)
 		if err != nil {
@@ -335,7 +335,7 @@ func (c *Crawler) Run() error {
 
 		log.Debug("start to submit tasks...")
 		if c.config.startFromParentPath {
-			// 从父路径开始
+			// starts from the parent path.
 			var moreUrl []string
 			for _, u := range c.originUrls {
 				urlIns, err := url.Parse(u)
@@ -405,7 +405,7 @@ MAINLY:
 
 			log.Debugf("start to handling request: %v", r.request.URL.String())
 
-			// 预处理失败
+			// Preprocessing fails
 			c.preRequestLock.Lock()
 			if !c.preReq(r) {
 				c.preRequestLock.Unlock()
@@ -417,21 +417,21 @@ MAINLY:
 			c.handlingRequestCounter++
 			c.preRequestLock.Unlock()
 
-			// 请求最大值限制
-			// 判断请求最大值限制
+			// Request maximum limit
+			// Determines the request maximum limit
 			if c.requestCounter > int64(config.maxCountOfRequest) {
 				c.reqWaitGroup.Done()
 				continue
 			}
 
-			// 已经被请求过了
+			// has been requested
 			_, ok = c.requestedHash.Load(r.Hash())
 			if ok {
 				c.reqWaitGroup.Done()
 				continue
 			}
 
-			// 检查是不是符合访问标准
+			// Checks whether it meets the access standards
 			if r.request.URL.Host == "" {
 				r.request, _ = utils.ReadHTTPRequestFromBytes(r.requestRaw)
 			}
@@ -451,7 +451,7 @@ MAINLY:
 				c.execReq(r)
 				swg.Done()
 
-				// 发送结束了
+				// Send is completed
 				c.afterRequestLock.Lock()
 				c.handleReqResult(r)
 				c.handlingRequestCounter--
@@ -460,11 +460,11 @@ MAINLY:
 		}
 	}
 
-	// 所有的请求都结束了
+	// All requests have ended
 	swg.Wait()
 }
 
-// RequestsFromFlow 尝试从一次请求与响应中爬取出所有可能的请求，返回所有可能请求的原始报文与错误
+// . RequestsFromFlow tries to crawl out all possible requests from a request and response, and returns all Is it possible that the original message requested is similar to the error
 // Example:
 // ```
 // reqs, err = crawler.RequestsFromFlow(false, reqBytes, rspBytes)
@@ -802,32 +802,32 @@ func handleReqResultEx(r *Req, reqHandler func(*Req) bool, urlHandler func(strin
 func (c *Crawler) preReq(r *Req) bool {
 	config := c.config
 
-	// 检查最大深度
+	// Check maximum depth
 	if r.depth > config.maxDepth {
 		return false
 	}
 
-	// 添加头
+	// Add header
 	for _, h := range config.headers {
 		r.request.Header.Set(h.Key, h.Value)
 	}
 
-	// 添加基础认证
+	// Adds basic authentication
 	if c.config.BasicAuth {
 		r.request.SetBasicAuth(config.AuthUsername, config.AuthPassword)
 	}
 
-	// 添加UA
+	// Adds UA
 	r.request.Header.Set("User-Agent", config.userAgent)
 
-	// 设置 Cookie
+	// Sets cookies
 	for _, cookie := range config.cookie {
 		if !cookie.allowOverride {
 			r.request.AddCookie(cookie.cookie)
 		}
 	}
 
-	// 验证后缀
+	// verification suffix
 	ext := filepath.Ext(r.request.URL.Path)
 	if !strings.HasPrefix(ext, ".") {
 		ext = "." + ext
@@ -876,15 +876,15 @@ func createReqFromUrlEx(preqRequest *Req, method, u string, body io.Reader, c *C
 		return nil, utils.Errorf("create request from url[%v] failed: %s", u, err)
 	}
 
-	// 设置 Request Cookie
-	// 继承 Cookie
+	// Sets the Request Cookie
+	// Inherits Cookie
 	if preqRequest != nil && preqRequest.request != nil {
 		for _, cookie := range preqRequest.request.Cookies() {
 			r.AddCookie(cookie)
 		}
 	}
 
-	// 设置上一个请求产生的 Set-Cookie
+	// Set the Set-Cookie generated by the previous request
 	if preqRequest != nil && preqRequest.response != nil {
 		for _, cookie := range preqRequest.response.Cookies() {
 			r.AddCookie(cookie)
@@ -941,7 +941,7 @@ func (c *Crawler) execReq(r *Req) {
 	r.response = rsp
 	r.responseRaw = lowRspIns.RawPacket
 	r.responseHeader, r.responseBody = lowhttp.SplitHTTPPacketFast(lowRspIns.RawPacket)
-	// 获取 MIME 类型
+	// Gets the MIME type
 	mimeType, _, _ := mime.ParseMediaType(rsp.Header.Get("Content-Type"))
 	if mimeType != "" {
 		log.Debugf("checking url: %s for response mime type: %s", r.Url(), mimeType)

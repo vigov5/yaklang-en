@@ -7,16 +7,16 @@ import (
 )
 
 type SudoConfig struct {
-	// 提示语，一般用于告诉用户这个 Sudo 是用来干嘛的
+	// Prompt, generally used to tell the user what this Sudo is used for.
 	Verbose string
 
-	// CWD: 命令执行的目录是啥
+	// CWD: What is the directory where the command is executed?
 	Workdir string
 
 	// Env
 	Environments map[string]string
 
-	// 用于控制生命周期
+	// is used to control the life cycle.
 	Ctx context.Context
 
 	Stdout, Stderr  io.Writer

@@ -11,9 +11,9 @@ import (
 func InitFileRotateLogger(baseLogPath string, logSaveDay int, logRotateHour int) error {
 	writer, err := rotatelogs.New(
 		baseLogPath+".%Y-%m-%d_%H_%M",
-		rotatelogs.WithLinkName(baseLogPath),                                // 生成软链，指向最新日志文件
-		rotatelogs.WithMaxAge(time.Duration(logSaveDay)*24*time.Hour),       // 文件最大保存时间
-		rotatelogs.WithRotationTime(time.Duration(logRotateHour)*time.Hour), // 日志切割时间间隔
+		rotatelogs.WithLinkName(baseLogPath),                                // Generate soft link pointing to the latest log file
+		rotatelogs.WithMaxAge(time.Duration(logSaveDay)*24*time.Hour),       // Maximum file storage time
+		rotatelogs.WithRotationTime(time.Duration(logRotateHour)*time.Hour), // Log cutting time interval
 	)
 	if err != nil {
 		return errors.Errorf("init file rotate logger failed: %s", err)

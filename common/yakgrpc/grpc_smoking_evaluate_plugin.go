@@ -64,7 +64,7 @@ func (s *Server) SmokingEvaluatePlugin(ctx context.Context, req *ypb.SmokingEval
 	return s.EvaluatePlugin(ctx, pluginCode, pluginType)
 }
 
-// 只在评分中使用
+// Only use
 func (s *Server) EvaluatePlugin(ctx context.Context, pluginCode, pluginType string) (*ypb.SmokingEvaluatePluginResponse, error) {
 	if pluginType == "nuclei" {
 		return &ypb.SmokingEvaluatePluginResponse{
@@ -102,9 +102,9 @@ func (s *Server) EvaluatePlugin(ctx context.Context, pluginCode, pluginType stri
 			}
 			if sRes.Severity == "error" {
 				staticCheckingFailed = true
-				pushSuggestion(`静态代码检测失败[`+sRes.Severity+`]`, sRes.Message, R, []byte(sRes.From))
+				pushSuggestion(`Static code detection failed [`+sRes.Severity+`]`, sRes.Message, R, []byte (sRes.From))
 			} else {
-				pushSuggestion(`静态代码检测警告[`+sRes.Severity+`]`, sRes.Message, R, []byte(sRes.From))
+				pushSuggestion(`Static code detection warning [`+sRes.Severity+`]`, sRes.Message, R, []byte(sRes.From))
 				score = 60
 			}
 		}
@@ -160,11 +160,11 @@ func (s *Server) EvaluatePlugin(ctx context.Context, pluginCode, pluginType stri
 		if err != nil {
 			score -= 40
 			log.Errorf("debugScript failed: %v", err)
-			pushSuggestion("冒烟测试失败[Smoking Test]", `请检查插件异常处理是否完备？查看 Console 以处理调试错误: `+err.Error(), nil)
+			pushSuggestion("Smoke test failed [Smoking Test]", `Please check whether the plug-in exception handling is complete? Check the Console for handling debugging errors: `+err.Error(), nil)
 		}
 		if fetchRisk {
 			score -= 20
-			pushSuggestion("误报[Negative Alarm]", `本插件的漏洞判定可能过于宽松，请检查漏洞判定逻辑`, nil)
+			pushSuggestion("False positive [Negative Alarm]", `The vulnerability determination of this plug-in is possible Too loose, please check the vulnerability determination logic `, nil)
 		}
 	}
 

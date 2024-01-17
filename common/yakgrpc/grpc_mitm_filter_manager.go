@@ -143,31 +143,31 @@ func _suffixChecker(includes, excludes []string, target string) bool {
 }
 
 func mimeCheckGlobRule(rule string, target string) bool {
-	if strings.Contains(rule, "/") && strings.Contains(target, "/") { // 如果两个都包含/，则进行分割匹配
+	if strings.Contains(rule, "/") && strings.Contains(target, "/") { // If both contain/, then split and match
 		ruleType := strings.SplitN(rule, "/", 2)
 		targetType := strings.SplitN(target, "/", 2)
 		for i := 0; i < 2; i++ {
 			if strings.Contains(ruleType[i], "*") {
 				rule, err := glob.Compile(ruleType[i])
 				if err != nil || !rule.Match(targetType[i]) {
-					return false // 任意部分匹配失败则 false,包括glob编译失败
+					return false // , any part of the match will fail. False, including glob compilation failure
 				}
 			} else {
 				if ruleType[i] != targetType[i] {
-					return false // 任意部分匹配失败则 false
+					return false // , if any part of the match fails, false
 				}
 			}
 		}
-		return true // 全部通过 true
+		return true // , all pass true
 	}
 
-	if !strings.Contains(target, "/") && !strings.Contains(rule, "/") { // 如果都不包含 /
-		if strings.Contains(rule, "*") { // 尝试glob 匹配
+	if !strings.Contains(target, "/") && !strings.Contains(rule, "/") { // If neither contains /
+		if strings.Contains(rule, "*") { // Try glob to match
 			rule, err := glob.Compile(rule)
 			if err == nil && rule.Match(target) {
 				return true
 			}
-		} else { // 直接 contains
+		} else { // , directly contains
 			if utils.IContains(target, rule) {
 				return true
 			}
@@ -175,7 +175,7 @@ func mimeCheckGlobRule(rule string, target string) bool {
 		return false
 	}
 
-	if strings.Contains(target, "/") && !strings.Contains(rule, "/") { // 仅rule不包含 /
+	if strings.Contains(target, "/") && !strings.Contains(rule, "/") { // will be released, only rule does not include /
 		targetType := strings.SplitN(target, "/", 2)
 		for i := 0; i < 2; i++ {
 			if strings.Contains(rule, "*") {
@@ -184,18 +184,18 @@ func mimeCheckGlobRule(rule string, target string) bool {
 					continue
 				}
 				if rule.Match(targetType[i]) {
-					return true // 任意部分匹配成功 则true
+					return true // , any part of the match is successful, then true
 				}
 			} else {
 				if rule == targetType[i] {
-					return true // 任意部分匹配成功 则true
+					return true // , any part of the match is successful, then true
 				}
 			}
 		}
-		return false // 全部失败 则false
+		return false // False if all fails
 	}
 
-	return false // 仅 rule 有 / 则直接返回 false
+	return false // Only rule has / , then it will directly return false,
 }
 
 func _mimeChecker(includes, excludes []string, target string) bool {
@@ -205,7 +205,7 @@ func _mimeChecker(includes, excludes []string, target string) bool {
 	if includes == nil {
 		for _, rule := range excludes {
 			if mimeCheckGlobRule(rule, target) {
-				return false // 如果命中 excludes 则 false 即过滤
+				return false // , if excludes is hit, it will be false, that is, filter
 			}
 		}
 		return true
@@ -213,13 +213,13 @@ func _mimeChecker(includes, excludes []string, target string) bool {
 
 	for _, rule := range excludes {
 		if mimeCheckGlobRule(rule, target) {
-			return false // 如果命中 excludes 则 false 即过滤
+			return false // , if excludes is hit, it will be false, that is, filter
 		}
 	}
 
 	for _, rule := range includes {
 		if mimeCheckGlobRule(rule, target) {
-			return true // 如果命中 includes 则 true 即放行
+			return true // , if it hits includes, it will be true, that is,
 		}
 	}
 	return false

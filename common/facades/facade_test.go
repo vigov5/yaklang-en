@@ -105,10 +105,10 @@ func TestLookupAll(t *testing.T) {
 		args       args
 		wantMethod string
 		want       []string
-		callback   callbackInfo // 添加字段用于存储回调信息
+		callback   callbackInfo // Add a field to store callback information
 	}{
 		{
-			name: "set hosts 不会缓存 10.10.10.10(case A)",
+			name: "set hosts will not cache 10.10.10.10 (case A)",
 			args: args{
 				host: "abc.com",
 				opt: []netx.DNSOption{
@@ -121,7 +121,7 @@ func TestLookupAll(t *testing.T) {
 			want:       []string{"10.10.10.10"},
 		},
 		{
-			name: "cancel hosts 没有缓存所以结果是 fake 的ip，本次会进行缓存(case A)",
+			name: "cancel hosts There is no cache, so the result is fake ip, this time it will be cached (case A)",
 			args: args{
 				host: "abc.com",
 				opt: []netx.DNSOption{
@@ -146,7 +146,7 @@ func TestLookupAll(t *testing.T) {
 			want:       []string{"9.9.9.9"},
 		},
 		{
-			name: "设置 hosts 与 host 不相同会缓存 9.9.9.9 (case A)",
+			name: "Set hosts and host are different, 9.9.9.9 will be cached (case A)",
 			args: args{
 				host: "abc.com",
 				opt: []netx.DNSOption{
@@ -161,7 +161,7 @@ func TestLookupAll(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// 创建当前测试用例的副本
+			// Create a copy of the current test case
 			currentTest := tt
 			dnsOptions := append(currentTest.args.opt, netx.WithDNSCallback(func(dnsType, domain, ip, fromServer, method string) {
 				currentTest.callback = callbackInfo{
@@ -176,8 +176,8 @@ func TestLookupAll(t *testing.T) {
 			if got := netx.LookupAll(currentTest.args.host, dnsOptions...); !reflect.DeepEqual(got, currentTest.want) {
 				t.Errorf("LookupAll() = %v, want %v", got, currentTest.want)
 			}
-			// 验证回调信息
-			// 这里可以添加更多的验证，比如验证 dnsType, domain 等
+			// Verify callback information
+			// You can add more verifications here, such as verifying dnsType, domain, etc.
 			if currentTest.callback.method != currentTest.wantMethod {
 				t.Errorf("LookupAll() callback method = %v, want %v", currentTest.callback.method, currentTest.wantMethod)
 			}

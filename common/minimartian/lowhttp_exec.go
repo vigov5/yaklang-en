@@ -72,7 +72,7 @@ func (p *Proxy) execLowhttp(req *http.Request) (*http.Response, error) {
 	if connectedPort := httpctx.GetContextIntInfoFromRequest(req, httpctx.REQUEST_CONTEXT_KEY_ConnectedToPort); connectedPort > 0 {
 		portValid := (connectedPort == 443 && isHttps) || (connectedPort == 80 && !isHttps)
 		if !portValid {
-			// 修复host和port
+			// Fix host and port
 			if host := httpctx.GetContextStringInfoFromRequest(req, httpctx.REQUEST_CONTEXT_KEY_ConnectedToHost); host != "" {
 				opts = append(opts, lowhttp.WithHost(host))
 			}

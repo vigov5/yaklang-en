@@ -10,7 +10,7 @@ func interfaceToStr(i interface{}) string {
 	return InterfaceToString(i)
 }
 
-// MatchAnyOfSubString 尝试将 i 转换为字符串，然后判断是否有任意子串 subStr 存在于 i 中，如果有其中一个子串存在于 i 中则返回 true，否则返回 false，此函数忽略大小写
+// MatchAnyOfSubString tries to convert i to a string, and then determines whether any substring subStr exists in i. If one of the substrings exists in i, it returns true, otherwise it returns false. This function ignores the case.
 // Example:
 // ```
 // str.MatchAnyOfSubString("abc", "a", "z", "x") // true
@@ -25,7 +25,7 @@ func MatchAnyOfSubString(i interface{}, subStr ...string) bool {
 	return false
 }
 
-// MatchAllOfSubString 尝试将 i 转换为字符串，然后判断所有子串 subStr 是否都存在于 i 中，如果都存在则返回 true，否则返回 false，此函数忽略大小写
+// MatchAllOfSubString tries to convert i Convert to a string, and then determine whether all substrings subStr exist in i, return true if they exist, otherwise return false, this function ignores case
 // Example:
 // ```
 // str.MatchAllOfSubString("abc", "a", "b", "c") // true
@@ -44,7 +44,7 @@ func MatchAllOfSubString(i interface{}, subStr ...string) bool {
 	return true
 }
 
-// MatchAnyOfGlob 尝试将 i 转换为字符串，然后使用 glob 匹配模式匹配，如果任意一个glob模式匹配成功，则返回 true，否则返回 false
+// MatchAnyOfGlob Try to convert i to a string, and then use glob matching pattern matching , if any glob pattern matches successfully, return true, otherwise return false
 // Example:
 // ```
 // str.MatchAnyOfGlob("abc", "a*", "??b", "[^a-z]?c") // true
@@ -60,7 +60,7 @@ func MatchAnyOfGlob(
 	return false
 }
 
-// MatchAllOfGlob 尝试将 i 转换为字符串，然后使用 glob 匹配模式匹配，如果所有的glob模式都匹配成功，则返回 true，否则返回 false
+// MatchAllOfGlob Try to convert i to string, then use glob matching pattern to match, if all glob patterns If all match successfully, it returns true, otherwise it returns false.
 // Example:
 // ```
 // str.MatchAllOfGlob("abc", "a*", "?b?", "[a-z]?c") // true
@@ -80,7 +80,7 @@ func MatchAllOfGlob(
 	return true
 }
 
-// MatchAnyOfRegexp 尝试将 i 转换为字符串，然后使用正则表达式匹配，如果任意一个正则表达式匹配成功，则返回 true，否则返回 false
+// MatchAnyOfRegexp tries to convert i Convert to string, then use regular expression matching, return true if any regular expression matches successfully, otherwise return false
 // Example:
 // ```
 // str.MatchAnyOfRegexp("abc", "a.+", "Ab.?", ".?bC") // true
@@ -101,7 +101,7 @@ func MatchAnyOfRegexp(
 	return false
 }
 
-// MatchAllOfRegexp 尝试将 i 转换为字符串，然后使用正则表达式匹配，如果所有的正则表达式都匹配成功，则返回 true，否则返回 false
+// MatchAllOfRegexp tries to convert i into a string, and then uses regular expression matching. If all regular expressions match successfully, it returns true, otherwise it returns false.
 // Example:
 // ```
 // str.MatchAllOfRegexp("abc", "a.+", ".?b.?", "\\w{2}c") // true

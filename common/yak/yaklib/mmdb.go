@@ -23,7 +23,7 @@ import (
 	 (string) (len=7) "IsoCode": (string) (len=2) "CN",
 	 (string) (len=5) "Names": (map[string]interface {}) (len=8) {
 	  (string) (len=5) "pt-BR": (string) (len=5) "China",
-	  (string) (len=2) "ru": (string) (len=10) "Китай",
+	  (string) (len=2) "ru": (string) (len=10) "China",
 	  (string) (len=5) "zh-CN": (string) (len=6) "中国",
 	  (string) (len=2) "de": (string) (len=5) "China",
 	  (string) (len=2) "en": (string) (len=5) "China",
@@ -47,14 +47,14 @@ var CNCountry = struct {
 	Names             map[string]string
 }{GeoNameID: 1814991, IsInEuropeanUnion: false, IsoCode: "CN", Names: map[string]string{
 	//	(string) (len=5) "pt-BR": (string) (len=5) "China",
-	//(string) (len=2) "ru": (string) (len=10) "Китай",
+	//(string) (len=2) "ru": (string) (len=10) "China",
 	//(string) (len=5) "zh-CN": (string) (len=6) "中国",
 	//(string) (len=2) "de": (string) (len=5) "China",
 	//(string) (len=2) "en": (string) (len=5) "China",
 	//(string) (len=2) "es": (string) (len=5) "China",
 	//(string) (len=2) "fr": (string) (len=5) "Chine",
 	//(string) (len=2) "ja": (string) (len=6) "中国"
-	"ru":    "Китай",
+	"ru":    "China",
 	"zh-CN": "中国",
 	"pt-BR": "China",
 	"en":    "China",

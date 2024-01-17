@@ -42,7 +42,7 @@ func getNginxPid(c context.Context) []int {
 	for index := range make([]int, 5) {
 		switch index {
 		case 1:
-			// 方法一，用 nginx.pid 判断
+			// Method one, use nginx.pid to judge
 			var pid int64
 			raw, err := ioutil.ReadFile("/var/run/nginx.pid")
 			if err != nil {
@@ -55,7 +55,7 @@ func getNginxPid(c context.Context) []int {
 			}
 			return []int{int(pid)}
 		case 0:
-			// 方法二，用 ps 来判断
+			// Method two, use ps to judge
 			raw, err := searchNginxProcess(c)
 			if err != nil {
 				log.Errorf("search nginx process failed: %s", err)

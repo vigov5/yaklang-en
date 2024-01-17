@@ -42,7 +42,7 @@ func MarshalIdempotent(v interface{}) ([]byte, error) {
 		}
 		return v
 	}
-	// 执行JSON编码
+	// Perform JSON encoding
 	return json.Marshal(order(v))
 }
 

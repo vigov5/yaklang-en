@@ -52,11 +52,11 @@ func (s *Server) SetCurrentProject(ctx context.Context, req *ypb.SetCurrentProje
 			}
 			return &ypb.Empty{}, nil
 		}
-		// 不是默认数据库 不需要生成文件
+		// is not the default database and does not need to generate files
 		if CheckDefault(proj.ProjectName, proj.Type, proj.FolderID, proj.ChildFolderID) == nil {
 			old, err := os.Open(proj.DatabasePath)
 			if err != nil {
-				return nil, utils.Errorf("找不到本地数据库文件: %s", err)
+				return nil, utils.Errorf("Local database file not found: %s", err)
 			}
 			old.Close()
 		}
@@ -108,7 +108,7 @@ func (s *Server) NewProject(ctx context.Context, req *ypb.NewProjectRequest) (*y
 		return nil, utils.Errorf("create project by name failed! name should match %v", projectNameRe.String())
 	}
 	var pathName string
-	// 项目需要存，文件夹不需要
+	// The project needs to be saved, the folder is not required
 	if req.Type == yakit.TypeProject {
 		databaseName := fmt.Sprintf("yakit-project-%v-%v.sqlite3.db", projectNameToFileName(name), time.Now().Unix())
 		pathName = filepath.Join(consts.GetDefaultYakitProjectsDir(), databaseName)
@@ -126,7 +126,7 @@ func (s *Server) NewProject(ctx context.Context, req *ypb.NewProjectRequest) (*y
 	}
 	pro, _ := yakit.GetProjectByWhere(s.GetProfileDatabase(), req.GetProjectName(), req.GetFolderId(), req.GetChildFolderId(), req.GetType(), req.GetId())
 	if pro != nil {
-		return nil, utils.Errorf("同级目录下项目或文件名不能重复")
+		return nil, utils.Errorf("Same Project or file names cannot be repeated in the same level directory")
 	}
 
 	if req.GetId() > 0 {
@@ -154,13 +154,13 @@ func (s *Server) NewProject(ctx context.Context, req *ypb.NewProjectRequest) (*y
 
 	/*pro, _ := yakit.GetProjectByWhere(s.GetProfileDatabase(), req.GetProjectName(), req.FolderId, req.ChildFolderId, req.Type, 0)
 	if pro != nil {
-		return nil, utils.Errorf("同级目录下文件/文件夹名不能重复")
+		return nil, utils.Errorf("File/Folder name cannot be repeated")
 	}*/
 	db := s.GetProfileDatabase()
 	if db = db.Create(&projectData); db.Error != nil {
 		return nil, db.Error
 	}
-	// 创建库
+	// created library
 	projectDatabase, err := gorm.Open("sqlite3", pathName)
 	if err != nil {
 		return nil, utils.Errorf("open project database failed: %s", err)
@@ -223,22 +223,22 @@ func (s *Server) ExportProject(req *ypb.ExportProjectRequest, stream ypb.Yak_Exp
 			Verbose:    verbose,
 		})
 	}
-	feedProgress("开始导出", 0.1)
+	feedProgress("Start exporting", 0.1)
 
 	/*path := consts.GetDefaultYakitProjectDatabase(consts.GetDefaultYakitBaseDir())
 	if !utils.IsFile(path) {
-		feedProgress("导出失败-"+"数据库不存在："+path, 0.9)
+		feedProgress("Export failed -"+"Database does not exist:"+path, 0.9)
 		return utils.Errorf("cannot found database file in: %s", path)
 	}*/
 	proj, err := yakit.GetProjectById(s.GetProfileDatabase(), req.GetId(), yakit.TypeProject)
 	if err != nil {
-		feedProgress("导出失败-"+"数据库不存在：", 0.9)
+		feedProgress("Export failed -"+"Database does not exist:", 0.9)
 		return utils.Errorf("cannot found database file in: %s", err.Error())
 	}
-	feedProgress("寻找数据文件", 0.3)
+	feedProgress("Find data files", 0.3)
 	fp, err := os.Open(proj.DatabasePath)
 	if err != nil {
-		feedProgress("找不到数据库文件"+err.Error(), 0.4)
+		feedProgress("cannot be found Database file"+err.Error(), 0.4)
 		return utils.Errorf("open database failed: %s", err)
 	}
 	defer fp.Close()
@@ -246,7 +246,7 @@ func (s *Server) ExportProject(req *ypb.ExportProjectRequest, stream ypb.Yak_Exp
 	/*db := s.GetProfileDatabase()
 	proj, err := yakit.GetCurrentProject(db)
 	if err != nil {
-		feedProgress("无法找到当前数据库："+err.Error(), 0.5)
+		feedProgress("cannot find the current database:"+err.Error(), 0.5)
 		return err
 	}*/
 
@@ -257,12 +257,12 @@ func (s *Server) ExportProject(req *ypb.ExportProjectRequest, stream ypb.Yak_Exp
 	outputFile = filepath.Join(consts.GetDefaultYakitProjectsDir(), "project-"+projectNameToFileName(proj.ToGRPCModel().GetProjectName())+".yakitproject"+suffix)
 	outFp, err := os.OpenFile(outputFile, os.O_CREATE|os.O_RDWR, 0666)
 	if err != nil {
-		feedProgress("打开输出文件失败！", 0.5)
+		feedProgress("failed to open output file!", 0.5)
 		return err
 	}
 	defer outFp.Close()
 
-	feedProgress("开始导出项目基本数据", 0.6)
+	feedProgress("Start exporting basic project data", 0.6)
 
 	var ret []byte
 	ret = protowire.AppendString(ret, proj.ProjectName)
@@ -272,7 +272,7 @@ func (s *Server) ExportProject(req *ypb.ExportProjectRequest, stream ypb.Yak_Exp
 	}
 	raw, _ := json.Marshal(params)
 	ret = protowire.AppendBytes(ret, raw)
-	feedProgress("导出项目基本数据成功，开始导出项目数据库", 0.65)
+	feedProgress("Successfully exported project basic data, started to export project database", 0.65)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	var finished = false
@@ -303,26 +303,26 @@ func (s *Server) ExportProject(req *ypb.ExportProjectRequest, stream ypb.Yak_Exp
 
 	var results []byte = buf.Bytes()
 	if req.GetPassword() != "" {
-		feedProgress("开始加密数据库... SM4-GCM", 0)
+		feedProgress("Start encrypting the database... SM4-GCM", 0)
 		encData, err := codec.SM4GCMEnc(codec.PKCS7Padding([]byte(req.GetPassword())), results, nil)
 		if err != nil {
-			feedProgress("加密数据库失败:"+err.Error(), 0.97)
+			feedProgress("Failed to encrypt the database:"+err.Error(), 0.97)
 			cancel()
 			return err
 		}
 		results = encData
 	}
 
-	feedProgress("开始压缩数据库", 0)
+	feedProgress("Start compressing the database", 0)
 	results, err = utils.GzipCompress(results)
 	if err != nil {
-		feedProgress("导出项目失败：GZIP 压缩失败: "+err.Error(), 0.97)
+		feedProgress("Export project failed: GZIP Compression failed: "+err.Error(), 0.97)
 		cancel()
 		return err
 	}
 
 	if req.GetPassword() != "" {
-		feedProgress("开始写入加密数据，请妥善保管密码", 0.94)
+		feedProgress("Start writing encrypted data, please keep the password properly", 0.94)
 	}
 
 	if req.GetPassword() != "" {
@@ -333,7 +333,7 @@ func (s *Server) ExportProject(req *ypb.ExportProjectRequest, stream ypb.Yak_Exp
 	for !finished {
 		time.Sleep(300 * time.Millisecond)
 	}
-	feedProgress("导出成功，导出项目大小："+utils.ByteSize(uint64(len(results))), 1.0)
+	feedProgress("exported successfully, exported project size:"+utils.ByteSize(uint64(len(results))), 1.0)
 	return nil
 }
 
@@ -354,24 +354,24 @@ func (s *Server) ImportProject(req *ypb.ImportProjectRequest, stream ypb.Yak_Imp
 		})
 	}
 
-	feedProgress("开始导入项目: "+req.GetLocalProjectName(), 0.1)
+	feedProgress("Start importing the project: "+req.GetLocalProjectName(), 0.1)
 	path := req.GetProjectFilePath()
 	if !utils.IsFile(path) {
 		return utils.Errorf("cannot find local project path: %s", path)
 	}
 
-	feedProgress("打开项目本地文件:"+req.GetProjectFilePath(), 0.2)
+	feedProgress("Open the local file of the project:"+req.GetProjectFilePath(), 0.2)
 	fp, err := os.Open(req.GetProjectFilePath())
 	if err != nil {
-		feedProgress("打开项目本地文件失败:"+err.Error(), 0.9)
+		feedProgress("failed to open the local file of the project:"+err.Error(), 0.9)
 		return err
 	}
 	defer fp.Close()
 
-	feedProgress("正在读取项目文件", 0.3)
+	feedProgress("in the same level directory Reading the project file", 0.3)
 	raw, err := ioutil.ReadAll(fp)
 	if err != nil {
-		feedProgress("读取项目文件失败："+err.Error(), 0.9)
+		feedProgress("failed to read the project file:"+err.Error(), 0.9)
 		return err
 	}
 
@@ -379,28 +379,28 @@ func (s *Server) ImportProject(req *ypb.ImportProjectRequest, stream ypb.Yak_Imp
 		if req.GetPassword() != "" {
 			raw = raw[len(encryptProjectMagic):]
 		} else {
-			feedProgress("需要密码解密项目数据", 0.99)
-			return utils.Error("需要密码解密")
+			feedProgress("requires a password Decryption of project data", 0.99)
+			return utils.Error("requires password to decrypt")
 		}
 	}
 
-	feedProgress("正在解压数据库", 0.4)
+	feedProgress("Decompressing the database", 0.4)
 	bytes, err := utils.GzipDeCompress(raw)
 	if err != nil {
 		return err
 	}
 
-	feedProgress("解压完成，正在解密数据库", 0.43)
+	feedProgress("Decompression completed, decryption of database", 0.43)
 	if req.GetPassword() != "" {
 		decData, err := codec.SM4GCMDec(codec.PKCS7Padding([]byte(req.GetPassword())), bytes, nil)
 		if err != nil {
-			feedProgress("解密失败！", 0.99)
-			return utils.Error("解密失败！")
+			feedProgress("Decryption failed!", 0.99)
+			return utils.Error("Decryption failed!")
 		}
 		bytes = decData
 	}
 
-	feedProgress("读取项目基本信息", 0.45)
+	feedProgress("Read basic project information", 0.45)
 	projectName, n := protowire.ConsumeString(bytes)
 	bytes = bytes[n:]
 	description, n := protowire.ConsumeString(bytes)
@@ -415,7 +415,7 @@ func (s *Server) ImportProject(req *ypb.ImportProjectRequest, stream ypb.Yak_Imp
 	}
 
 	feedProgress(fmt.Sprintf(
-		"读取项目基本信息，原始项目名「%v」，描述信息：%v",
+		"read basic project information, original project name %v, description information: %v",
 		projectName, description,
 	), 0.5)
 
@@ -432,11 +432,11 @@ func (s *Server) ImportProject(req *ypb.ImportProjectRequest, stream ypb.Yak_Imp
 		projectName = projectName + fmt.Sprintf("_%v", utils.RandStringBytes(6))
 		_, err := s.IsProjectNameValid(stream.Context(), &ypb.IsProjectNameValidRequest{ProjectName: projectName})
 		if err != nil {
-			feedProgress("创建新的项目失败："+projectName+"："+err.Error(), 0.9)
+			feedProgress("failed to create new project:"+projectName+"："+err.Error(), 0.9)
 			return utils.Errorf("cannot valid project name: %s", err)
 		}
 	}
-	feedProgress("创建新的项目："+projectName, 0.6)
+	feedProgress("Create a new project:"+projectName, 0.6)
 	databaseName := fmt.Sprintf("yakit-%v-%v.sqlite3.db", projectNameToFileName(projectName), time.Now().Unix())
 	fileName := filepath.Join(consts.GetDefaultYakitProjectsDir(), databaseName)
 	err = os.WriteFile(
@@ -445,11 +445,11 @@ func (s *Server) ImportProject(req *ypb.ImportProjectRequest, stream ypb.Yak_Imp
 		0666,
 	)
 	if err != nil {
-		feedProgress("创建新数据库失败："+err.Error(), 0.9)
+		feedProgress("Failed to create a new database:"+err.Error(), 0.9)
 		return err
 	}
 
-	feedProgress("创建项目："+projectName, 0.7)
+	feedProgress("Create the project:"+projectName, 0.7)
 	proj := &yakit.Project{
 		ProjectName:   projectName,
 		Description:   description,
@@ -460,10 +460,10 @@ func (s *Server) ImportProject(req *ypb.ImportProjectRequest, stream ypb.Yak_Imp
 	}
 	err = yakit.CreateOrUpdateProject(s.GetProfileDatabase(), projectName, req.FolderId, req.ChildFolderId, "project", proj)
 	if err != nil {
-		feedProgress("创建项目数据失败："+err.Error(), 0.9)
+		feedProgress("failed to create project data:"+err.Error(), 0.9)
 		return err
 	}
-	feedProgress("导入项目成功", 1.0)
+	feedProgress("imported the project successfully.", 1.0)
 	return nil
 }
 
@@ -480,7 +480,7 @@ func (s *Server) DeleteProject(ctx context.Context, req *ypb.DeleteProjectReques
 		db = db.Where(" id = ? or folder_id = ? or child_folder_id = ? ", req.GetId(), req.GetId(), req.GetId())
 		projects := yakit.YieldProject(db, ctx)
 		if projects == nil {
-			return nil, utils.Error("删除项目不存在")
+			return nil, utils.Error("Delete project does not exist")
 		}
 		proj, err := yakit.GetDefaultProject(s.GetProfileDatabase())
 		if err != nil {
@@ -500,12 +500,12 @@ func (s *Server) DeleteProject(ctx context.Context, req *ypb.DeleteProjectReques
 				consts.GetGormProjectDatabase().Close()
 				err := os.RemoveAll(k.DatabasePath)
 				if err != nil {
-					log.Error("删除本地数据库失败：" + err.Error())
+					log.Error("failed to delete the local database:" + err.Error())
 				}
 			}
 			defaultDb, err := gorm.Open("sqlite3", proj.DatabasePath)
 			if err != nil {
-				log.Errorf("切换默认数据库失败%s", err)
+				log.Errorf("failed to switch default database %s", err)
 			}
 			defaultDb.AutoMigrate(yakit.ProjectTables...)
 			consts.SetDefaultYakitProjectDatabaseName(proj.DatabasePath)
@@ -513,7 +513,7 @@ func (s *Server) DeleteProject(ctx context.Context, req *ypb.DeleteProjectReques
 
 			err = yakit.DeleteProjectById(s.GetProfileDatabase(), int64(k.ID))
 			if err != nil {
-				log.Error("删除项目失败：" + err.Error())
+				log.Error("Failed to delete the project:" + err.Error())
 			}
 		}
 		return &ypb.Empty{}, nil

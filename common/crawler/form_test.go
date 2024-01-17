@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-// 接触最基础的表单情况
+// Contact the most basic form situation
 func TestCrawler_ParseForm(t *testing.T) {
 	//log.SetLevel(logTraceLevel)
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -122,7 +122,7 @@ func TestCrawler_ParseForm(t *testing.T) {
 	//}
 }
 
-// 解析上传文件表单
+// Parse the upload file form
 func TestCrawler_ParseForm2(t *testing.T) {
 	//log.SetLevel(logTraceLevel)
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -211,7 +211,7 @@ func TestCrawler_ParseForm_1(t *testing.T) {
 	_ = ts
 }
 
-// 解析带有 textarea 表单情形
+// Parse the form situation with textarea
 func TestCrawler_ParseForm_Textarea(t *testing.T) {
 	//log.SetLevel(logTraceLevel)
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

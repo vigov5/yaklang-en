@@ -168,18 +168,18 @@ func (s *Server) execRequest(req *ypb.ExecRequest, moduleName string, ctx contex
 		ctx, yakEnginePath,
 		append([]string{f.Name()}, params...)...)
 
-	cmd.Env = append(cmd.Env, os.Environ()...) // 继承主进程环境变量？
+	cmd.Env = append(cmd.Env, os.Environ()...) // Inherit the main process environment variable?
 
-	// 配置 YAKIT_HOME 环境变量
+	// Configure YAKIT_HOME environment variable
 	cmd.Env = append(cmd.Env, fmt.Sprintf("YAKIT_HOME=%v", os.Getenv("YAKIT_HOME")))
 
-	// 配置运行时变量名
+	// Configure runtime variable names
 	cmd.Env = append(cmd.Env, fmt.Sprintf("YAK_RUNTIME_ID=%v", runtimeId))
 
-	// 运行时 ID
+	// Runtime ID
 	cmd.Env = append(cmd.Env, fmt.Sprintf("YAKIT_PLUGIN_ID=%v", moduleName))
 
-	// 配置默认数据库名
+	// Configure the default database name
 	for k, v := range map[string]string{
 		consts.CONST_YAK_DEFAULT_PROFILE_DATABASE_NAME: consts.YAK_PROFILE_PLUGIN_DB_NAME,
 		consts.CONST_YAK_DEFAULT_PROJECT_DATABASE_NAME: consts.YAK_PROJECT_DATA_DB_NAME,
@@ -187,7 +187,7 @@ func (s *Server) execRequest(req *ypb.ExecRequest, moduleName string, ctx contex
 		cmd.Env = append(cmd.Env, fmt.Sprintf("%v=%v", k, v))
 	}
 
-	// 添加环境变量，远程 YAK_BRIDGE_REMOTE_REVERSE_ADDR
+	// Add environment variables remote YAK_BRIDGE_REMOTE_REVERSE_ADDR
 	if remoteReverseIP != "" && remoteReversePort > 0 {
 		cmd.Env = append(
 			cmd.Env,
@@ -196,7 +196,7 @@ func (s *Server) execRequest(req *ypb.ExecRequest, moduleName string, ctx contex
 			fmt.Sprintf("YAK_BRIDGE_SECRET=%v", remoteSecret),
 		)
 	}
-	// 添加环境变量 本地 YAK_BRIDGE_REMOTE_REVERSE_ADDR
+	// Add environment variables local YAK_BRIDGE_REMOTE_REVERSE_ADDR
 	if localReverseHost != "" {
 		cmd.Env = append(
 			cmd.Env,
@@ -204,7 +204,7 @@ func (s *Server) execRequest(req *ypb.ExecRequest, moduleName string, ctx contex
 		)
 	}
 
-	// 添加
+	// Add
 	log.Infof("start to exec params: %v binary: %v", params, yakEnginePath)
 
 	var stdoutBuffer bytes.Buffer
@@ -278,7 +278,7 @@ func (s *Server) ExecWithContext(ctx context.Context, req *ypb.ExecRequest, stre
 	if ctx == nil {
 		ctx = stream.Context()
 	}
-	if req.NoDividedEngine { // 方便调试
+	if req.NoDividedEngine { // Convenient debugging
 		return s.execRequestInCurrentServerEngine(req, req.ScriptId, ctx, func(result *ypb.ExecResult, _ *yaklib.YakitLog) error {
 			return stream.Send(result)
 		}, &YakOutputStreamerHelperWC{

@@ -2,7 +2,7 @@ package alogrithm
 
 import "fmt"
 
-// 节点
+// node
 type Node interface {
 	Next() []Node
 	Prev() []Node
@@ -102,7 +102,7 @@ func Run(rootNode Node) []SccResultItem {
 }
 
 func (scc *TrSCC) finish() {
-	// 添加入度出度
+	// . Add the in-degree and out-degree
 	for k, _ := range scc.edges {
 		id_f, ok1 := scc.id[k.from]
 		id_t, ok2 := scc.id[k.to]
@@ -122,14 +122,14 @@ func Min(a, b int) int {
 	return b
 }
 
-// 计算强连通分量
+// . Calculate the strongly connected component
 func (scc *TrSCC) Tarjan(node Node) {
 	dfn := scc.dfn
 	low := scc.low
 	in_stack := scc.in_stack
 	in_scc := scc.in_scc
 	id := scc.id
-	// 查看stack是否会溢出
+	// to see if the stack will overflow
 	if scc.timestamp == scc.stack_cap {
 		scc.stack_cap *= 2
 		stack_new := make([]Node, scc.stack_cap)
@@ -145,7 +145,7 @@ func (scc *TrSCC) Tarjan(node Node) {
 	scc.top += 1
 	in_stack[node] = true
 	for _, n := range node.Next() {
-		// 添加边
+		// . Add edge
 		edge := NewEdge(node, n)
 		scc.edges[*edge] = struct{}{}
 		if dfn[n] == 0 {
@@ -157,25 +157,25 @@ func (scc *TrSCC) Tarjan(node Node) {
 	}
 
 	if dfn[node] == low[node] {
-		// 新增一个强连通分量
+		// . Add a strongly connected component
 		sccResult := NewSccResult(scc)
 		sccResult.nodes[node] = struct{}{}
-		// 在强连通分量中
+		// In the strongly connected component,
 		in_scc[node] = true
-		// scc数量+1
+		// . The number of sccs + 1
 		scc.scc_cnt += 1
 		id[node] = scc.scc_cnt
 		// fmt.Println("id:", id[node])
-		// scc中最后入栈的结点作为
+		// . The last node in scc that is pushed onto the stack is used as
 		var y Node
 		y = stack[scc.top-1]
 		for y != node {
-			// 在强连通分量中
+			// In the strongly connected component,
 			in_scc[y] = true
 			sccResult.nodes[y] = struct{}{}
-			// 出栈
+			// pops the stack
 			scc.top -= 1
-			// 标记
+			// tag
 			in_stack[y] = false
 			id[y] = scc.scc_cnt
 			if scc.top < 1 {

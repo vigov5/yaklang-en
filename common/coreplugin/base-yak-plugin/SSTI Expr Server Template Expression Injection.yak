@@ -1,0 +1,119 @@
+cases = [
+    {"boundary": ["", ""], "note": "no-boundary", "note_zh": "unbounded", "usedby": []},
+    {"boundary": ["{{", "}}"], "note": "basic:{{...}}", "note_zh": "base template: {{...}}", "usedby": ["twig", "flask/jinja2", "django"]},
+    {"boundary": ["${", "}"], "note": "basic:${...}", "note_zh": "base template:${...}", "usedby": ["java", ]},
+    {"boundary": ["{", "}"], "note": "basic:{...}", "note_zh": "base template:{...}", "usedby": []},
+    {"boundary": ["<%=", "%>"], "note": "ruby", "note_zh": "Ruby template"},
+    {"boundary": ["{php}", "{/php}"], "note": "smarty: {php}...{/php}", "usedby": ["smarty"]},
+    {"boundary": ["{php} echo ", "; {/php}"], "note": "smarty: {php}...{/php}", "usedby": ["smarty"]},
+    {"boundary": ["$eval('", "')"], "note": "AngularJS: $eval('...')", "usedby": ["Angulary"]},
+    {"boundary": ["{%", "%}"], "note": "Tornado: {%...%}", "usedby": ["Tornado", "django"]},
+]
+
+yakit.AutoInitYakit()
+
+sstiDesc = `Server-Side Template Injection (SSTI) is a safe The vulnerability occurs in the server-side template engine. Template engines are often used to embed dynamic data into static HTML pages to generate the final web page. When an attacker is able to provide malicious input to the template engine and successfully execute arbitrary code, it A server-side template injection has occurred. Risk factors for
+
+SSTI include:
+
+Arbitrary code execution: An attacker may use template injection to execute arbitrary code to control the server or access sensitive data.
+Data leakage: An attacker may use template injection to access sensitive data on the server, such as user credentials or other important information in the database.
+Denial of Service: An attacker may use template injection to cause the server to crash, rendering the service unavailable.`
+
+solution = `In order to prevent server-side template injection, the following measures can be taken:
+
+input validation: strict verification of user input to ensure Only expected data types and formats are accepted. You can use a whitelist approach to only allow input that is known to be safe.
+Output Encoding: Properly encode user input before inserting it into the template to prevent malicious code execution.
+Principle of least privilege: Ensure that server-side applications run with the least privileges to reduce potential damage.
+uses a secure template engine: Choose a template engine that is known to have a good security record, and make sure to use the latest version.
+by taking These measures can greatly reduce the risk of server-side template injection.
+`
+
+checkCase = (instance, https, reqBytes) => {
+    prefix, suffix = instance.boundary
+    yakit.Info("Start testing SSTI:%v ... %v", prefix, suffix)
+
+    var params = fuzz.HTTPRequest(reqBytes, fuzz.https(https))~.GetCommonParams()
+    for param in params {
+        checked = 0
+        failed = false
+        var lastResponse
+        var lastPayload
+
+        baseResponse, _ = poc.HTTP(reqBytes, poc.https(https))~
+
+        for count in 6 {
+            index = count + 1
+            if index - 3 >= checked {
+                failed = true
+                break
+            }
+            try {
+                exprDetails = fuzz.FuzzCalcExpr()
+                var result = exprDetails.result
+                var expr = exprDetails.expr
+
+                generateExprCount = 0
+                for str.Contains(string(baseResponse), expr) && generateExprCount < 100 {
+                    generateExprCount ++
+                    exprDetails = fuzz.FuzzCalcExpr()
+                    result = exprDetails.result
+                    expr = exprDetails.expr
+                }
+
+                payload = prefix + expr + suffix
+                freq = param.Fuzz(payload)
+                // freq.Show()
+                rsp, err = freq.ExecFirst()
+                if err {
+                    yakit.Info("Request failed: %v", err)
+                    continue
+                }
+                if (result in string(rsp.ResponseRaw)) && !str.MatchAnyOfRegexp(string(rsp.ResponseRaw), result + `\d{2}`, `\d{2}` + result) {
+                    yakit.Info("SSTI expression executed successfully: Number of reviews: " + string(index))
+                    checked ++
+                    lastResponse = rsp
+                    lastPayload = payload
+                }
+            } catch err {
+                die(err)
+            }
+        }
+        if !failed {
+            yakit.Info("expression injection successful detection: Parameter: %v", str.TrimSpace(param.String()))
+            url = lastResponse.Url
+            risk.NewRisk(
+               lastResponse.Url,
+               risk.titleVerbose(f"SSTI expression injection (parameter:${param.Name()}): ${url} "),
+               risk.title(f"SSTI Expr Injection (Param:${param.Name()}): ${url}"),
+               risk.request(lastResponse.RequestRaw),
+               risk.response(lastResponse.ResponseRaw),
+               risk.payload(lastPayload),
+               risk.severity("high"),
+               risk.type("SSTI"),
+               risk.typeVerbose("Template Injection"),
+               risk.description(sstiDesc),
+               risk.solution(solution),
+               risk.details({
+                   "reason": "The detection method of this vulnerability is achieved through numerical calculation. We input a value similar to 2012-10- 02 expression, if its result is 2000, then we consider SSTI Expr successful. This calculation method is very simple and clear.",
+                   "note": "In order to ensure that the calculation is valid, we will calculate this value multiple times to ensure that the vast majority of calculations are successful.",
+                   "url": url,
+               })
+            )
+        }
+    }
+}
+
+checkReq = (isHttps, req) => {
+    for instance in cases {
+        try {
+            checkCase(instance, isHttps, req)
+        } catch err {
+            yakit.Error(err)
+        }
+    }
+}
+
+mirrorNewWebsitePathParams = (isHttps, url, req, rsp, body) => {
+    checkReq(isHttps, req)
+}

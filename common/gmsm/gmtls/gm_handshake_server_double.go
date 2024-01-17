@@ -720,7 +720,7 @@ func (hs *serverHandshakeStateGM) clientHelloInfo() *ClientHelloInfo {
 	if hs.cachedClientHelloInfo != nil {
 		return hs.cachedClientHelloInfo
 	}
-	// GM握手实现只需要支持 GMSSL版本就可以
+	// The GM handshake implementation only needs to support the GMSSL version
 	supportedVersions := []uint16{VersionGMSSL}
 
 	//var supportedVersions []uint16

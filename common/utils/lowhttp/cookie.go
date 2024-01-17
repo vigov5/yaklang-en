@@ -150,7 +150,7 @@ func AddOrUpgradeCookie(raw []byte, value string) ([]byte, error) {
 		}
 	}
 
-	// 如果不存在则添加请求头
+	// If it does not exist, add the request header
 	if !isHeaderExist {
 		writer.WriteString("Cookie: " + value + CRLF)
 	}
@@ -166,7 +166,7 @@ func AddOrUpgradeCookie(raw []byte, value string) ([]byte, error) {
 		return writer.Bytes(), nil
 	}
 
-	// 单独修复请求中的问题
+	// Fix the problems in the request separately
 	if !strings.HasPrefix(string(firstLineBytes), "HTTP/") {
 		if bytes.HasSuffix(bodyRaw, []byte("\n\n")) {
 			bodyRaw = bodyRaw[:len(bodyRaw)-2]

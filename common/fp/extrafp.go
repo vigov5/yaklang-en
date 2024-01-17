@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// 在这里可以做服务的修正，用来 ifelse 处理各种小问题
+// You can make service corrections here and use ifelse to deal with various minor problems.
 func specialCase(result *MatchResult, config *Config) *MatchResult {
 	if result == nil {
 		return nil

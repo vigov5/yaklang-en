@@ -48,7 +48,7 @@ func GetFirstExistedFileE(paths ...string) (string, error) {
 			continue
 		}
 
-		// 如果是目录，跳过，进行下一个判断
+		// If it is a directory, skip, proceed to the next judge
 		if IsDir(t) {
 			continue
 		}
@@ -139,7 +139,7 @@ func GetExecutableFromEnv(cmd string) (string, error) {
 	if !ok {
 		return "", Errorf("PATH environment variable not found")
 	}
-	// windows 判断，补上.exe
+	// Windows judge, add .exe
 	if runtime.GOOS == "windows" {
 		cmd += ".exe"
 	}
@@ -163,7 +163,7 @@ func CopyDirectory(source string, destination string) error {
 			return nil
 		}
 
-		// 构建新路径
+		// Build a new path
 		refPath, err := filepath.Rel(source, path)
 		if err != nil {
 			return err
@@ -171,19 +171,19 @@ func CopyDirectory(source string, destination string) error {
 		newPath := filepath.Join(destination, refPath)
 
 		if info.IsDir() {
-			// 创建新的文件夹
+			// Create a new folder
 			err := os.MkdirAll(newPath, info.Mode())
 			if err != nil {
 				return err
 			}
 		} else {
-			// 复制文件
+			// Copy the file
 			err := CopyFile(path, newPath)
 			if err != nil {
 				return err
 			}
 
-			// 删除源文件
+			// Delete the source file
 			err = os.Remove(path)
 			if err != nil {
 				return err
@@ -218,7 +218,7 @@ func ConcurrentCopyDirectory(source string, destination string, threads int) err
 			return err
 		}
 
-		// 构建新路径
+		// Build a new path
 		refPath, err := filepath.Rel(source, path)
 		if err != nil {
 			return err
@@ -226,7 +226,7 @@ func ConcurrentCopyDirectory(source string, destination string, threads int) err
 		newPath := filepath.Join(destination, refPath)
 
 		if info.IsDir() {
-			// 创建新的文件夹
+			// Create a new folder
 			err := os.MkdirAll(newPath, info.Mode())
 			if err != nil {
 				return err

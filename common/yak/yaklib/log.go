@@ -13,8 +13,8 @@ import (
 	"github.com/yaklang/yaklang/common/yak/antlr4yak/yakvm"
 )
 
-// loglevel 根据传入的字符串设置日志级别
-// disable: 禁用所有日志, fatal: 致命错误, error: 错误, warning: 警告, info: 信息, debug: 调试
+// loglevel Sets the log level according to the passed string
+// disable: disable all logs, fatal: fatal error, error: error, warning: warning, info: information, debug: debugging
 // Example:
 // ```
 // loglevel("fatal")

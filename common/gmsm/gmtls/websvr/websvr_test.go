@@ -83,7 +83,7 @@ func ClientRun() {
 
 func gmClientRun() {
 
-	// 信任的根证书
+	// Trusted root certificate
 	certPool := x509.NewCertPool()
 	cacert, err := ioutil.ReadFile(SM2CaCertPath)
 	if err != nil {
@@ -121,10 +121,10 @@ func gmClientRun() {
 	end <- true
 }
 
-// gmGCMClientRun GCM模式测试
+// gmGCMClientRun GCM mode test
 func gmGCMClientRun() {
 
-	// 信任的根证书
+	// Trusted root certificate
 	certPool := x509.NewCertPool()
 	cacert, err := ioutil.ReadFile(SM2CaCertPath)
 	if err != nil {

@@ -20,13 +20,13 @@ func (y *YakCompiler) VisitDeferStmt(raw yak.IDeferStmtContext) interface{} {
 
 	finished := y.SwitchCodes()
 	y.VisitExpression(i.Expression())
-	// 保证平栈
+	// is executed.
 	y.pushOpPop()
 	funcCode := make([]*yakvm.Code, len(y.codes))
 	copy(funcCode, y.codes)
 	finished()
 
-	// defer 是一个语句，在结束之后在执行的
+	// defer is a statement that guarantees that the stack will be flattened after
 	y.pushDefer(funcCode)
 
 	return nil

@@ -265,7 +265,7 @@ func SetGroupInEnd(db *gorm.DB, group string) error {
 	if err := db.Model(&Payload{}).Select("`group`").Group("`group`").Pluck("`group`", &groups).Error; err != nil {
 		return err
 	}
-	// 更新group_index
+	// updates group_index.
 	if err := db.Model(&Payload{}).Where("`group` = ?", group).Update("group_index", len(groups)+1).Error; err != nil {
 		return err
 	}
@@ -370,7 +370,7 @@ func MovePayloads(db *gorm.DB, payloads []*Payload, group, folder string) error 
 
 func SetIndexToFolder(db *gorm.DB, folder, group string, group_index int64) error {
 	db = db.Model(&Payload{})
-	// 查找或创建一个新的记录
+	// finds or creates a new record.
 	payload := Payload{
 		Folder:     &folder,
 		Group:      group,
@@ -378,12 +378,12 @@ func SetIndexToFolder(db *gorm.DB, folder, group string, group_index int64) erro
 	}
 	db = db.FirstOrCreate(&payload, Payload{Folder: &folder, Group: group})
 
-	// 如果创建失败，返回错误
+	// If the creation fails, an error is returned.
 	if db.Error != nil {
 		return utils.Wrap(db.Error, "create or find payload failed")
 	}
 
-	// 更新group_index
+	// updates group_index.
 	if err := db.Model(&Payload{}).Where("`folder` = ?", folder).Where("`group` = ?", group).Update("group_index", group_index).Error; err != nil {
 		return err
 	}

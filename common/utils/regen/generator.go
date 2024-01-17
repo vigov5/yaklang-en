@@ -92,7 +92,7 @@ func init() {
 		syntax.OpEndText:        noop,
 		syntax.OpWordBoundary:   noop,
 		syntax.OpNoWordBoundary: noop,
-	} // 初始化可见字符的字符串表示
+	} // Initializes a string representation of visible characters
 	for i := 32; i <= 126; i++ {
 		VisibleRunes = append(VisibleRunes, rune(i))
 		VisibleRunesAsString = append(VisibleRunesAsString, string(rune(i)))
@@ -246,7 +246,7 @@ func opAnyCharOne(regexp *syntax.Regexp, args *GeneratorArgs) (*internalGenerato
 	}}, nil
 }
 
-// opAnyCharVisibleOne 函数为 OpAnyChar 操作符返回一个 generator，该 generator 只生成一个可见字符。
+// The opAnyCharVisibleOne function returns a generator for the OpAnyChar operator that produces only one visible character.
 func opAnyCharVisibleOne(regexp *syntax.Regexp, args *GeneratorArgs) (*internalGenerator, error) {
 	return &internalGenerator{
 		Name: regexp.String(),
@@ -273,7 +273,7 @@ func opAnyCharNotNlOne(regexp *syntax.Regexp, args *GeneratorArgs) (*internalGen
 }
 
 func opAnyCharNotNlVisibleOne(regexp *syntax.Regexp, args *GeneratorArgs) (*internalGenerator, error) {
-	// 创建一个新的可见字符切片，但不包括换行符
+	// Creates a new slice of visible characters, excluding newlines
 	visibleRunesWithoutNL := make([]rune, 0, len(VisibleRunes))
 	for _, r := range VisibleRunes {
 		if r != '\n' && r != '\r' {

@@ -11,7 +11,7 @@ import (
 
 func (s *VulinServer) registerExprInj() {
 	r := s.router
-	exprGroup := r.PathPrefix("/expr").Name("表达式注入或 SSTI 仿真").Subrouter()
+	exprGroup := r.PathPrefix("/expr").Name("Expression injection or SSTI simulation").Subrouter()
 
 	handler := func(writer http.ResponseWriter, request *http.Request) {
 		raw, _ := utils.HttpDumpWithBody(request, true)
@@ -55,19 +55,19 @@ func (s *VulinServer) registerExprInj() {
 		{
 			Path:         "/injection",
 			DefaultQuery: "a=1",
-			Title:        "表达式注入GET参数基础",
+			Title:        "Expression injection GET parameter basics",
 			Handler:      handler,
 		},
 		{
 			Path:         "/injection",
 			DefaultQuery: "b={\"a\":1}",
-			Title:        "JSON 中表达式注入参数",
+			Title:        "Expression injection parameters in JSON",
 			Handler:      handler,
 		},
 		{
 			Path:         "/injection",
 			DefaultQuery: "c=abc",
-			Title:        "表达式注入GET参数基础（非数字）",
+			Title:        "Expression injection GET parameter basics (non-numeric)",
 			Handler:      handler,
 		},
 	}

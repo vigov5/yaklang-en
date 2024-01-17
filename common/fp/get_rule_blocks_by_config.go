@@ -22,7 +22,7 @@ func GetRuleBlockByConfig(currentPort int, config *Config) (emptyBlock *RuleBloc
 	var bestBlocks []*RuleBlock
 	for probe, matches := range config.FingerprintRules {
 
-		// 只有 TCP 才能匹配 TCP
+		// Only TCP can match TCP
 		if probe.Payload == "" && config.CanScanTCP() {
 			if emptyBlock == nil {
 				emptyBlock = &RuleBlock{Probe: probe, Matched: matches}
@@ -33,7 +33,7 @@ func GetRuleBlockByConfig(currentPort int, config *Config) (emptyBlock *RuleBloc
 		}
 
 		if funk.InInts(probe.DefaultPorts, currentPort) {
-			// 检查协议和配置协议是否相同
+			// . Check whether the protocol and configuration protocol are the same.
 			if probe.Proto == TCP && config.CanScanTCP() {
 				bestBlocks = append(bestBlocks, &RuleBlock{Probe: probe, Matched: matches})
 			}
@@ -42,7 +42,7 @@ func GetRuleBlockByConfig(currentPort int, config *Config) (emptyBlock *RuleBloc
 				bestBlocks = append(bestBlocks, &RuleBlock{Probe: probe, Matched: matches})
 			}
 		} else {
-			// 过滤协议
+			// Filter protocol
 			isFitProto := false
 			for _, proto := range config.TransportProtos {
 				if probe.Proto == proto {
@@ -54,7 +54,7 @@ func GetRuleBlockByConfig(currentPort int, config *Config) (emptyBlock *RuleBloc
 				continue
 			}
 
-			// 根据是否是主动模式规律规则
+			// . According to whether it is an active mode rule.
 			if !config.ActiveMode {
 				if len(probe.Payload) > 0 {
 					//log.Debugf("skipped [%v] %s for active sending payload", probe.Proto, probe.Name)
@@ -62,7 +62,7 @@ func GetRuleBlockByConfig(currentPort int, config *Config) (emptyBlock *RuleBloc
 				}
 			}
 
-			// 过滤稀有度
+			// Filter rarity
 			if probe.Rarity > config.RarityMax {
 				//log.Debugf("Probe %s is skipped for rarity is %v (config %v)", probe.Name, probe.Rarity, config.RarityMax)
 				continue
@@ -76,7 +76,7 @@ func GetRuleBlockByConfig(currentPort int, config *Config) (emptyBlock *RuleBloc
 		}
 	}
 
-	// 如果 probe 端口匹配到了，则说明这些是最合适的，如果匹配不到，再去使用剩下的内容
+	// to its Matched. If the probe port matches, it means that these are the most suitable. If it does not match, use the remaining content
 	if len(bestBlocks) > 0 {
 		sort.Sort(byName(bestBlocks))
 		sort.Sort(byRarity(bestBlocks))
@@ -91,7 +91,7 @@ func GetRuleBlockByConfig(currentPort int, config *Config) (emptyBlock *RuleBloc
 		return emptyBlock, bestBlocks, true
 	}
 
-	// 如果没有过滤出任何 blocks 就直接退出
+	// . If no blocks are filtered out, exit
 	if len(blocks) <= 0 {
 		return
 	}
@@ -115,17 +115,17 @@ func GetRuleBlockByConfig(currentPort int, config *Config) (emptyBlock *RuleBloc
 
 func GetRuleBlockByServiceName(serviceName string, config *Config) (blocks []*RuleBlock) {
 	blockMap := make(map[string]*RuleBlock)
-	// 遍历所有指纹规则
+	// Traverse all fingerprint rules
 	for probe, matches := range config.FingerprintRules {
-		// 在每个规则块中查找符合条件的服务名
+		// . Find the qualified service name in each rule block.
 		for _, match := range matches {
-			// 如果服务名包含指定的 serviceName
+			// If the service name contains the specified serviceName
 			if match.ServiceName == serviceName {
-				// 如果已经有相同的probe.Name，直接在其Matched中追加
+				// If there is already the same probe.Name, directly in Add
 				if block, ok := blockMap[probe.Name]; ok {
 					block.Matched = append(block.Matched, match)
 				} else {
-					// 否则创建新的RuleBlock并添加到blocks和blockMap中
+					// Otherwise create a new RuleBlock and add it to blocks and blockMap
 					block := &RuleBlock{
 						Probe:   probe,
 						Matched: []*NmapMatch{match},
@@ -133,7 +133,7 @@ func GetRuleBlockByServiceName(serviceName string, config *Config) (blocks []*Ru
 					blocks = append(blocks, block)
 					blockMap[probe.Name] = block
 				}
-				// 由于一个规则块可能有多个匹配项，所以这里不要 break，继续搜索
+				// directly. Since a rule block may have multiple match, so don’t break here, continue to search for
 			}
 		}
 	}

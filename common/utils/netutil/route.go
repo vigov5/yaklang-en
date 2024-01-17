@@ -91,7 +91,7 @@ func GetPublicRoute() (*net.Interface, net.IP, net.IP, error) {
 func Route(timeout time.Duration, target string) (iface *net.Interface, gateway, preferredSrc net.IP, err error) {
 	var addr = target
 	if !utils.IsIPv4(target) && !utils.IsIPv6(target) {
-		// 针对域名，先去解析一下
+		// For the domain name, first parse
 		log.Infof("fetching %v 's address for %s", target, timeout.String())
 		addr = netx.LookupFirst(target, netx.WithTimeout(timeout))
 		if addr == "" {
@@ -263,7 +263,7 @@ func Route(timeout time.Duration, target string) (iface *net.Interface, gateway,
 			for _, route := range rs {
 				var srcIp net.IP
 				if route.Destination.Contains(net.ParseIP(utils.FixForParseIP(target))) {
-					// 获取 IP 地址
+					// to obtain the IP address
 					addrs, err := route.Interface.Addrs()
 					if err != nil {
 						return nil, nil, nil, errors.Errorf("iface: %v cannot get address: %s", iface.Name, err)

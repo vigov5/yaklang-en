@@ -44,8 +44,8 @@ yakit.SetProgress(0.1)
 
 hostTotal = len(str.ParseStringToHosts(str.Trim(hosts, ",")))
 portTotal = len(str.ParseStringToPorts(str.Trim(ports, ",")))
-// yakit.StatusCard("扫描主机数", hostTotal)
-// yakit.StatusCard("扫描端口数", portTotal)
+// yakit.StatusCard("Number of scanned hosts", hostTotal)
+// yakit.StatusCard("Scan the port number", portTotal)
 totalTasks = hostTotal * portTotal
 portResultFinalTotal = 0
 progressLock = sync.NewLock()
@@ -60,7 +60,7 @@ updateProgress = func(delta) {
     if portResultFinalTotal > totalTasks {
         portResultFinalTotal = totalTasks
     }
-    // yakit.StatusCard("已出结果", sprintf("%v/%v", portResultFinalTotal, totalTasks))
+    // yakit.StatusCard("Results are out", sprintf("%v/%v", portResultFinalTotal, totalTasks))
     yakit.SetProgress(0.1 + (float(portResultFinalTotal) / float(totalTasks) ) * 0.9)
 }
 defer yakit.SetProgress(1)
@@ -78,7 +78,7 @@ if protos != "" {
     opts = append(opts, servicescan.proto(protoList...))
 }
 
-// 使用指纹检测规则条数
+// Use the number of fingerprint detection rules
 if probeMax > 0 {
 	opts = append(opts, servicescan.maxProbes(probeMax))
 } else {
@@ -107,18 +107,18 @@ if fpMode == "all" {
 	opts = append(opts, servicescan.all())
 }
 
-// 设置排除端口和主机
+// Set excluded ports and hosts
 if excludePorts != "" {
-    yakit.Info("设置排除端口：%v", excludePorts)
+    yakit.Info("Set excluded port: %v", excludePorts)
     opts = append(opts, servicescan.excludePorts(excludePorts))
 }
 if excludeHosts != "" {
-    yakit.Info("设置排除主机：%v", excludeHosts)
+    yakit.Info("sets excluded hosts: %v", excludeHosts)
     opts = append(opts, servicescan.excludeHosts(excludeHosts))
 }
 
 if !enableCrawler {
-    yakit.Info("禁用基础爬虫")
+    yakit.Info("Disable basic crawlers")
 }
 
 /*
@@ -131,7 +131,7 @@ scriptNames = x.If(scriptNameFile != "", x.Filter(
     ), func(e){return e!=""}), make([]string))
 
 scriptNameList = str.Join(x.Map(scriptNames, func(i) {
-    // 0x60 反引号
+    // 0x60 Backtick
     return "1. \x60" + sprint(i) + "\x60"
 }), "\n")
 
@@ -141,7 +141,7 @@ if err != nil {
     yakit.Error("build mix plugin caller failed: %s", err)
     die(err)
 }
-// 这个有必要设置：独立上下文，避免在大并发的时候出现问题
+// This is necessary to set up: independent context to avoid problems during large concurrency
 manager.SetConcurrent(20)
 manager.SetDividedContext(true)
 x.Foreach(scriptNames, func(e){
@@ -206,7 +206,7 @@ handleCrawler = func(result) {
 }
 
 
-// 保存统计数据
+// Save statistical data
 startTimestamp = time.Now().Unix()
 portTableHeader = ["Host", "Port", "Fingerprint", "HtmlTitle"]
 portTableData = make([][]string)
@@ -287,7 +287,7 @@ getPingScan = func() {
         hosts, ping.proxy(proxies), ping.skip(skippedHostAliveScan), ping.tcpPingPorts(hostAliveTCPPorts),
         ping.timeout(hostAliveTimeout), ping.concurrent(hostAliveConcurrent), ping.onResult(func(i){
             if (i.Ok) { return }
-            // 这里返回
+            // Here returns
             updateProgress(portTotal)
         }), ping.excludeHosts(excludeHosts),
     )
@@ -308,15 +308,15 @@ if mode == "fingerprint" {
 synOpenPortCount = 0
 addSynOpenPortCount = func() {
     synOpenPortCount++
-    yakit.StatusCard("SYN 开放端口", synOpenPortCount)
+    yakit.StatusCard("SYN Open port", synOpenPortCount)
 }
 
-// 数据包计数
+// Packet count
 synPacketCounter = 0
 addSynPacketCounter = func(){synPacketCounter++}
 startSYNPacketCounter = func(){
     go func{
-        for { sleep(1); yakit.StatusCard("SYN 发包数", synPacketCounter) }
+        for { sleep(1); yakit.StatusCard("SYN Number of packets sent", synPacketCounter) }
     }
 }
 
@@ -370,19 +370,19 @@ if mode == "all" {
 }
 
 
-// 生成报告
+// Generate report
 reportIns = report.New()
 reportIns.From("port-scan")
 resultPortCount = len(portTableData)
 
 endTimestamp = time.Now().Unix()
 
-reportIns.Title("端口扫描报告:[%v]台主机/[%v]个开放端口/涉及[%v]个C段", len(targetCounter), resultPortCount, len(cClassCounter))
+reportIns.Title("port scan report: [%v] host/[%v] open ports/Involving [%v] C segments", len(targetCounter), resultPortCount, len(cClassCounter))
 reportIns.Table(portTableHeader, portTableData...)
 reportIns.Markdown(
-    sprintf("# 扫描状态统计\n\n"+
-    "本次扫描耗时 %v 秒\n\n"+
-    "涉及扫描插件: %v 个",
+    sprintf("# Scan status statistics\n\n"+
+    "This scan took %v seconds\n\n"+
+    "involves scanning plug-in: %v",
     endTimestamp - startTimestamp, len(scriptNames),
 ))
 if scriptNameList != "" {
@@ -390,24 +390,24 @@ if scriptNameList != "" {
 }
 items = make([][]string)
 if len(cClassCounter) > 0 {
-    reportIns.Markdown("## C 段统计\n\n")
+    reportIns.Markdown("## C segment Statistics\n\n")
     for name, count = range cClassCounter{
         items = append(items, [sprint(name), sprint(count)])
     }
-    reportIns.Table(["C 段", "开放端口数量"], items...)
+    reportIns.Table(["C segment", "Number of open ports"], items...)
 }
 
 if len(targetCounter) > 0 {
-    reportIns.Markdown("## 主机维度端口统计")
+    reportIns.Markdown("## Host dimension port statistics")
     for name, count = range targetCounter{
         items = append(items, [sprint(name), sprint(count)])
     }
-    reportIns.Table(["主机 IP", "开放端口数量"], items...)
+    reportIns.Table(["Host IP", "Number of open ports"], items...)
 }
 reportIns.Save()
 
 
-// 等待插件执行结果
+// Wait for plug-in execution results
 yakit.Info("PortScan Finished Waiting for Plugin Results")
 println("PortScan Finished... Waiting Plugins")
 wg.Wait()
@@ -415,9 +415,9 @@ manager.Wait()
 
 /*
 type palm/common/yakgrpc/yakit.(Report) struct {
-  Fields(可用字段):
-  StructMethods(结构方法/函数):
-  PtrStructMethods(指针结构方法/函数):
+  Fields( Available fields):
+  StructMethods (structural method/function):
+  PtrStructMethods (pointer structure method/function):
       func Divider()
       func From(v1: interface {}, v2 ...interface {})
       func Markdown(v1: string)

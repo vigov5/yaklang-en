@@ -1,12 +1,12 @@
 package filter
 
 type Config struct {
-	TTL           int64 `json:"ttl" yaml:"ttl"`                       // 去重时间窗，秒为单位
-	CaseSensitive bool  `json:"case_sensitive" yaml:"case_sensitive"` // 是否对 URL 中的大小写敏感
-	Hash          bool  `json:"hash" yaml:"hash"`                     // 是否将 URL hash 作为去重因素
-	Query         bool  `json:"query" yaml:"query"`                   // 是否将 query 作为去重因素, 若为 true， 那么 ?a=b 和  ?a=c 将被视为两个链接
-	Credential    bool  `json:"credential" yaml:"credential"`         // 是否将认证信息作为去重因素，若为 true, 登录前后的同一页面可能会被扫描两次
-	Rewrite       bool  `json:"rewrite" yaml:"rewrite"`               // 是否启用 rewrite 识别
+	TTL           int64 `json:"ttl" yaml:"ttl"`                       // deduplication time window, in seconds
+	CaseSensitive bool  `json:"case_sensitive" yaml:"case_sensitive"` // Whether to be case sensitive in URLs
+	Hash          bool  `json:"hash" yaml:"hash"`                     // Whether to use URL hash as a deduplication factor
+	Query         bool  `json:"query" yaml:"query"`                   // Whether to use query as a deduplication factor, if true, then ?a=b and ?a=c will be regarded as two links
+	Credential    bool  `json:"credential" yaml:"credential"`         // Whether to use authentication information as a deduplication factor, if true, the same page before and after login May be scanned twice
+	Rewrite       bool  `json:"rewrite" yaml:"rewrite"`               // Whether to enable rewrite to identify
 }
 
 func (c *Config) Clone() *Config {

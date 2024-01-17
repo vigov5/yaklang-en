@@ -130,9 +130,9 @@ var gmCipherSuites = []*cipherSuite{
 	{GMTLS_ECDHE_SM4_GCM_SM3, 16, 0, 4, ecdheGMKA, suiteECDHE | suiteECDSA, nil, nil, aeadSM4GCM},
 }
 
-// aeadSM4GCM SM4 GCM向前加解密函数
-// key: 对称密钥
-// nonce: 隐式随机数 (implicit nonce 4 Byte)
+// aeadSM4GCM SM4 GCM forward encryption and decryption function
+// key: symmetric key The random number used by
+// nonce: implicit random number (implicit nonce 4 Byte)
 func aeadSM4GCM(key []byte, nonce []byte) cipher.AEAD {
 	if len(nonce) != noncePrefixLength {
 		panic("tls: internal error: wrong implicit nonce length")
@@ -145,10 +145,10 @@ func aeadSM4GCM(key []byte, nonce []byte) cipher.AEAD {
 	if err != nil {
 		panic(err)
 	}
-	// AEAD 使用的随机数应由显式和隐式两部分构成，
-	// 显式部分即 nonce explicit，客户端和服务端使用隐式部分
-	// 分别来自 client_write_iv 和 server_write_iv。
-	// AEAD使用的随机数和计数器的构造参见 RFC 5116
+	// AEAD should be composed of explicit and implicit parts. The explicit part of
+	// is nonce explicit, and the client and server use the implicit part.
+	// from client_write_iv and server_write_iv respectively.
+	// For the construction of random numbers and counters used by AEAD, please refer to RFC 5116
 	ret := &fixedNonceAEAD{aead: aead}
 	copy(ret.nonce[:], nonce)
 	return ret
@@ -235,12 +235,12 @@ func mutualCipherSuiteGM(have []uint16, want uint16) *cipherSuite {
 }
 
 const (
-	ModeGMSSLOnly  = "GMSSLOnly"  // 仅支持 国密SSL模式
-	ModeAutoSwitch = "AutoSwitch" // GMSSL/TLS 自动切换模式
+	ModeGMSSLOnly  = "GMSSLOnly"  // only supports national secret SSL mode
+	ModeAutoSwitch = "AutoSwitch" // GMSSL/TLS automatic switching mode
 )
 
 type GMSupport struct {
-	WorkMode string // 工作模式
+	WorkMode string // working mode
 }
 
 func NewGMSupport() *GMSupport {
@@ -259,13 +259,13 @@ func (support *GMSupport) cipherSuites() []*cipherSuite {
 	return gmCipherSuites
 }
 
-// EnableMixMode 启用 GMSSL/TLS 自动切换的工作模式
+// EnableMixMode enables GMSSL/TLS automatic switching working mode
 func (support *GMSupport) EnableMixMode() {
 	support.WorkMode = ModeAutoSwitch
 }
 
-// IsAutoSwitchMode 是否处于混合工作模式
-// return true - GMSSL/TLS 均支持, false - 不处于混合模式
+// IsAutoSwitchMode whether it is in mixed working mode
+// return true - GMSSL/TLS are supported, false - not in mixed mode
 func (support *GMSupport) IsAutoSwitchMode() bool {
 	return support.WorkMode == ModeAutoSwitch
 }

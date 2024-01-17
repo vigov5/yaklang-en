@@ -112,7 +112,7 @@ User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 //            var ws = new WebSocket('ws://' + window.location.host + '/ws');
 //            ws.onmessage = function(e) {
 //                $('<li>').text(event.data).appendTo($ul);
-//            ws.send('{"message":"这是来自html的数据"}');
+//            ws.send('{"message":"This is the data from html"}');
 //            };
 //            var $ul = $('#msg-list');
 //        });
@@ -183,7 +183,7 @@ User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 //            var ws = new WebSocket('wss://' + window.location.host + '/ws');
 //            ws.onmessage = function(e) {
 //                $('<li>').text(event.data).appendTo($ul);
-//            ws.send('{"message":"这是来自html的数据"}');
+//            ws.send('{"message":"This is the data from html"}');
 //            };
 //            var $ul = $('#msg-list');
 //        });

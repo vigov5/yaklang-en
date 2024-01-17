@@ -41,7 +41,7 @@ func StaticAnalyze(verbose string, t *testing.T, cases ...YakTestCase) {
 	for _, _case := range cases {
 		suggestion := analyze(_case.Src)
 		if len(suggestion) <= 0 {
-			testcase.FailNow(fmt.Sprintf("{%v} 语言静态建议失败", _case.Name))
+			testcase.FailNow(fmt.Sprintf("{%v} Language static suggestion failed", _case.Name))
 		}
 	}
 }

@@ -20,17 +20,17 @@ type TCPIPFrame struct {
 }
 
 func tsOpt() layers.TCPOption {
-	// 构建 TCP 时间戳选项
+	// Build TCP timestamp option
 	tsOption := layers.TCPOption{
 		OptionType:   layers.TCPOptionKindTimestamps,
-		OptionLength: 10, // 时间戳选项长度为 10 字节
+		OptionLength: 10, // timestamp option length is 10 bytes
 		OptionData:   make([]byte, 8),
 	}
 
-	// 设置时间戳值
+	// Set timestamp value
 	currentTime := time.Now()
-	tsValue := uint32(currentTime.UnixNano() / int64(time.Millisecond)) // 这里可以设置你需要的时间戳值
-	tsEchoReply := tsValue                                              // 这里可以设置你需要的时间戳回显应答值
+	tsValue := uint32(currentTime.UnixNano() / int64(time.Millisecond)) // Here you can set the timestamp value you need
+	tsEchoReply := tsValue                                              // Here you can set the timestamp echo response value you need
 	binary.BigEndian.PutUint32(tsOption.OptionData[0:4], tsValue)
 	binary.BigEndian.PutUint32(tsOption.OptionData[4:8], tsEchoReply)
 	return tsOption

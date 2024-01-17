@@ -32,7 +32,7 @@ func byteToString(b []byte) string {
 }
 func TestSm3(t *testing.T) {
 	msg := []byte("test")
-	err := ioutil.WriteFile("ifile", msg, os.FileMode(0644)) // 生成测试文件
+	err := ioutil.WriteFile("ifile", msg, os.FileMode(0644)) // Generate test files
 	if err != nil {
 		t.Fatal(err)
 	}

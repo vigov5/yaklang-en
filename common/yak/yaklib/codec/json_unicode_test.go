@@ -6,11 +6,11 @@ import (
 )
 
 func TestJsonUnicodeDecode(t *testing.T) {
-	var a = JsonUnicodeEncode("你好ab")
+	var a = JsonUnicodeEncode("hello ab")
 	spew.Dump(a)
 	println(a)
 	var result = JsonUnicodeDecode(a)
-	if result != "你好ab" {
+	if result != "hello ab" {
 		panic("unicode decode failed")
 	}
 }

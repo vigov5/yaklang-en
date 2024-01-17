@@ -87,7 +87,7 @@ func (s *Server) hybridScanNewTask(manager *HybridScanTaskManager, stream Hybrid
 	pluginCache := list.New()
 
 	/*
-		统计状态
+		statistical status
 	*/
 	//var totalTarget = int64(len(utils.ParseStringToLines(target.String())))
 	//var targetFinished int64 = 0
@@ -114,9 +114,9 @@ func (s *Server) hybridScanNewTask(manager *HybridScanTaskManager, stream Hybrid
 		return utils.Error("no plugin loaded")
 	}
 
-	// targetChan 的大小如何估算？目标数量（百万为单位） * 目标大小字节数为 M 数
-	// 即，100w 个目标，每个目标占用大小为 100 字节，那么都在内存中，开销大约为 100M
-	// 这个开销在内存中处理绰绰有余，但是在网络传输中，这个开销就很大了
+	// How to estimate the size of targetChan? Number of targets (in millions) * The number of bytes of the target size is M.
+	// That is, 1 million targets, each target occupies 100 bytes, then they are all in memory, and the overhead is about 100M
+	// This overhead is more than enough to process in memory, but in network transmission, this overhead is very large.
 	var targetCached []*HybridScanTarget
 	for targetInput := range targetChan {
 		targetCached = append(targetCached, targetInput)
@@ -154,7 +154,7 @@ func (s *Server) hybridScanNewTask(manager *HybridScanTaskManager, stream Hybrid
 			targetWg.Add(1)
 
 			manager.Checkpoint(func() {
-				// 如果出现了暂停，立即保存进度
+				// If a pause occurs, save the progress immediately.
 				taskRecorder.SurvivalTaskIndexes = utils.ConcatPorts(statusManager.GetCurrentActiveTaskIndexes())
 				names, _ := json.Marshal(pluginNames)
 				taskRecorder.Plugins = string(names)

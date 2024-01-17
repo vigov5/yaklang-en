@@ -56,7 +56,7 @@ func init() {
 					ref.Assign(vm, NewAutoValue(newSlice.Interface()))
 				}
 			}),
-			Description: "往数组/切片最后追加元素",
+			Description: "Gets the length from the array/Slice to append the last element",
 		},
 		"Pop": {
 			Name: "Pop",
@@ -80,7 +80,7 @@ func init() {
 					return ret
 				}
 			}),
-			Description: "弹出数组/切片的一个元素,默认为最后一个",
+			Description: "Pop the array/An element of the slice, the default is the last one",
 		},
 		"Extend": {
 			Name:       "Extend",
@@ -117,7 +117,7 @@ func init() {
 					ref.Assign(vm, NewAutoValue(newSlice.Interface()))
 				}
 			}),
-			Description: "用一个新的数组/切片扩展原数组/切片",
+			Description: "Use a new array/Slice and extend the original array/Slice",
 		},
 		"Length": {
 			Name: "Length",
@@ -150,11 +150,11 @@ func init() {
 					return r.Cap()
 				}
 			}),
-			Description: "获取容量",
+			Description: "Gets the capacity",
 		},
 		"StringSlice": {
 			Name:        "StringSlice",
-			Description: "转换成 []string",
+			Description: "Convert to []string",
 			HandlerFactory: NewArrayMethodFactory(func(frame *Frame, value *Value, i interface{}) interface{} {
 				return func() []string {
 					rv := reflect.ValueOf(i)
@@ -182,7 +182,7 @@ func init() {
 		},
 		"GeneralSlice": {
 			Name:        "GeneralSlice",
-			Description: "转换成最泛化的 Slice 类型 []any ([]interface{})",
+			Description: "is converted into the most generalized Slice type []any ([]interface{})",
 			HandlerFactory: NewArrayMethodFactory(func(frame *Frame, value *Value, i interface{}) interface{} {
 				return func() []interface{} {
 					return funk.Map(i, func(i interface{}) interface{} {
@@ -193,7 +193,7 @@ func init() {
 		},
 		"Shift": {
 			Name:        "Shift",
-			Description: "从数据开头移除一个元素",
+			Description: "Remove an element from the beginning of the data",
 			HandlerFactory: NewArrayMethodFactory(func(frame *Frame, value *Value, i interface{}) interface{} {
 				return func() interface{} {
 					rv := reflect.ValueOf(i)
@@ -213,7 +213,7 @@ func init() {
 		},
 		"Unshift": {
 			Name:        "Unshift",
-			Description: "从数据开头增加一个元素",
+			Description: "from the data Add an element",
 			ParamTable:  []string{"element"},
 			HandlerFactory: NewArrayMethodFactory(func(frame *Frame, value *Value, caller interface{}) interface{} {
 				return func(raw interface{}) {
@@ -235,7 +235,7 @@ func init() {
 		},
 		"Map": {
 			Name:        "Map",
-			Description: "数据/切片中元素经过运算返回结果",
+			Description: "data at the specified position/The elements in the slice are operated and return the result",
 			ParamTable:  []string{"mapFunc"},
 			HandlerFactory: NewArrayMethodFactory(func(frame *Frame, value *Value, i interface{}) interface{} {
 				return func(handler func(i interface{}) interface{}) interface{} {
@@ -245,7 +245,7 @@ func init() {
 		},
 		"Filter": {
 			Name:        "Filter",
-			Description: "数据/切片中元素经过运算返回结果",
+			Description: "data at the specified position/The elements in the slice are operated and return the result",
 			ParamTable:  []string{"filterFunc"},
 			HandlerFactory: NewArrayMethodFactory(func(frame *Frame, value *Value, i interface{}) interface{} {
 				return func(handler func(i interface{}) bool) interface{} {
@@ -294,7 +294,7 @@ func init() {
 					ref.Assign(vm, NewAutoValue(newSlice.Interface()))
 				}
 			}),
-			Description: "在指定位置插入元素",
+			Description: "Inserts the element",
 		},
 		"Remove": {
 			Name:       "Remove",
@@ -314,7 +314,7 @@ func init() {
 					ref.Assign(vm, NewAutoValue(newSlice.Interface()))
 				}
 			}),
-			Description: "移除数组/切片的第一次出现的元素",
+			Description: "Remove the array/The first element of the slice",
 		},
 		"Reverse": {
 			Name: "Reverse",
@@ -330,7 +330,7 @@ func init() {
 					}
 				}
 			}),
-			Description: "反转数组/切片",
+			Description: "Reverse the array/Slice",
 		},
 		"Sort": {
 			Name:            "Sort",
@@ -352,7 +352,7 @@ func init() {
 					})
 				}
 			}),
-			Description: "排序数组/切片",
+			Description: "Sort the array/Slice",
 		},
 		"Clear": {
 			Name: "Clear",
@@ -362,7 +362,7 @@ func init() {
 					ref.Assign(vm, NewAutoValue(nv.Interface()))
 				}
 			}),
-			Description: "清空数组/切片",
+			Description: "at the beginning Clear the array/Slice",
 		},
 		"Count": {
 			Name:       "Count",
@@ -381,7 +381,7 @@ func init() {
 					return n
 				}
 			}),
-			Description: "计算数组/切片中元素数量",
+			Description: "Calculate the array/The number of elements in the slice",
 		},
 		"Index": {
 			Name:       "Index",
@@ -402,7 +402,7 @@ func init() {
 					return rv.Index(n).Interface()
 				}
 			}),
-			Description: "返回数组/切片中第n个元素",
+			Description: "Return the array/The nth element in the slice",
 		},
 	}
 

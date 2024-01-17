@@ -25,14 +25,14 @@ func (s *Server) SmokingEvaluatePluginBatch(req *ypb.SmokingEvaluatePluginBatchR
 	successNum := 0
 	errorNum := 0
 
-	send(0, "开始检测", "success")
+	send(0, "started detection", "success")
 	pluginSize := len(req.GetScriptNames())
 	for index, name := range req.GetScriptNames() {
 		progress := float64(index+1) / float64(pluginSize)
 		// fmt.Println("check name: ", index, name, pluginSize, progress)
 		ins, err := yakit.GetYakScriptByName(s.GetProfileDatabase(), name)
 		if err != nil {
-			msg := fmt.Sprintf("%s: 无法获取该插件", name)
+			msg := fmt.Sprintf("%s: Unable to obtain the plug-in", name)
 			send(progress, msg, "error")
 			errorNum++
 			continue
@@ -41,19 +41,19 @@ func (s *Server) SmokingEvaluatePluginBatch(req *ypb.SmokingEvaluatePluginBatchR
 		pluginType := ins.Type
 		res, err := s.EvaluatePlugin(stream.Context(), code, pluginType)
 		if err != nil {
-			msg := fmt.Sprintf("%s 启动插件检测失败", name)
+			msg := fmt.Sprintf("%s failed to start plug-in detection", name)
 			send(progress, msg, "error")
 			errorNum++
 			continue
 		}
 		if res.Score >= 60 {
-			msg := fmt.Sprintf("%s 插件得分: %d", name, res.Score)
+			msg := fmt.Sprintf("%s Plug-in score: %d", name, res.Score)
 			send(progress, msg, "success")
 			names = append(names, name)
 			successNum++
 			continue
 		} else {
-			msg := fmt.Sprintf("%s 插件得分: %d (<60)", name, res.Score)
+			msg := fmt.Sprintf("%s Plug-in score: %d (<60)", name, res.Score)
 			send(progress, msg, "error")
 			errorNum++
 			continue
@@ -63,13 +63,13 @@ func (s *Server) SmokingEvaluatePluginBatch(req *ypb.SmokingEvaluatePluginBatchR
 	{
 		msg := ""
 		if successNum > 0 {
-			msg += fmt.Sprintf("检测通过%d个", successNum)
+			msg += fmt.Sprintf("%d detection passed", successNum)
 		}
 		if errorNum > 0 {
-			msg += fmt.Sprintf(", 检测失败%d个", errorNum)
+			msg += fmt.Sprintf(", %d detection failed", errorNum)
 		}
 		if msg == "" {
-			msg += "检测结束"
+			msg += "detection ended"
 		}
 		send(1, msg, "success")
 	}

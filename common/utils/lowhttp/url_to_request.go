@@ -65,7 +65,7 @@ func UrlToGetRequestPacket(u string, originRequest []byte, originRequestHttps bo
 	return urlToRequestPacket("GET", u, originRequest, originRequestHttps, -1, cookies...)
 }
 
-// 提取响应码以处理307和302的问题
+// and extract the response code to handle 307 and 302 problems.
 func UrlToGetRequestPacketWithResponse(u string, originRequest, originResponse []byte, originRequestHttps bool, cookies ...*http.Cookie) []byte {
 	res, err := ParseBytesToHTTPResponse(originResponse)
 	statusCode := -1
@@ -80,7 +80,7 @@ func UrlToRequestPacket(method string, u string, originRequest []byte, originReq
 }
 
 func urlToRequestPacket(method string, u string, originRequest []byte, https bool, responseStatusCode int, cookies ...*http.Cookie) []byte {
-	// 无原始请求或者303状态码，直接构造请求
+	// There is no original request or 303 status code, directly construct the request
 	if originRequest == nil || responseStatusCode == http.StatusSeeOther {
 		return NewRequestPacketFromMethod(method, u, originRequest, https, cookies...)
 	}
@@ -99,8 +99,8 @@ func urlToRequestPacket(method string, u string, originRequest []byte, https boo
 	// inSameOrigin := originHost != "" && (strings.Contains(currentHost, originHost) || strings.Contains(originHost, currentHost))
 	// sameMethod := strings.ToUpper(reqIns.Method) == strings.ToUpper(method)
 
-	// 307状态码保留请求体和请求方法，改变url，添加cookie
-	// 302状态码在规范下也应该保留请求体和请求方法，但是实际上大部分浏览器都会改为GET请求，所以我们就不保留
+	// The 307 status code retains the request body and request method, changes the URL, and adds cookie
+	// . The 302 status code should also retain the request body and request method under the specification, but in fact most browsers will change it to GET request, so we will not retain
 	if responseStatusCode == http.StatusTemporaryRedirect {
 		originReqIns.URL, _ = url.Parse(u)
 		if originReqIns.URL == nil {

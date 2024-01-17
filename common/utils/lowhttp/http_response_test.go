@@ -14,7 +14,7 @@ func TestFixHTTPResponse(t *testing.T) {
 		raw []byte
 	}
 
-	gzipData, err := utils.GzipCompress("你好")
+	gzipData, err := utils.GzipCompress("Hello")
 	if err != nil {
 		panic(err)
 	}
@@ -113,7 +113,7 @@ Content-Type: application/json
 				assert.NotContains(t, string(rsp), "Content-Encoding")
 			},
 			wantBody: func(t *testing.T, body []byte) {
-				assert.Equal(t, "你好", string(body))
+				assert.Equal(t, "Hello", string(body))
 			},
 			wantErr: assert.NoError,
 		},
@@ -122,7 +122,7 @@ Content-Type: application/json
 			args:    args{raw: rawResp},
 			wantRsp: nil,
 			wantBody: func(t *testing.T, body []byte) {
-				assert.Contains(t, string(body), "提交带有不合法参数", "响应体中应该包含文本 '提交带有不合法参数'")
+				assert.Contains(t, string(body), ". Submit with illegal parameters.", "The response body should contain text '. Submit with illegal parameters.'")
 			},
 			wantErr: assert.NoError,
 		},
@@ -130,10 +130,10 @@ Content-Type: application/json
 			name: "Handle Base64 Encoded Response 2",
 			args: args{raw: chunk2},
 			wantRsp: func(t *testing.T, rsp []byte) {
-				assert.Contains(t, string(rsp), "charset=utf-8", "响应头中应该包含 'charset=utf-8'")
+				assert.Contains(t, string(rsp), "charset=utf-8", "The response header should contain 'charset=utf-8'")
 			},
 			wantBody: func(t *testing.T, body []byte) {
-				assert.Contains(t, string(body), "操作执行成功", "响应体中应该包含文本 '操作执行成功'")
+				assert.Contains(t, string(body), "The operation was executed successfully", "The response body should contain text 'The operation was executed successfully'")
 			},
 			wantErr: assert.NoError,
 		},
@@ -143,7 +143,7 @@ Content-Type: application/json
 			wantRsp: nil,
 			wantBody: func(t *testing.T, body []byte) {
 				body = []byte(codec.JsonUnicodeDecode(string(body)))
-				assert.Contains(t, string(body), "抓马短星闻", "响应体应该包含 '抓马短星闻'")
+				assert.Contains(t, string(body), "Capture Horse Short Star News", "The response body should contain 'Capture Horse Short Star News'")
 			},
 			wantErr: assert.NoError,
 		},
@@ -152,7 +152,7 @@ Content-Type: application/json
 			args:    args{raw: []byte(rapInput)},
 			wantRsp: nil,
 			wantBody: func(t *testing.T, rsp []byte) {
-				assert.Equal(t, "aaaaaaaaaaaa"+"\r\n\r\n", string(rsp), "响应内容应该与 'aaaaaaaaaaaa\\r\\n\\r\\n' 相匹配")
+				assert.Equal(t, "aaaaaaaaaaaa"+"\r\n\r\n", string(rsp), "should match 'aaaaaaaaaaaa\\r\\n\\r\\n' . Catching the horse short star. smell")
 			},
 			wantErr: assert.NoError,
 		},
@@ -161,7 +161,7 @@ Content-Type: application/json
 			args:    args{raw: []byte(jsonEcho)},
 			wantRsp: nil,
 			wantBody: func(t *testing.T, rsp []byte) {
-				assert.Equal(t, `{"key":"value"}`, string(rsp), "响应内容应该与 '{\"key\":\"value\"}' 相匹配")
+				assert.Equal(t, `{"key":"value"}`, string(rsp), "should match '{\"key\":\"value\"}' . Catching the horse short star. smell")
 			},
 			wantErr: assert.NoError,
 		},
@@ -170,10 +170,10 @@ Content-Type: application/json
 			args: args{raw: []byte(debugCRLF)},
 			wantRsp: func(t *testing.T, rsp []byte) {
 				want := `POST /abc HTTP/1.1` + "\r\nHost: www.baidu.com\r\n\r\n"
-				assert.Equal(t, want, string(rsp), "响应内容应该与 '"+want+"' 相匹配")
+				assert.Equal(t, want, string(rsp), "should match '"+want+"' . Catching the horse short star. smell")
 			},
 			wantBody: func(t *testing.T, body []byte) {
-				assert.Equal(t, ``, string(body), "响应内容应该为空")
+				assert.Equal(t, ``, string(body), "The response content should be empty")
 			},
 			wantErr: assert.NoError,
 		},

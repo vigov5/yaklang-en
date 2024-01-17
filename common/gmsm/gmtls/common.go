@@ -391,10 +391,10 @@ type Config struct {
 	// first element of Certificates will be used.
 	GetCertificate func(*ClientHelloInfo) (*Certificate, error)
 
-	// GetKECertificate 获取密钥交换证书（加密证书）
-	// 这个方法只有在使用Config中Certificates为空或长度小于2时，才会被调用。
-	// 如果该方法为空，则默认从证书列表中 Certificates 取出第二个位置的证书，也就是加密证书。
-	// 该方法只有GMSSL流程中才会调用。
+	// GetKECertificate Gets the key exchange certificate (encryption certificate)
+	// This method will only be called when the Certificates in Config is empty or the length is less than 2.
+	// If this method is empty, the certificate at the second position, which is the encryption certificate, will be taken out from Certificates in the certificate list by default.
+	// This method is only called in the GMSSL process.
 	GetKECertificate func(*ClientHelloInfo) (*Certificate, error)
 
 	// GetClientCertificate, if not nil, is called when a server requests a
@@ -741,10 +741,10 @@ func (c *Config) mutualVersion(vers uint16) (uint16, bool) {
 	return vers, true
 }
 
-// getCertificate 返回密钥交换使用的证书及密钥
-// 该方法只有GMSSL会调用
-// 如果 Certificates 长度大于等于2时，默认返回第2个证书密钥
-// 如果 Certificates 为空或不足2时，调用 GetEKCertificate 方法获取。
+// getCertificate returns the certificate and key used for key exchange
+// This method will only be called by GMSSL.
+// If the length of Certificates is greater than or equal to 2, the second certificate key will be returned by default.
+// If Certificates is empty or less than 2, call the GetEKCertificate method to obtain it.
 func (c *Config) getEKCertificate(clientHello *ClientHelloInfo) (*Certificate, error) {
 	if c.GetKECertificate != nil && (len(c.Certificates) < 2) {
 		cert, err := c.GetKECertificate(clientHello)

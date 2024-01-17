@@ -29,7 +29,7 @@ func _execStringToCommand(ctx context.Context, s string) (*exec.Cmd, error) {
 	}
 }
 
-// 执行系统命令
+// Execute system command
 func _execSystem(ctx context.Context, i string) ([]byte, error) {
 	s, err := _execStringToCommand(ctx, i)
 	if err != nil {
@@ -203,27 +203,27 @@ func _execWatchStderr(i string, timeout float64, f func(raw []byte) bool) error 
 	return nil
 }
 
-// 系统命令执行导出接口
+// System command execution export interface
 var ExecExports = map[string]interface{}{
 	"CommandContext": _execStringToCommand,
 	"Command": func(i string) (*exec.Cmd, error) {
 		return _execStringToCommand(context.Background(), i)
 	},
-	//检查是否crash
+	//Check whether crash
 	"CheckCrash": _checkExecCrash,
 
-	// 批量命令执行
+	// Batch command execution
 	"SystemBatch": _execSystemBatch,
 
-	// 带上下文的基础命令执行
+	// Basic command execution with context
 	"SystemContext": _execSystem,
 
-	// 基础命令执行
+	// Basic command execution
 	"System": func(i string) ([]byte, error) {
 		return _execSystem(context.Background(), i)
 	},
 
-	// 监控输出
+	// Monitor output
 	"WatchStdout": _execWatchStdout,
 	"WatchOutput": _execWatchStdout,
 	"WatchStderr": _execWatchStderr,

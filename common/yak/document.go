@@ -120,7 +120,7 @@ func GetMethodFuncDeclFromAST(pkg *ast.Package, libName, structName, methodName,
 				params = yakdoc.HandleParams(nil, decl.Type, fset)
 			}
 
-			// 获取返回值
+			// Get the return value
 			if decl != nil && decl.Type != nil && decl.Type.Results != nil {
 				results = yakdoc.HandleResults(nil, decl.Type, fset)
 			}
@@ -154,7 +154,7 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 	}
 
 	var extLibs []*yakdoc.ScriptLib
-	// 标准库导出的函数
+	// . The function
 	for name, item := range engine.GetFntable() {
 		itemType := reflect.TypeOf(item)
 		itemValue := reflect.ValueOf(item)
@@ -229,7 +229,7 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 			}
 		}
 	}
-	// 标准库函数可能会返回结构体，我们也需要将其结构体的方法签名与文档拿到
+	// . The standard library function may return a structure, and we also need to get the method signature and document of its structure to
 	handleTypes := make([]reflect.Type, 0)
 
 	var getTypeFromReflectFunctionType func(typ reflect.Type, level int) []reflect.Type
@@ -269,17 +269,17 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 		}
 	}
 
-	// 全局变量
+	// Global variable
 	for _, instance := range helper.Instances {
 		handleTypes = append(handleTypes, reflect.TypeOf(instance))
 	}
-	// 标准库函数
+	// Standard library function
 	for _, lib := range extLibs {
 		for _, funcDecl := range lib.Functions {
 			handleTypes = append(handleTypes, getFuncTypesFromFuncDecl(funcDecl)...)
 		}
 	}
-	// 全局函数
+	// exported by the standard library. The global function
 	for _, funcDecl := range helper.Functions {
 		handleTypes = append(handleTypes, getFuncTypesFromFuncDecl(funcDecl)...)
 	}
@@ -332,8 +332,8 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 			pkgPath = typ.Elem().PkgPath()
 			structName = typ.Elem().Name()
 		} else if typKind == reflect.Func {
-			// 形如 (s *Struct) MethodName() (callback func(*Struct2)) {}
-			// 需要递归再获取类型
+			// in the form of (s *Struct) MethodName() (callback func(*Struct2)) {}
+			// needs to be recursive and then get the type
 			for _, newTyp := range getTypeFromReflectFunctionType(typ, 0) {
 				pushBackWithoutNil(handleTypesList, newTyp)
 			}
@@ -343,7 +343,7 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 			continue
 		}
 
-		// 如果是接口类型，那么需要获取其对应的包，然后再获取其对应的文档
+		// . If it is an interface type, then you need to get its corresponding package, and then obtain its corresponding document
 		if typKind == reflect.Interface {
 			if canAutoInjectInterface {
 				pkg, ok = pkgs[pkgPath]
@@ -364,12 +364,12 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 		for i := 0; i < typ.NumMethod(); i++ {
 			method := typ.Method(i)
 			methodName := method.Name
-			// 对于方法中的参数和返回值，需要递归再获取类型
+			// For the parameters and return values in the method, you need to recurse and then obtain the type
 			for _, newTyp := range getTypeFromReflectFunctionType(method.Type, 0) {
 				pushBackWithoutNil(handleTypesList, newTyp)
 			}
 
-			// 为了处理 embed 字段，其组合了匿名结构体字段的方法
+			// In order to process the embed field, it combines the methods of anonymous structure fields
 			EmbedFieldAndMethodList := list.New()
 			EmbedFieldAndMethodList.PushBack(&EmbedFieldTypeAndMethod{
 				FieldType: typ,
@@ -380,7 +380,7 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 
 				fieldTypeAndMethod := item.Value.(*EmbedFieldTypeAndMethod)
 				fieldType, method := fieldTypeAndMethod.FieldType, fieldTypeAndMethod.Method
-				// 如果是指针类型，那么需要获取其指向的类型，如果不是结构体类型，那么就不需要处理
+				// If it is a pointer type, Then you need to get the type it points to. If it is not a structure type, then there is no need to process
 				if fieldType.Kind() == reflect.Ptr {
 					fieldType = fieldType.Elem()
 					if fieldType.Kind() != reflect.Struct {
@@ -395,11 +395,11 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 
 				f := method.Func
 				if !f.IsValid() {
-					// ? 匿名字段是一个匿名接口，例如继承了 net.Conn 接口, fallback 处理
+					// ? The anonymous field is an anonymous interface, for example, it inherits the net.Conn interface, fallback processing
 					methodTyp := method.Type
 					declStr := yakdoc.ShrinkTypeVerboseName(methodTyp.String())
 					declStr = strings.Replace(declStr, "func(", methodName+"(", 1)
-					// 尝试从文档中获取方法的注释
+					// Try to get the annotation of the method from the document
 					document, _ := documents[methodName]
 
 					funcDecl := &yakdoc.FuncDecl{
@@ -439,7 +439,7 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 						}
 						funcDecl.Results = append(funcDecl.Results, result)
 					}
-					// 生成 vscode 补全
+					// . Generate vscode to complete
 					funcDecl.VSCodeSnippets = fmt.Sprintf("%s(%s)", methodName, strings.Join(paramsStr, ", "))
 					lib.Functions[methodName] = funcDecl
 				} else {
@@ -448,8 +448,8 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 						lib.Functions[methodName] = funcDecl
 						break
 					} else if errors.Is(err, yakdoc.ErrAutoGenerated) {
-						// 如果是自动生成的代码，那么就是匿名结构体字段
-						// 需要递归获取匿名结构体字段的方法
+						// . If it is automatically generated code, then it is the anonymous structure field
+						// Need to recursively obtain the method of anonymous structure field
 						for j := 0; j < fieldType.NumField(); j++ {
 							field := fieldType.Field(j)
 
@@ -477,7 +477,7 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 		helper.StructMethods[structName] = lib
 
 	}
-	// 实例方法
+	// instance method
 	for _, handler := range instanceMethodHandlers {
 		refValue := reflect.ValueOf(handler.f)
 		f := runtime.FuncForPC(refValue.Pointer())
@@ -500,7 +500,7 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 		}
 		funcDecl := GetMethodFuncDeclFromAST(pkg, handler.libName, structName, funcName, handler.methodName, fset)
 		if handler.libName == "" {
-			// 全局函数
+			// exported by the standard library. The global function
 			helper.Functions[handler.methodName] = funcDecl
 		} else {
 			lib, ok := helper.Libs[handler.libName]
@@ -512,13 +512,13 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 		// _ = documents
 	}
 
-	// 调用回调，注入一些其他的函数注释
+	// to call Callback, inject some other function annotations
 	helper.Callback()
 	ClearHelper(helper)
 	return helper
 }
 
-// ! 老接口
+// ! Old interface
 func EngineToLibDocuments(engine *antlr4yak.Engine) []yakdocument.LibDoc {
 	var libs []yakdocument.LibDoc
 

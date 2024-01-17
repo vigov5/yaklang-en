@@ -28,7 +28,7 @@ func (s *StringCountFilter) build(str string) []byte {
 	}()
 
 	if s.conf.TTL > 0 {
-		// 如果最后一个元素都是过期的，直接释放掉之前的 container
+		// If the last element is expired, directly release the previous container
 		now := utils.TimestampMs() / 1000
 		if s.lastUpdated != 0 && (now-s.lastUpdated >= s.conf.TTL) {
 			s.container = filter.NewDirCuckoo()

@@ -82,7 +82,7 @@ func initializeDatabase(projectDatabase string, profileDBName string) error {
 		log.Debugf("initialized cve database warning: %s", err)
 	}
 
-	// 这个顺序一般不要换
+	// . Generally do not change this order.
 	consts.GetGormProjectDatabase().AutoMigrate(yakit.ProjectTables...)
 	consts.GetGormProfileDatabase().AutoMigrate(yakit.ProfileTables...)
 
@@ -90,7 +90,7 @@ func initializeDatabase(projectDatabase string, profileDBName string) error {
 		return nil
 	}
 
-	// 调用一些数据库初始化的操作
+	// Call some database initialization operations
 	err = yakit.CallPostInitDatabase()
 	if err != nil {
 		return utils.Errorf("CallPostInitDatabase failed: %s", err)
@@ -111,12 +111,12 @@ func isVersionCommand() bool {
 }
 
 func init() {
-	// 取消掉 0022 的限制，让用户可以创建别人也能写的文件夹
+	// Remove the restriction of 0022, allowing users to create folders that others can write to
 	umask.Umask(0)
 	systemLog.Default().SetOutput(io.Discard)
 
 	/*
-		进行一些必要初始化，永远不要再 init 中直接调用数据库，不然会破坏数据库加载的顺序
+		Perform some necessary initialization, never call the database directly in init, otherwise it will destroy the order of database loading
 	*/
 	log.Debugf(`Yaklang Engine %v Initializing`, yakVersion)
 
@@ -152,7 +152,7 @@ func init() {
 		goVersion = runtime.Version()
 	}
 
-	/* 初始化数据库: 在 grpc 模式下，数据库应该不在 init 中使用 */
+	/* Initialize the database: In grpc mode, the database should not use */
 	if len(os.Args) > 1 && os.Args[1] == "grpc" {
 		log.Debug("grpc should not initialize database in func:init")
 		fmt.Printf(`
@@ -175,7 +175,7 @@ func init() {
 
 var installSubCommand = cli.Command{
 	Name:  "install",
-	Usage: "安装 Yak/Install Yak  (Add to ENV PATH)",
+	Usage: "Install Yak/Install Yak  (Add to ENV PATH)",
 	Action: func(c *cli.Context) error {
 		file, err := exec.LookPath(os.Args[0])
 		if err != nil && !errors.Is(err, exec.ErrDot) {
@@ -226,7 +226,7 @@ var installSubCommand = cli.Command{
 
 		fp, err := os.OpenFile(installed, os.O_CREATE|os.O_RDWR, os.ModePerm)
 		if err != nil {
-			return utils.Errorf("cannot write to %v ... check permission or ... dir existed?(安装失败，检查是否有 /usr/local/bin/ 的权限？或者尝试 sudo 执行本命令)", installed)
+			return utils.Errorf("cannot write to %v ... check permission or ... dir existed? (Installation failed, check if there is /usr/local/bin/ in this sequence? Or try sudo (execute this command)", installed)
 		}
 		defer fp.Close()
 		_, err = io.Copy(fp, originFp)
@@ -242,13 +242,13 @@ var installSubCommand = cli.Command{
 var registeredTunnelOperators = []cli.Command{
 	{
 		Name:    "inspect-tuns",
-		Usage:   "查看注册 tunnels 信息",
+		Usage:   "View registered tunnels information",
 		Aliases: []string{"lst"},
 		Flags: []cli.Flag{
-			cli.StringFlag{Name: "server", Usage: "远程 Yak Bridge X 服务器", Value: "127.0.0.1:64333"},
-			cli.StringFlag{Name: "secret", Usage: "远程 Yak Bridge X 服务器密码"},
-			cli.StringFlag{Name: "secondary-password,x", Usage: "远程 Yak Bridge X 服务器的二级密码，避免别人查看注册管道"},
-			cli.StringFlag{Name: "id", Usage: "指定 ID 查看 Tunnel 信息与认证"},
+			cli.StringFlag{Name: "server", Usage: "Remote Yak Bridge bit (16 bytes), if the key file is provided, the same key file needs to be provided when executing the yakc file subsequently.", Value: "127.0.0.1:64333"},
+			cli.StringFlag{Name: "secret", Usage: ". Remote Yak Bridge"},
+			cli.StringFlag{Name: "secondary-password,x", Usage: "remote Secondary password of Yak Bridge Issuing certificate"},
+			cli.StringFlag{Name: "id", Usage: "Specify ID to view Tunnel information and authentication"},
 		},
 		Action: func(c *cli.Context) error {
 			ctx, client, _, err := cybertunnel.GetClient(context.Background(), c.String("server"), c.String("secret"))
@@ -308,17 +308,17 @@ var registeredTunnelOperators = []cli.Command{
 
 var mirrorGRPCServerCommand = cli.Command{
 	Name:  "xgrpc",
-	Usage: "启动 GRPC，开启映射",
+	Usage: "Start GRPC and enable mapping",
 	Flags: []cli.Flag{
-		cli.StringFlag{Name: "server", Usage: "远程 Yak Bridge X 服务器"},
-		cli.StringFlag{Name: "secret", Usage: "远程 Yak Bridge X 服务器密码"},
-		cli.StringFlag{Name: "note", Usage: "可携带的基础信息"},
+		cli.StringFlag{Name: "server", Usage: "Remote Yak Bridge bit (16 bytes), if the key file is provided, the same key file needs to be provided when executing the yakc file subsequently."},
+		cli.StringFlag{Name: "secret", Usage: ". Remote Yak Bridge"},
+		cli.StringFlag{Name: "note", Usage: "can carry basic information"},
 		cli.StringFlag{Name: "gen-tls-crt", Value: "build/"},
 	},
 	Hidden: true,
 	Action: func(c *cli.Context) error {
 		if c.String("note") == "" {
-			return utils.Errorf("mirror grpc need basic info ... at least: 你必须设置 --note 参数，例如 --note zhangsan 以便服务器区分您")
+			return utils.Errorf("mirror grpc need basic info... at least: You must set the --note parameter, For example --note zhangsan so that the server can distinguish you")
 		}
 
 		secret := utils.RandStringBytes(30)
@@ -370,10 +370,10 @@ var mirrorGRPCServerCommand = cli.Command{
 
 func slowLogUnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	start := time.Now()
-	// 继续处理请求
+	// Continue to process requests
 	resp, err := handler(ctx, req)
 
-	// 计算请求处理的时间
+	// Calculate the request processing time
 	elapsed := time.Since(start)
 	log.Debugf("exec RPC: %s, took %v \n", info.FullMethod, elapsed)
 
@@ -381,14 +381,14 @@ func slowLogUnaryInterceptor(ctx context.Context, req interface{}, info *grpc.Un
 		logMsg := fmt.Sprintf("slow RPC: %s, took %v\n", info.FullMethod, elapsed)
 
 		log.Warnf(logMsg)
-		// 打开文件，如果文件不存在则创建，如果文件存在则在文件末尾追加
+		// Open the file. If the file does not exist, create it. If the file exists, append
 		f, err := os.OpenFile("debug-slow.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
 		if err != nil {
 			log.Println(err)
 		}
 		defer f.Close()
 
-		// 将日志写入文件
+		// Write the log to the file
 		if _, err := f.WriteString(logMsg); err != nil {
 			log.Println(err)
 		}
@@ -399,25 +399,25 @@ func slowLogUnaryInterceptor(ctx context.Context, req interface{}, info *grpc.Un
 
 var startGRPCServerCommand = cli.Command{
 	Name:   "grpc",
-	Usage:  "启动 GRPC 服务器",
+	Usage:  "Start the GRPC server",
 	Hidden: false,
 	Flags: []cli.Flag{
 		cli.StringFlag{
 			Name:  "home",
-			Usage: "设置用户数据所在的位置，包含插件 / 数据库等",
+			Usage: "Set the location of user data, including the plug-in / database, etc.",
 		},
 		cli.StringFlag{
 			Name: "host", Value: "127.0.0.1",
-			Usage: "启动 GRPC 服务器的本地地址",
+			Usage: "starts the GRPC server Local address",
 		},
 		cli.IntFlag{
 			Name: "port", Value: 8087,
 			// Name: "port", Value: 8080,
-			Usage: "启动 GRPC 的端口",
+			Usage: "to start the GRPC port",
 		},
 		cli.StringFlag{
 			Name:  "secret",
-			Usage: "启动 GRPC 的认证口令",
+			Usage: "Start GRPC authentication password",
 		},
 		cli.BoolFlag{
 			Name: "tls",
@@ -428,11 +428,11 @@ var startGRPCServerCommand = cli.Command{
 		},
 		cli.BoolFlag{
 			Name:  "pprof",
-			Usage: "手动 pprof 采集",
+			Usage: "Manual pprof Collect",
 		},
 		cli.Float64Flag{
 			Name:  "auto-pprof",
-			Usage: "指定 pprof 采集秒数间隔,eg. 10",
+			Usage: "Specify pprof Collection seconds interval, eg. 10",
 		},
 		cli.BoolFlag{
 			Name: "debug",
@@ -447,7 +447,7 @@ var startGRPCServerCommand = cli.Command{
 		},
 		cli.BoolFlag{
 			Name:  "disable-output",
-			Usage: "禁止插件的一些输出",
+			Usage: "Disable some output of the plug-in",
 		},
 	},
 	Action: func(c *cli.Context) error {
@@ -490,7 +490,7 @@ var startGRPCServerCommand = cli.Command{
 			return err
 		}
 
-		/* 初始化数据库后进行权限修复 */
+		/* Initialize the database and then repair the permissions */
 		base := consts.GetDefaultYakitBaseDir()
 		projectDatabaseName := consts.GetDefaultYakitProjectDatabase(base)
 		profileDatabaseName := consts.GetDefaultYakitPluginDatabase(base)
@@ -553,7 +553,7 @@ var startGRPCServerCommand = cli.Command{
 		var lis net.Listener
 
 		if c.Bool("tls") {
-			// 签发证书
+			// Issue certificate
 			var cert []byte
 			var key []byte
 			var err error
@@ -612,7 +612,7 @@ var startGRPCServerCommand = cli.Command{
 			log.Info("the current yak grpc for '127.0.0.1', if u want to connect from other host. use \n" +
 				"    yak grpc --host 0.0.0.0")
 		}
-		log.Infof("yak grpc ok") // 勿删
+		log.Infof("yak grpc ok") // Do not delete
 		err = grpcTrans.Serve(lis)
 		if err != nil {
 			log.Error(err)
@@ -634,17 +634,17 @@ func startPProf(sec float64) {
 		return
 	}
 	for {
-		// 启动 CPU 采样
+		// Start the CPU Sample
 		go func() {
 			cpuFile, _ := os.Create(path.Join(pprofCpuDir, fmt.Sprintf("cpu_%d.pprof", time.Now().Unix())))
 			defer cpuFile.Close()
 
 			pprof.StartCPUProfile(cpuFile)
-			time.Sleep(time.Duration(sec) * time.Second) // 采样 sec 秒
+			time.Sleep(time.Duration(sec) * time.Second) // Sampling sec seconds
 			pprof.StopCPUProfile()
 		}()
 
-		// 启动内存采样
+		// Start memory sampling
 		go func() {
 			memFile, _ := os.Create(path.Join(pprofMemDir, fmt.Sprintf("mem_%d.pprof", time.Now().Unix())))
 			defer memFile.Close()
@@ -652,7 +652,7 @@ func startPProf(sec float64) {
 			pprof.WriteHeapProfile(memFile)
 		}()
 
-		time.Sleep(time.Duration(sec) * time.Second) // 等待 sec 秒后再次采样
+		time.Sleep(time.Duration(sec) * time.Second) // Wait for sec seconds and then sample again
 	}
 }
 
@@ -689,7 +689,7 @@ var cveCommand = cli.Command{
 		cvePath := filepath.Join(consts.GetDefaultYakitBaseTempDir(), "cve")
 		os.MkdirAll(cvePath, 0o755)
 
-		/* 开始构建 */
+		/* Start building */
 		outputFile := c.String("output")
 		if outputFile == "" {
 			outputFile = consts.GetCVEDatabasePath()
@@ -830,7 +830,7 @@ var translatingCommand = cli.Command{
 	Flags: []cli.Flag{
 		cli.StringFlag{
 			Name:  "keyfile",
-			Usage: "API Key 的文件",
+			Usage: "API Key file",
 		},
 		cli.BoolFlag{
 			Name: "no-critical",
@@ -871,7 +871,7 @@ func main() {
 	consts.SetPalmVersion(yakVersion)
 	consts.SetYakVersion(yakVersion)
 
-	// 启动 bridge
+	// Start bridge
 	tunnelServerCliApp := cybertunnel.GetTunnelServerCommandCli()
 	tunnelServerCommand := cli.Command{
 		Name:    "tunnel-server",
@@ -1023,7 +1023,7 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "dir",
-					Usage: "生成的文档路径",
+					Usage: "Generated document path",
 					Value: "docs",
 				},
 			},
@@ -1076,12 +1076,12 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "from",
-					Usage: "生成的文档源文件路径",
+					Usage: "generated document source file path",
 					Value: "docs",
 				},
 				cli.StringFlag{
 					Name:  "to",
-					Usage: "生成 Markdown 内容",
+					Usage: "Generate Markdown content",
 					Value: "build/yakapis/",
 				},
 				cli.StringFlag{
@@ -1133,19 +1133,19 @@ func main() {
 		},
 		{
 			Name:  "doc",
-			Usage: "查看脚本引擎所有的可使用的接口和说明",
+			Usage: "View all script engines Available interfaces and descriptions",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "lib,extlib,l,t",
-					Usage: "展示特定第三方扩展包的定义和帮助信息",
+					Usage: "Continue processing requests",
 				},
 				cli.StringFlag{
 					Name:  "func,f",
-					Usage: "展示特定第三方扩展包函数的定义",
+					Usage: "Display the definition of a specific third-party extension package function",
 				},
 				cli.BoolFlag{
 					Name:  "all-lib,all-libs,libs",
-					Usage: "展示所有第三方包的帮助信息",
+					Usage: "Display help for all third-party packages Information",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -1190,15 +1190,15 @@ func main() {
 		},
 		{
 			Name:  "compile",
-			Usage: "编译yak脚本，生成yakc文件(仅限新引擎)",
+			Usage: "Compile yak script and generate yakc file (new engine only)",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "output,o",
-					Usage: "yakc的输出路径",
+					Usage: "What are the permissions of",
 				},
 				cli.StringFlag{
 					Name:  "key,k",
-					Usage: "编译yakc时所需要的密钥文件，是可选的，长度为128 bit(16 字节)，若提供了该密钥文件，后续执行yakc文件时，需要提供相同的密钥文件",
+					Usage: "The key file required when compiling yakc is optional. The length is 128 bits (16 bytes). If the key file is provided, the same key file",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -1298,11 +1298,11 @@ func main() {
 		mirrorGRPCServerCommand,
 		registeredTunnelOperators[0],
 
-		// 分布式用到的两个命令
+		// Two commands used in distributed
 		mqConnectCommand,
 		distYakCommand,
 
-		// CVE 相关命令
+		// CVE related commands
 		cveCommand,
 		translatingCommand,
 
@@ -1339,7 +1339,7 @@ func main() {
 		// dap
 		{
 			Name:  "dap",
-			Usage: "启动基于调试适配器协议(dap)的服务器以调试脚本",
+			Usage: "Start a server based on the debug adapter protocol (dap) to debug scripts",
 			Flags: []cli.Flag{
 				cli.StringFlag{Name: "host", Usage: "debugger adapter listen host"},
 				cli.IntFlag{Name: "port", Usage: "debugger adapter listen port"},
@@ -1356,7 +1356,7 @@ func main() {
 					return nil
 				}
 
-				// 设置日志级别
+				// Set log level
 				if debug {
 					log.SetLevel(log.DebugLevel)
 				}
@@ -1380,7 +1380,7 @@ func main() {
 		// fmt
 		{
 			Name:  "fmt",
-			Usage: "格式化代码",
+			Usage: "Format code",
 			Flags: []cli.Flag{
 				cli.BoolFlag{Name: "version,v", Usage: "show formatter version"},
 			},
@@ -1419,27 +1419,27 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "code,c",
-			Usage: "yak代码",
+			Usage: "yak code",
 		},
 		cli.BoolFlag{
 			Name:  "hex",
-			Usage: "yak代码(被HEX编码)",
+			Usage: "yak code (encoded by HEX)",
 		},
 		cli.BoolFlag{
 			Name:  "base64",
-			Usage: "yak代码(被Base64编码)",
+			Usage: "yak code (encoded by Base64)",
 		},
 		cli.StringFlag{
 			Name:  "key,k",
-			Usage: "执行yakc时所需要的密钥文件，是可选的，长度为128 bit(16 字节)",
+			Usage: "The key file required when executing yakc is optional and has a length of 128 bits (16 bytes)",
 		},
 		cli.BoolFlag{
 			Name:  "cdebug",
-			Usage: "以命令行debug模式执行yak(仅限新引擎,对yakc文件无效)，进入cli debug",
+			Usage: "Execute yak in command line debug mode (only for new engines, invalid for yakc files), enter cli debug",
 		},
 		cli.StringFlag{
 			Name:   "netx-proxy",
-			Usage:  "为底层Netx设置代理",
+			Usage:  "Set the proxy for the underlying Netx",
 			EnvVar: "NETX_PROXY",
 		},
 	}
@@ -1463,7 +1463,7 @@ func main() {
 		}
 
 		if len(args) > 0 {
-			// args 被解析到了，说明后面跟着文件，去读文件出来吧
+			// . The args are parsed, indicating that the file is followed. Read the file.
 			file := args[0]
 			if file != "" {
 				absFile := file

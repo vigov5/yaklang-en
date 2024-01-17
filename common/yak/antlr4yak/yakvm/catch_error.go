@@ -1,30 +1,30 @@
 package yakvm
 
 func (v *Frame) catchErrorRun(catchCodeIndex, id int) (err interface{}) {
-	// 备份作用域，退出 try block 后恢复作用域，防止异常退出后作用域不正确
+	// backs up the scope and restores the scope after exiting the try block. , to prevent incorrect scope after abnormal exit.
 	scopeBackpack := v.scope
 
-	// 退出Try的情况
+	// Exit Try case
 	// 1. (OpExitCatchError)OpBreak
 	// 2. (OpExitCatchError)OpContinue
 	// 3. (OpExitCatchError)OpReturn
 	// 4. panic
-	// 5. 正常执行完try-block退出
-	// 1/2情况不需要退出作用域，因为break和continue会自己处理作用域
-	// 情况3需要手动复原作用域到try-catch-finally外
-	// 情况4需要手动复原作用域到try-catch-finally
-	// 情况5需要手动复原作用域到try-catch-finally
+	// 5. Exit
+	// 1/2 does not require exiting the scope, because break and continue will handle the scope by themselves.
+	// situation 3 requires manual restoration of the scope to outside try-catch-finally.
+	// Case 4 requires manual restoration of the scope to try-catch-finally
+	// after normal execution of try-block Case 5 requires manual restoration of the role Scope to try-catch-finally
 	defer func() {
-		// 除1/2情况，都需要恢复到try-catch-finally作用域
+		// Divide 1/2 situation requires restoration to try-catch-finally scope.
 		if !(v.codes[v.codePointer+1].Opcode == OpBreak || v.codes[v.codePointer+1].Opcode == OpContinue) {
 			v.scope = scopeBackpack
-			// 情况3需要退出try-catch-finally作用域
+			// Case 3 requires exiting the try-catch-finally scope
 			if v.codes[v.codePointer+1].Opcode == OpReturn {
 				v.ExitScope()
 			}
 		}
 
-		//出现错误后为 err 赋值并跳转到 catch block
+		//After an error occurs, assign a value to err and jump to the catch block.
 		if err != nil {
 			v.setCodeIndex(catchCodeIndex)
 			if id > 0 {

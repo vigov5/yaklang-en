@@ -232,7 +232,7 @@ func ParseHeader(data []byte) (*MessageHeader, error) {
 }
 func parseIOR(bu *BytesUtils) (*MessageIOR, error) {
 	ior := &MessageIOR{}
-	//读取IOR
+	//Read IOR
 	l, err := bu.Read4BytesToInt()
 	ior_type, err := bu.ReadBytes(l)
 	if err != nil {
@@ -307,7 +307,7 @@ func parseContextList(bu *BytesUtils) ([]*ServiceContext, error) {
 }
 func ParseMessageResponse(data []byte) (*MessageResponse, error) {
 	bu := NewBytesUtils(data)
-	//读取header
+	//Read header
 	headerByte, err := bu.ReadBytes(12)
 	if err != nil {
 		return nil, utils.Error("header format error")
@@ -320,7 +320,7 @@ func ParseMessageResponse(data []byte) (*MessageResponse, error) {
 		Header: header,
 	}
 
-	//读取一些flag
+	//Read some flags
 	flagsBu, err := bu.NewChildBytesUtils(8)
 	if err != nil {
 		return nil, utils.Error("ior format error")
@@ -400,7 +400,7 @@ func ParseMessageResponse(data []byte) (*MessageResponse, error) {
 }
 func ParseMessageRequest(data []byte) (*MessageRequest, error) {
 	bu := NewBytesUtils(data)
-	//读取header
+	//Read header
 	headerByte, err := bu.ReadBytes(12)
 	if err != nil {
 		return nil, utils.Error("header format error")
@@ -429,7 +429,7 @@ func ParseMessageRequest(data []byte) (*MessageRequest, error) {
 		msg.TargetAddr = targetAddr
 		return msg, nil
 	case Request:
-		//读取一些flag
+		//Read some flags
 		flagsBu, err := bu.NewChildBytesUtils(16)
 		if err != nil {
 			return nil, utils.Error("ior format error")
@@ -462,7 +462,7 @@ func ParseMessageRequest(data []byte) (*MessageRequest, error) {
 		}
 		op := opBu.ReadBytesUnsafe(lop - 1)
 		msg.Operation = op
-		//读取contextList
+		//Read contextList
 		//bu.Next(1)
 		//abu, _ := bu.NewChildBytesUtils(10)
 		//_ = abu

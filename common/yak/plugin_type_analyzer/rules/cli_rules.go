@@ -21,7 +21,7 @@ func init() {
 	plugin_type.RegisterCheckRuler(plugin_type.PluginTypeYak, RuleCliCheck)
 }
 
-// 检查 cli.setDefault 设置的默认值是否符合规范
+// Check whether the default value set by cli.setDefault conforms to the specification.
 func RuleCliDefault(prog *ssaapi.Program) {
 	tag := "SSA-cli-setDefault"
 	checkCliDefault := func(funcName string, typs []*ssaapi.Type, checkCallBack func(funcName string, v *ssaapi.Value) (string, bool)) {
@@ -71,7 +71,7 @@ func RuleCliDefault(prog *ssaapi.Program) {
 		})
 	}
 	urlsCallback := func(funcName string, v *ssaapi.Value) (string, bool) {
-		// 如果不是constInst，无法分析
+		// If it is not constInst, it cannot be analyzed.
 		if !v.IsConstInst() {
 			return "", true
 		}
@@ -93,7 +93,7 @@ func RuleCliDefault(prog *ssaapi.Program) {
 	}
 
 	portsCallback := func(funcName string, v *ssaapi.Value) (string, bool) {
-		// 如果不是constInst，无法分析
+		// If it is not constInst, it cannot be analyzed.
 		if !v.IsConstInst() {
 			return "", true
 		}
@@ -118,7 +118,7 @@ func RuleCliDefault(prog *ssaapi.Program) {
 	}
 
 	hostCallback := func(funcName string, v *ssaapi.Value) (string, bool) {
-		// 如果不是constInst，无法分析
+		// If it is not constInst, it cannot be analyzed.
 		if !v.IsConstInst() {
 			return "", true
 		}
@@ -132,7 +132,7 @@ func RuleCliDefault(prog *ssaapi.Program) {
 	}
 
 	fileCallback := func(funcName string, v *ssaapi.Value) (string, bool) {
-		// 如果不是constInst，无法分析
+		// If it is not constInst, it cannot be analyzed.
 		if !v.IsConstInst() {
 			return "", true
 		}
@@ -150,7 +150,7 @@ func RuleCliDefault(prog *ssaapi.Program) {
 	}
 
 	fileOrContentCallback := func(funcName string, v *ssaapi.Value) (string, bool) {
-		// 如果不是constInst，无法分析
+		// If it is not constInst, it cannot be analyzed.
 		if !v.IsConstInst() {
 			return "", true
 		}
@@ -186,8 +186,8 @@ func RuleCliDefault(prog *ssaapi.Program) {
 	checkCliDefault("cli.Bool", []*ssaapi.Type{ssaapi.Boolean}, nil)
 	checkCliDefault("cli.Int", []*ssaapi.Type{ssaapi.Number, ssaapi.String}, intCallback)
 	checkCliDefault("cli.Integer", []*ssaapi.Type{ssaapi.Number, ssaapi.String}, intCallback)
-	checkCliDefault("cli.Double", []*ssaapi.Type{ssaapi.Number, ssaapi.String}, floatCallback) // 需要区分 int 和 double
-	checkCliDefault("cli.Float", []*ssaapi.Type{ssaapi.Number, ssaapi.String}, floatCallback)  // 需要区分 int 和 double
+	checkCliDefault("cli.Double", []*ssaapi.Type{ssaapi.Number, ssaapi.String}, floatCallback) // needs to distinguish between int and double.
+	checkCliDefault("cli.Float", []*ssaapi.Type{ssaapi.Number, ssaapi.String}, floatCallback)  // needs to distinguish between int and double.
 	checkCliDefault("cli.Url", []*ssaapi.Type{ssaapi.Any}, urlsCallback)
 	checkCliDefault("cli.Urls", []*ssaapi.Type{ssaapi.Any}, urlsCallback)
 	checkCliDefault("cli.Port", []*ssaapi.Type{ssaapi.Any}, portsCallback)
@@ -206,7 +206,7 @@ func RuleCliDefault(prog *ssaapi.Program) {
 	checkCliDefault("cli.Text", []*ssaapi.Type{ssaapi.String}, nil)
 }
 
-// 检查参数名是否重复和参数名是否符合规范
+// Check whether the parameter name is repeated and whether the parameter name conforms to the specification.
 func RuleCliParamName(prog *ssaapi.Program) {
 	tag := "SSA-cli-paramName"
 	cliFuncNames := []string{
@@ -261,7 +261,7 @@ func RuleCliParamName(prog *ssaapi.Program) {
 	}
 }
 
-// 检查是否在最后面调用了 cli.check
+// Check whether cli.check is called at the end.
 func RuleCliCheck(prog *ssaapi.Program) {
 	tag := "SSA-cli-check"
 	cliFuncNames := []string{

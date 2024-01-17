@@ -236,7 +236,7 @@ type MatcherResultAnalysis struct {
 func (s *MatcherResultAnalysis) Show() {
 	var tw *tablewriter.Table
 	tw = tablewriter.NewWriter(os.Stdout)
-	tw.SetHeader([]string{"主机", "开放端口数"})
+	tw.SetHeader([]string{"Host", "Number of open ports"})
 	for host, port := range s.TargetOpenPortCountMap {
 		tw.Append([]string{host, fmt.Sprint(port)})
 	}
@@ -244,7 +244,7 @@ func (s *MatcherResultAnalysis) Show() {
 	println()
 
 	tw = tablewriter.NewWriter(os.Stdout)
-	tw.SetHeader([]string{"端口", "指纹（简）"})
+	tw.SetHeader([]string{"Port", "Fingerprint (simplified)"})
 	for port, service := range s.OpenPortServiceMap {
 		tw.Append([]string{port, fmt.Sprint(service)})
 	}
@@ -253,9 +253,9 @@ func (s *MatcherResultAnalysis) Show() {
 
 	tw = tablewriter.NewWriter(os.Stdout)
 	tw.AppendBulk([][]string{
-		{"扫描总数", fmt.Sprint(s.TotalScannedPort)},
-		{"开放端口", fmt.Sprint(s.TotalOpenPort)},
-		{"关闭端口", fmt.Sprint(len(s.ClosedPort))},
+		{"Total number of scans", fmt.Sprint(s.TotalScannedPort)},
+		{"Open ports", fmt.Sprint(s.TotalOpenPort)},
+		{"Closed ports", fmt.Sprint(len(s.ClosedPort))},
 	})
 	tw.Render()
 }

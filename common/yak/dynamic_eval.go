@@ -42,7 +42,7 @@ func QuickEvalWithoutContext(i interface{}) error {
 
 type yakEvalConfig struct {
 	params map[string]interface{}
-	// 递归导入
+	// Recursive import
 	recursive bool
 }
 
@@ -123,7 +123,7 @@ func LoadingVariableFrom(path string, exportsName string, opts ...yakEvalConfigO
 		path = "."
 	}
 
-	// 加载配置
+	// Load configuration
 	config := &yakEvalConfig{}
 	for _, opt := range opts {
 		opt(config)
@@ -136,7 +136,7 @@ func LoadingVariableFrom(path string, exportsName string, opts ...yakEvalConfigO
 	var fileInfos []*utils.FileInfo
 	var err error
 	if utils.IsDir(path) {
-		// 直接导入一个文件夹的 mod
+		// Directly import a folder’s mod
 		if config.recursive {
 			fileInfos, err = utils.ReadDirsRecursively(path)
 			if err != nil {
@@ -149,7 +149,7 @@ func LoadingVariableFrom(path string, exportsName string, opts ...yakEvalConfigO
 			}
 		}
 	} else {
-		// 直接导入一个文件
+		// Directly import a file
 		exitedFile := utils.GetFirstExistedPath(
 			path, fmt.Sprintf("%v.yak", path),
 		)

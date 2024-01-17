@@ -64,24 +64,24 @@ func TestMultiFileLineReader_GetPercent(t *testing.T) {
 }
 
 func TestMultiFileLineReader_Recover(t *testing.T) {
-	// 创建临时文件
+	// Create temporary file
 	tmpFile1, err := ioutil.TempFile("", "targets1.txt")
 	if err != nil {
-		log.Errorf("创建临时文件失败: %v", err)
+		log.Errorf("Failed to create temporary file: % v", err)
 	}
 	tmpFile2, err := ioutil.TempFile("", "targets2.txt")
 	if err != nil {
-		log.Errorf("创建临时文件失败: %v", err)
+		log.Errorf("Failed to create temporary file: % v", err)
 	}
 	tmpFile3, err := ioutil.TempFile("", "targets3.txt")
 	if err != nil {
-		log.Errorf("创建临时文件失败: %v", err)
+		log.Errorf("Failed to create temporary file: % v", err)
 	}
 	defer os.Remove(tmpFile1.Name())
 	defer os.Remove(tmpFile2.Name())
 	defer os.Remove(tmpFile3.Name())
 
-	// 向临时文件写入数据
+	// Write data to the temporary file
 	for i, r := range mutate.MutateQuick(`{{net(1.1.1.1/24)}}`) {
 		if i >= 10 {
 			break
@@ -107,10 +107,10 @@ func TestMultiFileLineReader_Recover(t *testing.T) {
 	files := []string{tmpFile1.Name(), tmpFile2.Name(), tmpFile3.Name()}
 	reader, err := NewMultiFileLineReader(files...)
 	if err != nil {
-		log.Errorf("创建MultiFileLineReader失败: %v", err)
+		log.Errorf("Failed to create MultiFileLineReader: %v", err)
 	}
 
-	// 读取一部分内容
+	// Read part of the content
 	for i := 0; i < 5; i++ {
 		if reader.Next() {
 			line := reader.Text()
@@ -120,21 +120,21 @@ func TestMultiFileLineReader_Recover(t *testing.T) {
 		}
 	}
 
-	// 模拟中断，保存文件指针位置和currentFileIndex
+	// Simulate interruption, save the file pointer position and currentFileIndex
 	reader.fpPtrTable.Range(func(key, value interface{}) bool {
-		t.Logf("保存文件 %s 的指针位置: %d\n", key, value)
+		t.Logf("Save the pointer position of file %s: %d\n", key, value)
 		return true
 	})
-	t.Logf("保存currentFileIndex: %d\n", reader.currentFileIndex)
+	t.Logf("Save currentFileIndex: %d\n", reader.currentFileIndex)
 
-	// 模拟恢复读取，从保存的文件指针位置和currentFileIndex继续读取
-	t.Log("恢复读取:")
+	// Simulate resumption of reading, continue reading from the saved file pointer position and currentFileIndex
+	t.Log("Resume reading:")
 	reader2, err := NewMultiFileLineReader(files...)
 	if err != nil {
-		log.Errorf("创建MultiFileLineReader失败: %v", err)
+		log.Errorf("Failed to create MultiFileLineReader: %v", err)
 	}
-	reader2.fpPtrTable = reader.fpPtrTable             // 从已保存的指针位置恢复读取
-	reader2.currentFileIndex = reader.currentFileIndex // 恢复currentFileIndex
+	reader2.fpPtrTable = reader.fpPtrTable             // Resume reading from the saved pointer position
+	reader2.currentFileIndex = reader.currentFileIndex // Restore currentFileIndex
 
 	for reader2.Next() {
 		line := reader2.Text()

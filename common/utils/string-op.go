@@ -15,7 +15,7 @@ import (
 	"github.com/yaklang/yaklang/common/yak/yaklib/codec"
 )
 
-// SplitAndTrim 将字符串s按照sep分割成字符串切片，并且去除每个字符串的前后空白字符
+// . SplitAndTrim splits the string s into string slices according to sep, and removes the leading and trailing whitespace of each string. Character
 // Example:
 // ```
 // str.SplitAndTrim(" hello yak ", " ") // ["hello", "yak"]
@@ -110,7 +110,7 @@ func ToLowerAndStrip(s string) string {
 	return strings.TrimSpace(strings.ToLower(s))
 }
 
-// StringSliceContains 判断字符串切片s中是否包含raw，对于非字符串的切片，会尝试将其元素转换为字符串再判断是否包含
+// StringSliceContains Determines whether the string slice s contains raw. For non-string slices, It will try to convert its elements into strings and then determine whether it contains
 // Example:
 // ```
 // str.StringSliceContains(["hello", "yak"], "yak") // true
@@ -143,7 +143,7 @@ func StringSliceContain(s interface{}, raw string) (result bool) {
 	return haveResult
 }
 
-// StringContainsAnyOfSubString 判断字符串s中是否包含subs中的任意一个子串
+// StringContainsAnyOfSubString Determines whether the string s contains any substring in subs
 // Example:
 // ```
 // str.StringContainsAnyOfSubString("hello yak", ["yak", "world"]) // true
@@ -251,25 +251,25 @@ func ParseStringToVisible(raw interface{}) string {
 }
 
 func EscapeInvalidUTF8Byte(s []byte) string {
-	// 这个操作返回的结果和原始字符串是非等价的
+	// . The result returned by this operation is not equivalent to the original string
 	ret := make([]rune, 0, len(s)+20)
 	start := 0
 	for {
 		r, size := utf8.DecodeRune(s[start:])
 		if r == utf8.RuneError {
-			// 说明是空的
+			// Description is empty
 			if size == 0 {
 				break
 			} else {
-				// 不是 rune
+				// is not rune
 				ret = append(ret, []rune(fmt.Sprintf("\\x%02x", s[start]))...)
 			}
 		} else {
-			// 不是换行之类的控制字符
+			// is not a control character such as line break
 			if unicode.IsControl(r) && !unicode.IsSpace(r) {
 				ret = append(ret, []rune(fmt.Sprintf("\\x%02x", r))...)
 			} else {
-				// 正常字符
+				// Normal character
 				ret = append(ret, r)
 			}
 		}

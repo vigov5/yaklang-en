@@ -24,7 +24,7 @@ func _floatSeconds(f float64) time.Duration {
 type tcpConnection struct {
 	net.Conn
 
-	// 默认读的超时
+	// Default read timeout
 	timeoutSeconds time.Duration
 }
 
@@ -178,19 +178,19 @@ var TcpExports = map[string]interface{}{
 
 	"Connect": _tcpConnect,
 
-	// 设置超时和 local
+	// Set timeout and local
 	"clientTimeout": _tcpTimeout,
 	"clientLocal":   _tcpLocalAddr,
 	"clientTls":     _tcpClientTls,
 	"clientProxy":   _tcpClientProxy,
 
-	// 设置 tcp 服务器
+	// Set up tcp server
 	"Serve":          tcpServe,
 	"serverCallback": _tcpServeCallback,
 	"serverContext":  _tcpServeContext,
 	"serverTls":      _tcpServerTls,
 
-	// tcp 端口转发
+	// tcp port forwarding
 	"Forward": _tcpPortForward,
 }
 

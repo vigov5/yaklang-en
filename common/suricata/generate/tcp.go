@@ -29,7 +29,7 @@ func newTCPGen(r *rule.Rule) (Generator, error) {
 	for mdf, rr := range contentRuleMap(r.ContentRuleConfig.ContentRules) {
 		switch mdf {
 		case modifier.TCPHDR:
-			// 暂时不太想支持，和其他tcpconfig冲突比较严重,用的也不多
+			// I don’t want to support it for the time being. It conflicts seriously with other tcpconfigs and is not used much.
 			log.Warnf("tcp.hdr modifier won't support in tcp generator")
 		case modifier.Default:
 			g.payload = parse2ContentGen(rr, WithNoise(noiseAll))

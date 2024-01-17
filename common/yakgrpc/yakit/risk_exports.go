@@ -27,43 +27,43 @@ type RiskParamsOpt func(r *Risk)
 func RiskTypeToVerbose(i string) string {
 	switch strings.ToLower(i) {
 	case "random-port-trigger[tcp]":
-		return "反连[TCP]-随机端口"
+		return "reverse connection [TCP]-random port"
 	case "random-port-trigger[udp]":
-		return "反连[UDP]-随机端口"
+		return "deconnect [UDP] - random port"
 	case "reverse":
 		fallthrough
 	case "reverse-":
-		return "反连[unknown]"
+		return "Reverse connection [unknown]"
 	case "reverse-tcp":
-		return "反连[TCP]"
+		return "deconnect [TCP]"
 	case "reverse-tls":
-		return "反连[TLS]"
+		return "Redirect [TLS]"
 	case "reverse-rmi":
-		return "反连[RMI]"
+		return "Redirect [RMI]"
 	case "reverse-rmi-handshake":
-		return "反连[RMI握手]"
+		return "deconnect [RMI handshake]"
 	case "reverse-http":
-		return "反连[HTTP]"
+		return "Redirect [HTTP]"
 	case "reverse-https":
-		return "反连[HTTPS]"
+		return "reverse connection [HTTPS]"
 	case "reverse-dns":
-		return "反连[DNS]"
+		return "deconnect [DNS]"
 	case "reverse-ldap":
-		return "反连[LDAP]"
+		return "reverse connection [LDAP]"
 	case "xss":
 		return "XSS"
 	case "sqli", "sqlinj", "sql-inj", "sqlinjection", "sql-injection":
-		return "SQL注入"
+		return "SQL injection"
 	case "ssti":
 		return "SSTI"
 	case "ssrf":
 		return "SSRF"
 	case "rce":
-		return "远程代码执行"
+		return "Remote code execution"
 	case "lfi":
-		return "本地文件包含(LFI)"
+		return "local File Includes (LFI)"
 	case "rfi":
-		return "远程文件包含(RFI)"
+		return "Remote File contains (RFI)"
 	}
 	return strings.ToUpper(i)
 }
@@ -179,11 +179,11 @@ func WithRiskParam_Details(i interface{}) RiskParamsOpt {
 
 		details := utils.InterfaceToGeneralMap(i)
 		if details != nil {
-			// 遍历 details map 并检查每个值的大小
+			// Traverse the details map and check the size of each value
 			for key, value := range details {
 				valueStr := utils.InterfaceToString(value)
 				if len(valueStr) > MaxSize {
-					// 如果值的大小超过2MB，裁剪它
+					// If the size of the value exceeds 2MB, crop it
 					details[key] = limitSize(valueStr, MaxSize)
 				}
 			}
@@ -344,7 +344,7 @@ func _createRisk(u string, opts ...RiskParamsOpt) *Risk {
 
 	if r.RiskType == "" {
 		r.RiskType = "info"
-		r.RiskTypeVerbose = "信息[默认]"
+		r.RiskTypeVerbose = "Information [Default]"
 	}
 
 	return r
@@ -569,7 +569,7 @@ func CheckDNSLogByToken(token string, timeout ...float64) ([]*tpb.DNSLogEvent, e
 			NewRisk(
 				"dnslog://"+e.RemoteAddr,
 				WithRiskParam_Title(fmt.Sprintf(`DNSLOG[%v] - %v from: %v`, e.Type, e.Domain, e.RemoteAddr)),
-				WithRiskParam_TitleVerbose(fmt.Sprintf(`DNSLOG 触发 - %v 源：%v`, e.Domain, e.RemoteAddr)),
+				WithRiskParam_TitleVerbose(fmt.Sprintf(`DNSLOG trigger - %v Source: %v`, e.Domain, e .RemoteAddr)),
 				WithRiskParam_Details(e.Raw),
 				WithRiskParam_RiskType(fmt.Sprintf("dns[%v]", e.Type)),
 				WithRiskParam_RiskType(fmt.Sprint("dnslog")),
@@ -624,7 +624,7 @@ func CheckICMPTriggerByLength(i int) (*tpb.ICMPTriggerNotification, error) {
 			fmt.Sprintf("ICMP Specific Length Trigger[bridge:%v] Detected %v", addr, event.CurrentRemoteAddr),
 		),
 		WithRiskParam_Title(
-			fmt.Sprintf("检测到特定长度 ICMP 反连[bridge:%v] 来源：%v", addr, event.CurrentRemoteAddr),
+			fmt.Sprintf("Detected specific length ICMP Reverse connection [bridge:%v] Source: %v", addr, event.CurrentRemoteAddr),
 		),
 		WithRiskParam_Details(event),
 		WithRiskParam_Severity("info"),
@@ -651,7 +651,7 @@ func CheckRandomTriggerByToken(t string) (*tpb.RandomPortTriggerEvent, error) {
 	var maybeScannerVerbose = ""
 	if event.CurrentRemoteCachedConnectionCount > 50 {
 		maybeScanner = fmt.Sprintf(", Maybe Scanner [%v's connection count: %v in one minute]", event.RemoteIP, event.CurrentRemoteCachedConnectionCount)
-		maybeScanner = fmt.Sprintf(" (疑似扫描器 [该 IP[%v] 一分钟内缓存 %v 个连接])", event.RemoteIP, event.CurrentRemoteCachedConnectionCount)
+		maybeScanner = fmt.Sprintf(" (suspected scanner [the IP [%v] caches %v within one minute connections])", event.RemoteIP, event.CurrentRemoteCachedConnectionCount)
 	}
 
 	NewRisk(event.RemoteAddr,
@@ -660,7 +660,7 @@ func CheckRandomTriggerByToken(t string) (*tpb.RandomPortTriggerEvent, error) {
 			fmt.Sprintf("Random Port Trigger[bridge:%v] Detected %v%v", event.LocalPort, event.RemoteAddr, maybeScanner),
 		),
 		WithRiskParam_Title(
-			fmt.Sprintf("检测到随机端口反连[bridge:%v] 来源：%v%v", event.LocalPort, event.RemoteAddr, maybeScannerVerbose),
+			fmt.Sprintf("Random port de-connection detected [bridge:%v] Source: %v%v", event.LocalPort, event.RemoteAddr, maybeScannerVerbose),
 		),
 		WithRiskParam_Token(t),
 		WithRiskParam_Details(event),
@@ -710,27 +710,27 @@ func SolutionAndDescriptionByCWE(FromYakScript, RiskTypeVerbose, TitleVerbose st
 	riskTypeList := map[string]int{
 		"SQL":    89,
 		"XSS":    79,
-		"命令执行":   77,
-		"命令注入":   77,
-		"代码执行":   94,
-		"代码注入":   94,
+		"Command execution":   77,
+		"command injection":   77,
+		"Code execution":   94,
+		"code injection":   94,
 		"CSRF":   352,
-		"文件包含":   41,
-		"文件读取":   41,
-		"文件下载":   41,
-		"文件写入":   434,
-		"文件上传":   434,
+		"file contains":   41,
+		"file reading":   41,
+		"File download":   41,
+		"file is written to":   434,
+		"File upload":   434,
 		"XXE":    91,
 		"XML":    91,
-		"反序列化":   502,
-		"未授权访问":  552,
-		"路径遍历":   22,
-		"敏感信息泄漏": 200,
-		"身份验证错误": 305,
-		"权限提升":   271,
-		"业务逻辑漏洞": 840,
-		"默认配置漏洞": 1188,
-		"弱口令":    1391,
+		"Deserialize":   502,
+		"Unauthorized access":  552,
+		"Path traversal":   22,
+		"Sensitive information leakage": 200,
+		"Authentication error": 305,
+		"Privilege Escalation":   271,
+		"Business logic vulnerability": 840,
+		"Default configuration vulnerability": 1188,
+		"Weak password":    1391,
 		"SSRF":   918,
 	}
 	for k, v := range riskTypeList {

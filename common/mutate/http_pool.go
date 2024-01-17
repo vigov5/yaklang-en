@@ -55,13 +55,13 @@ type httpPoolConfig struct {
 	HookAfterRequest  func([]byte) []byte
 	MirrorHTTPFlow    func([]byte, []byte, map[string]string) map[string]string
 
-	// 请求来源
+	// Request source
 	Source string
 
-	// 强制使用 h2
+	// Force the use of h2
 	ForceHttp2 bool
 
-	// 重试
+	// Retry
 	RetryTimes           int
 	RetryInStatusCode    []int
 	RetryNotInStatusCode []int
@@ -86,7 +86,7 @@ type httpPoolConfig struct {
 
 	DNSNoCache bool
 
-	// 外部开关，用于控制暂停与继续
+	// External switch, Used to control pause and continue
 	ExternSwitch *utils.Switch
 }
 
@@ -393,7 +393,7 @@ type _httpResult struct {
 	DurationMs       int64
 	ServerDurationMs int64
 	Timestamp        int64
-	// 如果有关联插件的话，这就是插件名
+	// If there is an associated plug-in, this is the plug-in name
 	Source string
 
 	ExtraInfo map[string]string
@@ -543,7 +543,7 @@ func _httpPool(i interface{}, opts ...HttpPoolConfigOption) (chan *_httpResult, 
 						swg.Done()
 					}()
 
-					// 处理异常
+					// Handle exception
 					defer func() {
 						if err := recover(); err != nil {
 							log.Errorf("submit fuzzer task failed: %s", err)
@@ -590,7 +590,7 @@ func _httpPool(i interface{}, opts ...HttpPoolConfigOption) (chan *_httpResult, 
 						port = config.Port
 					}
 
-					// 如果 host 被强制覆盖，那么... 替换空
+					// If the host is forcibly overwritten, then... Replace empty
 					if overrideHost != "" {
 						host, port = "", 0
 					}
@@ -638,7 +638,7 @@ func _httpPool(i interface{}, opts ...HttpPoolConfigOption) (chan *_httpResult, 
 					rspInstance, err := lowhttp.HTTP(lowhttpOptions...)
 					var rsp []byte
 					if rspInstance != nil {
-						// 多请求的话，要保留原样
+						// For multiple requests, keep the
 						rsp = rspInstance.RawPacket
 						if !rspInstance.MultiResponse {
 							if ret := lowhttp.GetHTTPPacketHeader(rspInstance.RawPacket, "Content-Encoding"); ret != "" {
@@ -709,7 +709,7 @@ func _httpPool(i interface{}, opts ...HttpPoolConfigOption) (chan *_httpResult, 
 						println(string(rsp))
 					})
 					if len(rsp) <= 0 {
-						ret.Error = utils.Error("服务端没有任何返回数据: empty response (timeout empty)")
+						ret.Error = utils.Error("The server does not return any data: empty response (timeout empty)")
 					}
 					if ret.Response == nil && rsp != nil && !config.NoFixContentLength {
 						ret.Response, err = http.ReadResponse(bufio.NewReader(bytes.NewBuffer(rsp)), reqIns)
@@ -832,7 +832,7 @@ func _httpPool(i interface{}, opts ...HttpPoolConfigOption) (chan *_httpResult, 
 var HttpPoolExports = map[string]interface{}{
 	"Pool": _httpPool,
 
-	// 选项
+	// option
 	"https":              _httpPool_IsHttps,
 	"size":               _httpPool_SetSize,
 	"host":               _httpPool_Host,

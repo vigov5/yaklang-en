@@ -21,18 +21,18 @@ func init() {
 type ServerPushKey string
 
 const (
-	// 服务器的节点 ID 常量
+	// Node ID of the server Constant
 	ServerNodeId   = "palm-server"
 	LogAgentNodeId = "log-agent"
 
-	// RPC Exchange 一定是 Direct
+	// RPC Exchange Must be Direct
 	CommonRPCExchange = "palm-rpc"
 
-	// 服务器推送数据的交换机
+	// Switch to which the server pushes data
 	CommonServerPushExchange   = "palm-push"
 	CommonServerPushDefaultKey = "palm.nodebase.notification"
 
-	// 服务器推送数据到交换机的 Key
+	// Key to which the server pushes data to the switch
 	ServerPush_ScriptTask ServerPushKey = "script-task"
 
 	ScanPortExchange        = "palm-scan-port-task"
@@ -91,12 +91,12 @@ func GetNodeBaseNotificationQueueByNodeId(id string) string {
 	return fmt.Sprintf("queue.notify-from-server.%v", id)
 }
 
-// 用于接收针对节点的服务器端通知
+// Used to receive server-side notifications for nodes
 func GetNodeBaseNotificationRoutingKeyByNodeId(id string) string {
 	return fmt.Sprintf("palm.nodebase.notification.%v.#", id)
 }
 
-// 用于发送针对节点的服务器端通知
+// Used to send server-side notifications for nodes
 func GetServerPushKey(nodeId string, key ServerPushKey) string {
 	return GetNodeBaseNotificationPushRoutingKeyByNodeId(nodeId, string(key))
 }

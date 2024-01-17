@@ -123,7 +123,7 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 		fakeUrl = fmt.Sprintf("http://%v", firstRequest.Host)
 	}
 
-	// 设置超时和 context 控制
+	// Set timeout and context. Control
 	var timeout time.Duration = 30 * time.Second
 	var ctxDDL time.Time
 	if ddl, ok := ctx.Deadline(); ok {
@@ -160,7 +160,7 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 	}
 	target := utils.HostPort(host, port)
 
-	// 如果是环回，就返回一个自定义内容
+	// If it is a loopback, a custom content
 	if utils.HostPort(host, port) == origin {
 		log.Infof("lookback: %s", origin)
 		httpConn.Write(fallbackHttpFrame)
@@ -194,9 +194,9 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 	}
 	defer remoteConn.Close()
 
-	// 以下是转发模式的, 不做劫持
+	// The following is the forwarding mode, without hijacking.
 	if m.transparentHijackMode == nil || !m.transparentHijackMode.IsSet() {
-		// 在透明模式里面，所有的回调都不生效
+		// In transparent mode, all callbacks will not take effect.
 		_, err = remoteConn.Write(readerBuffer.Bytes())
 		if err != nil {
 			return utils.Errorf("write first http.Request raw []byte failed: %s", err)
@@ -223,13 +223,13 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 		defer log.Infof("finished conn from %s to %s", conn.LocalAddr().String(), conn.RemoteAddr().String())
 		wg.Wait()
 	} else {
-		// 接下来是如何进行网络交互？
-		// 透明模式，劫持开启之后回调才会生效
+		// How to interact with the network next?
+		// transparent mode, the callback will not take effect until hijacking is enabled.
 
-		// 劫持第一个 request
+		// hijacks the first request.
 		var reqBytes = readerBuffer.Bytes()
 		if m.transparentHijackRequest == nil && m.transparentHijackRequestManager == nil {
-			// 不劫持请求的时候，直接写，不要等待全部读完
+			// When you do not hijack the request, directly Write, do not wait for all
 			log.Infof("write first request for %v", remoteConn.RemoteAddr().String())
 			_, err = remoteConn.Write(reqBytes)
 			if err != nil {
@@ -241,7 +241,7 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 			}
 			log.Infof("write first request finished for %v", remoteConn.RemoteAddr().String())
 		} else {
-			// 劫持场景下的处理第一个数据包
+			// hijacking scenario handles the first packet
 			if firstRequest.Body != nil {
 				_, _ = ioutil.ReadAll(firstRequest.Body)
 			}
@@ -260,23 +260,23 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 		}
 
 		var rspRaw bytes.Buffer
-		// 解析 response
+		// parsing response
 		var responseReader = io.TeeReader(remoteConn, &rspRaw)
 
-		// 不劫持响应的话，读多少写多少保证速度
+		// If the response is not hijacked, the speed will be guaranteed as much as you read and write.
 		if m.transparentHijackResponse == nil {
 			responseReader = io.TeeReader(responseReader, httpConn)
 		}
 
-		// 构建响应，这个响应很关键
+		// to build a response. This response is very critical. When
 		rsp, err := http.ReadResponse(bufio.NewReader(responseReader), firstRequest)
 		if err != nil {
 			return utils.Errorf("read response for req[%v]->%v failed: %s", firstRequest.URL.String(), remoteConn.RemoteAddr(), err)
 		}
 
-		// 解析 Body，这个 body 是从 remote -> local 的
-		// 不劫持详情的情况下，正常读完就行了，不用在乎太多
-		// 劫持的时候，读取并不会直接写入，需要手动 httpConn.Write
+		// Parse the Body. This body is from remote -> local
+		// If the details are not hijacked, just read it normally. Dont worry too much.
+		// is hijacked, reading will not be written directly, and manual httpConn.Write is required. After
 		if rsp.Body != nil {
 			rspBody, _ := ioutil.ReadAll(rsp.Body)
 			if len(rspBody) > 0 {
@@ -286,7 +286,7 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 		log.Info("first req and rsp recv finished!")
 
 		var rspBytes = rspRaw.Bytes()
-		// 劫持响应的话，要手动写 httpConn, 但是必须读完才能劫持，所以这里可能会影响速度
+		// hijacking response, you need to write httpConn manually, but it must be read before it can be hijacked, so the speed may be affected.
 		if m.transparentHijackResponse != nil {
 			rspBytes = m.transparentHijackResponse(isHttps.IsSet(), rspBytes)
 			_, err = httpConn.Write(rspBytes)
@@ -310,10 +310,10 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 		}
 
 		for {
-			// 读取 request
+			// Read request
 			var reqRaw bytes.Buffer
 
-			// 这里是移除一些没有用的不符合 HTTP 协议前缀请求的字符
+			// Here are some useless characters that do not comply with the HTTP protocol prefix request.
 			var buf = make([]byte, 1)
 			for {
 				_, err := httpConn.Read(buf)
@@ -330,12 +330,12 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 				}
 			}
 
-			var reqReader = io.TeeReader( // 从本地读 http.Request 出来
+			var reqReader = io.TeeReader( // Read http from local If the .Request comes out with a
 				io.MultiReader(bytes.NewReader(buf), httpConn),
 				&reqRaw,
 			)
 
-			// 如果不劫持，读多少转发多少
+			// If you do not hijack, read and forward as much as you want.
 			if m.transparentHijackRequest == nil && m.transparentHijackRequestManager == nil {
 				reqReader = io.TeeReader(reqReader, remoteConn)
 			}
@@ -344,13 +344,13 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 				return utils.Errorf("read http request from: %s failed: %s", httpConn.RemoteAddr().String(), err)
 			}
 
-			// 这个目的是为了把 body 的缓冲区读完，如果劫持了请求，会同步写入到 remoteConn 中
-			// 如果这里没有劫持请求，则不会发生什么奇怪的事情，仅仅读出来，在 reqRaw 中收结果吧
+			// The purpose of this is to read the body buffer. If the request is hijacked, it will be written to remoteConn synchronously.
+			// . If there is no hijacking request here, nothing strange will happen. Just read it out and collect the result in reqRaw.
 			if req.Body != nil {
 				_, _ = ioutil.ReadAll(req.Body)
 			}
 
-			// 劫持请求，这个 reqRaw 一定是包含 body 的了（如果可能）
+			// hijacking request, this reqRaw must It contains body (if possible)
 			var reqBytes = reqRaw.Bytes()
 			switch true {
 			case m.transparentHijackRequest != nil:
@@ -367,7 +367,7 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 				}
 			}
 
-			// 读取 response
+			// Read the response
 			var rspRaw bytes.Buffer
 			var remoteResponseReader = io.TeeReader(remoteConn, &rspRaw)
 			if m.transparentHijackResponse == nil {
@@ -378,18 +378,18 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 				return utils.Errorf("read http response from: %s failed: %s", remoteConn.RemoteAddr().String(), err)
 			}
 
-			// 类似上面的代码，这个是为了读缓冲区出来
+			// to be read. Similar to the above code, this is to read the buffer out of
 			if rsp.Body != nil {
 				_, _ = ioutil.ReadAll(rsp.Body)
 			}
 
-			// 镜像流量，这个流量是没有劫持过得！
+			// mirror traffic will be returned. This traffic has not been hijacked!
 			if m.transparentOriginMirror != nil {
 				go m.transparentOriginMirror(isHttps.IsSet(), reqRaw.Bytes(), rspRaw.Bytes())
 			}
 
-			// 劫持返回结果
-			// 这里的劫持，并没有自动写入 httpConn，所以需要手动写入，这里是同步操作，性能瓶颈在这里
+			// Hijack return result
+			// The hijacking here does not automatically write to httpConn, so it needs to be written manually. This is a synchronization operation, and the performance bottleneck is here.
 			var rspBytes = rspRaw.Bytes()
 			if m.transparentHijackResponse != nil {
 				rspBytes = m.transparentHijackResponse(isHttps.IsSet(), rspBytes)
@@ -399,12 +399,12 @@ func (m *MITMServer) handleHTTPS(ctx context.Context, conn net.Conn, origin stri
 				}
 			}
 
-			// 劫持后的镜像流量
+			// hijacking Mirror traffic
 			if m.transparentHijackedMirror != nil {
 				go m.transparentHijackedMirror(isHttps.IsSet(), reqBytes, rspBytes)
 			}
 
-			// 当前 req/rsp 处理完毕，并且 response 要求关闭，关闭前一定要信息传输回去
+			// Current req/rsp is processed, and the response requires closing. Information must be provided before closing. Transmit back
 			if rsp.Close {
 				return nil
 			}

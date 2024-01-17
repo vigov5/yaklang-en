@@ -50,7 +50,7 @@ func NaslScan(hosts, ports string, opts ...NaslScriptConfigOptFunc) (map[string]
 			//for k, v := range engine.scriptObj.Xrefs {
 			//	xrefStr += fmt.Sprintf("\n Reference: %s(%s)", v, k)
 			//}
-			title := fmt.Sprintf("检测目标存在 [%s] 应用，版本号为 [%s]", app, version)
+			title := fmt.Sprintf("The detection target exists [%s] application, the version number is [%s]", app, version)
 			if cve != "" {
 				title += fmt.Sprintf(", CVE: %s", summary)
 			}
@@ -77,7 +77,7 @@ func NaslScan(hosts, ports string, opts ...NaslScriptConfigOptFunc) (map[string]
 			}
 			return origin(engine, params)
 		})
-		// 需要把ACT_SCAN的脚本都patch一遍
+		// You need to patch all the ACT_SCAN scripts
 		engine.AddNaslLibPatch("ping_host.nasl", func(code string) string {
 			codeBytes, err := embed.Asset("data/nasl-patches/" + "ping_host_patch.nasl")
 			if err != nil {
@@ -108,7 +108,7 @@ func NaslScan(hosts, ports string, opts ...NaslScriptConfigOptFunc) (map[string]
 	return engine.GetKBData(), nil
 }
 
-// 临时的，用于测试
+// Temporary, used for testing
 func ServiceScan(hosts string, ports string, proxies ...string) ([]*fp.MatchResult, error) {
 	result := []*fp.MatchResult{}
 	os.Setenv("YAKMODE", "vm")

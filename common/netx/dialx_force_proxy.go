@@ -148,10 +148,10 @@ func httpProxyDial(proxyAddr string, username string, credential string, proxy s
 		return nil, err
 	}
 	if username != "" {
-		// 有密码
+		// With password
 		_, _ = conn.Write(generateHTTPProxyConnectWithCredential(target, credential))
 	} else {
-		// 无密码
+		// without password
 		_, err = conn.Write(generateHTTPProxyConnect(target))
 	}
 	if err = isHTTPConnectWork(conn); err == nil {

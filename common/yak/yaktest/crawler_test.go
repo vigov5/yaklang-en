@@ -5,7 +5,7 @@ import "testing"
 func TestCrawler(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "爬虫测试，增加一下额外配置：每个路径下都要检测的接口",
+			Name: "For crawler testing, add additional configuration: interfaces to be tested under each path",
 			Src: `
 res, err = crawler.Start(
 	"159.65.125.15:80", 
@@ -25,5 +25,5 @@ for crawlerReq = range res {
 		},
 	}
 
-	Run("Yak Crawler 测试", t, cases...)
+	Run("Yak Crawler test", t, cases...)
 }

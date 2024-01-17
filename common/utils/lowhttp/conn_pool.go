@@ -49,24 +49,24 @@ func NewDefaultHttpConnPool() *LowHttpConnPool {
 }
 
 type LowHttpConnPool struct {
-	idleConnMux        sync.RWMutex              //空闲连接访问锁
-	maxIdleConn        int                       //最大总连接
-	maxIdleConnPerHost int                       //单host最大连接
-	connCount          int                       //已有连接计数器
-	idleConn           map[string][]*persistConn //空闲连接
-	idleConnTimeout    time.Duration             //连接过期时间
-	idleLRU            connLRU                   //连接池 LRU
+	idleConnMux        sync.RWMutex              //Idle connection access lock
+	maxIdleConn        int                       //Maximum total connections
+	maxIdleConnPerHost int                       //Maximum connection for a single host
+	connCount          int                       //Existing connection counter
+	idleConn           map[string][]*persistConn //Idle connection
+	idleConnTimeout    time.Duration             //Connection expiration time
+	idleLRU            connLRU                   //Connection pool LRU
 	keepAliveTimeout   time.Duration
 }
 
-// 取出一个空闲连接
-// want 检索一个可用的连接，并且把这个连接从连接池中取出来
+// Take out an idle connection
+// want Retrieve an available connection and take this connection out of the connection pool
 func (l *LowHttpConnPool) getIdleConn(key connectKey, opts ...netx.DialXOption) (*persistConn, error) {
-	//尝试获取复用连接
+	//Try to obtain a reused connection
 	if oldPc, ok := l.getFromConn(key); ok {
 		return oldPc, nil
 	}
-	//没有复用连接则新建一个连接
+	//If there is no reuse connection, create a new connection
 	pConn, err := newPersistConn(key, l, opts...)
 	if err != nil {
 		return nil, err
@@ -83,13 +83,13 @@ func (l *LowHttpConnPool) getFromConn(key connectKey) (oldPc *persistConn, getCo
 		oldTime = time.Now().Add(-l.idleConnTimeout)
 	}
 
-	//从连接池中取出一个连接
+	//Take out one from the connection pool. Connection
 	if connList, ok := l.idleConn[key.hash()]; ok {
-		if key.scheme == H2 { // h2 连接 不用取出
+		if key.scheme == H2 { // h2. No need to remove the connection.
 			for len(connList) > 0 {
 				oldPc = connList[len(connList)-1]
 
-				//检查获取的连接是否可用
+				//Check whether the obtained connection is available
 				canUse := !(oldPc.alt.readGoAway || oldPc.alt.closed || oldPc.alt.full)
 				if canUse {
 					getConn = true
@@ -100,7 +100,7 @@ func (l *LowHttpConnPool) getFromConn(key connectKey) (oldPc *persistConn, getCo
 		} else {
 			for len(connList) > 0 {
 				oldPc = connList[len(connList)-1]
-				//检查获取的连接是否空闲超时，若超时再取下一个
+				//Check whether the acquired connection is idle and timeout, if After timeout, remove the next
 				tooOld := !oldTime.Before(oldPc.idleAt)
 				if !tooOld {
 					l.idleLRU.remove(oldPc)
@@ -126,14 +126,14 @@ func (l *LowHttpConnPool) putIdleConn(conn *persistConn) error {
 	cacheKeyHash := conn.cacheKey.hash()
 	l.idleConnMux.Lock()
 	defer l.idleConnMux.Unlock()
-	//如果超过池规定的单个host可以拥有的最大连接数量则直接放弃添加连接
+	//If it exceeds the maximum number of connections that a single host can have, it will directly give up adding the connection.
 	if len(l.idleConn[cacheKeyHash]) >= l.maxIdleConnPerHost {
 		return nil
 	}
 
-	//添加一个连接到连接池,转化连接状态,刷新空闲时间
+	//Add a connection to the connection pool, convert the connection status, refresh the idle time
 	conn.idleAt = time.Now()
-	if l.idleConnTimeout > 0 { //判断空闲时间,若为0则不设限
+	if l.idleConnTimeout > 0 { //Determine the idle time, if it is 0, there is no limit
 		if conn.closeTimer != nil {
 			conn.closeTimer.Reset(l.idleConnTimeout)
 		} else {
@@ -153,7 +153,7 @@ func (l *LowHttpConnPool) putIdleConn(conn *persistConn) error {
 	return nil
 }
 
-// 在有写锁的环境中从池子里删除一个空闲连接
+// Delete an idle connection from the pool in an environment with write lock
 func (l *LowHttpConnPool) removeConnLocked(pConn *persistConn) error {
 	if pConn.closeTimer != nil {
 		pConn.closeTimer.Stop()
@@ -181,30 +181,30 @@ func (l *LowHttpConnPool) removeConnLocked(pConn *persistConn) error {
 	return nil
 }
 
-// 长连接
+// Long connection
 type persistConn struct {
 	alt      *http2ClientConn
-	net.Conn //conn本体
+	net.Conn //conn body
 	mu       sync.Mutex
-	p        *LowHttpConnPool //连接对应的连接池
-	cacheKey connectKey       //连接池缓存key
-	isProxy  bool             //是否使用代理
-	alive    bool             //存活判断
-	sawEOF   bool             //连接是否EOF
+	p        *LowHttpConnPool //Connect to the corresponding connection pool
+	cacheKey connectKey       //Connection pool cache key
+	isProxy  bool             //Whether to use a proxy
+	alive    bool             //Survival judgment
+	sawEOF   bool             //Whether the connection is EOF
 
-	idleAt               time.Time                 //进入空闲的时间
-	closeTimer           *time.Timer               //关闭定时器
-	dialOption           []netx.DialXOption        //dial 选项
+	idleAt               time.Time                 //Enter the idle time
+	closeTimer           *time.Timer               //Close the timer
+	dialOption           []netx.DialXOption        //dial option
 	br                   *bufio.Reader             // from conn
 	bw                   *bufio.Writer             // to conn
-	reqCh                chan requestAndResponseCh //读取管道
-	writeCh              chan writeRequest         //写入管道
-	closeCh              chan struct{}             //关闭信号
-	writeErrCh           chan error                //写入错误信号
-	serverStartTime      time.Time                 //响应时间
-	numExpectedResponses int                       //预期的响应数量
-	reused               bool                      //是否复用
-	closed               error                     //连接关闭原因
+	reqCh                chan requestAndResponseCh //Read pipe
+	writeCh              chan writeRequest         //Write Enter the pipeline
+	closeCh              chan struct{}             //Close the signal
+	writeErrCh           chan error                //write error signal
+	serverStartTime      time.Time                 //Response time
+	numExpectedResponses int                       //Expected number of responses
+	reused               bool                      //Try to obtain the reuse connection
+	closed               error                     //Reason for connection closure
 
 	inPool bool
 	isIdle bool
@@ -325,12 +325,12 @@ func newPersistConn(key connectKey, pool *LowHttpConnPool, opt ...netx.DialXOpti
 		return nil, err
 	}
 	if key.https && key.scheme == H2 {
-		if newConn.(*tls.Conn).ConnectionState().NegotiatedProtocol == H1 { //降级
+		if newConn.(*tls.Conn).ConnectionState().NegotiatedProtocol == H1 { //Downgrade
 			key.scheme = H1
 		}
 	}
 
-	// 初始化连接
+	// Initialize the connection
 	pc := &persistConn{
 		Conn:                 newConn,
 		mu:                   sync.Mutex{},
@@ -361,20 +361,20 @@ func newPersistConn(key connectKey, pool *LowHttpConnPool, opt ...netx.DialXOpti
 			}
 			return pc, nil
 		}
-		newH1Conn, err := netx.DialX(key.addr, opt...) // 降级
+		newH1Conn, err := netx.DialX(key.addr, opt...) // Downgrade
 		if err != nil {
 			return nil, err
 		}
 		pc.alt = nil
 		pc.Conn = newH1Conn
 		pc.cacheKey.scheme = H1
-		return pc, nil // 降级之后应不使用连接池，因为是一个意外的请求做过一次兼容了，不再需要复用
+		return pc, nil // After downgrading, the connection pool should not be used because it was an unexpected request. Compatible, no need to reuse
 	}
 
 	pc.br = bufio.NewReader(pc)
 	pc.bw = bufio.NewWriter(persistConnWriter{pc})
 
-	//启动读取写入循环
+	//Start the read and write cycle
 	go pc.writeLoop()
 	go pc.readLoop()
 	return pc, nil
@@ -438,7 +438,7 @@ func (pc *persistConn) readLoop() {
 		_ = pc.Conn.SetReadDeadline(time.Time{})
 		_, err := pc.br.Peek(1)
 
-		// 检查是否有需要返回的响应,如果没有则可以直接返回,不需要往管道里返回数据（err）
+		// Check whether there is a response that needs to be returned. If not, you can return directly without returning data to the pipe (err).
 		if pc.numExpectedResponses == 0 {
 			if err == io.EOF {
 				pc.closeConn(errServerClosedIdle)
@@ -453,7 +453,7 @@ func (pc *persistConn) readLoop() {
 			rc = <-pc.reqCh
 		}
 
-		if err != nil { //需要向主进程返回一个带标识的错误,主进程用于判断是否重试
+		if err != nil { //A flagged error needs to be returned to the main process, which is used by the main process to determine whether to retry
 			if errors.Is(err, io.EOF) {
 				pc.sawEOF = true
 			}
@@ -504,15 +504,15 @@ func (pc *persistConn) readLoop() {
 		}
 
 		if err != nil || respClose {
-			if responseRaw.Len() >= len(respPacket) { // 如果 TeaReader内部还有数据证明,证明有响应数据,只是解析失败
+			if responseRaw.Len() >= len(respPacket) { // If there is data proof inside TeaReader, It proves that there is response data, but the parsing fails
 				// continue read 5 seconds, to receive rest data
 				// ignore error, treat as bad conn
 				timeout := 5 * time.Second
 				if respClose {
-					timeout = 1 * time.Second //如果 http close 了 则只等待1秒
+					timeout = 1 * time.Second //If http close, only wait for 1 second
 				}
 				restBytes, _ := utils.ReadUntilStable(pc.br, pc.Conn, timeout, 300*time.Millisecond)
-				pc.sawEOF = true // 废弃连接
+				pc.sawEOF = true // Abandoned connection
 				if len(restBytes) > 0 {
 					responseRaw.Write(restBytes)
 					respPacket = responseRaw.Bytes()
@@ -521,12 +521,12 @@ func (pc *persistConn) readLoop() {
 		}
 
 		if len(respPacket) > 0 {
-			httpctx.SetBareResponseBytesForce(stashRequest, respPacket) // 强制修改原始响应包
+			httpctx.SetBareResponseBytesForce(stashRequest, respPacket) // . Forcibly modify the original response packet.
 			err = nil
 		}
 
 		pc.mu.Lock()
-		pc.numExpectedResponses-- //减少预期响应数量
+		pc.numExpectedResponses-- //Reduce the number of expected responses
 		pc.mu.Unlock()
 
 		rc.ch <- responseInfo{resp: resp, respBytes: respPacket, info: info, err: err}
@@ -600,7 +600,7 @@ func (pc *persistConn) Read(b []byte) (n int, err error) {
 	return
 }
 
-// markReused 标识此连接已经被复用
+// markReused Indicates that this connection has been reused
 func (pc *persistConn) markReused() {
 	pc.mu.Lock()
 	pc.reused = true
@@ -608,22 +608,22 @@ func (pc *persistConn) markReused() {
 }
 
 func (pc *persistConn) shouldRetryRequest(err error) bool {
-	//todo H2处理
+	//todo H2 processing
 	if !pc.reused {
-		//初次连接失败，则不重试
+		//If the initial connection fails, there will be no retry.
 		return false
 	}
 	var connPoolReadFromServerError connPoolReadFromServerError
 	if errors.As(err, &connPoolReadFromServerError) {
-		//除了EOF以外的服务器错误，重试
+		//Server error other than EOF, retry
 		return true
 	}
-	//todo 幂等性请求
+	//todo Idempotent request
 	if errors.Is(err, errServerClosedIdle) {
-		// peek 到 EOF 大可能是连接池中的连接已经被服务器关闭，所以尝试重试
+		// Abandon the connection.
 		return true
 	}
-	return false // 保守不重试
+	return false // Conservatively do not retry
 }
 
 type connPoolReadFromServerError struct {
@@ -637,8 +637,8 @@ func (e connPoolReadFromServerError) Error() string {
 }
 
 type connectKey struct {
-	proxy        []string //可以使用的代理
-	scheme, addr string   //协议和目标地址
+	proxy        []string //Usable proxies
+	scheme, addr string   //Protocol and target address
 	https        bool
 	gmTls        bool
 }
@@ -652,7 +652,7 @@ type connLRU struct {
 	m  map[*persistConn]*list.Element
 }
 
-// 添加一个新的连接到LRU的双向链表中
+// . Add a new connection to the doubly linked list of LRU.
 func (cl *connLRU) add(pc *persistConn) {
 	if cl.ll == nil {
 		cl.ll = list.New()
@@ -665,7 +665,7 @@ func (cl *connLRU) add(pc *persistConn) {
 	cl.m[pc] = ele
 }
 
-// 使用一个连接后移动LRU
+// Move LRU after using a connection
 func (cl *connLRU) use(pc *persistConn) {
 	if cl.ll == nil {
 		cl.ll = list.New()
@@ -678,7 +678,7 @@ func (cl *connLRU) use(pc *persistConn) {
 	cl.ll.MoveToFront(ele)
 }
 
-// 从LRU中取出应该删除的连接
+// Remove the connection that should be deleted from LRU
 func (cl *connLRU) removeOldest() *persistConn {
 	ele := cl.ll.Back()
 	pc := ele.Value.(*persistConn)
@@ -687,7 +687,7 @@ func (cl *connLRU) removeOldest() *persistConn {
 	return pc
 }
 
-// 删除一个LRU链表中的元素
+// Delete an element in an LRU linked list
 func (cl *connLRU) remove(pc *persistConn) {
 	if ele, ok := cl.m[pc]; ok {
 		cl.ll.Remove(ele)
@@ -695,7 +695,7 @@ func (cl *connLRU) remove(pc *persistConn) {
 	}
 }
 
-// 获取缓存的长度.
+// Get cached Length.
 func (cl *connLRU) len() int {
 	return len(cl.m)
 }

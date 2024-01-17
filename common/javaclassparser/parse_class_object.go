@@ -8,7 +8,7 @@ import (
 )
 
 type ClassObject struct {
-	//魔数 class的魔术 -> 0xCAFEBABE
+	//Magic number The magic of class -> 0xCAFEBABE
 	Type               string
 	Magic              uint32
 	MinorVersion       uint16
@@ -63,7 +63,7 @@ func (this *ClassObject) Bcel() (string, error) {
 	return bytes2bcel(bytes)
 }
 
-// 获取
+// Get
 func (this *ClassObject) GetClassName() string {
 	name, err := this.getUtf8(this.ThisClass)
 	if err != nil {
@@ -89,7 +89,7 @@ func (this *ClassObject) GetInterfacesName() []string {
 	return names
 }
 
-// 查找
+// Find
 func (this *ClassObject) FindConstStringFromPool(v string) *ConstantUtf8Info {
 	n := this.findUtf8IndexFromPool(v)
 	if n == -1 {
@@ -105,7 +105,7 @@ func (this *ClassObject) FindMethods(v string) *MemberInfo {
 	return nil
 }
 
-// SetClassName 修改类名
+// SetClassName Modify class name
 func (this *ClassObject) SetClassName(name string) error {
 	constantInfo, err := this.getConstantInfo(this.ThisClass)
 	if err != nil {
@@ -124,7 +124,7 @@ func (this *ClassObject) SetClassName(name string) error {
 	return nil
 }
 
-// SetSourceFileName 设置文件名
+// SetSourceFileName Set file name
 func (this *ClassObject) SetSourceFileName(name string) error {
 	if !strings.HasSuffix(name, ".java") {
 		name = name + ".java"
@@ -144,7 +144,7 @@ func (this *ClassObject) SetSourceFileName(name string) error {
 	return nil
 }
 
-// SetMethodName 设置函数名
+// SetMethodName Set function name
 func (this *ClassObject) SetMethodName(old, name string) error {
 	var index uint16
 	for _, v := range this.Methods {

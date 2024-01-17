@@ -11,7 +11,7 @@ func (s *dbm) Authenticate(writer http.ResponseWriter, request *http.Request) (*
 		writer.WriteHeader(http.StatusOK)
 		writer.Write([]byte(`
 <script>
-alert("请先登录");
+alert("Please log in first");
 window.location.href = '/logic/user/login?from=` + request.URL.Path + `';
 </script>
 `))
@@ -26,8 +26,8 @@ window.location.href = '/logic/user/login?from=` + request.URL.Path + `';
 		return nil, err
 	}
 
-	// 在这里执行获取用户详细信息的逻辑
-	// 假设根据用户名查询用户信息
+	// Perform the logic of obtaining user details here
+	// Assume querying user information based on user name
 	users, err := s.GetUserByUsernameUnsafe(se.Username)
 	if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
@@ -39,14 +39,14 @@ window.location.href = '/logic/user/login?from=` + request.URL.Path + `';
 	return user, nil
 }
 
-// 购物商城的认证
+// Authentication of shopping mall
 func (s *dbm) mallAuthenticate(writer http.ResponseWriter, request *http.Request) (*VulinUser, error) {
 	session, err := request.Cookie("sessionID")
 	if err != nil {
 		writer.WriteHeader(http.StatusOK)
 		writer.Write([]byte(`
 <script>
-alert("请先登录");
+alert("Please log in first");
 window.location.href = '/mall/user/login';
 </script>
 `))
@@ -61,8 +61,8 @@ window.location.href = '/mall/user/login';
 		return nil, err
 	}
 
-	// 在这里执行获取用户详细信息的逻辑
-	// 假设根据用户名查询用户信息
+	// Perform the logic of obtaining user details here
+	// Assume querying user information based on user name
 	users, err := s.GetUserByUsernameUnsafe(se.Username)
 	if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)

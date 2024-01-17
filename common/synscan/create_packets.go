@@ -15,7 +15,7 @@ func init() {
 	loopbackIP = net.ParseIP("127.0.0.1")
 }
 
-// dstMac 为空的话，会尝试自动去取一个
+// If dstMac is empty, it will try to get one automatically.
 func (s *Scanner) createTCPWithDstMac(dstIp net.IP, dstPort int, syn bool, rst bool, dstMac net.HardwareAddr, gateway string) (_ []gopacket.SerializableLayer, loopback bool, _ error) {
 	var baseLayer gopacket.SerializableLayer
 	var err error

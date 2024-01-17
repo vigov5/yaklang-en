@@ -112,7 +112,7 @@ func getMethod(v){
     return ret
 }
 
-// 拿到请求
+// Get the request
 xml1 := prog.Ref("XMLHttpRequest")
 
 xml1.ForEach(v => {
@@ -132,24 +132,24 @@ xml1.ForEach(v => {
 prog2 := ssa.Parse(
     `
 function ajax(url, type, data, success) {
-		// 创建一个XMLHttpRequest对象
+		// Create an XMLHttpRequest object
 		const xhr = new XMLHttpRequest()
-		// 判断type请求方式
+		// Determine the type request method
 		if (type == 'get') {
-			// 判断data的数据类型转换成字符串
+			// Determine the data type of data and convert it into a string
 			if (Typeof(data) == "object") {
 				// data = (new URLSearchParams(data)).toString()
 			}
-			// 设置请求方式和请求地址
+			// Set the request method and request address
 			xhr.open(type, url + '?' + data)
-			// 发送请求
+			// Send the request
 			xhr.send()
 		} else if (type == 'post') {
-			// 设置请求方式和请求地址
+			// Set the request method and request address
 			xhr.open(type, url)
-			// 判断数据是不是字符串
+			// Determine whether the data is a string
 			if (Typeof(data) == "string") {
-				// 设置对应的content-type
+				// Set the corresponding content-type
 				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
 				xhr.send(data)
 			} else if (Typeof(data) == "object") {
@@ -169,7 +169,7 @@ b = ajax("bilibili.com", "Post", "message2", false)
 )
 
 
-// // 拿到请求
+// // Get the request
 xml2 := prog2.Ref("XMLHttpRequest")
 var func2
 if xml2 != nil {

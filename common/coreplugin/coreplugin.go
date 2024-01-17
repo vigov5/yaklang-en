@@ -65,73 +65,73 @@ func init() {
 		log.Debug("start to load core plugin")
 		registerBuildInPlugin(
 			"mitm",
-			"HTTP请求走私",
+			"HTTP request smuggling",
 			withPluginAuthors("V1ll4n"),
-			withPluginHelp("HTTP请求走私漏洞检测，通过设置畸形的 Content-Length(CL) 和 Transfer-Encoding(TE) 来检测服务器是否会对畸形数据包产生不安全的反应。"),
+			withPluginHelp("HTTP request smuggling vulnerability detection, by setting malformed Content-Length (CL) and Transfer-Encoding (TE) to detect whether the server responds to malformed The packet generated an unsafe response."),
 		)
 		registerBuildInPlugin(
-			"mitm", "CSRF 表单保护与 CORS 配置不当检测",
-			withPluginHelp("检测应用是否存在 CSRF 表单保护，以及 CORS 配置不当"),
+			"mitm", "CSRF form protection and CORS improper configuration detection",
+			withPluginHelp("Detect whether the application has CSRF form protection and improper CORS configuration"),
 			withPluginAuthors("Rookie"),
 		)
 		registerBuildInPlugin(
-			"mitm", "Fastjson 综合检测",
-			withPluginHelp("综合 FastJSON 反序列化漏洞检测"),
+			"mitm", "Fastjson Comprehensive detection",
+			withPluginHelp("Comprehensive FastJSON deserialization vulnerability detection"),
 			withPluginAuthors("z3"),
 		)
 		registerBuildInPlugin(
-			"mitm", "Shiro 指纹识别 + 弱密码检测",
-			withPluginHelp("识别应用是否是 Shiro 应用，尝试检测默认 KEY (CBC/GCM 模式均支持)，当发现默认KEY之后进行一次利用链检测"),
+			"mitm", "Shiro fingerprinting + weak password detection",
+			withPluginHelp("Identify whether the application is a Shiro application and try to detect the default KEY (CBC/GCM mode is supported), when the default KEY is found, an exploit chain detection is performed"),
 			withPluginAuthors("z3", "go0p"),
 		)
 		registerBuildInPlugin(
 			"mitm", "SSRF HTTP Public",
-			withPluginHelp("检测参数中的 SSRF 漏洞"),
+			withPluginHelp("Detect SSRF vulnerability in parameters"),
 		)
 		registerBuildInPlugin(
-			"mitm", "SQL注入-UNION注入-MD5函数",
-			withPluginHelp("Union 注入，使用 md5 函数检测特征输出（mysql/postgres）"),
+			"mitm", "SQL injection-UNION injection-MD5 function",
+			withPluginHelp("Union injection, use md5 function to detect feature output (mysql/postgres）"),
 			withPluginAuthors("V1ll4n"),
 		)
 		registerBuildInPlugin(
-			"mitm", "SQL注入-MySQL-ErrorBased",
-			withPluginHelp("MySQL 报错注入（使用 MySQL 十六进制字符串特征检测）"),
+			"mitm", "SQL injection-MySQL-ErrorBased",
+			withPluginHelp("MySQL error injection (using MySQL 16 Hexadecimal string feature detection)"),
 			withPluginAuthors("V1ll4n"),
 		)
 		registerBuildInPlugin(
 			"mitm",
-			"SSTI Expr 服务器模版表达式注入",
-			withPluginHelp("SSTI 服务器模版表达式注入漏洞（通用漏洞检测）"),
+			"SSTI Expr Server Template Expression Injection",
+			withPluginHelp("SSTI server template expression injection vulnerability (General vulnerability detection)"),
 			withPluginAuthors("V1ll4n"),
 		)
 		registerBuildInPlugin(
-			"mitm", "Swagger JSON 泄漏",
-			withPluginHelp("检查网站是否开放 Swagger JSON 的 API 信息"),
+			"mitm", "Swagger JSON leak",
+			withPluginHelp("Check whether the website is open API information of Swagger JSON"),
 			withPluginAuthors("V1ll4n"),
 		)
 		registerBuildInPlugin(
-			"mitm", "启发式SQL注入检测",
-			withPluginHelp("请求包中各种情况参数进行sql注入检测"),
-			withPluginAuthors("雨过天晴&伞落人离"),
+			"mitm", "Heuristic SQL injection detection",
+			withPluginHelp("Detect sql injection for various situation parameters in the request package"),
+			withPluginAuthors("After the rain, the sky clears & the umbrella falls away"),
 		)
 		registerBuildInPlugin(
-			"mitm", "基础 XSS 检测",
-			withPluginHelp("一个检测参数中的 XSS 算法，支持各种被编码或 JSON 中的 XSS 检测"),
+			"mitm", "Basic XSS detection",
+			withPluginHelp("XSS in one detection parameter Algorithm, supports various XSS encoded or in JSON detection"),
 			withPluginAuthors("WaY"),
 		)
 		registerBuildInPlugin(
-			"mitm", "文件包含",
-			withPluginHelp(`利用PHP伪协议特性和base64收敛特性测试文件包含`),
+			"mitm", "file contains",
+			withPluginHelp(`Using PHP pseudo-protocol features and base64 convergence features to test file contains`),
 			withPluginAuthors("V1ll4n"),
 		)
 		registerBuildInPlugin(
-			"mitm", "开放 URL 重定向漏洞",
-			withPluginHelp("检测开放 URL 重定向漏洞，可检查 meta / js / location 中的内容"),
+			"mitm", "Open URL redirect vulnerability",
+			withPluginHelp("detects open URL redirection vulnerabilities, you can check meta / js / Content in location"),
 			withPluginAuthors("Rookie"),
 		)
 		registerBuildInPlugin(
-			"mitm", "回显命令注入",
-			withPluginHelp("检测回显型命令注入漏洞（不检测 Cookie 中的命令注入）"),
+			"mitm", "Echo command injection",
+			withPluginHelp("Detection of echo command injection vulnerabilities ( Do not detect command injection in cookies)"),
 			withPluginAuthors("V1ll4n"),
 		)
 		return nil
@@ -154,7 +154,7 @@ func OverWriteYakPlugin(name string, scriptData *yakit.YakScript) {
 	databasePlugins := yakit.QueryYakScriptByNames(consts.GetGormProfileDatabase(), name)
 	if len(databasePlugins) == 0 {
 		log.Infof("add core plugin %v to plugin database", name)
-		// 添加核心插件字段
+		// Add core plug-in field
 		scriptData.IsCorePlugin = true
 		err := yakit.CreateOrUpdateYakScriptByName(consts.GetGormProfileDatabase(), name, scriptData)
 		if err != nil {

@@ -286,8 +286,8 @@ func (s *Server) SavePayloadStream(req *ypb.SavePayloadRequest, stream ypb.Yak_S
 		}
 		total += state.Size()
 
-		defer feedback(-1, "文件 "+f+" 写入数据库成功")
-		feedback(-1, "正在读取文件: "+f)
+		defer feedback(-1, "File "+f+" Writing to database successfully")
+		feedback(-1, "Reading file: "+f)
 		err = utils.GormTransaction(s.GetProfileDatabase(), func(tx *gorm.DB) error {
 			return yakit.ReadPayloadFileLineWithCallBack(f, func(data string, hitCount int64) error {
 				size += int64(len(data))
@@ -306,7 +306,7 @@ func (s *Server) SavePayloadStream(req *ypb.SavePayloadRequest, stream ypb.Yak_S
 		if total == 0 && ret == nil {
 			ret = utils.Error("empty data no payload created")
 		} else {
-			feedback(1, "数据保存成功")
+			feedback(1, "Data saved successfully")
 			yakit.SetGroupInEnd(s.GetProfileDatabase(), group)
 		}
 	}()
@@ -318,9 +318,9 @@ func (s *Server) SavePayloadStream(req *ypb.SavePayloadRequest, stream ypb.Yak_S
 			}
 		}
 	} else {
-		// 旧接口
+		// . The conversion of the old interface
 		total = int64(len(content))
-		feedback(-1, "正在读取数据")
+		feedback(-1, ". Reading data")
 		if err := yakit.ReadQuotedLinesWithCallBack(content, func(data string) error {
 			size += int64(len(data))
 			if total < size {
@@ -411,12 +411,12 @@ func (s *Server) SavePayloadToFileStream(req *ypb.SavePayloadRequest, stream ypb
 		}
 		total += state.Size()
 
-		feedback(-1, "正在读取文件: "+f)
+		feedback(-1, "Reading file: "+f)
 		return yakit.ReadPayloadFileLineWithCallBack(f, saveDataByFilter)
 	}
 
 	if isFile {
-		feedback(0, "开始解析文件")
+		feedback(0, "Start parsing the file")
 		for _, f := range filename {
 			if err := handleFile(f); err != nil {
 				return utils.Wrapf(err, "handle file[%s] error", f)
@@ -424,12 +424,12 @@ func (s *Server) SavePayloadToFileStream(req *ypb.SavePayloadRequest, stream ypb
 		}
 	} else {
 		total += int64(len(content))
-		feedback(0, "开始解析数据")
+		feedback(0, "Start parsing data")
 		yakit.ReadQuotedLinesWithCallBack(content, saveDataByFilterNoHitCount)
 	}
 
-	feedback(1, fmt.Sprintf("检测到有%d项重复数据", duplicate))
-	feedback(1, fmt.Sprintf("已去除重复数据, 剩余%d项数据", filtered))
+	feedback(1, fmt.Sprintf("%d items of duplicate data were detected", duplicate))
+	feedback(1, fmt.Sprintf("Duplicate data has been removed, remaining %d data", filtered))
 
 	feedback(1, "step2")
 	start := time.Now()
@@ -464,7 +464,7 @@ func (s *Server) SavePayloadToFileStream(req *ypb.SavePayloadRequest, stream ypb
 	if err != nil {
 		return err
 	}
-	feedback(0, "正在写入文件")
+	feedback(0, ". Writing file")
 	for i, d := range data {
 		handledSize = int64(i)
 		if i == int(total)-1 {
@@ -476,13 +476,13 @@ func (s *Server) SavePayloadToFileStream(req *ypb.SavePayloadRequest, stream ypb
 	if err := fd.Close(); err != nil {
 		return err
 	}
-	feedback(0.99, "写入文件完成")
+	feedback(0.99, "Writing file completed")
 	yakit.CreateOrUpdatePayload(s.GetProfileDatabase(), fileName, group, folder, 0, true)
 	yakit.SetGroupInEnd(s.GetProfileDatabase(), group)
 	if total == 0 {
 		return utils.Error("empty data no payload created")
 	}
-	feedback(1, "导入完成")
+	feedback(1, "Import completed")
 	return nil
 }
 
@@ -608,7 +608,7 @@ func (s *Server) RemoveDuplicatePayloads(req *ypb.NameRequest, stream ypb.Yak_Re
 	}
 	defer file.Close()
 
-	feedback(0, "正在处理数据")
+	feedback(0, ". Processing data")
 	for lineB := range lineCh {
 		line := utils.UnsafeBytesToString(lineB)
 		handledSize += int64(len(line))
@@ -627,8 +627,8 @@ func (s *Server) RemoveDuplicatePayloads(req *ypb.NameRequest, stream ypb.Yak_Re
 		}
 	}
 
-	feedback(0.99, fmt.Sprintf("总共%d项数据，重复%d项数据，实际写入%d项数据", filtered+duplicate, duplicate, filtered))
-	feedback(1, "保存成功")
+	feedback(0.99, fmt.Sprintf(". A total of %d items of data are repeated, %d items of data are repeated, and %d items of data are actually written.", filtered+duplicate, duplicate, filtered))
+	feedback(1, "Save successfully")
 
 	return nil
 }
@@ -847,8 +847,8 @@ func (s *Server) GetAllPayloadGroup(ctx context.Context, _ *ypb.Empty) (*ypb.Get
 	}, nil
 }
 
-// ! 已弃用
-// 导出payload到文件
+// ! Deprecated
+// and export the payload to the file
 func (s *Server) GetAllPayload(ctx context.Context, req *ypb.GetAllPayloadRequest) (*ypb.GetAllPayloadResponse, error) {
 	if req.GetGroup() == "" {
 		return nil, utils.Errorf("group is empty")
@@ -868,7 +868,7 @@ func (s *Server) GetAllPayload(ctx context.Context, req *ypb.GetAllPayloadReques
 	}, nil
 }
 
-// 导出payload到文件
+// and export the payload to the file
 func (s *Server) ExportAllPayload(req *ypb.GetAllPayloadRequest, stream ypb.Yak_ExportAllPayloadServer) error {
 	group := req.GetGroup()
 	folder := req.GetFolder()
@@ -885,13 +885,13 @@ func (s *Server) ExportAllPayload(req *ypb.GetAllPayloadRequest, stream ypb.Yak_
 
 	isCSV := strings.HasSuffix(savePath, ".csv")
 
-	// 生成payload
+	// generates payload
 	db := s.GetProfileDatabase().Where("`group` = ?", group).Where("`folder` = ?", folder)
 	size, total := 0, 0
 	n, hitCount := 0, int64(0)
 	gen := yakit.YieldPayloads(db, context.Background())
 
-	// 获取payload总长度
+	// Get the total length of payload
 	if isCSV {
 		contentSize, num, hitCountSize := 0, 0, 0
 		db = s.GetProfileDatabase().Model(&yakit.Payload{}).Select("SUM(LENGTH(content)),COUNT(id),SUM(LENGTH(hit_count))").Where("`group` = ?", group).Where("`folder` = ?", folder)
@@ -937,7 +937,7 @@ func (s *Server) ExportAllPayload(req *ypb.GetAllPayloadRequest, stream ypb.Yak_
 	}()
 	bomHandled := false
 	if isCSV {
-		// 写入csv文件头
+		// Write csv file header
 		file.WriteLineString("content,hit_count")
 	}
 
@@ -966,7 +966,7 @@ func (s *Server) ExportAllPayload(req *ypb.GetAllPayloadRequest, stream ypb.Yak_
 	return nil
 }
 
-// 导出payload，从数据库中的文件导出到另外一个文件
+// Export payload, export from the file in the database to another file
 func (s *Server) ExportAllPayloadFromFile(req *ypb.GetAllPayloadRequest, stream ypb.Yak_ExportAllPayloadFromFileServer) error {
 	group := req.GetGroup()
 	dst := req.GetSavePath()
@@ -984,7 +984,7 @@ func (s *Server) ExportAllPayloadFromFile(req *ypb.GetAllPayloadRequest, stream 
 	ctx, cancel := context.WithCancel(stream.Context())
 	defer cancel()
 
-	// 获取payload总长度
+	// Get the total length of payload
 	size, total := 0, 0
 	state, err := os.Stat(src)
 	if err != nil {
@@ -1013,7 +1013,7 @@ func (s *Server) ExportAllPayloadFromFile(req *ypb.GetAllPayloadRequest, stream 
 		}
 	}()
 
-	// 打开源文件和目标文件
+	// Open the source file and target file
 
 	lineC, err := utils.FileLineReader(src)
 	if err != nil {
@@ -1116,9 +1116,9 @@ func (s *Server) ConvertPayloadGroupToDatabase(req *ypb.NameRequest, stream ypb.
 	} else {
 		total += state.Size()
 	}
-	feedback(-1, "正在读取文件: "+filename)
+	feedback(-1, "Reading file: "+filename)
 	defer func() {
-		feedback(1, "转换完成, 该Payload字典已经转换为数据库存储。")
+		feedback(1, "is completed. The Payload dictionary has been converted to database storage.")
 		os.Remove(filename)
 	}()
 
@@ -1153,7 +1153,7 @@ func (s *Server) MigratePayloads(req *ypb.Empty, stream ypb.Yak_MigratePayloadsS
 	defer cancel()
 
 	size, total := int64(0), int64(0)
-	// 计算payload总数
+	// calculation Total payload
 	err := s.GetProfileDatabase().Model(&yakit.Payload{}).Count(&total).Error
 	if err != nil {
 		return utils.Wrap(err, "migrate payload error: get payload count error")
@@ -1165,7 +1165,7 @@ func (s *Server) MigratePayloads(req *ypb.Empty, stream ypb.Yak_MigratePayloadsS
 		}
 		stream.Send(&ypb.SavePayloadProgress{
 			Progress: progress,
-			Message:  "正在迁移数据库...",
+			Message:  "Migrating database...",
 		})
 	}
 	ticker := time.NewTicker(500 * time.Millisecond)
@@ -1194,12 +1194,12 @@ func (s *Server) MigratePayloads(req *ypb.Empty, stream ypb.Yak_MigratePayloadsS
 			if content == "" {
 				continue
 			}
-			// 开始迁移
+			// Start Migrate
 			_, err := strconv.Unquote(content)
 			if err == nil {
 				continue
 			}
-			// 解码失败，可能是旧payload
+			// decoding failed, maybe old payload
 			content = strconv.Quote(content)
 			if err := yakit.UpdatePayloadColumns(tx, int(p.ID), map[string]any{"content": content}); err != nil {
 				log.Errorf("update payload error: %v", err)

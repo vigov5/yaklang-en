@@ -12,7 +12,7 @@ func TestOpcodeToName(t *testing.T) {
 	sort.Slice(keys, func(i, j int) bool {
 		return keys[i] < keys[j]
 	})
-	println("|Opcode Flag| 助记符(Opcode Verbose) | Unary | Op1 | Op2 | 补充描述 |")
+	println("|Opcode Flag| mnemonic (Opcode Verbose) | Unary | Op1 | Op2 | Supplementary description |")
 	println("|--------|:--------|------|------|------|------|")
 	for _, k := range keys {
 		fmt.Printf("| %v | %v | - | - | - | - |\n", k, OpcodeVerboseName[k])

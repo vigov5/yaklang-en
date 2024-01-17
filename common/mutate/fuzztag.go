@@ -24,7 +24,7 @@ import (
 	"github.com/yaklang/yaklang/common/utils"
 )
 
-// 空内容
+// empty content
 var fuzztagfallback = []string{""}
 
 type FuzzTagDescription struct {
@@ -110,7 +110,7 @@ func init() {
 		Handler: func(s string) []string {
 			return []string{strings.TrimSpace(s)}
 		},
-		Description: "移除前后多余的空格，例如：`{{trim( abc )}}`，结果为：`abc`",
+		Description: "removes excess before and after. spaces, for example: `{{trim( abc )}}`, the result is: `abc`",
 	})
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName: "substr",
@@ -142,7 +142,7 @@ func init() {
 				return []string{""}
 			}
 		},
-		Description: "输出一个字符串的子符串，定义为 {{substr(abc|start,length)}}，例如：{{substr(abc|1)}}，结果为：bc，{{substr(abcddd|1,2)}}，结果为：bc",
+		Description: "outputs a substring of a string, defined as {{substr(abc|start,length)}}, for example:{{substr(abc|1)}}according to the step size, the result is: bc,{{substr(abcddd|1,2)}}, the result is: bc",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -153,7 +153,7 @@ func init() {
 			return fuzzpass(origin, levelInt)
 		},
 		Alias:       []string{"fuzz:pass"},
-		Description: "根据所输入的操作随机生成可能的密码（默认为 root/admin 生成）",
+		Description: "randomly generates possible passwords based on the input operation (default is root/admin generates)",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -165,7 +165,7 @@ func init() {
 			}
 		},
 		Alias:       []string{"zlib:enc", "zlibc", "zlib"},
-		Description: "Zlib 编码，把标签内容进行 zlib 压缩",
+		Description: "Zlib encoding, zlib compresses the tag content,",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -177,7 +177,7 @@ func init() {
 			}
 		},
 		Alias:       []string{"zlib:dec", "zlibdec", "zlibd"},
-		Description: "Zlib 解码，把标签内的内容进行 zlib 解码",
+		Description: "Zlib decoding, zlib the content in the tag Decode",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -189,7 +189,7 @@ func init() {
 			}
 		},
 		Alias:       []string{"gzip:enc", "gzipc", "gzip"},
-		Description: "Gzip 编码，把标签内容进行 gzip 压缩",
+		Description: "Gzip encoding, gzip compresses the tag content",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -201,7 +201,7 @@ func init() {
 			}
 		},
 		Alias:       []string{"gzip:dec", "gzipdec", "gzipd"},
-		Description: "Gzip 解码，把标签内的内容进行 gzip 解码",
+		Description: "Gzip decoding, gzip the content in the tag",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -212,7 +212,7 @@ func init() {
 			return fuzzuser(origin, levelInt)
 		},
 		Alias:       []string{"fuzz:user"},
-		Description: "根据所输入的操作随机生成可能的用户名（默认为 root/admin 生成）",
+		Description: "randomly generates possible user names based on the input operation (the default is root/admin generates)",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -223,7 +223,7 @@ func init() {
 			}
 			return []string{utils.JavaTimeFormatter(time.Now(), s)}
 		},
-		Description: "生成一个时间，格式为YYYY-MM-dd，如果指定了格式，将按照指定的格式生成时间",
+		Description: "generates a time in the format YYYY-MM-dd. If the format is specified, the time will be generated in the specified format.",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -235,7 +235,7 @@ func init() {
 			return []string{utils.JavaTimeFormatter(time.Now(), s)}
 		},
 		Alias:       []string{"time"},
-		Description: "生成一个时间，格式为YYYY-MM-dd HH:mm:ss，如果指定了格式，将按照指定的格式生成时间",
+		Description: "to generate a time in the format YYYY-MM-dd HH:mm:ss. If the format is specified, the time",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -252,7 +252,7 @@ func init() {
 			}
 			return []string{fmt.Sprint(time.Now().Unix())}
 		},
-		Description: "生成一个时间戳，默认单位为秒，可指定单位：s, ms, ns: {{timestamp(s)}}",
+		Description: "generates a timestamp, the default unit is seconds, you can specify the unit: s, ms, ns: {{timestamp(s)}}",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -267,7 +267,7 @@ func init() {
 			}
 			return result
 		},
-		Description: "生成一个随机的uuid，如果指定了数量，将生成指定数量的uuid",
+		Description: "Generate a random uuid, if the number is specified, the specified number will be generated The uuid",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -277,7 +277,7 @@ func init() {
 				strings.TrimSpace(s),
 			}
 		},
-		Description: "去除字符串两边的空格，一般配合其他 tag 使用，如：{{trim({{x(dict)}})}}",
+		Description: "Remove the spaces on both sides of the string, generally used with other tags, such as:{{trim({{x(dict)}})}}",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -293,7 +293,7 @@ func init() {
 			}
 		},
 		Alias:       []string{"nullbyte"},
-		Description: "生成一个空字节，如果指定了数量，将生成指定数量的空字节 {{null(5)}} 表示生成 5 个空字节",
+		Description: "generates a null byte, if the number is specified, the specified number of null bytes {{null(5)}} to generate 5 Null bytes",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -308,7 +308,7 @@ func init() {
 				"\r\n",
 			}
 		},
-		Description: "生成一个 CRLF，如果指定了数量，将生成指定数量的 CRLF {{crlf(5)}} 表示生成 5 个 CRLF",
+		Description: "generates a CRLF, if the number is specified, the specified number of CRLF will be generated {{crlf(5)}} means generating 5 CRLFs.",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -320,7 +320,7 @@ func init() {
 			}
 			return []string{string(g)}
 		},
-		Description: `将字符串转换为 GB18030 编码，例如：{{gb18030(你好)}}`,
+		Description: `Convert the string to GB18030 encoding, for example:{{gb18030 (Hello)}}`,
 	})
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName: "gb18030toUTF8",
@@ -331,7 +331,7 @@ func init() {
 			}
 			return []string{string(g)}
 		},
-		Description: `将字符串转换为 UTF8 编码，例如：{{gb18030toUTF8({{hexd(c4e3bac3)}})}}`,
+		Description: `Convert a string to UTF8 encoding, for example:{{gb18030toUTF8({{hexd(c4e3bac3)}})}}`,
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -353,7 +353,7 @@ func init() {
 			return []string{origin}
 		},
 		Alias:       []string{"zeropadding", "zp"},
-		Description: "使用0来填充补偿字符串长度不足的问题，{{zeropadding(abc|5)}} 表示将 abc 填充到长度为 5 的字符串（00abc），{{zeropadding(abc|-5)}} 表示将 abc 填充到长度为 5 的字符串，并且在右边填充 (abc00)",
+		Description: "uses 0 padding to compensate for insufficient string length,{{zeropadding(abc|5)}} means filling abc to a string of length 5 (00abc),{{zeropadding(abc|-5)}} means padding abc to a string of length 5, and padding (abc00) on the right",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -375,7 +375,7 @@ func init() {
 			return []string{origin}
 		},
 		Alias:       []string{"nullpadding", "np"},
-		Description: "使用 \\x00 来填充补偿字符串长度不足的问题，{{nullpadding(abc|5)}} 表示将 abc 填充到长度为 5 的字符串（\\x00\\x00abc），{{nullpadding(abc|-5)}} 表示将 abc 填充到长度为 5 的字符串，并且在右边填充 (abc\\x00\\x00)",
+		Description: "use \\x00 to fill the problem of insufficient string length,{{nullpadding(abc|5)}} means filling abc to a string of length 5 (\\x00\\x00abc),{{nullpadding(abc|-5)}} means padding abc to a string of length 5, and padding (abc\\ x00\\x00)",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -413,7 +413,7 @@ func init() {
 			return []string{""}
 		},
 		Alias:       []string{"c", "ch"},
-		Description: "生成一个字符，例如：`{{char(a-z)}}`, 结果为 [a b c ... x y z]",
+		Description: "generates a character, for example: `{{char(a-z)}}`, the result is [a b c ... x y z]",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -432,7 +432,7 @@ func init() {
 			}
 			return []string{""}
 		},
-		Description: "重复一个字符串或者一个次数，例如：`{{repeat(abc|3)}}`，结果为：abcabcabc，或者`{{repeat(3)}}`，结果是重复三次",
+		Description: "Repeat a string or a number of times, for example:`{{repeat(abc|3)}}`, the result is: abcabcabc, or `{{repeat(3)}}`, the result is repeated three times",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -452,7 +452,7 @@ func init() {
 			}
 			return []string{s}
 		},
-		Description: "重复一个字符串，并把重复步骤全都输出出来，例如：`{{repeat(abc|3)}}`，结果为：['' abc abcabc abcabcabc]",
+		Description: "repeats a string and outputs all repeated steps, for example: `{{repeat(abc|3)}}`, the result is: ['' abc abcabc abcabcabc]",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -534,13 +534,13 @@ func init() {
 			return payloads
 		},
 		Alias:       []string{"x"},
-		Description: "从数据库加载 Payload, 可以指定payload组或文件夹, `{{payload(groupName)}}`, `{{payload(folder/*)}}`",
+		Description: "Load Payload from the database, you can specify the payload group or folder, `{{payload(groupName)}}`, `{{payload(folder/*)}}`",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName:     "array",
 		Alias:       []string{"list"},
-		Description: "设置一个数组，使用 `|` 分割，例如：`{{array(1|2|3)}}`，结果为：[1,2,3]，",
+		Description: "Set an array, use `|` split, for example: `{{array(1|2|3)}}`, the result is: [1,2,3],",
 		Handler: func(s string) []string {
 			return strings.Split(s, "|")
 		},
@@ -549,7 +549,7 @@ func init() {
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName:     "ico",
 		Handler:     func(s string) []string { return []string{"\x00\x00\x01\x00\x01\x00\x20\x20"} },
-		Description: "生成一个 ico 文件头，例如 `{{ico}}`",
+		Description: "generates an ico file header, for example `{{ico}}`",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -557,15 +557,15 @@ func init() {
 		Handler: func(s string) []string {
 			return []string{"\x4d\x4d", "\x49\x49"}
 		},
-		Description: "生成一个 tiff 文件头，例如 `{{tiff}}`",
+		Description: "Generate a tiff file header, for example`{{tiff}}`",
 	})
 
-	AddFuzzTagToGlobal(&FuzzTagDescription{TagName: "bmp", Handler: func(s string) []string { return []string{"\x42\x4d"} }, Description: "生成一个 bmp 文件头，例如 {{bmp}}"})
+	AddFuzzTagToGlobal(&FuzzTagDescription{TagName: "bmp", Handler: func(s string) []string { return []string{"\x42\x4d"} }, Description: "generates a PNG file header. {{bmp}}"})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName:     "gif",
 		Handler:     func(s string) []string { return []string{"GIF89a"} },
-		Description: "生成 gif 文件头",
+		Description: "Generate gif file header",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -579,7 +579,7 @@ func init() {
 					"\xf9\x7d\xaa\x93",
 			}
 		},
-		Description: "生成 PNG 文件头",
+		Description: "generates PNG file header",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -591,7 +591,7 @@ func init() {
 			}
 		},
 		Alias:       []string{"jpeg"},
-		Description: "生成 jpeg / jpg 文件头",
+		Description: "Generate jpeg / jpg File header",
 	})
 
 	const puncSet = `<>?,./:";'{}[]|\_+-=)(*&^%$#@!'"` + "`"
@@ -605,7 +605,7 @@ func init() {
 			return puncArr
 		},
 		Alias:       []string{"punc"},
-		Description: "生成所有标点符号",
+		Description: "generates all punctuation marks",
 	})
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName: "regen",
@@ -613,7 +613,7 @@ func init() {
 			return regen.MustGenerate(s)
 		},
 		Alias:       []string{"re"},
-		Description: "使用正则生成所有可能的字符",
+		Description: "uses regular expressions to generate all possible characters.",
 	})
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName: "regen:one",
@@ -621,7 +621,7 @@ func init() {
 			return []string{regen.MustGenerateOne(s)}
 		},
 		Alias:       []string{"re:one"},
-		Description: "使用正则生成所有可能的字符中的随机一个",
+		Description: "using regular Generate a random",
 		IsDyn:       true,
 	})
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -663,13 +663,13 @@ func init() {
 			return res
 		},
 		Alias:       []string{"range:char", "range"},
-		Description: "按顺序生成一个 range 字符集，例如 `{{rangechar(20,7e)}}` 生成 0x20 - 0x7e 的字符集",
+		Description: "generates a range character set in order, such as `{{rangechar(20,7e)}}` Generate a character set of 0x20 - 0x7e",
 	})
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName:     "network",
 		Handler:     utils.ParseStringToHosts,
 		Alias:       []string{"host", "hosts", "cidr", "ip", "net"},
-		Description: "生成一个网络地址，例如 `{{network(192.168.1.1/24)}}` 对应 cidr 192.168.1.1/24 所有地址，可以逗号分隔，例如 `{{network(8.8.8.8,192.168.1.1/25,example.com)}}`",
+		Description: "generates a network address, such as `{{network(192.168.1.1/24)}}` corresponds to cidr 192.168.1.1/24 All addresses can be separated by commas, for example `{{network(8.8.8.8,192.168.1.1/25,example.com)}}`",
 	})
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName: "int",
@@ -683,7 +683,7 @@ func init() {
 			paddingRight := false
 			step := 1
 
-			// 使用管道符号分割参数
+			// uses pipe symbols to split parameters
 			parts := strings.Split(s, "|")
 
 			if len(parts) > 1 {
@@ -714,7 +714,7 @@ func init() {
 			}
 
 			if step > 1 {
-				// 按步长生成结果
+				// generates the result
 				var filteredResults []int
 				for i := 0; i < len(ints); i += step {
 					filteredResults = append(filteredResults, ints[i])
@@ -738,7 +738,7 @@ func init() {
 			return results
 		},
 		Alias:       []string{"port", "ports", "integer", "i"},
-		Description: "生成一个整数以及范围，例如 {{int(1,2,3,4,5)}} 生成 1,2,3,4,5 中的一个整数，也可以使用 {{int(1-5)}} 生成 1-5 的整数，也可以使用 `{{int(1-5|4)}}` 生成 1-5 的整数，但是每个整数都是 4 位数，例如 0001, 0002, 0003, 0004, 0005，还可以使用 `{{int(1-10|2|3)}}` 来生成带有步长的整数列表。",
+		Description: "generates an integer and range , for example, {{int(1,2,3,4,5)}} Generate an integer among 1, 2, 3, 4, 5, you can also use {{int(1-5)}} to generate an integer of 1-5, you can also use `{{int(1-5|4)}}` generates integers from 1-5, but each integer is 4 digits, such as 0001, 0002, 0003, 0004, 0005, etc. You can use `{{int(1-10|2|3)}}` to generate a list of integers with a stride.",
 	})
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName: "randint",
@@ -832,7 +832,7 @@ func init() {
 			return results
 		},
 		Alias:       []string{"ri", "rand:int", "randi"},
-		Description: "随机生成整数，定义为 {{randint(10)}} 生成0-10中任意一个随机数，{{randint(1,50)}} 生成 1-50 任意一个随机数，{{randint(1,50,10)}} 生成 1-50 任意一个随机数，重复 10 次",
+		Description: "randomly generates integers, defined as {{randint(10)}} generates any random number from 0 to 10,{{randint(1,50)}} generates 1-50 Any random number,{{randint(1,50,10)}} generates any random number from 1 to 50, repeat 10 times",
 	})
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName: "randstr",
@@ -910,7 +910,7 @@ func init() {
 			return r, err
 		},
 		Alias:       []string{"rand:str", "rs", "rands"},
-		Description: "随机生成个字符串，定义为 {{randstr(10)}} 生成长度为 10 的随机字符串，{{randstr(1,30)}} 生成长度为 1-30 为随机字符串，{{randstr(1,30,10)}} 生成 10 个随机字符串，长度为 1-30",
+		Description: "randomly generates a string, defined as {{randstr(10)}} generates a random string of length 10,{{randstr(1,30)}} Generate a random string with a length of 1-30.{{randstr(1,30,10)}} generates 10 random strings, length 1-30",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -940,7 +940,7 @@ func init() {
 			}
 			return []string{script}
 		},
-		Description: "调用 Yakit Codec 插件",
+		Description: "Call the Yakit Codec plug-in",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -968,7 +968,7 @@ func init() {
 			}
 			return results
 		},
-		Description: "调用 Yakit Codec 插件，把结果解析成行",
+		Description: "Call Yakit Codec plug-in, parse the result into lines",
 	})
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName: "unquote",
@@ -987,7 +987,7 @@ func init() {
 				raw,
 			}
 		},
-		Description: "把内容进行 strconv.Unquote 转化",
+		Description: "convert the content to strconv.Unquote",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -997,7 +997,7 @@ func init() {
 				strconv.Quote(s),
 			}
 		},
-		Description: "strconv.Quote 转化",
+		Description: "strconv.Quote Convert",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1007,7 +1007,7 @@ func init() {
 				strings.ToLower(s),
 			}
 		},
-		Description: "把传入的内容都设置成小写 {{lower(Abc)}} => abc",
+		Description: "sets the incoming content to lowercase {{lower(Abc)}} => abc",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1017,7 +1017,7 @@ func init() {
 				strings.ToUpper(s),
 			}
 		},
-		Description: "把传入的内容变成大写 {{upper(abc)}} => ABC",
+		Description: "Change the incoming content to uppercase {{upper(abc)}} => ABC",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1028,7 +1028,7 @@ func init() {
 			}
 		},
 		Alias:       []string{"base64encode", "base64e", "base64", "b64"},
-		Description: "进行 base64 编码，{{base64enc(abc)}} => YWJj",
+		Description: "performs base64 encoding,{{base64enc(abc)}} => YWJj",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1041,7 +1041,7 @@ func init() {
 			return []string{string(r)}
 		},
 		Alias:       []string{"base64decode", "base64d", "b64d"},
-		Description: "进行 base64 解码，{{base64dec(YWJj)}} => abc",
+		Description: "performs base64 decoding,{{base64dec(YWJj)}} => abc",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1049,7 +1049,7 @@ func init() {
 		Handler: func(s string) []string {
 			return []string{codec.Md5(s)}
 		},
-		Description: "进行 md5 编码，{{md5(abc)}} => 900150983cd24fb0d6963f7d28e17f72",
+		Description: "for md5 encoding,{{md5(abc)}} => 900150983cd24fb0d6963f7d28e17f72",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1058,7 +1058,7 @@ func init() {
 			return []string{codec.EncodeToHex(s)}
 		},
 		Alias:       []string{"hex", "hexencode"},
-		Description: "HEX 编码，{{hexenc(abc)}} => 616263",
+		Description: "HEX encoding,{{hexenc(abc)}} => 616263",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1071,19 +1071,19 @@ func init() {
 			return []string{string(raw)}
 		},
 		Alias:       []string{"hexd", "hexdec", "hexdecode"},
-		Description: "HEX 解码，{{hexdec(616263)}} => abc",
+		Description: "HEX decoding,{{hexdec(616263)}} => abc",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName:     "sha1",
 		Handler:     func(s string) []string { return []string{codec.Sha1(s)} },
-		Description: "进行 sha1 编码，{{sha1(abc)}} => a9993e364706816aba3e25717850c26c9cd0d89d",
+		Description: "performs sha1 encoding,{{sha1(abc)}} => a9993e364706816aba3e25717850c26c9cd0d89d",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName:     "sha256",
 		Handler:     func(s string) []string { return []string{codec.Sha256(s)} },
-		Description: "进行 sha256 编码，{{sha256(abc)}} => ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+		Description: "for sha256 encoding,{{sha256(abc)}} => ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1095,7 +1095,7 @@ func init() {
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName:     "sha512",
 		Handler:     func(s string) []string { return []string{codec.Sha512(s)} },
-		Description: "进行 sha512 编码，{{sha512(abc)}} => ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f",
+		Description: "for sha512 encoding,{{sha512(abc)}} => ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1106,7 +1106,7 @@ func init() {
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName:     "sm3",
 		Handler:     func(s string) []string { return []string{codec.EncodeToHex(codec.SM3(s))} },
-		Description: "计算 sm3 哈希值，{{sm3(abc)}} => 66c7f0f462eeedd9d1f2d46bdc10e4e24167c4875cf2f7a3f0b8ddb27d8a7eb3",
+		Description: "calculates sm3 hash value,{{sm3(abc)}} => 66c7f0f462eeedd9d1f2d46bdc10e4e24167c4875cf2f7a3f0b8ddb27d8a7eb3",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1119,7 +1119,7 @@ func init() {
 			return []string{base64.StdEncoding.EncodeToString(raw)}
 		},
 		Alias:       []string{"h2b64", "hex2base64"},
-		Description: "把 HEX 字符串转换为 base64 编码，{{hextobase64(616263)}} => YWJj",
+		Description: "converts the HEX string into base64 encoding.{{hextobase64(616263)}} => YWJj",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1132,7 +1132,7 @@ func init() {
 			return []string{codec.EncodeToHex(string(raw))}
 		},
 		Alias:       []string{"b642h", "base642hex"},
-		Description: "把 Base64 字符串转换为 HEX 编码，{{base64tohex(YWJj)}} => 616263",
+		Description: "Put the Base64 string Convert to HEX encoding,{{base64tohex(YWJj)}} => 616263",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1141,7 +1141,7 @@ func init() {
 			return []string{codec.QueryEscape(s)}
 		},
 		Alias:       []string{"urlesc"},
-		Description: "url 编码(只编码特殊字符)，{{urlescape(abc=)}} => abc%3d",
+		Description: "url encoding (only encodes special characters),{{urlescape(abc=)}} => abc%3d",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1150,7 +1150,7 @@ func init() {
 			return []string{codec.EncodeUrlCode(s)}
 		},
 		Alias:       []string{"urlencode", "url"},
-		Description: "URL 强制编码，{{urlenc(abc)}} => %61%62%63",
+		Description: "URL Forced encoding,{{urlenc(abc)}} => %61%62%63",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1163,7 +1163,7 @@ func init() {
 			return []string{string(r)}
 		},
 		Alias:       []string{"urldecode", "urld"},
-		Description: "URL 强制解码，{{urldec(%61%62%63)}} => abc",
+		Description: "URL force decoding,{{urldec(%61%62%63)}} => abc",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1172,7 +1172,7 @@ func init() {
 			return []string{codec.DoubleEncodeUrl(s)}
 		},
 		Alias:       []string{"doubleurlencode", "durlenc", "durl"},
-		Description: "双重URL编码，{{doubleurlenc(abc)}} => %2561%2562%2563",
+		Description: "Double URL encoding,{{doubleurlenc(abc)}} => %2561%2562%2563",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1185,7 +1185,7 @@ func init() {
 			return []string{r}
 		},
 		Alias:       []string{"doubleurldecode", "durldec", "durldecode"},
-		Description: "双重URL解码，{{doubleurldec(%2561%2562%2563)}} => abc",
+		Description: "Double URL decoding,{{doubleurldec(%2561%2562%2563)}} => abc",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1194,7 +1194,7 @@ func init() {
 			return []string{codec.EncodeHtmlEntity(s)}
 		},
 		Alias:       []string{"htmlencode", "html", "htmle", "htmlescape"},
-		Description: "HTML 实体编码，{{htmlenc(abc)}} => &#97;&#98;&#99;",
+		Description: "HTML entity encoding,{{htmlenc(abc)}} => &#97;&#98;&#99;",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1203,7 +1203,7 @@ func init() {
 			return []string{codec.EncodeHtmlEntityHex(s)}
 		},
 		Alias:       []string{"htmlhex", "htmlhexencode", "htmlhexescape"},
-		Description: "HTML 十六进制实体编码，{{htmlhexenc(abc)}} => &#x61;&#x62;&#x63;",
+		Description: "HTML hexadecimal entity encoding,{{htmlhexenc(abc)}} => &#x61;&#x62;&#x63;",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1212,7 +1212,7 @@ func init() {
 			return []string{codec.UnescapeHtmlString(s)}
 		},
 		Alias:       []string{"htmldecode", "htmlunescape"},
-		Description: "HTML 解码，{{htmldec(&#97;&#98;&#99;)}} => abc",
+		Description: "HTML decode,{{htmldec(&#97;&#98;&#99;)}} => abc",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1230,7 +1230,7 @@ func init() {
 			return []string{strings.Repeat(s, n)}
 		},
 		Alias:       []string{"repeat:str"},
-		Description: "重复字符串，`{{repeatstr(abc|3)}}` => abcabcabc",
+		Description: "Repeat string, `{{repeatstr(abc|3)}}` => abcabcabc",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1239,7 +1239,7 @@ func init() {
 			return []string{codec.RandomUpperAndLower(s)}
 		},
 		Alias:       []string{"random:upper", "random:lower"},
-		Description: "随机大小写，{{randomupper(abc)}} => aBc",
+		Description: "random case,{{randomupper(abc)}} => aBc",
 	})
 
 	AddFuzzTagToGlobal(&FuzzTagDescription{
@@ -1331,7 +1331,7 @@ func init() {
 			return []*fuzztag.FuzzExecResult{fuzztag.NewFuzzExecResult([]byte(s), []string{s})}
 		},
 	})
-	// 标签太长了，前端加了个简单的 fuzztag 提示
+	// The tag is too long, so a simple fuzztag is added to the front end.
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName: "yso:find_gadget_by_dns",
 		HandlerEx: func(s string) []*fuzztag.FuzzExecResult {
@@ -1375,7 +1375,7 @@ func init() {
 				if err != nil {
 					return result
 				}
-				pushNewResult(objBytes, []string{javaObj.Verbose().GetNameVerbose(), "类名", s})
+				pushNewResult(objBytes, []string{javaObj.Verbose().GetNameVerbose(), "Class name", s})
 			}
 
 			if len(result) > 0 {
@@ -1385,10 +1385,10 @@ func init() {
 			return []*fuzztag.FuzzExecResult{fuzztag.NewFuzzExecResult([]byte(s), []string{s})}
 		},
 	})
-	// 这几个标签不稳定
+	// . These tags are unstable.
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName:     "yso:headerecho",
-		Description: "尽力使用 header echo 生成多个链",
+		Description: "Try your best to use header echo to generate multiple chains",
 		HandlerEx: func(s string) []*fuzztag.FuzzExecResult {
 			headers := strings.Split(s, "|")
 			if len(headers) != 2 {
@@ -1417,7 +1417,7 @@ func init() {
 	})
 	AddFuzzTagToGlobal(&FuzzTagDescription{
 		TagName:     "yso:bodyexec",
-		Description: "尽力使用 class body exec 的方式生成多个链",
+		Description: "to try your best to use class body exec to generate multiple chains.",
 		HandlerEx: func(s string) []*fuzztag.FuzzExecResult {
 			var result []*fuzztag.FuzzExecResult
 			pushNewResult := func(d []byte, verbose []string) {
@@ -1491,7 +1491,7 @@ func Filetag() []*FuzzTagDescription {
 				return result
 			},
 			Alias:       []string{"fileline", "file:lines"},
-			Description: "解析文件名（可以用 `|` 分割），把文件中的内容按行反回成数组，定义为 `{{file:line(/tmp/test.txt)}}` 或 `{{file:line(/tmp/test.txt|/tmp/1.txt)}}`",
+			Description: "parses the file name (you can use `|` Split), return the contents of the file into an array line by line, defined as `{{file:line(/tmp/test.txt)}}` or `{{file:line(/tmp/test.txt|/tmp/1.txt)}}`",
 		},
 		{
 			TagName: "file:dir",
@@ -1521,7 +1521,7 @@ func Filetag() []*FuzzTagDescription {
 				return result
 			},
 			Alias:       []string{"filedir"},
-			Description: "解析文件夹，把文件夹中文件的内容读取出来，读取成数组返回，定义为 `{{file:dir(/tmp/test)}}` 或 `{{file:dir(/tmp/test|/tmp/1)}}`",
+			Description: "Parse the folder, read the contents of the files in the folder, read it into an array and return it, defined as `{{file:dir(/tmp/test)}}` or `{{file:dir(/tmp/test|/tmp/1)}}`",
 		},
 		{
 			TagName: "file",
@@ -1541,7 +1541,7 @@ func Filetag() []*FuzzTagDescription {
 				}
 				return result
 			},
-			Description: "读取文件内容，可以支持多个文件，用竖线分割，`{{file(/tmp/1.txt)}}` 或 `{{file(/tmp/1.txt|/tmp/test.txt)}}`",
+			Description: "reads the file content, can support multiple files, separated by vertical lines, `{{file(/tmp/1.txt)}}` or `{{file(/tmp/1.txt|/tmp/test.txt)}}`",
 		},
 	}
 }

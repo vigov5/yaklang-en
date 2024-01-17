@@ -91,7 +91,7 @@ func MatchBetween(srcBody interface{}, start string, end string, max int) (int, 
 	}
 }
 
-// RandomUpperAndLower 返回一个随机大小写的字符串
+// RandomUpperAndLower returns a string with random upper and lower case
 // Example:
 // ```
 // str.RandomUpperAndLower("target“) // TArGeT

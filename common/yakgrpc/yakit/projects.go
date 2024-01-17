@@ -27,7 +27,7 @@ func InitializingProjectDatabase() error {
 	if proj == nil || proj.DatabasePath != consts.GetDefaultYakitProjectDatabase(consts.GetDefaultYakitBaseDir()) {
 		projectData := &Project{
 			ProjectName:   INIT_DATABASE_RECORD_NAME,
-			Description:   "默认数据库(~/yakit-projects/***.db): Default Database!",
+			Description:   "Default database (~/yakit-projects/***.db): Default Database!",
 			DatabasePath:  consts.GetDefaultYakitProjectDatabase(consts.GetDefaultYakitBaseDir()),
 			FolderID:      FolderID,
 			ChildFolderID: ChildFolderID,
@@ -42,15 +42,15 @@ func InitializingProjectDatabase() error {
 }
 
 func init() {
-	// 一开始应该创建一个最基础的数据库
+	// A most basic database should be created at the beginning
 	RegisterPostInitDatabaseFunction(func() error {
 		return InitializingProjectDatabase()
 	})
 }
 
-// Project 描述一个 Yakit 项目
-// 一般项目数据都是应该用 ProjectDatabase 作为连接的
-// 但是项目本身的元数据应该存在 ProfileDatabase 中
+// Project describes a Yakit project
+// General project data should use ProjectDatabase as the connection
+// But the metadata of the project itself should exist in ProfileDatabase
 type Project struct {
 	gorm.Model
 

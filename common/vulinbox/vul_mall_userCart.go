@@ -16,15 +16,15 @@ var mallCartPage []byte
 
 func (s *VulinServer) mallCartRoute() {
 	// var router = s.router
-	// mallcartGroup := router.PathPrefix("/mall").Name("商城").Subrouter()
+	// mallcartGroup := router.PathPrefix("/mall").Name("Mall").Subrouter()
 	mallcartRoutes := []*VulInfo{
 
-		//购物车信息
+		//Shopping cart information
 		{
 			DefaultQuery: "",
 			Path:         "/user/cart",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
-				//验证是否登陆
+				//Verify whether you are logged in
 				_, err := s.database.mallAuthenticate(writer, request)
 				if err != nil {
 					return
@@ -34,7 +34,7 @@ func (s *VulinServer) mallCartRoute() {
 					CartInfo []UserCart
 					Username string
 				}
-				// 通过 id 获取用户购物车信息
+				// Get user shopping cart information by id
 				var a = request.URL.Query().Get("id")
 				i, err := strconv.ParseInt(a, 10, 64)
 				if err != nil {
@@ -64,10 +64,10 @@ func (s *VulinServer) mallCartRoute() {
 					writer.WriteHeader(500)
 					return
 				}
-				// 打印返回值
+				// Print return value
 				fmt.Printf("cartInfo: %+v\n", cartInfo)
 
-				//如果购物车数量不为0，返回购物车页面信息
+				//If the shopping cart quantity is not 0, return the shopping cart page information
 				writer.Header().Set("Content-Type", "text/html")
 				tmpl, err := template.New("cart").Parse(string(mallCartPage))
 
@@ -86,7 +86,7 @@ func (s *VulinServer) mallCartRoute() {
 			},
 		},
 
-		// 加入购物车
+		// Add to shopping cart
 		{
 			DefaultQuery: "",
 			Path:         "/cart/add",
@@ -96,7 +96,7 @@ func (s *VulinServer) mallCartRoute() {
 					return
 				}
 
-				// 解析前端传来的JSON数据
+				// Parse the JSON data passed by the front end
 				var cart UserCart
 				err = json.NewDecoder(request.Body).Decode(&cart)
 				if err != nil {
@@ -104,7 +104,7 @@ func (s *VulinServer) mallCartRoute() {
 					return
 				}
 
-				// 调用函数将商品添加到购物车
+				// Call a function to add the product to the shopping cart
 				err = s.database.AddCart(cart.UserID, cart)
 				if err != nil {
 					http.Error(writer, err.Error(), http.StatusInternalServerError)
@@ -112,11 +112,11 @@ func (s *VulinServer) mallCartRoute() {
 				}
 
 				writer.WriteHeader(http.StatusOK)
-				writer.Write([]byte("加入购物车成功"))
+				writer.Write([]byte("Add to shopping cart successfully"))
 
 			},
 		},
-		//获取购物车商品数量
+		//Get the number of items in the shopping cart
 		{
 			DefaultQuery: "",
 			Path:         "/cart/count",
@@ -125,14 +125,14 @@ func (s *VulinServer) mallCartRoute() {
 				if err != nil {
 					return
 				}
-				//解析前端传来的JSON数据
+				//Parse the JSON data passed by the front end
 				var RequestBody struct {
 					UserID int `json:"userID"`
 				}
 				// var body RequestBody
 				var ID UserCart
 
-				//获取前端传递的userID
+				//Get the userID passed by the front end
 				err = json.NewDecoder(request.Body).Decode(&RequestBody)
 				if err != nil {
 					writer.WriteHeader(500)
@@ -146,7 +146,7 @@ func (s *VulinServer) mallCartRoute() {
 					return
 				}
 
-				//调用函数获取购物车商品数量
+				//Call the function to get the number of shopping cart items
 				cartSum, err := s.database.GetUserCartCount(ID.UserID)
 				if err != nil {
 					return
@@ -158,7 +158,7 @@ func (s *VulinServer) mallCartRoute() {
 		},
 
 		// RiskDetected: true,
-		//检查购物车是否存在
+		//Check whether the shopping cart exists
 		{
 			DefaultQuery: "",
 			Path:         "/cart/check",
@@ -167,14 +167,14 @@ func (s *VulinServer) mallCartRoute() {
 				if err != nil {
 					return
 				}
-				//解析前端传来的JSON数据
+				//Parse the JSON data passed by the front end
 				var RequestBody struct {
 					UserID      int    `json:"userID"`
 					ProductName string `json:"productName"`
 				}
 				var ID UserCart
 
-				//获取前端传递的userID和productName
+				//Get the userID and productName passed by the front end
 				err = json.NewDecoder(request.Body).Decode(&RequestBody)
 				if err != nil {
 					writer.WriteHeader(500)
@@ -189,7 +189,7 @@ func (s *VulinServer) mallCartRoute() {
 				}
 				ID.ProductName = RequestBody.ProductName
 
-				//调用函数检查购物车是否存在该商品
+				//Call the function to check whether the product exists in the shopping cart
 				cartExists, err := s.database.CheckCart(ID.UserID, ID.ProductName)
 				if err != nil {
 					return
@@ -200,7 +200,7 @@ func (s *VulinServer) mallCartRoute() {
 			},
 		},
 
-		//购物车商品加一
+		//Shopping cart product plus one
 		{
 			DefaultQuery: "",
 			Path:         "/cart/addOne",
@@ -209,14 +209,14 @@ func (s *VulinServer) mallCartRoute() {
 				if err != nil {
 					return
 				}
-				//解析前端传来的JSON数据
+				//Parse the JSON data passed by the front end
 				var RequestBody struct {
 					UserID      string `json:"userID"`
 					ProductName string `json:"productName"`
 				}
 				var ID UserCart
 
-				//获取前端传递的userID和productName
+				//Get the userID and productName passed by the front end
 				err = json.NewDecoder(request.Body).Decode(&RequestBody)
 				if err != nil {
 					writer.WriteHeader(500)
@@ -231,17 +231,17 @@ func (s *VulinServer) mallCartRoute() {
 				}
 				ID.ProductName = RequestBody.ProductName
 
-				//调用函数购物车商品加一
+				//Call the function to add one shopping cart item
 				err = s.database.AddCartQuantity(ID.UserID, ID.ProductName)
 				if err != nil {
 					return
 				}
 				writer.WriteHeader(http.StatusOK)
-				writer.Write([]byte("购物车商品加一成功"))
+				writer.Write([]byte("Shopping cart product plus one success"))
 
 			},
 		},
-		//购物车商品减一
+		//Shopping cart product minus one
 		{
 			DefaultQuery: "",
 			Path:         "/cart/subOne",
@@ -250,14 +250,14 @@ func (s *VulinServer) mallCartRoute() {
 				if err != nil {
 					return
 				}
-				//解析前端传来的JSON数据
+				//Parse the JSON data passed by the front end
 				var RequestBody struct {
 					UserID      string `json:"userID"`
 					ProductName string `json:"productName"`
 				}
 				var ID UserCart
 
-				//获取前端传递的userID和productName
+				//Get the userID and productName passed by the front end
 				err = json.NewDecoder(request.Body).Decode(&RequestBody)
 				if err != nil {
 					writer.WriteHeader(500)
@@ -272,17 +272,17 @@ func (s *VulinServer) mallCartRoute() {
 				}
 				ID.ProductName = RequestBody.ProductName
 
-				//调用函数购物车商品减一
+				//Call the function to subtract one shopping cart item
 				err = s.database.SubCartQuantity(ID.UserID, ID.ProductName)
 				if err != nil {
 					return
 				}
 				writer.WriteHeader(http.StatusOK)
-				writer.Write([]byte("购物车商品减一成功"))
+				writer.Write([]byte("Decrease the shopping cart product by one Success"))
 
 			},
 		},
-		//删除购物车商品
+		//Delete the shopping cart item
 		{
 
 			DefaultQuery: "",
@@ -292,14 +292,14 @@ func (s *VulinServer) mallCartRoute() {
 				if err != nil {
 					return
 				}
-				//解析前端传来的JSON数据
+				//Parse the JSON data passed by the front end
 				var RequestBody struct {
 					UserID      string `json:"userID"`
 					ProductName string `json:"productName"`
 				}
 				var ID UserCart
 
-				//获取前端传递的userID和productName
+				//Get the userID and productName passed by the front end
 				err = json.NewDecoder(request.Body).Decode(&RequestBody)
 				if err != nil {
 					writer.WriteHeader(500)
@@ -314,13 +314,13 @@ func (s *VulinServer) mallCartRoute() {
 				}
 				ID.ProductName = RequestBody.ProductName
 
-				//调用函数删除购物车商品
+				//Call the function to delete the shopping cart item
 				err = s.database.DeleteCartByName(ID.UserID, ID.ProductName)
 				if err != nil {
 					return
 				}
 				writer.WriteHeader(http.StatusOK)
-				writer.Write([]byte("删除购物车商品成功"))
+				writer.Write([]byte("Delete The shopping cart product is successful"))
 
 			},
 		},

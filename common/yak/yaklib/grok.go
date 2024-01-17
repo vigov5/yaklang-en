@@ -95,7 +95,7 @@ func (g GrokResult) GetOr(key string, value string) string {
 	return g.Get(key)
 }
 
-// Grok 用于将字符串 line 使用 Grok 以规则 rule 进行解析，并返回解析结果(map)，参考 https://doc.yonyoucloud.com/doc/logstash-best-practice-cn/filter/grok.html 获取更多信息。
+// Grok is used to parse the string line using Grok with rules and returns the parsing result (map), refer to https ://doc.yonyoucloud.com/doc/logstash-best-practice-cn/filter/grok.html for more information.
 // Example:
 // ```
 // str.Grok("04/18-00:59:45.385191", "%{MONTHNUM:month}/%{MONTHDAY:day}-%{TIME:time}") // map[HOUR:[00] MINUTE:[59] SECOND:[45.385191] day:[18] month:[04] time:[00:59:45.385191]]
@@ -156,7 +156,7 @@ func JsonStreamToMapListWithDepth(reader io.Reader, i int) []map[string]interfac
 	return r
 }
 
-// JsonStreamToMapList 从 reader 中读取字符串并解析为 map 列表
+// JsonStreamToMapList reads the string from the reader and parses it into a map list
 // Example:
 // ```
 // reader, writer = io.Pipe()
@@ -172,7 +172,7 @@ func JsonStreamToMapList(reader io.Reader) []map[string]interface{} {
 	return JsonStreamToMapListWithDepth(reader, 0)
 }
 
-// JsonToMapList 将 json 字符串 line 解析为 map 列表
+// JsonToMapList Parses the json string line into a map list
 // Example:
 // ```
 // str.JsonToMapList(`{"a":1,"b":2} {"c":3, "d":4}`) // [map[a:1 b:2] map[c:3 d:4]]
@@ -197,7 +197,7 @@ func JsonToMapList(line string) []map[string]string {
 	return r
 }
 
-// JsonToMap 将 json 字符串 line 解析为 map
+// JsonToMap parses the json string line into a map
 // Example:
 // ```
 // str.JsonToMap(`{"a":1,"b":2}`) // map[a:1 b:2]
@@ -210,7 +210,7 @@ func JsonToMap(line string) map[string]string {
 	return nil
 }
 
-// ParamsGetOr 从 map 中获取 key 对应的值，如果不存在则返回 defaultValue
+// ParamsGetOr Gets the value corresponding to the key from the map, and returns defaultValue if it does not exist
 // Example:
 // ```
 // str.ParamsGetOr({"a": "1"}, "a", "2") // 1

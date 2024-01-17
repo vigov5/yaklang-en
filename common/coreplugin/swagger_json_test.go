@@ -13,7 +13,7 @@ func TestGRPCMUSTPASS_SwaggerJson(t *testing.T) {
 		panic(err)
 	}
 
-	pluginName := "Swagger JSON 泄漏"
+	pluginName := "Swagger JSON leak"
 	vul := VulInfo{
 		Path: []string{"/", "/sensitive"},
 		ExpectedResult: map[string]int{

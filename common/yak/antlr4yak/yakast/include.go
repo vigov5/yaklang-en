@@ -24,7 +24,7 @@ func (y *YakCompiler) VisitIncludeStmt(raw yak.IIncludeStmtContext) interface{} 
 	defer recoverRange()
 	y.writeString("include ")
 
-	// include 语句的参数是文件路径，直接读取并判断是否存在
+	// include statement parameter is the file path, directly read and determine whether it exists
 	fpath := i.StringLiteral().GetText()
 	fpath = strings.ReplaceAll(fpath, "\\", "\\\\")
 	fpath, err := strconv.Unquote(fpath)
@@ -55,7 +55,7 @@ func (y *YakCompiler) VisitIncludeStmt(raw yak.IIncludeStmtContext) interface{} 
 	tokenStream := antlr.NewCommonTokenStream(lex, antlr.TokenDefaultChannel)
 	p := yak.NewYaklangParser(tokenStream)
 
-	// compile, 忽略formatter
+	// compile, ignore the formatter
 	recoverFormatBufferFunc := y.switchFormatBuffer()
 	recoverSource := y.switchSource(&fpath, &codeStr)
 	defer func() {

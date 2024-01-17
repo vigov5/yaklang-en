@@ -2,7 +2,7 @@ newResult = func( url, reqRaw, respRaw) {
     return { "url": url,   "reqRaw": reqRaw, "respRaw": respRaw }
 }
 
-//checkErr 检查错误并退出
+//checkErr Check for errors and exit
 checkErr = func(err) {
     if err != nil {
         yakit.Output(sprintf("csrf-DETECT error: %s", err))
@@ -11,13 +11,13 @@ checkErr = func(err) {
 }
 
 description = `
-跨站请求伪造（Cross-Site Request Forgery，简称CSRF）是一种网络攻击手段，攻击者通过诱导用户点击链接、访问网站或者加载图片等方式，使得用户在不知情的情况下发送了一个预设的请求。这个请求通常对应一些具有一定副作用的操作，例如更改密码、购买商品等。
+Cross-Site Request Forgery (CSRF) is a type of network attack method. The attacker induces the user to click on a link, visit a website, or load an image, causing the user to send a message without knowing it. Default request. This request usually corresponds to some operations with certain side effects, such as changing passwords, purchasing goods, etc.
 
-风险说明：“此页面可能包含一个没有CSRF保护的表单”，这句话的含义是，该页面的某个表单可能存在CSRF漏洞。如果攻击者利用这个漏洞，他们可以构造特定的请求，当用户访问某个链接或者页面时，这个请求就会被发送出去，从而执行了攻击者预设的操作。
+Risk description:“This page may contain a form that is not protected by CSRF”, the meaning of this sentence is that a certain form on this page may have a CSRF vulnerability. If an attacker exploits this vulnerability, they can construct a specific request. When a user accesses a link or page, this request will be sent out, thus performing the attackers preset operation.
 
-潜在风险：如果一个表单没有适当的CSRF保护，那么攻击者就可以利用这个漏洞进行攻击。这可能导致用户的账户被恶意操作，例如更改账户设置、进行非法交易、甚至窃取用户的账户。
+Potential risk: If a form does not have appropriate CSRF protection, then an attacker can exploit this vulnerability. This may lead to malicious operations on the users account, such as changing account settings, conducting illegal transactions, or even stealing the users account.
 
-防护措施：为了防止CSRF攻击，开发者需要在表单中加入CSRF令牌。当用户提交表单时，服务器会验证这个令牌，如果令牌不匹配，那么请求就会被拒绝。此外，还可以使用同源策略（Same-Origin Policy）和内容安全策略（Content Security Policy）等技术防止CSRF攻击。
+Protection measures: In order to prevent CSRF attacks, developers need to add CSRF tokens to the form. When the user submits the form, the server validates the token and if the tokens do not match, the request is rejected. In addition, you can also use technologies such as Same-Origin Policy and Content Security Policy to prevent CSRF attacks.
     `
 csrfLog = func(result){
     url = result.url
@@ -25,11 +25,11 @@ csrfLog = func(result){
     respRaw = result.respRaw
     msg = "This page may contain a form without CSRF protection."
     solution = `
-1. 使用CSRF令牌：在每个表单提交时，服务器应生成一个唯一的、随机的CSRF令牌，并将其嵌入到表单中。当表单被提交时，服务器应验证提交的令牌是否与之前生成的令牌匹配。如果令牌不匹配，则请求应被视为非法并被拒绝。
+1. Use CSRF tokens: On each form submission, the server should generate a unique, random CSRF token and embed it into the form. When the form is submitted, the server should verify that the submitted token matches the previously generated token. If the tokens do not match, the request should be considered illegal and rejected.
 
-2. 验证Referer头：服务器可以验证HTTP Referer头以确保请求是从信任的源发送的。如果Referer头与预期的源不匹配，服务器应拒绝请求。
+2. Verify Referer header: The server can verify the HTTP Referer header to ensure that the request is sent from a trusted source. If the Referer header does not match the expected origin, the server SHOULD reject the request.
 
-3. 使用SameSite Cookies：SameSite cookie属性可以防止CSRF攻击，因为它们只允许在同一站点的上下文中发送cookie，阻止了跨站请求。`
+3. Use SameSite Cookies: SameSite cookie attributes prevent CSRF attacks because they only allow cookies to be sent in the context of the same site, preventing cross-site requests. `
 
     report = {"message": msg, url:url}
     yakit.Output(report)
@@ -54,13 +54,13 @@ corsLog = func(result){
     description = `
 `
     solution = `
-1. 限制允许的源：CORS策略应明确指定允许哪些源进行跨源请求，而不是简单地允许所有源。这可以通过设置Access-Control-Allow-Origin头来实现。
+1. Limit the allowed sources: The CORS policy should clearly specify which sources are allowed to make cross-origin requests, rather than simply allowing all sources. This can be achieved by setting the Access-Control-Allow-Origin header.
 
-2. 限制允许的HTTP方法：应限制允许跨源请求的HTTP方法。例如，可能只允许GET和POST请求。
+2. Limit the allowed HTTP methods: The HTTP methods allowed for cross-origin requests should be restricted. For example, only GET and POST requests might be allowed.
 
-3. 使用预检请求：对于可能对服务器数据产生副作用的HTTP请求方法（例如，PUT，DELETE），应使用CORS预检请求来确保服务器接受请求。预检请求通过发送一个带有Access-Control-Request-Method和Access-Control-Request-Headers头的OPTIONS请求来实现。
+3. Use preflight requests: For HTTP request methods that may have side effects on server data (e.g., PUT, DELETE), CORS preflight requests should be used to ensure that the server accepts the request. Preflight requests are implemented by sending an OPTIONS request with Access-Control-Request-Method and Access-Control-Request-Headers headers.
 
-4. 避免信任cookie：对于跨源请求，不应信任或依赖cookie。因为cookie可以被第三方网站操纵，所以它们不应被用作身份验证或会话管理。`
+4. Avoid trusting cookies: Cookies should not be trusted or relied upon for cross-origin requests. Because cookies can be manipulated by third-party websites, they should not be used for authentication or session management. `
 
     report = {"message": msg, url:url}
     yakit.Output(report)
@@ -134,11 +134,11 @@ formCompare = func(pform,form){
 }
 
 paramBlackList = ["token","csrf","xsrf","tkn"]
-submitBlackList = ["login","register","search","登录","注册","搜索"]
+submitBlackList = ["login","register","search","Login","Register","Search"]
 
 
 formCheck = func(url,req,rsp,form){
-    //检测是否是受js控制的表单 ， 没有action，且有id
+    //Detect whether it is a form controlled by js, without action, and with id
     action = xpath.SelectAttr(form,"action")
     id = xpath.SelectAttr(form,"id")
     if action == "" && id != ""{
@@ -167,7 +167,7 @@ formCheck = func(url,req,rsp,form){
 }
 
 corsCheck = func(ishttps,req,rsp,url){
-    //检查是否为跨域请求以及请求是否有效
+    //Check whether it is a cross-domain request and whether the request is valid
     if poc.GetStatusCodeFromResponse(rsp) != 200 || poc.GetHTTPPacketHeaders(req)["Origin"] == nil {
         return
     }

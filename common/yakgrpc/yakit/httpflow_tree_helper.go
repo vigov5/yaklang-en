@@ -68,7 +68,7 @@ func GetHTTPFlowDomainsByDomainSuffix(db *gorm.DB, domainSuffix string) []*Websi
 			if splited && after != "" {
 				haveChildren = true
 			}
-			// 创建一个包含schema和nextPart的唯一键
+			// Create a schema and nextPart Unique key
 			uniqueKey := schema + "://" + nextPartItem
 			if result, ok := resultMap[uniqueKey]; ok {
 				result.Count++
@@ -99,7 +99,7 @@ func matchURL(u string, searchPath string) bool {
 		}
 	}
 
-	// 解析 URL
+	// Parse the URL
 	parsedURL, _ := url.Parse(u)
 
 	normalizedPath := strings.Join(strings.FieldsFunc(parsedURL.Path, func(r rune) bool {
@@ -110,17 +110,17 @@ func matchURL(u string, searchPath string) bool {
 		return r == '/'
 	}), "/")
 
-	// 确保搜索路径以 "/" 开头
+	// Make sure the search path ends with "/" at the beginning
 	searchPath = "/" + strings.TrimLeft(normalizedSearchPath, "/")
 	searchPath = strings.TrimRight(searchPath, "/")
-	// 获取路径并确保它以 "/" 开头
+	// Get the path and make sure it ends with "/" at the beginning
 	path := "/" + strings.TrimLeft(normalizedPath, "/")
 
-	// 分割搜索路径和 URL 路径
+	// Split the search path and URL path
 	searchSegments := strings.Split(searchPath, "/")
 	pathSegments := strings.Split(path, "/")
 
-	// 检查路径是否以搜索路径的段开头
+	// Check if the path starts with a segment of the search path
 	match := true
 	for i := 1; i < len(searchSegments); i++ {
 		if i >= len(pathSegments) || searchSegments[i] != pathSegments[i] {
@@ -132,15 +132,15 @@ func matchURL(u string, searchPath string) bool {
 	return match
 }
 
-// findNextPathSegment 返回 url 中紧随 target 之后的路径段，包含正确数量的斜杠
+// findNextPathSegment Return the path segment immediately after the target in the url, containing the correct number of slashes
 func findNextPathSegment(url, target string) string {
-	// 分割 url 和 target
+	// Split url and target
 	urlSegments := strings.Split(url, "/")
 	targetSegments := strings.Split(target, "/")
 
 	targetIndex, slashCount := 0, 0
 
-	// 遍历 urlSegments 查找 targetSegments
+	// Traverse urlSegments to find targetSegments
 	for _, segment := range urlSegments {
 		targetIndex++
 
@@ -150,11 +150,11 @@ func findNextPathSegment(url, target string) string {
 		}
 
 		if targetIndex-1 < len(targetSegments) && segment == targetSegments[targetIndex-1] {
-			slashCount = 1 // 重置斜杠计数
+			slashCount = 1 // Reset the slash count
 			continue
 		}
 
-		// 找到 target，返回下一个非空段，连同之前计算的斜杠
+		// Find the target, return the next non-empty segment, along with the previously calculated slash
 		if segment != "" {
 			return strings.Repeat("/", slashCount) + segment
 		}
@@ -181,10 +181,10 @@ func GetHTTPFlowNextPartPathByPathPrefix(db *gorm.DB, originPathPrefix string) [
 		}
 	}
 
-	// 初始化一个映射，用于存储网站结构
+	// Initialize a mapping to store website structure
 	resultMap := make(map[string]*WebsiteNextPart)
 
-	// 假设 urls 是您的 URL 列表
+	// Assume urls is your list of URLs
 	for _, us := range urls {
 		usC := strings.SplitN(us, "?", 2)[0] + "%2f"
 		uc, _ := url.Parse(usC)
@@ -192,9 +192,9 @@ func GetHTTPFlowNextPartPathByPathPrefix(db *gorm.DB, originPathPrefix string) [
 		if u.Path == "" || uc.RawPath == "" {
 			continue
 		}
-		// 寻找目标字符串，为了解决多个 / 的问题
+		// Find the target string, in order to solve multiple / question whether the path segment is already in the resultMap
 		rawNextPart := findNextPathSegment(strings.TrimSuffix(uc.RawPath, "%2f"), originPathPrefix)
-		// 去除URL路径中多余的斜线
+		// Remove the extra slashes in the URL path
 		normalizedPath := strings.Join(strings.FieldsFunc(u.Path, func(r rune) bool {
 			return r == '/'
 		}), "/")
@@ -216,7 +216,7 @@ func GetHTTPFlowNextPartPathByPathPrefix(db *gorm.DB, originPathPrefix string) [
 
 		nextSegment, after, splited := strings.Cut(suffix, "/")
 
-		// 根据路径是否分割，决定是否有子路径
+		// According to whether the path Split, decide if there is a sub-path
 		haveChildren := splited && after != ""
 
 		if nextSegment == "" && u.RawQuery == "" {
@@ -225,15 +225,15 @@ func GetHTTPFlowNextPartPathByPathPrefix(db *gorm.DB, originPathPrefix string) [
 
 		if nextSegment != "" {
 			node, ok := resultMap[nextSegment]
-			// 检查根路径段是否已经在resultMap中
+			// Check the root
 			if !ok {
 				if u.RawQuery != "" {
 					haveChildren = true
 				}
 				node = &WebsiteNextPart{
 					NextPart:     nextSegment,
-					HaveChildren: haveChildren, // 如果有多个路径段，说明有子节点
-					Count:        1,            // 初始化计数为1
+					HaveChildren: haveChildren, // If there are multiple path segments, there are child nodes
+					Count:        1,            // Initialize the count to 1
 					Schema:       u.Scheme,
 					RawNextPart:  rawNextPart,
 				}
@@ -243,7 +243,7 @@ func GetHTTPFlowNextPartPathByPathPrefix(db *gorm.DB, originPathPrefix string) [
 				resultMap[nextSegment] = node
 
 			} else {
-				// 如果已经存在，且不是文件，则增加计数
+				// If it already exists and is not a file, then Increment count
 				if !strings.Contains(nextSegment, ".") && haveChildren {
 					node.Count++
 				}
@@ -255,7 +255,7 @@ func GetHTTPFlowNextPartPathByPathPrefix(db *gorm.DB, originPathPrefix string) [
 			}
 		}
 
-		// 如果存在查询参数，将其添加到根路径段
+		// If the query parameter exists, add it to the root path segment
 		if u.RawQuery != "" && path == pathPrefix {
 			for key := range u.Query() {
 				if len(key) == 0 {
@@ -265,7 +265,7 @@ func GetHTTPFlowNextPartPathByPathPrefix(db *gorm.DB, originPathPrefix string) [
 				if !ok {
 					queryNode = &WebsiteNextPart{
 						NextPart:     key,
-						HaveChildren: false, // 如果有多个路径段，说明有子节点
+						HaveChildren: false, // If there are multiple path segments, there are child nodes
 						RawQueryKey:  key,
 						IsQuery:      true,
 						Schema:       u.Scheme,
@@ -282,7 +282,7 @@ func GetHTTPFlowNextPartPathByPathPrefix(db *gorm.DB, originPathPrefix string) [
 
 	}
 
-	// resultMap 现在包含了所有的路径和查询参数，以及它们的层级关系和计数
+	// resultMap now contains all paths and query parameters, as well as their hierarchies and counts
 	var data []*WebsiteNextPart
 	for _, r := range resultMap {
 		data = append(data, r)

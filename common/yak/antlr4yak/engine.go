@@ -22,8 +22,8 @@ type Engine struct {
 	strictMode            bool
 	sourceFilePathPointer *string
 	// debug
-	debug         bool // 内部debug
-	debugMode     bool // 外部debugger
+	debug         bool // internal debug
+	debugMode     bool // . External debugger
 	debugCallBack func(*yakvm.Debugger)
 	debugInit     func(*yakvm.Debugger)
 }
@@ -126,7 +126,7 @@ func (n *Engine) CallYakFunctionNative(ctx context.Context, function *yakvm.Func
 	return n.vm.ExecYakFunction(ctx, function, yakvm.YakVMValuesToFunctionMap(function, paramsValue, n.vm.GetConfig().GetFunctionNumberCheck()), yakvm.None)
 }
 
-// 函数调用时如果不加锁，并发会有问题
+// function is not locked, there will be concurrency problems.
 func (n *Engine) CallYakFunction(ctx context.Context, funcName string, params []interface{}) (interface{}, error) {
 	i, ok := n.GetVar(funcName)
 	if !ok {
@@ -154,7 +154,7 @@ func (n *Engine) CallYakFunction(ctx context.Context, funcName string, params []
 	//return returnValue, nil
 }
 
-// RunFile 手动执行Yak脚本一般都是从文件开始执行，这种情况建议使用RunFile执行代码，便于报错时提供文件路径信息
+// RunFile Manually executing Yak scripts generally starts from the file. In this case, it is recommended to use RunFile to execute the code, so as to provide file path information when reporting an error. If
 func (n *Engine) RunFile(ctx context.Context, path string) error {
 	n.sourceFilePathPointer = &path
 	defer func() {
@@ -167,7 +167,7 @@ func (n *Engine) RunFile(ctx context.Context, path string) error {
 	return n.Eval(ctx, string(codeB))
 }
 
-// LoadCode 暂时使用Eval的方式加载代码，后面可以进行优化，只编译声明语句和assign语句
+// LoadCode Temporarily use Eval Load the code, which can be optimized later, and only the declaration statement and assign statement are compiled.
 func (n *Engine) LoadCode(ctx context.Context, code string, table map[string]interface{}) error {
 	codes, err := n.Compile(code)
 	if err != nil {
@@ -340,7 +340,7 @@ func (n *Engine) EvalWithInline(ctx context.Context, code string, inline bool) e
 	n.vm.SetDebug(n.debug)
 	n.vm.SetDebugMode(n.debugMode, code, compiler.GetOpcodes(), n.debugInit, n.debugCallBack)
 
-	// yakc缓存
+	// yakc cache
 	codes, symtbl := compiler.GetOpcodes(), compiler.GetRootSymbolTable()
 	defer func() {
 		if len(code) <= YAKC_CACHE_MAX_LENGTH {

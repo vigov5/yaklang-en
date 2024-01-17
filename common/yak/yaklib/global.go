@@ -19,7 +19,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// f 用于对字符串进行格式化
+// f is used to perform string manipulation. Formatted
 // Example:
 // ```
 //
@@ -29,12 +29,12 @@ func _sfmt(f string, items ...interface{}) string {
 	return fmt.Sprintf(f, items...)
 }
 
-// assert 用于判断传入的布尔值是否为真，如果为假则崩溃并打印错误信息
-// ! 已弃用，可以使用 assert 语句代替
+// assert is used to determine whether the incoming Boolean value is true. If it is false, it will crash and print an error message.
+// ! Deprecated, you can use the assert statement instead of
 // Example:
 // ```
-// assert(code == 200, "code != 200") // 如果code不等于200则会崩溃并打印错误信息
-// // 其相当于 assert code == 200, "code != 200"
+// assert(code == 200, "code != 200") // . If the code is not equal to 200, it will crash and print an error message.
+// // which is equivalent to assert code == 200, "code != 200"
 // ```
 func _assert(b bool, reason ...interface{}) {
 	if !b {
@@ -42,12 +42,12 @@ func _assert(b bool, reason ...interface{}) {
 	}
 }
 
-// assertf 用于判断传入的布尔值是否为真，如果为假则崩溃并打印错误信息
-// ! 已弃用，可以使用 assert 语句代替
+// assertf is used to determine whether the incoming Boolean value is true, and crashes if it is false And print the error message
+// ! Deprecated, you can use the assert statement instead of
 // Example:
 // ```
-// assertf(code == 200, "code != %d", 200) // 如果code不等于200则会崩溃并打印错误信息
-// // 其相当于 assert code == 200, sprintf("code != %d", 200)
+// assertf(code == 200, "code != %d", 200) // . If the code is not equal to 200, it will crash and print an error message.
+// // composed of n characters randomly selected from the uppercase and lowercase alphabet. It is equivalent to assert code == 200, sprintf("code != %d", 200)
 // ```
 func _assertf(b bool, f string, items ...any) {
 	if !b {
@@ -55,11 +55,11 @@ func _assertf(b bool, f string, items ...any) {
 	}
 }
 
-// assertEmpty 用于判断传入的值是否为空，如果为空则崩溃并打印错误信息
-// ! 已弃用，可以使用 assert 语句代替
+// assertEmpty is used to determine whether the incoming value is empty. If it is empty, it crashes and prints an error message.
+// ! Deprecated, you can use the assert statement instead of
 // Example:
 // ```
-// assertEmpty(nil, "nil is not empty") // 如果nil不为空则会崩溃并打印错误信息，这里不会崩溃
+// assertEmpty(nil, "nil is not empty") // . If nil is not empty, it will crash and print an error message. It will not crash here.
 // ```
 func _assertEmpty(i interface{}) {
 	if i == nil || i == spec.Undefined {
@@ -68,7 +68,7 @@ func _assertEmpty(i interface{}) {
 	panic(_sfmt("expect nil but got %v", spew.Sdump(i)))
 }
 
-// fail 崩溃并打印错误信息，其实际上几乎等价于panic
+// fail crashes and prints an error message, which is actually almost equivalent to panic
 // Example:
 // ```
 // try{
@@ -101,7 +101,7 @@ func yakitOutputHelper(i interface{}) {
 	}
 }
 
-// die 判断传入的错误是否为空，如果不为空则崩溃并打印错误信息，其实际上相当于 if err != nil { panic(err) }
+// die determines whether the incoming error is empty. If not, If empty, it will crash and print an error message, which is actually equivalent to if err != nil { panic(err) }
 // Example:
 // ```
 // die(err)
@@ -114,7 +114,7 @@ func _diewith(err interface{}) {
 	_failed(err)
 }
 
-// logdiscard 用于丢弃所有日志，即不再显示任何日志
+// logdiscard. Use Used to discard all logs, that is, no longer display any logs.
 // Example:
 // ```
 // logdiscard()
@@ -123,7 +123,7 @@ func _logDiscard() {
 	log.SetOutput(io.Discard)
 }
 
-// logquiet 用于丢弃所有日志，即不再显示任何日志，它是logdiscard的别名
+// logquiet is used to discard all logs, that is, no more logs are displayed. It is an alias of logdiscard.
 // Example:
 // ```
 // logquiet()
@@ -132,7 +132,7 @@ func _logQuiet() {
 	log.SetOutput(io.Discard)
 }
 
-// logrecover 用于恢复日志的显示，它用于恢复logdiscard所造成的效果
+// . logrecover is used to restore the display of logs. It is used to restore the effect caused by logdiscard.
 // Example:
 // ```
 // logdiscard()
@@ -148,7 +148,7 @@ func dummyN(items ...any) {
 	}
 }
 
-// yakit_output 用于在yakit中输出日志，在非yakit的情况下它会在控制台中输出日志，在mitm插件中调用则会在被动日志中输出日志
+// yakit_output is used to output logs in yakit. In the case of non-yakit, it will output the log in the console. When called in the mitm plug-in, the log will be output in the passive log.
 // Example:
 // ```
 // yakit_output("hello %s", "yak")
@@ -160,16 +160,16 @@ func _yakit_output(items ...any) {
 }
 
 // yakit_save
-// ! 已弃用
+// ! Deprecated
 func _yakit_save(items ...any) {
 }
 
 // yakit_status
-// ! 已弃用
+// ! Deprecated
 func _yakit_status(items ...any) {
 }
 
-// uuid 用于生成一个uuid字符串
+// uuid is used to generate A uuid string
 // Example:
 // ```
 // println(uuid())
@@ -178,7 +178,7 @@ func _uuid() string {
 	return uuid.New().String()
 }
 
-// timestamp 用于获取当前时间戳，其返回值为int64类型
+// timestamp is used to obtain the current timestamp, and its return value is of type int64.
 // Example:
 // ```
 // println(timestamp())
@@ -187,7 +187,7 @@ func _timestamp() int64 {
 	return time.Now().Unix()
 }
 
-// nanotimestamp 用于获取当前时间戳，精确到纳秒，其返回值为int64类型
+// nanotimestamp is used to obtain the current timestamp, accurate to nanoseconds, and its return value is int64 type
 // Example:
 // ```
 // println(nanotimestamp())
@@ -196,7 +196,7 @@ func _nanotimestamp() int64 {
 	return time.Now().UnixNano()
 }
 
-// date 用于获取当前日期，其格式为"2006-01-02“
+// date is used to obtain the current date in the format"2006-01-02“
 // Example:
 // ```
 // println(date())
@@ -205,7 +205,7 @@ func _date() string {
 	return time.Now().Format("2006-01-02")
 }
 
-// datetime 用于获取当前日期与时间，其格式为"2006-01-02 15:04:05"
+// datetime is used to get the current date and time. Its format is"2006-01-02 15:04:05"
 // Example:
 // ```
 // println(datetime())
@@ -214,8 +214,8 @@ func _datetime() string {
 	return time.Now().Format("2006-01-02 15:04:05")
 }
 
-// now 用于获取当前时间的时间结构体
-// 它实际上是 time.Now 的别名
+// now is used to obtain the current time. Time structure
+// is actually an alias of time.Now.
 // Example:
 // ```
 // dur = time.ParseDuration("1m")~
@@ -227,7 +227,7 @@ func _now() time.Time {
 	return time.Now()
 }
 
-// timestampToDatetime 用于将时间戳转换为日期与时间，其格式为"2006-01-02 15:04:05"
+// timestampToDatetime is used to convert timestamps into dates and times in the format"2006-01-02 15:04:05"
 // Example:
 // ```
 // println(timestampToDatetime(timestamp()))
@@ -237,7 +237,7 @@ func _timestampToDatetime(tValue int64) string {
 	return tm.Format("2006-01-02 15:04:05")
 }
 
-// timestampToTime 用于将时间戳转换为时间结构体
+// timestampToTime is used to convert the timestamp into a time structure
 // Example:
 // ```
 // println(timestampToDatetime(timestamp()))
@@ -246,7 +246,7 @@ func _timestampToTime(tValue int64) time.Time {
 	return time.Unix(tValue, 0)
 }
 
-// datetimeToTimestamp 用于将日期与时间字符串转换为时间戳，其格式为"2006-01-02 15:04:05"
+// datetimeToTimestamp is used to convert date and time strings into timestamps, its format is"2006-01-02 15:04:05"
 // Example:
 // ```
 // println(datetimeToTimestamp("2023-11-11 11:11:11")~)
@@ -259,7 +259,7 @@ func _datetimeToTimestamp(str string) (int64, error) {
 	return t.Unix(), nil
 }
 
-// parseTime 以一个布局解析一个格式化的时间字符串并返回它代表的时间结构体。
+// parseTime parses a formatted time string in a layout and returns the time structure it represents.
 // Example:
 // ```
 // t, err = parseTime("2006-01-02 15:04:05", "2023-11-11 11:11:11")
@@ -268,7 +268,7 @@ func _parseTime(layout, value string) (time.Time, error) {
 	return time.Parse(layout, value)
 }
 
-// dump 以用户友好的方式格式化并打印任意类型的数据
+// dump to format and print any type of data in a user-friendly way
 // Example:
 // ```
 // dump("hello", 1, ["1", 2, "3"])
@@ -277,7 +277,7 @@ func _dump(i ...any) {
 	spew.Dump(i...)
 }
 
-// sdump 以用户友好的方式格式化任意类型的数据，返回格式化后的字符串
+// sdump formats any type of data in a user-friendly way and returns the formatted string
 // Example:
 // ```
 // println(sdump("hello", 1, ["1", 2, "3"]))
@@ -286,8 +286,8 @@ func _sdump(i ...any) string {
 	return spew.Sdump(i...)
 }
 
-// randn 用于生成一个随机数，其范围为[min, max)
-// 如果min大于max，则会抛出异常
+// randn is used to generate a Random number, its range is [min, max)
+// If min is greater than max, an exception will be thrown
 // Example:
 // ```
 // println(randn(1, 100))
@@ -299,7 +299,7 @@ func _randn(min, max int) int {
 	return min + rand.Intn(max-min)
 }
 
-// randstr 返回在大小写字母表中随机挑选 n 个字符组成的字符串
+// randstr returns a string
 // Example:
 // ```
 // println(randstr(10))
@@ -308,12 +308,12 @@ func _randstr(length int) string {
 	return utils.RandStringBytes(length)
 }
 
-// wait 用于等待一个上下文完成，或者让当前协程休眠一段时间，其单位为秒
+// wait is used to wait for a context to complete, or to let the current coroutine sleep for a period of time. The unit is seconds
 // Example:
 // ```
-// ctx, cancel = context.WithTimeout(context.New(), time.ParseDuration("5s")~) // 上下文在调用cancel函数或者5秒后完成
-// wait(ctx) // 等待上下文完成
-// wait(1.5) // 休眠1.5秒
+// ctx, cancel = context.WithTimeout(context.New(), time.ParseDuration("5s")~) // The context is completed after calling the cancel function or 5 seconds
+// wait(ctx) // waits for the context to complete.
+// wait(1.5) // Sleep for 1.5 seconds
 // ```
 func _wait(i interface{}) {
 	switch ret := i.(type) {
@@ -334,7 +334,7 @@ func _wait(i interface{}) {
 	}
 }
 
-// isEmpty 用于判断传入的值是否为空，如果为空则返回true，否则返回false
+// isEmpty is used to determine the transfer Whether the input value is empty, if it is empty, return true, otherwise return false
 // Example:
 // ```
 // isEmpty(nil) // true
@@ -347,7 +347,7 @@ func _isEmpty(i interface{}) bool {
 	return false
 }
 
-// chr 将传入的值根据ascii码表转换为对应的字符
+// chr. Converts the incoming value to the corresponding character according to the ascii code table.
 // Example:
 // ```
 // chr(65) // A
@@ -380,7 +380,7 @@ func chr(i interface{}) string {
 	}
 }
 
-// ord  将传入的值转换为对应的ascii码整数
+// ord converts the incoming value into the corresponding ascii code integer
 // Example:
 // ```
 // ord("A") // 65
@@ -404,7 +404,7 @@ func ord(i interface{}) int {
 	}
 }
 
-// typeof 用于获取传入值的类型结构体
+// typeof is used to get the incoming The value type structure
 // Example:
 // ```
 // typeof(1) == int // true
@@ -414,7 +414,7 @@ func typeof(i interface{}) reflect.Type {
 	return reflect.TypeOf(i)
 }
 
-// desc 以用户友好的方式打印传入的复杂值的详细信息，其往往是一个结构体或者一个结构体引用，详细信息包括可用字段，可用的成员方法
+// desc Print the details of the incoming complex value in a user-friendly way, which is often a structure or a structure reference. Detailed information includes available fields and available member methods.
 // Example:
 // ```
 // ins = fuzz.HTTPRequest(poc.BasicRequest())~
@@ -432,7 +432,7 @@ func _desc(i interface{}) {
 	info.Show()
 }
 
-// descStr 以用户友好的方式打印传入的复杂值的详细信息，其往往是一个结构体或者一个结构体引用，详细信息包括可用字段，可用的成员方法，返回详细信息的字符串
+// descStr. Prints the detailed information of the incoming complex value in a user-friendly way, which is often a structure or a structure reference. The detailed information includes available fields, available Member method, returns a string of detailed information
 // Example:
 // ```
 // ins = fuzz.HTTPRequest(poc.BasicRequest())~
@@ -450,7 +450,7 @@ func _descToString(i interface{}) string {
 	return info.String()
 }
 
-// tick1s 用于每隔1秒执行一次传入的函数，直到函数返回false为止
+// tick1s is used to execute the incoming function every 1 second until the function returns false.
 // Example:
 // ```
 // count = 0
@@ -471,10 +471,10 @@ func tick1s(f func() bool) {
 	}
 }
 
-// sleep 用于让当前协程休眠一段时间，其单位为秒
+// sleep is used to make the current coroutine sleep for a period of time. The unit is seconds.
 // Example:
 // ```
-// sleep(1.5) // 休眠1.5秒
+// sleep(1.5) // Sleep for 1.5 seconds
 // ```
 func sleep(i float64) {
 	time.Sleep(utils.FloatSecondDuration(i))

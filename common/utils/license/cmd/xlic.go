@@ -83,7 +83,7 @@ func main() {
 	app.Action = func(c *cli.Context) error {
 		org := c.String("org")
 		if org == "" {
-			return utils.Errorf("需要签发给的组织不能为空，请设置 --org [org-name]")
+			return utils.Errorf("The organization that needs to be issued to cannot be empty, please set --org [org-name]")
 		}
 
 		m, err := license.NewMachineFromFile(c.String("enc"), c.String("dec"))

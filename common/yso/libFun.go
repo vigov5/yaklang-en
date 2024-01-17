@@ -7,7 +7,7 @@ import (
 )
 
 func RepClassName(echoTmplClass []byte, oldN string, newN string) []byte {
-	//查找出所有字符串的位置
+	//finds the positions of all strings.
 	var poss []int
 	start := 0
 	for i := 0; i < 3; i++ {
@@ -26,7 +26,7 @@ func RepClassName(echoTmplClass []byte, oldN string, newN string) []byte {
 	ll := len(oldN)
 	var buffer bytes.Buffer
 
-	//分别对三种情况做替换
+	//Replace the three situations respectively.
 	pre := 0
 	for _, pos := range poss {
 		if string(echoTmplClass[pos-1]) == "L" {

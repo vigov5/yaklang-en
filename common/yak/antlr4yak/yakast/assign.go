@@ -41,7 +41,7 @@ func (y *YakCompiler) VisitAssignExpression(raw yak.IAssignExpressionContext) in
 	// assign eq  /  colon assign eq
 	if op, op2 := i.AssignEq(), i.ColonAssignEq(); op != nil || op2 != nil {
 
-		// 赋值语句，应该先 visit 右值，再 visit 左值
+		// assignment statement, you should first visit the rvalue and then visit the lvalue
 		recoverFormatBufferFunc := y.switchFormatBuffer()
 		y.VisitExpressionList(i.ExpressionList())
 		buf := recoverFormatBufferFunc()
@@ -149,7 +149,7 @@ func (y *YakCompiler) VisitLeftExpression(forceNewSymbol bool, raw yak.ILeftExpr
 	defer recoverRange()
 
 	if id := i.Identifier(); id != nil {
-		// 左值中的 identifier 要创建符号
+		// lvalue. To create the symbol
 		idName := id.GetText()
 		y.writeString(idName)
 		if forceNewSymbol {
@@ -183,16 +183,16 @@ func (y *YakCompiler) VisitLeftExpression(forceNewSymbol bool, raw yak.ILeftExpr
 
 			push slice
 			push index
-			list 2  // 组合 slice[index] 放入栈
+			list 2  // combination slice[index] and put it on the stack
 			list 1
 
 			assign
 		*/
 		if s := i.LeftSliceCall(); s != nil {
 			y.VisitLeftSliceCall(s)
-			// 这里复用 list 的操作，由 assign 判断后续的值
-			// list 2 可以把上述两个值组合成一个可以被赋值的操作
-			// 一定小心，不要乱改
+			// that can be assigned is the operation of list reused here, and the subsequent value is judged by assign.
+			// list 2. You can combine the above two values into one The operation
+			// Be careful not to change the identifier in the
 			y.pushListWithLen(2)
 			return nil
 		}
@@ -301,7 +301,7 @@ func (y *YakCompiler) VisitDeclareAndAssignExpression(raw yak.IDeclareAndAssignE
 
 	y.writeString("var ")
 
-	// 赋值语句，应该先 visit 右值，再 visit 左值
+	// assignment statement, you should first visit the rvalue and then visit the lvalue
 	recoverFormat := y.switchFormatBuffer()
 	y.VisitExpressionList(i.ExpressionList())
 	buf := recoverFormat()

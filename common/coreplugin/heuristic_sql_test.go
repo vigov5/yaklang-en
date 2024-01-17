@@ -13,7 +13,7 @@ func TestGRPCMUSTPASS_SQL(t *testing.T) {
 		panic(err)
 	}
 
-	pluginName := "启发式SQL注入检测"
+	pluginName := "Heuristic SQL injection detection"
 	vul := VulInfo{
 		Path: []string{
 			"/user/by-id-safe?id=1",
@@ -32,24 +32,24 @@ func TestGRPCMUSTPASS_SQL(t *testing.T) {
 			Value: "ID=1",
 		}},
 		ExpectedResult: map[string]int{
-			//"参数:id未检测到闭合边界":                         1,
-			//"疑似SQL注入：【参数：数字[id] 无边界闭合】":                        4,
-			"存在基于UNION SQL 注入: [参数名:id 值:[1]]": 4,
-			//"疑似SQL注入：【参数：字符串[name] 单引号闭合】":                     1,
-			"存在基于UNION SQL 注入: [参数名:name 值:[admin]": 1,
-			//"疑似SQL注入：【参数：数字[ID] 双引号闭合】":                        1,
-			"存在基于UNION SQL 注入: [参数名:ID 值:[1]]": 1,
-			//"疑似SQL注入：【参数：字符串[name] like注入( %' )】":              2,
-			"存在基于UNION SQL 注入: [参数名:name 值:[a]]": 1,
-			//"疑似SQL注入：【参数：字符串[data] like注入( %' )】":              1,
-			"可能存在基于错误的 SQL 注入: [参数名:id 原值:[1]] 猜测数据库类型: MySQL": 1,
+			//"Parameter: id No closed boundary detected":                         1,
+			//"Suspected SQL injection: [ Parameter: Number [id] Unbounded closure]":                        4,
+			"exists based on UNION SQL injection: [Parameter name: id Value: [1]]": 4,
+			//"Suspected SQL injection: [Parameter: string [name] single quote closed]":                     1,
+			"exists based on UNION SQL injection: [Parameter name: name Value: [admin]": 1,
+			//"Suspected SQL injection: [Parameter: number [ID] enclosed in double quotes]":                        1,
+			"exists based on UNION SQL injection: [Parameter name: ID value: [1]]": 1,
+			//"Suspected SQL injection: [Parameter: string [name] like injection (%' )】":              2,
+			"exists based on UNION SQL injection: [Parameter name: name value :[a]]": 1,
+			//"Suspected SQL injection: [Parameter: String [data] like injection (%' )】":              1,
+			"There may be error-based SQL injection: [Parameter name: id Original value: [1]] Guess database Type: MySQL": 1,
 		},
 		StrictMode: false,
 	}
 
 	//vul10 := VulInfo{
 	//	Path:           "/user/name/like/b64?nameb64=%59%51%3d%3d",
-	//	ExpectedResult: map[string]int{"疑似SQL注入：【参数：字符串[name] like注入( %' )】": 3},
+	//	ExpectedResult: map[string]int{"Suspected SQL injection: [Parameter: string [name] like injection (%' )】": 3},
 	//}
-	Must(CoreMitmPlugTest(pluginName, server, vul, client, t), "SQL插件对于SQL注入检测结果不符合预期")
+	Must(CoreMitmPlugTest(pluginName, server, vul, client, t), "SQL plug-in does not meet expectations for SQL injection detection results")
 }

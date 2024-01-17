@@ -15,11 +15,11 @@ func NewCircularQueue(capacity int) *CircularQueue {
 }
 
 func (q *CircularQueue) Push(x interface{}) {
-	if q.size < cap(q.data) { // 队列未满，直接插入到队尾
+	if q.size < cap(q.data) { // The queue is not full, inserting directly to the end of the queue
 		q.data[q.rear] = x
 		q.rear = (q.rear + 1) % cap(q.data)
 		q.size++
-	} else { // 队列已满，覆盖队首元素
+	} else { // The queue is full, covering the first element of the queue
 		q.data[q.front] = x
 		q.front = (q.front + 1) % cap(q.data)
 		q.rear = (q.rear + 1) % cap(q.data)

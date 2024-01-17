@@ -132,14 +132,14 @@ func (y *YakCompiler) VisitStatement(i *yak.StatementContext) (newLine bool) {
 	}
 
 	if s := i.BreakStmt(); s != nil {
-		// break 目前应该出现在两个地方
-		// 一个是 for 一个是 switch
-		// 这两个流程本质上是相同的，但是实际操作的时候，公用一个关键字
-		// 在 for 循环结束的时候
-		// 给 for 循环没有设置过 break 的设置 break 的位置
-		// 类似的的 switch 结束的时候，switch 范围内的也应该设置位置
+		// break should currently appear in two places.
+		// . One is for and the other is switch
+		// . The two processes are essentially the same, but in actual operation, they share a keyword.
+		// When the for loop ends,
+		// sets the break position for the for loop that has not set a break.
+		// within the switch range should also be set. One is for and the other is switch
 		//
-		// 如何在判断 for 还是 switch 内？其实不要紧，无需判断，for / switch 语句自己解决
+		// determine whether it is in for or switch? In fact, it doesnt matter, there is no need to judge, for / . The switch statement solves
 		//
 		if !y.NowInFor() && !y.NowInSwitch() {
 			y.panicCompilerError(breakError)
@@ -171,8 +171,8 @@ func (y *YakCompiler) VisitStatement(i *yak.StatementContext) (newLine bool) {
 	}
 	//y.panicCompilerError(breakError)
 
-	// fallthrough 实现在switch中,进行了特殊处理
-	// 这里遇到fallthrough直接panic
+	// fallthrough is implemented in switch, and special processing is performed.
+	// encounters here Go to fallthrough and directly panic
 	if s := i.FallthroughStmt(); s != nil {
 		y.panicCompilerError(fallthroughError)
 	}

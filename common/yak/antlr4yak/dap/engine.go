@@ -34,10 +34,10 @@ func (ds *DebugSession) RunProgramInDebugMode(request *dap.LaunchRequest, debug 
 		engine.SetDebug(true)
 		d := NewDAPDebugger()
 
-		// 等待初始化
+		// Wait for initialization
 		d.InitWGAdd()
 
-		// 设置回调
+		// Set callback
 		engine.SetDebugInit(d.Init())
 		engine.SetDebugCallback(d.CallBack())
 
@@ -46,7 +46,7 @@ func (ds *DebugSession) RunProgramInDebugMode(request *dap.LaunchRequest, debug 
 		ds.debugger = d
 		d.session = ds
 	}
-	// launch完成
+	// launch is completed
 	ds.LaunchWg.Done()
 
 	// inject args in cli
@@ -61,7 +61,7 @@ func (ds *DebugSession) RunProgramInDebugMode(request *dap.LaunchRequest, debug 
 	}
 
 	err = engine.ExecuteMain(string(raw), absPath)
-	// 如果是vmpanic,则已经在debugger中处理了
+	// If it is vmpanic, it has been processed in the debugger
 	if err != nil && !yakvm.IsVMPanic(err) {
 		ds.sendErrorResponse(request.Request, FailedToLaunch, "Failed to launch",
 			fmt.Sprintf("run file[%s] error: %v", absPath, err))

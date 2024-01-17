@@ -2,8 +2,8 @@ package filter
 
 import "github.com/yaklang/yaklang/common/cuckoo"
 
-// 默认参数的过滤容器, 全局使用一个容易造成碰撞, 因此拆分成四个
-// NewGenericCuckoo 极限容量约 400 万
+// Filter container with default parameters. Using one globally is easy to cause collision, so it is split into four.
+// NewGenericCuckoo has a limit capacity of about 4 million.
 func NewGenericCuckoo() *cuckoo.Filter {
 	return cuckoo.New(
 		cuckoo.BucketEntries(18),
@@ -12,21 +12,21 @@ func NewGenericCuckoo() *cuckoo.Filter {
 	)
 }
 
-// NewPathCuckoo 极限容量约 200 万
+// NewPathCuckoo has a limit capacity of about 2 million.
 func NewPathCuckoo() *cuckoo.Filter {
 	return cuckoo.New(cuckoo.BucketEntries(16),
 		cuckoo.BucketTotal(1<<17),
 		cuckoo.Kicks(300))
 }
 
-// NewDirCuckoo 极限容量约 100 万
+// NewDirCuckoo has a limit capacity of about 1 million.
 func NewDirCuckoo() *cuckoo.Filter {
 	return cuckoo.New(cuckoo.BucketEntries(14),
 		cuckoo.BucketTotal(1<<16),
 		cuckoo.Kicks(300))
 }
 
-// NewWebsiteCuckoo 极限容量约 40 万
+// NewWebsiteCuckoo has a limit capacity of about 400,000.
 func NewWebsiteCuckoo() *cuckoo.Filter {
 	return cuckoo.New(cuckoo.BucketEntries(12),
 		cuckoo.BucketTotal(1<<15),

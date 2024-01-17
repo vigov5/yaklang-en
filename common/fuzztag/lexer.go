@@ -54,10 +54,10 @@ func (f *FuzzTagLexer) parse() {
 			fname := bs[start:i]
 			lastToken := f.tokens.Peek()
 			if lastToken != nil && lastToken.(*token).Type == TokenType_TAG_OPEN && !isIdentifyString(strings.TrimSpace(string(fname))) {
-				f.tokens.Pop() // pop掉左标签
-				start--        // 回退一个字符
+				f.tokens.Pop() // Pop off the left label
+				start--        // Go back one character
 				i = start - 1
-				f.pushToken([]byte("{"), "DATA", TokenType_DATA) // 补一个
+				f.pushToken([]byte("{"), "DATA", TokenType_DATA) // Add one
 				continue
 
 			}

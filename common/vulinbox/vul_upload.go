@@ -45,34 +45,34 @@ func (s *VulinServer) registerUploadCases() {
 			"action": "/upload/case/" + route,
 		})
 	})
-	var uploadGroup = r.PathPrefix("/upload").Name("文件上传案例").Subrouter()
+	var uploadGroup = r.PathPrefix("/upload").Name("file upload case").Subrouter()
 	var vuls = []*VulInfo{
 		{
-			Title:        "基础文件上传案例",
+			Title:        "base file upload case",
 			Path:         "/main",
 			DefaultQuery: "case=safe",
 			Handler:      defaultHandler,
 		},
 		{
-			Title:        "图片上传（NullByte 截断类型）绕过",
+			Title:        "image upload (NullByte truncation type) bypass",
 			Path:         "/main",
 			DefaultQuery: "case=nullbyte",
 			Handler:      defaultHandler,
 		},
 		{
-			Title:        "图片上传（MIME 类型伪造）绕过",
+			Title:        "image upload (MIME type forgery) bypass",
 			Path:         "/main",
 			DefaultQuery: "case=mime",
 			Handler:      defaultHandler,
 		},
 		{
-			Title:        "CVE-2017-15715：Apache HTTPD 换行解析漏洞",
+			Title:        "CVE-2017-15715: Apache HTTPD newline parsing vulnerability",
 			Path:         "/main",
 			DefaultQuery: "case=cve-2017-15715",
 			Handler:      defaultHandler,
 		},
 		{
-			Title:        "图片上传：检查文件头",
+			Title:        "image upload: check file header",
 			Path:         "/main",
 			DefaultQuery: "case=fileheader",
 			Handler:      defaultHandler,

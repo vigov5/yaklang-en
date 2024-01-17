@@ -210,7 +210,7 @@ func TestAESCBCEncrypt2(t *testing.T) {
 }
 
 func TestAESGCMEncrypt2(t *testing.T) {
-	// gcm 无关 iv
+	// gcm irrelevant iv
 
 	var key []byte
 	var plain []byte

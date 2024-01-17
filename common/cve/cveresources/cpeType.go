@@ -18,7 +18,7 @@ type CPE struct {
 
 type versionRule func(cpe CPE) (bool, float64)
 
-// ParseToCPE 将字符串解析成CPE结构体
+// ParseToCPE parses the string into a CPE structure
 func ParseToCPE(cpeStr string) (*CPE, error) {
 	quoted := false
 	info := strings.FieldsFunc(cpeStr, func(r rune) bool {
@@ -171,7 +171,7 @@ func (n Nodes) Result(CheckCpe []CPE) float64 {
 					}
 				}
 			}
-		// AND 模式下计算置信度
+		// calculates the confidence in AND mode
 		case "AND":
 			for _, match := range n.CpeMatch {
 				var insideLevel float64 = 0
@@ -258,7 +258,7 @@ func (m CpeMatch) Calculate(cpe CPE) float64 {
 	}
 }
 
-//! 1是传入的CPE,2是match中的cpe
+//! 1 is the incoming CPE, 2 is the cpe in the match
 
 func (m CpeMatch) getVersionRule() []versionRule {
 	var rules []versionRule
@@ -528,7 +528,7 @@ func VersionCompare(v1, v2 string) (int, float64) {
 
 }
 
-// IsNum 判断是否是数字
+// IsNum determines whether it is a number
 func IsNum(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
 	return err == nil
@@ -582,4 +582,4 @@ func (n Nodes) Version() []string {
 	}
 }
 
-//todo  CWE中文分类映射
+//todo CWE Chinese classification mapping

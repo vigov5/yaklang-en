@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	// 自动加载以 .yakitresource.txt 结尾的数据
+	// Automatically load data ending with .yakitresource.txt
 	RegisterPostInitDatabaseFunction(func() error {
 		yakitResourceFile := filepath.Join(consts.GetDefaultYakitBaseDir(), "base")
 		if utils.GetFirstExistedPath(yakitResourceFile) != "" {

@@ -33,7 +33,7 @@ func loadDefaultNmapServiceProbeRules() (map[*NmapProbe][]*NmapMatch, error) {
 		return nil, errors.Errorf("parse nmap service probe failed: %s", err)
 	}
 
-	// 构建一个索引，从 string 到 NmapProbe
+	// to build an index from string to NmapProbe
 	var probes = map[string]*NmapProbe{}
 	for probe, _ := range rules {
 		probes[probe.Name+probe.Payload] = probe
@@ -46,7 +46,7 @@ func loadDefaultNmapServiceProbeRules() (map[*NmapProbe][]*NmapMatch, error) {
 		return ret
 	}
 
-	// 加载用户自定义的规则库
+	// Load user-defined rule base
 	userDefinedPath := "data/user-fp-rules"
 	files, err := embed.AssetDir(userDefinedPath)
 	if err != nil {
@@ -69,7 +69,7 @@ func loadDefaultNmapServiceProbeRules() (map[*NmapProbe][]*NmapMatch, error) {
 		}
 
 		for probe, matches := range subRules {
-			//同名 且 同payload: "q|GET / HTTP/1.0\r\n\r\n|"的规则会进行合并，否则新增规则
+			//has the same name and the same payload: "q|GET / HTTP/1.0\r\n\r\n|"The rules will be merged, otherwise the new rule
 			newProbe := strToNmapProbe(probe.Name+probe.Payload, probe)
 			if originMatches, ok := rules[newProbe]; !ok {
 				log.Debugf("user defined a new probe: %s, payload: %#v", newProbe.Name, newProbe.Payload)

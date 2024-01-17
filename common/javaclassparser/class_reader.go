@@ -4,12 +4,12 @@ import "encoding/binary"
 
 /*
 *
-jvm中定义了u1，u2，u4来表示1，2，4字节的 无 符号整数
-相同类型的多条数据一般按表的形式存储在class文件中，由表头和表项构成，表头是u2或者u4整数。
-假设表头为10，后面就紧跟着10个表项数据
+jvm defines u1, u2, and u4 to represent 1, 2, and 4-byte unsigned integers.
+Multiple pieces of data of the same type are generally stored in class files in the form of tables, consisting of table headers and table items. The header is a u2 or u4 integer.
+. Assume that the header is 10, followed by 10 entries. Data
 */
 type ClassReader struct {
-	//class data 以最小单位byte存储，及8位
+	//class data is stored in the smallest unit of byte, and 8-bit
 	data []byte
 }
 
@@ -19,7 +19,7 @@ func NewClassReader(data []byte) *ClassReader {
 
 /*
 *
-相当于java的 byte 8位无符号整数
+is equivalent to javas byte 8-bit unsigned integer.
 */
 func (this *ClassReader) readUint8() uint8 {
 	val := this.data[0]
@@ -29,11 +29,11 @@ func (this *ClassReader) readUint8() uint8 {
 
 /*
 *
-相当于java的 short 16位无符号整数
-这里class文件在文件系统中以大端法存储
+is equivalent to Javas short 16-bit unsigned integer
+. Here, the class file is stored in the big endian method in the file system.
 */
 func (this *ClassReader) readUint16() uint16 {
-	//大端法读取16位的数据
+	//. The big endian method reads 16-bit data.
 	val := binary.BigEndian.Uint16(this.data)
 	this.data = this.data[2:]
 	return val
@@ -41,7 +41,7 @@ func (this *ClassReader) readUint16() uint16 {
 
 /*
 *
-相当于java的 int 32位无符号整数
+, which is equivalent to Javas int 32-bit unsigned integer
 */
 func (this *ClassReader) readUint32() uint32 {
 	val := binary.BigEndian.Uint32(this.data)
@@ -51,7 +51,7 @@ func (this *ClassReader) readUint32() uint32 {
 
 /*
 *
-相当于java的 long 64位无符号整数
+is equivalent to javas long 64-bit unsigned integer
 */
 func (this *ClassReader) readUint64() uint64 {
 	val := binary.BigEndian.Uint64(this.data)
@@ -61,7 +61,7 @@ func (this *ClassReader) readUint64() uint64 {
 
 /*
 *
-读取uint16表，表的大小由开头的uint16数据指出
+reads a uint16 table. The size of the table is indicated by the uint16 data at the beginning.
 */
 func (this *ClassReader) readUint16s() []uint16 {
 	n := this.readUint16()
@@ -74,7 +74,7 @@ func (this *ClassReader) readUint16s() []uint16 {
 
 /*
 *
-读取制定length数量的字节
+reads the specified number of bytes of length
 */
 func (this *ClassReader) readBytes(length uint32) []byte {
 	bytes := this.data[:length]

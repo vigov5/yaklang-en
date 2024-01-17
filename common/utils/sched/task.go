@@ -9,48 +9,48 @@ import (
 )
 
 type Task struct {
-	// 任务间隔
+	// Task interval
 	interval time.Duration
 
-	// 任务 ID
+	// Task ID
 	ID string
 
-	// 任务的启动时间
+	// Task startup time
 	Start time.Time
 
-	// 任务的停止时间
+	// The stop time of the task
 	End time.Time
 
-	// 任务执行函数
+	// The task execution function
 	f func()
 
 	isDisabled *utils.AtomicBool
 
-	// 是否已经执行过了，只会执行一次
+	// Has it been executed?
 	isExecuted *utils.AtomicBool
 
-	// 是否正在运行中？
+	// Is it running?
 	isWorking *utils.AtomicBool
 
-	// 调度是否生效？
+	// Is the schedule effective?
 	isScheduling *utils.AtomicBool
 
-	// 是否结束了
+	// will be executed immediately. Has it ended?
 	isFinished *utils.AtomicBool
 
 	// context
 	ctx context.Context
 
-	// 取消任务
+	// will only be executed once. Cancel the task
 	cancel context.CancelFunc
 
-	// 第一次是否执行？
+	// Is it executed for the first time?
 	first *utils.AtomicBool
 
-	// 上一次执行时间和下一次执行时间
+	// Last execution time and next execution time
 	last, next time.Time
 
-	// 钩子函数
+	// Hook function
 	onFinished        map[string]TaskCallback
 	onBeforeExecuting map[string]TaskCallback
 	onEveryExecuted   map[string]TaskCallback
@@ -103,19 +103,19 @@ func (t *Task) runWithContext(ctx context.Context) {
 		callbackLock.Unlock()
 	}()
 
-	// 设置 hook 来记录上次执行的时间
+	// Set hook to record the last execution time
 	taskFunc := func() {
 		t.isWorking.Set()
 		t.last = time.Now()
 
-		// 设置执行任务前的回调函数
+		// Set the callback function before executing the task
 		callbackLock.Lock()
 		for _, f := range t.onBeforeExecuting {
 			f(t)
 		}
 		callbackLock.Unlock()
 
-		// 如果已经禁用了，就不能执行
+		// . If it has been disabled,
 		if !t.isDisabled.IsSet() {
 			t.f()
 		}
@@ -130,7 +130,7 @@ func (t *Task) runWithContext(ctx context.Context) {
 		t.isWorking.UnSet()
 	}
 
-	// 设置时间执行时间
+	// Set time execution time
 	var taskCtx = ctx
 	if t.End.After(time.Now()) {
 		taskCtx, _ = context.WithDeadline(ctx, t.End)
@@ -151,12 +151,12 @@ func (t *Task) runWithContext(ctx context.Context) {
 		}
 	}
 
-	// 如果设置了第一次执行的话，则立即执行
+	// cannot be executed. If the first execution is set,
 	if t.first.IsSet() {
 		taskFunc()
 	}
 
-	// 进入循环模式
+	// Enter loop mode
 	ticker := time.Tick(t.interval)
 	for {
 		if t.isFinished.IsSet() || !t.isScheduling.IsSet() {
@@ -205,7 +205,7 @@ func (t *Task) Cancel() {
 	t.isFinished.Set()
 }
 
-// 状态函数
+// Status function
 func (t *Task) IsFinished() bool {
 	return t.isFinished.IsSet()
 }
@@ -230,7 +230,7 @@ func (t *Task) IsInScheduling() bool {
 	return t.isScheduling.IsSet()
 }
 
-// 其他参数
+// Other parameters
 func (t *Task) LastExecutedDate() (time.Time, error) {
 	if t.last.IsZero() {
 		return time.Time{}, errors.New("not executed yet")

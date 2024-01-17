@@ -27,13 +27,13 @@ func (s *Server) IsPrivilegedForNetRaw(ctx context.Context, req *ypb.Empty) (*yp
 		return &ypb.IsPrivilegedForNetRawResponse{
 			IsPrivileged:  pcapfix.IsPrivilegedForNetRaw(),
 			Advice:        "use administrator privileges for opening yak.exe or yakit",
-			AdviceVerbose: "使用管理员权限打开 Yakit 或者 yak.exe",
+			AdviceVerbose: "Use administrator rights to open Yakit or yak.exe",
 		}, nil
 	}
 	return &ypb.IsPrivilegedForNetRawResponse{
 		IsPrivileged:  pcapfix.IsPrivilegedForNetRaw(),
 		Advice:        "use pcapfix.Fix or Yakit FixPcapPermission to fix this;",
-		AdviceVerbose: "使用 pcapfix.Fix 或 Yakit 修复原始网卡权限操作",
+		AdviceVerbose: "Use pcapfix.Fix or Yakit to fix the original network card permission operation",
 	}, nil
 }
 

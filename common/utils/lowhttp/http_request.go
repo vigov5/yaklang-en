@@ -26,7 +26,7 @@ var (
 	fetchBoundaryRegexp = regexp.MustCompile(`boundary\s?=\s?([^;]+)`)
 )
 
-// HTTPPacketForceChunked 将一个HTTP报文的body强制转换为chunked编码
+// HTTPPacketForceChunked Forces the body of an HTTP message to chunked encoding
 // Example:
 // ```
 // poc.HTTPPacketForceChunked(`POST / HTTP/1.1
@@ -46,7 +46,7 @@ func AppendHeaderToHTTPPacket(raw []byte, line string) []byte {
 	return []byte(header + string(body))
 }
 
-// FixHTTPPacketCRLF 修复一个HTTP报文的CRLF问题（正常的报文每行末尾为\r\n，但是某些报文可能是有\n），如果noFixLength为true，则不会修复Content-Length，否则会尝试修复Content-Length
+// FixHTTPPacketCRLF fixes the CRLF problem of an HTTP message (normal messages end with \r\n at the end of each line, but some messages may have \n). If noFixLength is true, then Content-Length will not be repaired, otherwise it will try to repair Content-Length
 // Example:
 // ```
 // poc.FixHTTPPacketCRLF(`POST / HTTP/1.1
@@ -56,7 +56,7 @@ func AppendHeaderToHTTPPacket(raw []byte, line string) []byte {
 // hello world`, false)
 // ```
 func FixHTTPPacketCRLF(raw []byte, noFixLength bool) []byte {
-	// 移除左边空白字符
+	// Remove the left blank characters
 	raw = TrimLeftHTTPPacket(raw)
 	if raw == nil || len(raw) == 0 {
 		return nil
@@ -173,7 +173,7 @@ func FixHTTPPacketCRLF(raw []byte, noFixLength bool) []byte {
 	return buf.Bytes()
 }
 
-// FixHTTPRequest 尝试对传入的HTTP请求报文进行修复，并返回修复后的请求
+// FixHTTPRequest Try to parse the incoming Repair the HTTP request message and return the repaired request
 // Example:
 // ```
 // str.FixHTTPRequest(b"GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
@@ -222,7 +222,7 @@ func DeletePacketEncoding(raw []byte) []byte {
 }
 
 func ConvertHTTPRequestToFuzzTag(i []byte) []byte {
-	var boundary string // 如果是上传数据包的话，boundary 就不会为空
+	var boundary string // If the packet is uploaded, the boundary will not be empty
 	header, body := SplitHTTPHeadersAndBodyFromPacket(i, func(line string) {
 		k, v := SplitHTTPHeader(strings.TrimSpace(line))
 		switch strings.ToLower(k) {
@@ -235,10 +235,10 @@ func ConvertHTTPRequestToFuzzTag(i []byte) []byte {
 	})
 
 	if boundary != "" {
-		// 上传文件的情况
+		// When uploading files
 		reader := multipart.NewReader(bytes.NewBuffer(body), boundary)
 
-		// 修复数据包
+		// Repair the data packet
 		var buf bytes.Buffer
 		fixedBody := multipart.NewWriter(&buf)
 		fixedBody.SetBoundary(boundary)
@@ -313,10 +313,10 @@ func ToUnquoteFuzzTag(i []byte) string {
 }
 
 //func FixHTTPRequest(raw []byte) []byte {
-//	// 移除左边空白字符
+//	// Remove the left blank characters
 //	raw = TrimLeftHTTPPacket(raw)
 //
-//	// 修复不合理的 headers
+//	// fixes unreasonable headers.
 //	if bytes.Contains(raw, []byte("Transfer-Encoding: chunked")) {
 //		headers, body := SplitHTTPHeadersAndBodyFromPacket(raw)
 //		headersRaw := fixInvalidHTTPHeaders([]byte(headers))
@@ -335,7 +335,7 @@ func ToUnquoteFuzzTag(i []byte) string {
 //		string(firstLineBytes),
 //	}
 //
-//	// 接下来解析各种 Header
+//	// . Next, parse various Header
 //	isChunked := false
 //	for {
 //		lineBytes, _, err := reader.ReadLine()
@@ -345,7 +345,7 @@ func ToUnquoteFuzzTag(i []byte) string {
 //		line := string(lineBytes)
 //		line = strings.TrimSpace(line)
 //
-//		// Header 解析完毕
+//		// Header. After parsing,
 //		if line == "" {
 //			break
 //		}
@@ -357,7 +357,7 @@ func ToUnquoteFuzzTag(i []byte) string {
 //	}
 //	restBody, _ := ioutil.ReadAll(reader)
 //
-//	// 移除原有的 \r\n
+//	// Remove the original \r\n
 //	if bytes.HasSuffix(restBody, []byte("\r\n\r\n")) {
 //		restBody = restBody[:len(restBody)-4]
 //	}
@@ -365,7 +365,7 @@ func ToUnquoteFuzzTag(i []byte) string {
 //		restBody = restBody[:len(restBody)-2]
 //	}
 //
-//	// 修复 content-length
+//	// . Repair the content-length
 //	var index = -1
 //	emptyBody := bytes.TrimSpace(restBody) == nil
 //	if emptyBody {
@@ -386,7 +386,7 @@ func ToUnquoteFuzzTag(i []byte) string {
 //	}
 //
 //	var finalRaw []byte
-//	// 添加新的结尾分隔符
+//	// Add a new ending delimiter
 //	if emptyBody {
 //		finalRaw = []byte(strings.Join(headers, CRLF) + CRLF + CRLF)
 //	} else {
@@ -396,7 +396,7 @@ func ToUnquoteFuzzTag(i []byte) string {
 //	return finalRaw
 //}
 
-// ParseStringToHTTPRequest 将字符串解析为 HTTP 请求
+// ParseStringToHTTPRequest Parse the string into HTTP request
 // Example:
 // ```
 // req, err = str.ParseStringToHTTPRequest("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
@@ -410,7 +410,7 @@ var (
 	charsetInMeta             = regexp.MustCompile(`(?i)<\s*meta.*?(charset|content)\s*=\s*['"]?(.*?)(gb[^'^"^\s]+)['"]?`) // 3 gbxxx
 )
 
-// ParseUrlToHTTPRequestRaw 将URL解析为原始 HTTP 请求报文，返回是否为 HTTPS，原始请求报文与错误
+// ParseUrlToHTTPRequestRaw. Parse the URL into the original HTTP request message and return whether it is HTTPS, the original request message and the error
 // Example:
 // ```
 // ishttps, raw, err = poc.ParseUrlToHTTPRequestRaw("GET", "https://yaklang.com")
@@ -444,7 +444,7 @@ func CopyRequest(r *http.Request) *http.Request {
 	return result
 }
 
-// ParseBytesToHTTPRequest 将字节数组解析为 HTTP 请求
+// ParseBytesToHTTPRequest Parse the byte array into HTTP request
 // Example:
 // ```
 // req, err := str.ParseBytesToHTTPRequest(b"GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")

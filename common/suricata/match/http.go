@@ -132,7 +132,7 @@ func attachHTTPMatcher(c *matchContext) {
 	if isreq, ok := c.Value["isReq"].(bool); ok && isreq {
 		c.Attach(httpReqMatcher)
 	} else {
-		// suricata 文档没有 http resp 的非 sticky modifier
+		// The suricata documentation does not have a non-sticky modifier for http resp
 		// c.Attach(httpResMatcher)
 	}
 }
@@ -150,7 +150,7 @@ func httpReqMatcher(c *matchContext) error {
 }
 
 func httpResMatcher(_ *matchContext) error {
-	// 没有需要匹配的
+	// there is nothing to match
 	return nil
 }
 

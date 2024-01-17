@@ -238,7 +238,7 @@ func init() {
 			}
 			return nil, nil
 		},
-		// 新版加的函数，只有一个脚本使用
+		// The function added in the new version, only one script uses
 		"script_get_preference_file_location": func(engine *Engine, params *NaslBuildInMethodParam) (interface{}, error) {
 			panic(fmt.Sprintf("method `script_get_preference_file_location` is not implement"))
 			return nil, nil
@@ -317,7 +317,7 @@ func init() {
 			name := params.getParamByNumber(0)
 			return engine.Kbs.GetKB(name.String()), nil
 		},
-		// 返回如果pattern包含*，则返回map，否则返回list
+		// is not found in the source code. Return if pattern contains*, then returns map, otherwise returns list
 		"get_kb_list": func(engine *Engine, params *NaslBuildInMethodParam) (interface{}, error) {
 			name := params.getParamByNumber(0).String()
 			if strings.Contains(name, "*") {
@@ -407,7 +407,7 @@ func init() {
 			panic(fmt.Sprintf("method `open_priv_sock_udp` is not implement"))
 			return nil, nil
 		},
-		// 需要把net.Conn封装一下，携带error信息
+		// Net.Conn needs to be encapsulated, carrying error information
 		"socket_get_error": func(engine *Engine, params *NaslBuildInMethodParam) (interface{}, error) {
 			panic(fmt.Sprintf("method `socket_get_error` is not implement"))
 			return nil, nil
@@ -911,7 +911,7 @@ func init() {
 			}
 			return re.ReplaceAllString(s, newReplace), nil
 		},
-		"egrep": func(engine *Engine, params *NaslBuildInMethodParam) (interface{}, error) { // 返回值应该是匹配内容
+		"egrep": func(engine *Engine, params *NaslBuildInMethodParam) (interface{}, error) { // . The return value should be the matching content
 			pattern := params.getParamByName("pattern").String()
 			s := params.getParamByName("string").String()
 			icase := params.getParamByName("icase").IntBool()
@@ -1062,9 +1062,9 @@ func init() {
 					naslLogger.Errorf("nasl_make_list: undefined variable #%d skipped\n", i)
 					return
 				}
-				// 列表的每一个元素添加到新的列表中
+				// Each element of the list is added to a new list
 				switch ret := value.Value.(type) {
-				case *vm.NaslArray: // array类型
+				case *vm.NaslArray: // array type
 					for _, v := range ret.Num_elt {
 						if res.AddEleToList(i, v) != nil {
 							i++
@@ -1075,7 +1075,7 @@ func init() {
 							i++
 						}
 					}
-				default: // int, string, data类型
+				default: // int, string, data type
 					if res.AddEleToList(i, value.Value) != nil {
 						i++
 					}
@@ -1652,13 +1652,13 @@ func init() {
 				return nil, fmt.Errorf("connect pop3 server error：%s", err)
 			}
 			defer conn.Close()
-			// 读取服务器响应
+			// . Reads the server response to
 			buffer := make([]byte, 1024)
 			n, err := conn.Read(buffer)
 			if err != nil {
 				return nil, fmt.Errorf("read pop3 server error：%s", err)
 			}
-			// 打印服务器响应
+			// needs to be converted here. The print server responds to
 			response := string(buffer[:n])
 			return response, nil
 		},
@@ -1747,7 +1747,7 @@ func init() {
 			return val, nil
 		},
 		"plugin_run_find_service": func(engine *Engine, params *NaslBuildInMethodParam) (interface{}, error) {
-			//nasl_builitin_find_service.c 写了具体的指纹识别逻辑，和nmap的指纹不同，这里需要转换下
+			//. nasl_builitin_find_service.c writes specific fingerprint identification logic, which is different from nmaps fingerprint.
 			register_service := func(port int, service string) {
 				engine.CallNativeFunction("set_kb_item", map[string]interface{}{"name": fmt.Sprintf("Services/%s", service), "value": port}, nil)
 			}
@@ -1924,7 +1924,7 @@ func init() {
 			//for k, v := range engine.scriptObj.Xrefs {
 			//	xrefStr += fmt.Sprintf("\n Reference: %s(%s)", v, k)
 			//}
-			title := fmt.Sprintf("检测目标存在 [%s] 应用，版本号为 [%s]", app, version)
+			title := fmt.Sprintf("The detection target exists [%s] application, the version number is [%s]", app, version)
 			return fmt.Sprintf(`{"title":"%s","riskType":"%s","source":"%s","concluded":"%s","concludedUrl":"%s","solution":"%s","summary":"%s","cve":"%s","cpe":"%s","install":"%s"}`, title, riskType, source, concluded, concludedUrl, solution, summary, cve, cpe, install), nil
 		},
 		"ftp_get_banner": func(engine *Engine, params *NaslBuildInMethodParam) (interface{}, error) {
@@ -2016,7 +2016,7 @@ func init() {
 		"snmp_get_port": func(engine *Engine, params *NaslBuildInMethodParam) (interface{}, error) {
 			return nil, nil
 		},
-		//需要把ssh相关插件重写
+		//Need to Ssh related plug-in rewriting
 		"ssh_session_id_from_sock": func(engine *Engine, params *NaslBuildInMethodParam) (interface{}, error) {
 			panic("not implement")
 		},

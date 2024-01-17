@@ -10,50 +10,50 @@ const (
 )
 
 type SubdomainScannerConfig struct {
-	// 设置
+	// Set
 	Modes []int
 
-	// 允许递归扫描
+	// Allows recursive scanning
 	AllowToRecursive bool
 
 	// DNS Worker Count
-	// 同时允许多少个 DNS 查询 Goroutine
+	// How many DNS query Goroutines are allowed simultaneously?
 	WorkerCount int
 
-	// DNS Servers 预设 DNS 服务器
+	// DNS Servers Default DNS server
 	DNSServers []string
 
-	// 子域名遍历的最大深度 // 默认为 5
+	// Subdomain name traversal The maximum depth of // Default is 5
 	MaxDepth int
 
-	// 平行执行的任务数量 Default: 10
+	// Number of parallel execution tasks Default: 10
 	ParallelismTasksCount int
 
-	// 每个目标的超时时间
+	// Timeout for each target
 	TimeoutForEachTarget time.Duration
 
-	// 子域名爆破主字典
+	// Subdomain name blasting primary dictionary
 	MainDictionary []byte
 
-	// 子域名爆破次级字典
+	// Subdomain name blasting secondary dictionary
 	SubDictionary []byte
 
-	// 是否开启自动 Web 发现？
+	// turning on automatic Web discovery?
 	//	allow_auto_web_discover: bool = True
-	// 自动发现 Web 不应该交由本模块实现
-	// 应该在外部将子域名扫描结果交给爬虫模块去处理
+	// Automatic discovery of the Web should not be left to this module to implement
+	// The subdomain name scan results should be handed over to the crawler module externally for processing
 
-	// 每一次查询的超时时间，默认值为 3s
+	// The timeout for each query, the default value is 3s
 	TimeoutForEachQuery time.Duration
 
-	// 遇到泛解析的情况，马上停止解析
-	//   这里有两种情况，第一种是自己设的泛解析，第二种是运营商设置的泛解析
-	//   如果遇到泛解析不马上停止的话，子域名爆破会自动将泛解析到的 IP 地址添加进黑名单
-	//   默认值为 false
+	// Encounter In the case of pan-parsing, stop parsing immediately
+	//   There are two situations here. The first is the pan-parsing set by oneself, and the second is the pan-parsing set by the operator. Is
+	//   If pan-parsing is encountered and do not stop immediately, subdomain blasting will automatically add the IP address of pan-parsed to the blacklist
+	//   can be cached. The default value is false.
 	WildCardToStop bool
 
-	// 进行各种数据源搜索的时候，需要设置的 HTTP 超时时间
-	// 默认 10s
+	// When searching for various data sources, the HTTP timeout that needs to be set
+	// Default is 10s
 	TimeoutForEachHTTPSearch time.Duration
 }
 
@@ -74,7 +74,7 @@ func (s *SubdomainScannerConfig) init() {
 
 type ConfigOption func(s *SubdomainScannerConfig)
 
-// 配置子域名发现模式
+// Configure subdomain discovery mode
 func WithModes(modes ...int) ConfigOption {
 	return func(s *SubdomainScannerConfig) {
 		s.Modes = modes

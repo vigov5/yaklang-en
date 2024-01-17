@@ -29,7 +29,7 @@ func (i *InteractiveDebugger) SetAbsFilePath(fp string) {
 
 func (i *InteractiveDebugger) Init() func(g *yakvm.Debugger) {
 	return func(g *yakvm.Debugger) {
-		// 在第一个opcode执行的时候开始回调
+		// Start callback when the first opcode is executed
 		fmt.Printf("Yak version: %s\nType 'help' for help info.\n", consts.GetYakVersion())
 		g.Callback()
 	}
@@ -86,7 +86,7 @@ func (i *InteractiveDebugger) GetPrettySourceCode(g *yakvm.Debugger, start int, 
 
 func (i *InteractiveDebugger) CallBack() func(g *yakvm.Debugger) {
 	return func(g *yakvm.Debugger) {
-		// 显示回调信息
+		// Display callback information
 		if desc := g.Description(); desc != "" && g.CurrentLine() > 1 {
 			fmt.Println(desc)
 			g.ResetDescription()

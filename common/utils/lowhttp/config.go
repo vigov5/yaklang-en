@@ -80,7 +80,7 @@ type LowhttpResponse struct {
 	Https                  bool
 	Http2                  bool
 	RawRequest             []byte
-	Source                 string // 请求源
+	Source                 string // request source.
 	RuntimeId              string
 	FromPlugin             string
 	MultiResponse          bool
@@ -104,13 +104,13 @@ func (l *LowhttpResponse) GetDurationFloat() float64 {
 
 type LowhttpTraceInfo struct {
 	AvailableDNSServers []string
-	// DNS 完整请求时间
+	// DNS complete request time.
 	DNSTime time.Duration
-	// 获取一个连接的耗时
+	// The time taken to obtain a connection.
 	ConnTime time.Duration
-	// 服务器处理耗时，计算从连接建立到客户端收到第一个字节的时间间隔
+	// server processing time. Calculate the time interval from the connection establishment to the client receiving the first byte.
 	ServerTime time.Duration
-	// 完整请求的耗时
+	// the time taken for a complete request.
 	TotalTime time.Duration
 }
 

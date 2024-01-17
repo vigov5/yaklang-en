@@ -22,7 +22,7 @@ func (l *LuaTranslator) VisitNumber(raw lua.INumberContext) interface{} {
 		var intStr = strings.ToLower(originIntStr)
 		var resultInt64 int64
 		resultInt64, _ = strconv.ParseInt(intStr, 10, 64)
-		// todo 添加Compiler panic
+		// todo add Compiler panic
 		//if err != nil {
 		//	l.panicCompilerError(integerIsTooLarge, originIntStr)
 		//}
@@ -39,7 +39,7 @@ func (l *LuaTranslator) VisitNumber(raw lua.INumberContext) interface{} {
 		var intStr = strings.ToLower(originIntStr)
 		var resultInt64 int64
 		resultInt64, _ = strconv.ParseInt(intStr[2:], 16, 64)
-		// todo 添加Compiler panic
+		// todo add Compiler panic
 		//if err != nil {
 		//	l.panicCompilerError(integerIsTooLarge, originIntStr)
 		//}
@@ -60,7 +60,7 @@ func (l *LuaTranslator) VisitNumber(raw lua.INumberContext) interface{} {
 			lit = "0" + lit
 		}
 		resultFloat64, _ = strconv.ParseFloat(intStr, 64)
-		// todo 添加Compiler panic
+		// todo add Compiler panic
 		//if err != nil {
 		//	l.panicCompilerError(integerIsTooLarge, originFloatStr)
 		//}
@@ -79,7 +79,7 @@ func (l *LuaTranslator) VisitNumber(raw lua.INumberContext) interface{} {
 			lit = "0" + lit
 		}
 		resultFloat64, _ = strconv.ParseFloat(intStr, 64)
-		// todo 添加Compiler panic
+		// todo add Compiler panic
 		//if err != nil {
 		//	l.panicCompilerError(integerIsTooLarge, originFloatStr)
 		//}

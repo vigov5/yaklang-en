@@ -41,7 +41,7 @@ func TestSaveNewYakScript(t *testing.T) {
 		Content:              "",
 		Type:                 "yak",
 		Params:               nil,
-		ScriptName:           "测试插件新增接口",
+		ScriptName:           "New interface for test plug-in",
 		Help:                 "",
 		Level:                "",
 		Tags:                 "",

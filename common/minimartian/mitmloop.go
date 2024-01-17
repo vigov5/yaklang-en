@@ -56,7 +56,7 @@ func (p *Proxy) Serve(l net.Listener, ctx context.Context) error {
 	}
 
 	var currentConnCount int64 = 0
-	// 设置缓存并清除
+	// Set cache and clear
 	connsCached := new(sync.Map)
 	cacheConns := func(uid string, c net.Conn) {
 		connsCached.Store(uid, c)
@@ -435,7 +435,7 @@ func (p *Proxy) handleConnectionTunnel(req *http.Request, timer *time.Timer, con
 			}
 		}
 
-		// fallback: 最普通的情况，没有任何 http2 支持
+		// fallback: The most common case, there is no http2 support
 		// do as ordinary https server and use *tls.Conn
 		tlsConfig := p.mitm.TLSForHost(req.Host, p.http2 && serverUseH2)
 		tlsconn := tls.Server(&peekedConn{
@@ -566,7 +566,7 @@ func (p *Proxy) handle(ctx *Context, timer *time.Timer, conn net.Conn, brw *bufi
 	isProxy := req.Method == "CONNECT" || req.Header.Get("Proxy-Connection") != "" || req.Header.Get("Proxy-Authorization") != ""
 	if isProxy {
 		if p.proxyUsername != "" || p.proxyPassword != "" {
-			// 开启认证
+			// Enable authentication
 			failed := func(reason string) error {
 				res := proxyutil.NewResponse(407, http.NoBody, req)
 				res.Status = "407 Authentication Required"
@@ -597,7 +597,7 @@ func (p *Proxy) handle(ctx *Context, timer *time.Timer, conn net.Conn, brw *bufi
 				}
 				user, pass := lowhttp.SplitHTTPHeader(string(proxyAuth))
 				if !(user == p.proxyUsername && pass == p.proxyPassword) {
-					// 认证失败
+					// Authentication failed
 					return failed("username/password is not valid!")
 				}
 			} else {
@@ -644,7 +644,7 @@ func (p *Proxy) handle(ctx *Context, timer *time.Timer, conn net.Conn, brw *bufi
 		err := p.resmod.ModifyResponse(res)
 		if err != nil {
 			if errors.Is(err, IsDroppedError) {
-				res = proxyutil.NewResponseFromOldResponse(200, strings.NewReader(proxyutil.GetPrettyErrorRsp("响应被用户丢弃")), req, res)
+				res = proxyutil.NewResponseFromOldResponse(200, strings.NewReader(proxyutil.GetPrettyErrorRsp("Response dropped by user")), req, res)
 			} else {
 				log.Errorf("mitm: error modifying response: %v", err)
 				proxyutil.Warning(res.Header, err)

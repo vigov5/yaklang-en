@@ -24,7 +24,7 @@ fetch('/misc/response/fetch/basic.action')
     return response.text();
   })
   .then(data => {
-    console.log(data); // 这里是你的页面内容
+    console.log(data); // Here is your page content
   })
   .catch(error => {
     console.error('There has been a problem with your fetch operation:', error);

@@ -84,19 +84,19 @@ func (b *astbuilder) buildNumericLiteral(stmt *JS.NumericLiteralContext) ssa.Val
 
 		// fmt.Println(originStr)
 
-		if num := stmt.DecimalLiteral(); num != nil { // 十进制
+		if num := stmt.DecimalLiteral(); num != nil { // Decimal
 			if strings.Contains(stmt.GetText(), "e") {
 				var f, _ = strconv.ParseFloat(intStr, 64)
 				return b.EmitConstInst(f)
 			}
 			resultInt64, err = strconv.ParseInt(intStr, 10, 64)
-		} else if num := stmt.HexIntegerLiteral(); num != nil { // 十六进制
+		} else if num := stmt.HexIntegerLiteral(); num != nil { // hexadecimal
 			resultInt64, err = strconv.ParseInt(intStr[2:], 16, 64)
-		} else if num := stmt.BinaryIntegerLiteral(); num != nil { // 二进制
+		} else if num := stmt.BinaryIntegerLiteral(); num != nil { // binary
 			resultInt64, err = strconv.ParseInt(intStr[2:], 2, 64)
-		} else if num := stmt.OctalIntegerLiteral(); num != nil { // 八进制 017
+		} else if num := stmt.OctalIntegerLiteral(); num != nil { // Octal 017
 			resultInt64, err = strconv.ParseInt(intStr[1:], 8, 64)
-		} else if num := stmt.OctalIntegerLiteral2(); num != nil { // 八进制 0oxx
+		} else if num := stmt.OctalIntegerLiteral2(); num != nil { // Octal 0oxx
 			resultInt64, err = strconv.ParseInt(intStr[2:], 8, 64)
 		} else {
 			b.NewError(ssa.Error, TAG, "cannot parse num for literal: %s", stmt.GetText())

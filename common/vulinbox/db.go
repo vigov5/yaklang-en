@@ -66,33 +66,33 @@ func newDBM() (*dbm, error) {
 		Role:     "admin",
 	})
 
-	// 初始化数据库
+	// Initialize database
 	db.AutoMigrate(&UserCart{})
 	db.Save(&UserCart{
 		UserID:          1,
-		ProductName:     "商品2",
-		Description:     "这是商品2的描述信息。",
+		ProductName:     "Product 2",
+		Description:     "This is the description information of Product 2.",
 		ProductPrice:    200,
 		ProductQuantity: 2,
 	})
 	db.Save(&UserCart{
 		UserID:          1,
-		ProductName:     "商品1",
-		Description:     "这是商品1的描述信息。",
+		ProductName:     "Product 1",
+		Description:     "This is the description information of product 1.",
 		ProductPrice:    100,
 		ProductQuantity: 3,
 	})
 	db.Save(&UserCart{
 		UserID:          2,
-		ProductName:     "商品5",
-		Description:     "这是商品5的描述信息。",
+		ProductName:     "Product 5",
+		Description:     "This is the description information of product 5.",
 		ProductPrice:    500,
 		ProductQuantity: 3,
 	})
 	db.Save(&UserCart{
 		UserID:          3,
-		ProductName:     "商品4",
-		Description:     "这是商品4的描述信息。",
+		ProductName:     "Product 4",
+		Description:     "This is the description information of product 4.",
 		ProductPrice:    400,
 		ProductQuantity: 5,
 	})
@@ -101,21 +101,21 @@ func newDBM() (*dbm, error) {
 		Password: "admin",
 		Age:      25,
 		Role:     "admin",
-		Remake:   "我是管理员",
+		Remake:   "I am the administrator",
 	})
 	db.Save(&VulinUser{
 		Username: "root",
 		Password: "p@ssword",
 		Age:      25,
 		Role:     "admin",
-		Remake:   "我是管理员",
+		Remake:   "I am the administrator",
 	})
 	db.Save(&VulinUser{
 		Username: "user1",
 		Password: "password123",
 		Age:      25,
 		Role:     "user",
-		Remake:   "我是用户",
+		Remake:   "I am the user",
 	})
 	for _, u := range generateRandomUsers(20) {
 		db.Save(&u)
@@ -178,9 +178,9 @@ func (s *dbm) GetUserByUnsafe(i, p string) ([]*VulinUser, error) {
 	return v, nil
 }
 
-// CreateUser 注册用户
+// CreateUser Registered user
 func (s *dbm) CreateUser(user *VulinUser) error {
-	// 在这里执行用户创建逻辑，将用户信息存储到数据库
+	// Execute user creation logic here and store user information into the database
 	db := s.db.Create(user)
 	if db.Error != nil {
 		return db.Error
@@ -188,9 +188,9 @@ func (s *dbm) CreateUser(user *VulinUser) error {
 	return nil
 }
 
-// UpdateUser 更新用户信息
+// UpdateUser Update user information
 func (s *dbm) UpdateUser(user *VulinUser) error {
-	// 在这里执行用户更新逻辑，将更新后的用户信息保存到数据库
+	// The user update logic is executed here and the updated user information is saved to the database.
 	db := s.db.Model(&VulinUser{}).Where("id = ?", user.ID).Updates(user)
 	if db.Error != nil {
 		return db.Error

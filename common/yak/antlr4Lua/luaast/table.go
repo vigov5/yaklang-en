@@ -36,14 +36,14 @@ func (l *LuaTranslator) VisitFieldList(raw lua.IFieldlistContext) interface{} {
 	indexCounter := 1 // indexCounter default to 1 in lua
 
 	fields := i.AllField()
-	// field中含有...该怎么处理
-	// 这里经过简单测试 当...可变参数传入为{1,2,3,4}
-	// 如果 table constructor 为 {"a",...,"b"} => {"a",1,"b"}
-	// 如果 table constructor 为 {...} => {1,2,3,4}
+	// The field contains... What to do with
+	// , this is a simple test. When... the variable parameter is passed in as{1,2,3,4}
+	// If the table constructor is {"a",...,"b"} => {"a",1,"b"}
+	// If the table constructor is {...} => {1,2,3,4}
 	fieldLen := len(fields)
 	if fieldLen == 1 && fields[0].GetText() == "..." {
 		l.VisitVariadicField()
-		l.pushNewVariadicMap(0) // 这里的count不具有意义 大小动态决定
+		l.pushNewVariadicMap(0) // The count here is meaningless. The size is determined dynamically.
 		return nil
 	}
 	variadicFieldPos := 0

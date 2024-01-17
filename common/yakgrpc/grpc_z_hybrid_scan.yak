@@ -1,5 +1,5 @@
 // @ssa-ignore
-plugin = PLUGIN != undefined ? PLUGIN : db.GetYakitPluginByName("基础 XSS 检测")~
+plugin = PLUGIN != undefined ? PLUGIN : db.GetYakitPluginByName("Basic XSS detection")~
 // @ssa-ignore
 request = REQUEST != undefined ? REQUEST : b"GET / HTTP/1.1\r\nHost: www.example.com\r\nr\n"
 // @ssa-ignore

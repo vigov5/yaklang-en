@@ -1,4 +1,4 @@
-pluginName = "被动指纹检测"
+pluginName = "Passive fingerprint detection"
 ctx = context.Background()
 reqs = [{"RawHTTPRequest": b`GET / HTTP/1.1
 Host: www.example.com

@@ -32,7 +32,7 @@ import (
 //}
 
 func TestServer_AttachCombinedOutput(t *testing.T) {
-	// 输出调用栈
+	// Output call stack
 	debug.PrintStack()
 	println("run TestServer_AttachCombinedOutput")
 	client, err := NewLocalClient()

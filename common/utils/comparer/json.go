@@ -45,13 +45,13 @@ func compareJsons(raw1, raw2 interface{}) float64 {
 	}
 
 	type1, type2 := reflect.TypeOf(raw1), reflect.TypeOf(raw2)
-	// 根基类型不对
+	// The basic type is wrong.
 	if type1.Kind() != type2.Kind() {
 		return 0
 	}
 	v1, v2 := reflect.ValueOf(raw1), reflect.ValueOf(raw2)
 
-	// JSON 一般来说有多种类型
+	// JSON generally has multiple types.
 	switch type1.Kind() {
 	case reflect.String:
 		return compareString(v1.String(), v2.String())

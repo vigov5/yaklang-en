@@ -16,14 +16,14 @@ import (
 
 func (f *Matcher) webDetector(result *MatchResult, ctx context.Context, config *Config, host string, ip net.IP, port int) (*MatchResult, error) {
 	//////////////////////////////////////////////////////////////////////////
-	////////////////////////从这里开始进行 Web 指纹识别//////////////////////////
+	////////////////////////Start Web fingerprinting from here//////////////////////////
 	//////////////////////////////////////////////////////////////////////////
-	// 首先执行各种 IoT 设备的配置检测(优先级最高)
+	// First perform configuration detection of various IoT devices (highest priority)
 	iotDetectCtx, cancel := context.WithTimeout(ctx, config.ProbeTimeout)
 	defer cancel()
 
 	//////////////////////////////////////////////////////////////////////////
-	////////////////////////////// IoT 设备优化 ///////////////////////////////
+	////////////////////////////// IoT device optimization ///////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	//log.Infof("start to check iotdevfp: %v", utils2.HostPort(ip.String(), port))
 	h := host
@@ -57,7 +57,7 @@ func (f *Matcher) webDetector(result *MatchResult, ctx context.Context, config *
 	}
 
 	if httpBanners == nil {
-		// 设置初始化匹配结果
+		// Set initialization matching result
 		return &MatchResult{
 			Target: host,
 			Port:   port,
@@ -69,8 +69,8 @@ func (f *Matcher) webDetector(result *MatchResult, ctx context.Context, config *
 		}, nil
 	}
 
-	// 如果强制启用 Web 指纹检测，则需要 Bypass 指纹检测条件
-	// 为 Fingerprint 强制赋予可以执行 Web 指纹识别的值
+	// If Web fingerprint detection is forcibly enabled, Bypass fingerprint detection conditions are required
+	// Force Fingerprint to a value that can perform Web fingerprinting
 	if result.Fingerprint == nil {
 		result.Fingerprint = &FingerprintInfo{
 			IP:   ip.String(),
@@ -104,7 +104,7 @@ func (f *Matcher) webDetector(result *MatchResult, ctx context.Context, config *
 				name := strings.ToLower(result.Fingerprint.ServiceName)
 				if !strings.Contains(name, "https") &&
 					strings.Contains(name, "http") {
-					// 不包含 https 但是包含 http
+					// does not contain https but contains http
 					result.Fingerprint.ServiceName = strings.ReplaceAll(name, "http", "https")
 				}
 
@@ -131,7 +131,7 @@ func (f *Matcher) webDetector(result *MatchResult, ctx context.Context, config *
 				}
 			}
 
-			// 如果检测到指纹信息
+			// If fingerprint information is detected
 			if len(cpes) > 0 {
 				currentCPE = append(currentCPE, cpes...)
 				urlStr := info.URL.String()
@@ -161,13 +161,13 @@ func (f *Matcher) webDetector(result *MatchResult, ctx context.Context, config *
 		return true
 	})
 
-	// 为 FingerprintResult 完善带 URL 的指纹信息
+	// Complete URL for FingerprintResult Fingerprint information
 	result.Fingerprint.CPEFromUrls = urlCpe
 
-	// 如果可能的话，需要完善指纹识别的 HTTP 相关请求
+	// If possible, fingerprint recognition needs to be improved HTTP related request
 	result.Fingerprint.HttpFlows = httpflows
 
-	// 把新的 cpes 更新到原来的 cpe 列表中
+	// Update the new cpes to the original cpe list
 	cpes := result.Fingerprint.CPEs
 	var cpesStrRaw []string
 	for _, c := range cpeAnalyzer.AvailableCPE() {
@@ -175,7 +175,7 @@ func (f *Matcher) webDetector(result *MatchResult, ctx context.Context, config *
 	}
 	result.Fingerprint.CPEs = append(cpes, cpesStrRaw...)
 
-	// 返回结果前需要检查 Fingerprint 的必要字段
+	// You need to check the necessary fields of Fingerprint before returning the result
 	if result.Fingerprint.ServiceName == "" {
 		result.Fingerprint.ServiceName = strings.ToLower(string(result.Fingerprint.Proto))
 	}

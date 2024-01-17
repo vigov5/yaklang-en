@@ -224,7 +224,7 @@ func ReplaceStringInJavaSerilizable(objSer yserx.JavaSerializable, old string, n
 	return err
 }
 
-// ReplaceClassNameInJavaSerilizable 这个 ClassName 指的是要探测的目标 jar 包里是否存在该 ClassName
+// ReplaceClassNameInJavaSerilizable This ClassName refers to whether the ClassName exists in the target jar package to be detected.
 func ReplaceClassNameInJavaSerilizable(objSer yserx.JavaSerializable, old string, new string, times int) error {
 	err := utils.Error("not found class name in java object")
 	WalkJavaSerializableObject(objSer, func(desc *yserx.JavaClassDesc, objSer yserx.JavaSerializable) {
@@ -592,7 +592,7 @@ func ToBcel(i interface{}) (string, error) {
 	}
 }
 
-// ToBytes 将 Java 或反序列化对象转换为字节码
+// ToBytes Convert Java or deserialized objects to bytecode
 // Example:
 // ```
 // gadgetObj,_ = yso.GetCommonsBeanutils1JavaObject(yso.useBytesEvilClass(bytesCode),yso.obfuscationClassConstantPool(),yso.evilClassName(className),yso.majorVersion(version))
@@ -609,7 +609,7 @@ func ToBytes(i interface{}) ([]byte, error) {
 	}
 }
 
-// ToJson 将 Java 或反序列化对象转换为 json 字符串
+// ToJson Convert Java or deserialized objects to json strings
 // Example:
 // ```
 // gadgetObj,_ = yso.GetCommonsBeanutils1JavaObject(yso.useBytesEvilClass(bytesCode),yso.obfuscationClassConstantPool(),yso.evilClassName(className),yso.majorVersion(version))
@@ -631,7 +631,7 @@ func ToJson(i interface{}) (string, error) {
 }
 
 // Dump
-// dump 将Java 对象转换为类 Java 代码
+// dump Convert Java objects Convert to Java-like code
 // Example:
 // ```
 // gadgetObj,_ = yso.GetCommonsBeanutils1JavaObject(yso.useBytesEvilClass(bytesCode),yso.obfuscationClassConstantPool(),yso.evilClassName(className),yso.majorVersion(version))

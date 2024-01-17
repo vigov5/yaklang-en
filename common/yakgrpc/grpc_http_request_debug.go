@@ -37,7 +37,7 @@ func (s *Server) execScriptWithExecParam(scriptName string, input string, stream
 		isTemp    = scriptInstance.Ignored && strings.HasPrefix(scriptInstance.ScriptName, "tmp-")
 	)
 	runtimeId := uuid.New().String()
-	stream.Send(&ypb.ExecResult{IsMessage: false, RuntimeID: runtimeId}) // 触发前端切换结果页面
+	stream.Send(&ypb.ExecResult{IsMessage: false, RuntimeID: runtimeId}) // Trigger the front-end switching result page
 	defer func() {
 		if err := recover(); err != nil {
 			log.Warn(err)
@@ -77,7 +77,7 @@ func (s *Server) execScriptWithExecParam(scriptName string, input string, stream
 	}
 	switch strings.ToLower(debugType) {
 	case "codec":
-		tabName := "Codec结果"
+		tabName := "Codec result"
 		subEngine, err := engine.ExecuteExWithContext(stream.Context(), scriptInstance.Content, map[string]any{
 			"CTX":         stream.Context(),
 			"PLUGIN_NAME": scriptName,
@@ -90,7 +90,7 @@ func (s *Server) execScriptWithExecParam(scriptName string, input string, stream
 			return utils.Errorf("import %v' s handle failed: %s", scriptName, err)
 		}
 
-		feedbackClient.SetYakLog(yaklib.CreateYakLogger()) // 重置log避免获取不到行号的问题
+		feedbackClient.SetYakLog(yaklib.CreateYakLogger()) // Reset the log to avoid the problem of not getting the line number
 		err = feedbackClient.Output(&yaklib.YakitFeature{
 			Feature: "text",
 			Params: map[string]interface{}{
@@ -122,7 +122,7 @@ func (s *Server) execScriptWithExecParam(scriptName string, input string, stream
 				funcType := funcValue.Type()
 				hookFunc := reflect.MakeFunc(funcType, func(args []reflect.Value) (results []reflect.Value) {
 					TempParams := []cli.SetCliExtraParam{cli.SetTempArgs(tempArgs)}
-					index := len(args) - 1 // 获取 option 参数的 index
+					index := len(args) - 1 // Get the index of the option parameter
 					interfaceValue := args[index].Interface()
 					args = args[:index]
 					cliExtraParams, ok := interfaceValue.([]cli.SetCliExtraParam)
@@ -184,7 +184,7 @@ func (s *Server) execScriptWithRequest(scriptName string, targetInput string, st
 	}
 
 	runtimeId := uuid.New().String()
-	stream.Send(&ypb.ExecResult{IsMessage: false, RuntimeID: runtimeId}) // 触发前端切换结果页面
+	stream.Send(&ypb.ExecResult{IsMessage: false, RuntimeID: runtimeId}) // Trigger the front-end switching result page
 	var baseBuilderParams *ypb.HTTPRequestBuilderParams
 	if len(params) > 0 {
 		baseBuilderParams = params[0]
@@ -233,7 +233,7 @@ func (s *Server) execScriptWithRequest(scriptName string, targetInput string, st
 		if target == "" {
 			continue
 		}
-		if utils.IsValidHost(target) { // 处理没有单独一个host情况 不含port
+		if utils.IsValidHost(target) { // Handle the situation where there is no single host without port
 			targets = append(targets, &url.URL{Host: target, Path: "/"})
 		}
 		urlIns := utils.ParseStringToUrl(target)
@@ -241,8 +241,8 @@ func (s *Server) execScriptWithRequest(scriptName string, targetInput string, st
 			continue
 		}
 
-		host, port, _ := utils.ParseStringToHostPort(urlIns.Host) // 处理包含 port 的情况
-		if !utils.IsValidHost(host) {                             // host不合规情况 比如 a:80
+		host, port, _ := utils.ParseStringToHostPort(urlIns.Host) // Process the port Situation
+		if !utils.IsValidHost(host) {                             // The host is not compliant For example, a:80
 			continue
 		}
 
@@ -259,7 +259,7 @@ func (s *Server) execScriptWithRequest(scriptName string, targetInput string, st
 
 	}
 
-	if len(targets) != 0 { // 调试目标分支
+	if len(targets) != 0 { // Debug target branch
 
 		// var results = builderResponse.GetResults()
 		baseTemplates := []byte("GET {{Path}} HTTP/1.1\r\nHost: {{Hostname}}\r\n\r\n")
@@ -286,7 +286,7 @@ func (s *Server) execScriptWithRequest(scriptName string, targetInput string, st
 			}
 		}
 
-	} else if baseBuilderParams.GetIsRawHTTPRequest() { // 原始请求分支
+	} else if baseBuilderParams.GetIsRawHTTPRequest() { // Original request branch
 		feed(baseBuilderParams.RawHTTPRequest, baseBuilderParams.IsHttps)
 	}
 
@@ -309,7 +309,7 @@ func (s *Server) execScriptWithRequest(scriptName string, targetInput string, st
 		}
 	}()
 
-	// 不同的插件类型，需要不同的处理
+	// Different plug-in types require different processing
 	switch strings.ToLower(debugType) {
 	case "mitm":
 	case "nuclei":
@@ -389,7 +389,7 @@ func makeArgs(execParams []*ypb.KVPair) []string {
 	canFilter := true
 	for _, p := range execParams {
 		switch p.Key {
-		case "__yakit_plugin_names__": // 直接查询插件名
+		case "__yakit_plugin_names__": // Directly query the plug-in name
 			tempName, err := utils.SaveTempFile(p.Value, "yakit-plugin-selector-*.txt")
 			if err != nil {
 				log.Errorf("save temp file failed: %v", err)
@@ -397,7 +397,7 @@ func makeArgs(execParams []*ypb.KVPair) []string {
 			}
 			args = append(args, "--yakit-plugin-file", tempName)
 			canFilter = false
-		case "__yakit_plugin_filter__": // 筛选情况
+		case "__yakit_plugin_filter__": // Filter the situation
 			if !canFilter {
 				continue
 			}
@@ -422,7 +422,7 @@ func makeArgs(execParams []*ypb.KVPair) []string {
 	return args
 }
 
-func mergeBuildParams(params *ypb.HTTPRequestBuilderParams, t *url.URL) *ypb.HTTPRequestBuilderParams { // 根据单个目标和总体配置生成针对单个目标的build参数
+func mergeBuildParams(params *ypb.HTTPRequestBuilderParams, t *url.URL) *ypb.HTTPRequestBuilderParams { // Generate build parameters for a single target based on a single target and the overall configuration
 	var res *ypb.HTTPRequestBuilderParams
 
 	buffer, err := json.Marshal(params)
@@ -447,7 +447,7 @@ func mergeBuildParams(params *ypb.HTTPRequestBuilderParams, t *url.URL) *ypb.HTT
 		res.Path = append(res.Path, t.Path)
 	}
 
-	for key, values := range t.Query() { // 插入所有的 get 参数
+	for key, values := range t.Query() { // Insert all get parameters
 		for _, value := range values {
 			res.GetParams = append(res.GetParams, &ypb.KVPair{
 				Key: key, Value: value,
@@ -455,7 +455,7 @@ func mergeBuildParams(params *ypb.HTTPRequestBuilderParams, t *url.URL) *ypb.HTT
 		}
 	}
 
-	if t.Scheme != "" { // 目标标识优先级更高
+	if t.Scheme != "" { // Target identification has higher priority
 		res.IsHttps = t.Scheme == "https"
 	}
 

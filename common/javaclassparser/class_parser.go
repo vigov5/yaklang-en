@@ -17,7 +17,7 @@ func NewClassParser(data []byte) *ClassParser {
 
 /*
 *
-记录方法抛出的异常表
+records the exception table thrown by the method. The
 
 	EXCEPTIONS_ATTRIBUTE {
 		u2 attribute_name_index;
@@ -120,7 +120,7 @@ func (this *ClassParser) readConstantPool() error {
 	cpCount := int(this.reader.readUint16())
 	cp := make([]ConstantInfo, cpCount-1)
 
-	//索引从1开始，这里用了 <cpCount 说明index是从1到cpCount-1 及上文的1 ~ n-1
+	//index starts from 1. <cpCount indicates that the index is from 1 to cpCount-1 and the 1 ~ n-1 above.
 	for i := 0; i < cpCount-1; i++ {
 		constantInfo, err := this.readConstantInfo()
 		if err != nil {
@@ -129,7 +129,7 @@ func (this *ClassParser) readConstantPool() error {
 		cp[i] = constantInfo
 		switch cp[i].(type) {
 		case *ConstantLongInfo, *ConstantDoubleInfo:
-			//占两个位置
+			//is used here to occupy two positions.
 			i++
 		}
 	}

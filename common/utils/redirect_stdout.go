@@ -119,7 +119,7 @@ func HandleStdout(ctx context.Context, handle func(string)) error {
 			return true
 		})
 	}
-	// 恢复标准错误与标准输出流
+	// Restore standard error and standard output streams
 	originStdout := os.Stdout
 	originStderr := os.Stderr
 	go func() {

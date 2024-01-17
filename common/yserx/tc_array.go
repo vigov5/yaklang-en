@@ -37,7 +37,7 @@ func (ret *JavaArray) fixBytescode() {
 	if ret.Bytescode {
 		return
 	}
-	// 初始化成功之后，看一下 是不是 Bytescode
+	// After the initialization is successful, check whether it is Bytescode
 	if ret.ClassDesc != nil {
 		switch classDesc := ret.ClassDesc.(type) {
 		case *JavaReference:

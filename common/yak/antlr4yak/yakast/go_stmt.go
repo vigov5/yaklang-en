@@ -22,14 +22,14 @@ func (y *YakCompiler) VisitGoStmt(raw yak.IGoStmtContext) interface{} {
 	y.writeString("go ")
 
 	// go expr call;
-	// 首先，go 自带一个 pop，这是为了平栈
-	// 因为 go 后的表达式用的执行栈不应该和其他一样，所以应该全给他开个新的虚拟机，并且设置好起始的符号表
-	// 后面的内容应该是
+	// First of all, go comes with a pop, which is to flatten the stack
+	// . Because the execution stack used for the expression after go should not be the same as others, so it should be given to him Open a new virtual machine and set the starting symbol table
+	// . The following content should be
 	//  ...
 	//  ...
 	// 	...
 	//  ...
-	//  call n 改成 async-call
+	//  call n and change it to async-call
 
 	id := fmt.Sprintf("go/%v", uuid.NewV4().String())
 	_ = id
@@ -42,10 +42,10 @@ func (y *YakCompiler) VisitGoStmt(raw yak.IGoStmtContext) interface{} {
 	}
 
 	/*
-		新建 Go 指令
+		Create a new Go instruction
 	*/
 	if lastCode := y.codes[y.GetCodeIndex()]; lastCode.Opcode == yakvm.OpCall {
-		// 函数指令
+		// Function instruction
 		lastCode.Opcode = yakvm.OpAsyncCall
 	}
 	return nil

@@ -13,7 +13,7 @@ import (
 	"gopkg.in/fatih/set.v0"
 )
 
-// CalcSimHash 计算并返回一段文本的 SimHash 值
+// CalcSimHash to calculate and return the SimHash value of a piece of text
 // Example:
 // ```
 // str.CalcSimHash("hello")
@@ -22,7 +22,7 @@ func SimHash(raw []byte) uint64 {
 	return simhash.Simhash(simhash.NewWordFeatureSet(raw))
 }
 
-// CalcSSDeep 计算并返回一段文本的模糊哈希值
+// CalcSSDeep calculates and returns a piece of text. The fuzzy hash value
 // Example:
 // ```
 // str.CalcSSDeep("hello")
@@ -37,10 +37,10 @@ func SSDeepHash(raw []byte) string {
 	return hash
 }
 
-// CalcSimilarity 计算多段文本之间的相似度，根据最长的文本长度选择不同的算法
-// 如果最长的文本长度小于等于 2000，使用文本子串匹配算法
-// 如果最短的文本长度大于等于 30000，使用模糊哈希算法
-// 如果上述算法出现错误，则使用 SimHash 算法
+// CalcSimilarity calculates the similarity between multiple pieces of text, and selects different algorithms based on the longest text length.
+// If the length of the longest text is less than or equal to 2000, use the text substring matching algorithm
+// If the length of the shortest text is greater than or equal to 30000, use the fuzzy hash algorithm
+// If an error occurs in the above algorithm, then Use the SimHash algorithm
 // Example:
 // ```
 // str.CalcSimilarity("hello", "hello world") // 0.625
@@ -84,7 +84,7 @@ func CalcSimilarity(raw ...[]byte) float64 {
 	return 0
 }
 
-// CalcTextMaxSubStrStability 使用文本子串匹配算法计算多段文本之间的相似度，返回相似度与错误
+// CalcTextMaxSubStrStability uses the text substring matching algorithm to calculate the similarity between multiple pieces of text, and returns the similarity and error.
 // Example:
 // ```
 // p, err = str.CalcTextMaxSubStrStability("hello", "hello world") // p = 0.625
@@ -121,7 +121,7 @@ func CalcTextSubStringStability(raw ...[]byte) (float64, error) {
 	return min, nil
 }
 
-// CalcSSDeepStability 使用模糊哈希算法计算多段文本之间的相似度，返回相似度与错误。传入的文本应该为大文本，即长度大于 30 kb。
+// CalcSSDeepStability uses a fuzzy hash algorithm to calculate the similarity between multiple pieces of text and returns the similarity and error. The text passed in should be large text, i.e. greater than 30 kb in length.
 // Example:
 // ```
 // p, err = str.CalcSSDeepStability(str.RandStr(100000), str.RandStr(100000))
@@ -165,7 +165,7 @@ func CalcSSDeepStability(req ...[]byte) (float64, error) {
 	return float64(min) / float64(100), nil
 }
 
-// CalcSimHashStability 使用 SimHash 算法计算多段文本之间的相似度，返回相似度与错误。
+// CalcSimHashStability Use the SimHash algorithm to calculate the similarity between multiple pieces of text and return the similarity and error.
 // Example:
 // ```
 // p, err = str.CalcSimHashStability("hello", "hello world") // p = 0.96484375
@@ -245,7 +245,7 @@ func checkIsSamePage(BaseBody []byte, currentBody []byte, boundary float64) bool
 	currentHTML := string(currentBody)
 	baseHTML := string(BaseBody)
 	isSamePage := false
-	// 先计算PageRatio
+	// first calculates the PageRatio
 	ratio := similarText(currentHTML, baseHTML)
 	if ratio > boundary {
 		isSamePage = true

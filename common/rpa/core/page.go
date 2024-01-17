@@ -41,14 +41,14 @@ func (m *Manager) WaitLoad(page *rod.Page) {
 			continue
 		}
 
-		// 有效缓存
+		// . Cache effectively.
 		if lastHtmlHash == "" && htmlStr != "" {
 			lastHtmlHash = codec.Sha256(htmlStr)
 			exitThroshold = 0
 			continue
 		}
 
-		// 重复三次
+		// . Repeat three times.
 		if lastHtmlHash == codec.Sha256(htmlStr) {
 			exitThroshold++
 			continue
@@ -79,7 +79,7 @@ func (m *Manager) page(url string, depth int) error {
 	if page == nil {
 		return utils.Errorf("get blank page[%v] nil: %s", url, err)
 	}
-	// 页面正常退出
+	// . The page exits normally.
 	// defer page.Close()
 	defer m.PutPage(page)
 	// page.Navigate(url)
@@ -133,14 +133,14 @@ func (m *Manager) page(url string, depth int) error {
 			continue
 		}
 
-		// 有效缓存
+		// . Cache effectively.
 		if lastHtmlHash == "" && htmlStr != "" {
 			lastHtmlHash = codec.Sha256(htmlStr)
 			exitThroshold = 0
 			continue
 		}
 
-		// 重复三次
+		// . Repeat three times.
 		if lastHtmlHash == codec.Sha256(htmlStr) {
 			exitThroshold++
 			continue
@@ -155,11 +155,11 @@ func (m *Manager) page(url string, depth int) error {
 		return nil
 	}
 
-	//存储响应到chan
-	// 到这里认为页面加载差不多了
-	// 下面要去做别的事情，比如：
-	//   1. 获取页面可点击的链接
-	//   2. 获取页面可处理的表格
+	//Store the response to chan
+	// . At this point, I think the page is almost loaded. Got it
+	// . Next, you need to do other things, such as:
+	//   . 1. Get the clickable links of the page.
+	//   . 2. Get the table that can be processed by the page.
 	// page.MustScreenshot("test.png")
 
 	err = m.extractInput(page)

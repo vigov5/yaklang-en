@@ -7,8 +7,8 @@ import (
 	"github.com/yaklang/yaklang/common/utils"
 )
 
-// Seconds 返回一个超时时间为 d 秒的 Context 接口（即上下文接口）
-// 它实际是 context.WithTimeoutSeconds 的别名
+// Seconds Returns a Context interface with a timeout of d seconds (i.e. context interface)
+// It is actually an alias of context.WithTimeoutSeconds
 // Example:
 // ```
 // ctx = context.Seconds(10)
@@ -17,7 +17,7 @@ func _seconds(d float64) context.Context {
 	return utils.TimeoutContextSeconds(d)
 }
 
-// WithTimeoutSeconds 返回超时时间为 d 秒的 Context 接口（即上下文接口）
+// WithTimeoutSeconds returns a Context interface with a timeout of d seconds (i.e. context interface)
 // Example:
 // ```
 // ctx = context.WithTimeoutSeconds(10)
@@ -26,8 +26,8 @@ func _withTimeoutSeconds(d float64) context.Context {
 	return utils.TimeoutContextSeconds(d)
 }
 
-// New 返回空的 Context 接口（即上下文接口）
-// 它实际是 context.Background 的别名
+// New returns an empty Context interface (i.e. context interface)
+// It is actually an alias of context.Background
 // Example:
 // ```
 // ctx = context.New()
@@ -36,7 +36,7 @@ func _newContext() context.Context {
 	return context.Background()
 }
 
-// Background 返回空的 Context 接口（即上下文接口）
+// Background returns an empty Context interface (i.e. context interface)
 // Example:
 // ```
 // ctx = context.Background()
@@ -45,8 +45,8 @@ func _background() context.Context {
 	return context.Background()
 }
 
-// WithCancel 返回继承自 parent 的 Context 接口（即上下文接口）和取消函数
-// 当调用返回的取消函数或者 parent 的取消函数时，整个上下文会被取消
+// WithCancel returns the Context interface (i.e. context interface) inherited from parent and the cancellation function
+// . When the returned cancellation function or the parents cancellation function is called, the entire context will be canceled.
 // Example:
 // ```
 // ctx, cancel = context.WithCancel(context.Background())
@@ -56,8 +56,8 @@ func _withCancel(parent context.Context) (context.Context, context.CancelFunc) {
 	return context.WithCancel(parent)
 }
 
-// WithTimeout 返回继承自 parent 的 Context 接口（即上下文接口）和取消函数
-// 当调用返回的取消函数或者超时，整个上下文会被取消
+// WithTimeout returns the Context interface inherited from parent (i.e. context interface ) and the cancellation function
+// when calling the returned cancellation function or timeout, the entire context will be canceled
 // Example:
 // ```
 // dur, err = time.ParseDuration("10s")
@@ -68,8 +68,8 @@ func _withTimeout(parent context.Context, timeout time.Duration) (context.Contex
 	return context.WithTimeout(parent, timeout)
 }
 
-// WithDeadline 返回继承自 parent 的 Context 接口（即上下文接口）和取消函数
-// 当调用返回的取消函数或者超出指定时间，整个上下文会被取消
+// WithDeadline returns the Context interface inherited from parent (i.e. context interface) and the cancellation function
+// When the call returns The cancellation function or the specified time is exceeded, the entire context will be canceled
 // Example:
 // ```
 // dur, err = time.ParseDuration("10s")
@@ -81,8 +81,8 @@ func _withDeadline(parent context.Context, t time.Time) (context.Context, contex
 	return context.WithDeadline(parent, t)
 }
 
-// WithValue 返回继承自 parent ，同时额外携带键值的 Context 接口（即上下文接口）和取消函数
-// 当调用返回的取消函数时，整个上下文会被取消
+// WithValue returns the Context interface (that is, the context interface) that inherits the key value and carries the additional key value and the cancellation function
+// When the returned cancellation function is called, the entire context will be canceled
 // Example:
 // ```
 // ctx = context.WithValue(context.Background(), "key", "value")

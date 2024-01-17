@@ -18,7 +18,7 @@ func (s *Server) GetEngineDefaultProxy(ctx context.Context, e *ypb.Empty) (*ypb.
 func (s *Server) SetEngineDefaultProxy(ctx context.Context, d *ypb.DefaultProxyResult) (*ypb.Empty, error) {
 	var err = yakit.SetKey(s.GetProfileDatabase(), YAK_ENGINE_DEFAULT_SCAN_PROXY, d.GetProxy())
 	if err != nil {
-		return nil, utils.Errorf("设置引擎默认扫描代理失败")
+		return nil, utils.Errorf("Setting engine default scanning proxy failed")
 	}
 	return &ypb.Empty{}, nil
 }

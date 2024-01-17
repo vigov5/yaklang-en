@@ -69,7 +69,7 @@ func (h *httpGenerator) generator(count int) {
 		if len(raw) <= 1500 {
 			flow, err = pcapx.CompleteTCPFlow(raw)
 		} else {
-			// 分片, 如果需要的话
+			// Sharding, if necessary
 			pk := gopacket.NewPacket(raw, layers.LayerTypeEthernet, gopacket.Default)
 			if pk == nil {
 				continue

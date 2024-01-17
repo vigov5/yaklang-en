@@ -19,7 +19,7 @@ type ExecutableNode interface {
 	Execute(map[string]func([]byte) [][]byte) [][]byte
 }
 
-// Nodes 一般是根结点
+// Nodes are generally root nodes
 type Nodes struct {
 	IsRoot   bool
 	Nodes    []ExecutableNode
@@ -159,9 +159,9 @@ func (d *Nodes) Execute(m map[string]func([]byte) [][]byte) [][]byte {
 			if name == "" {
 				name = fmt.Sprintf("__default__%s", uuid.New().String())
 			}
-			payloads1 := map[string][][]byte{} // 生成数据对应的payloads
+			payloads1 := map[string][][]byte{} // generates payloads corresponding to data
 			if nodes, ok := tNode.Params.(*Nodes); ok {
-				payloads := map[string][][]byte{} // 生成数据对应的payloads
+				payloads := map[string][][]byte{} // generates payloads corresponding to data
 				nodes.callback = func(i []byte, i2 [][]byte) bool {
 					payloads[string(i)] = i2
 					return true
@@ -226,7 +226,7 @@ func (d *Nodes) Execute_(m map[string]func([]byte) [][]byte) [][]byte {
 	var results [][][]byte
 	var listIndex [][]string
 
-	// 构建索引列表
+	// builds index list
 	for nodeIndex, n := range d.Nodes {
 		if v, isData := n.(*DataNode); isData {
 			v.InParentTagNode = d.InTag
@@ -243,7 +243,7 @@ func (d *Nodes) Execute_(m map[string]func([]byte) [][]byte) [][]byte {
 
 		switch ret := n.(type) {
 		case *DataNode:
-			// 数据节点前缀有 $ 标志
+			// data node is prefixed with $ flag
 			for i := range l {
 				l[i] = "$" + fmt.Sprint(i)
 			}
@@ -252,7 +252,7 @@ func (d *Nodes) Execute_(m map[string]func([]byte) [][]byte) [][]byte {
 		case *TagNode:
 			if ret.Symbol > 0 {
 				if !d.existedNewSymbol(ret.Symbol) {
-					// 新符号
+					// New symbol
 					d.AST.symbolTable[ret.Symbol] = &SymbolContext{
 						MaxLength: length,
 					}
@@ -267,7 +267,7 @@ func (d *Nodes) Execute_(m map[string]func([]byte) [][]byte) [][]byte {
 				continue
 			}
 		}
-		// 默认笛卡尔乘积
+		// default Cartesian product
 		for i := range l {
 			l[i] = fmt.Sprint(i)
 		}
@@ -336,7 +336,7 @@ func (d *Nodes) Execute_(m map[string]func([]byte) [][]byte) [][]byte {
 		}
 		fResult := buf.Bytes()
 
-		// 调用回调函数
+		// calls callback function
 		if d.callback != nil {
 			if !d.callback(fResult, payloads) {
 				return r
@@ -403,7 +403,7 @@ var methodAlias = new(sync.Map)
 func SetMethodAlias(origin string, names ...string) {
 	for _, i := range names {
 		if existingOrigin, ok := methodAlias.Load(i); ok {
-			// 提醒：新的 origin 覆盖了旧的 origin
+			// reminder: new origin covers the old origin
 			log.Warnf("Alias fuzztag {{%s}} for {{%s}} is being overwritten by {{%s}}.", i, existingOrigin, origin)
 		}
 		methodAlias.Store(i, origin)

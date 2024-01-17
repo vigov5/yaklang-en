@@ -25,7 +25,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ExtractStrContext 从字符串raw中提取一组关键字res上下文的内容，上下文的长度是512个字符确定。
+// ExtractStrContext extracts the contents of a set of keyword res context from the string raw. The length of the context is determined by 512 characters.
 // Example:
 // ```
 // str.ExtractStrContext("hello yak", ["hello"]) // ["hello yak"]
@@ -76,7 +76,7 @@ func StringAfter(value string, a string) string {
 	return value[adjustedPos:]
 }
 
-// StringSliceContainsAll 判断字符串切片s中是否完全包含elements中的所有元素，对于非字符串的切片，会尝试将其元素转换为字符串再判断是否包含
+// StringSliceContainsAll determines whether the string slice s completely contains all elements in elements. For non-string slices, it will try to convert its elements into strings and then determine whether it contains
 // Example:
 // ```
 // str.StringSliceContainsAll(["hello", "yak"], "hello", "yak") // true
@@ -91,7 +91,7 @@ func StringSliceContainsAll(s []string, elements ...string) bool {
 	return true
 }
 
-// RemoveRepeat 移除字符串切片slc中的重复元素
+// RemoveRepeat Remove the repeated elements in the string slice slc
 // Example:
 // ```
 // str.RemoveRepeat(["hello", "yak", "hello"]) // ["hello", "yak"]
@@ -104,7 +104,7 @@ func RemoveRepeatStringSlice(slc []string) []string {
 	}
 }
 
-// 元素去重
+// in the range of [0, n). Element deduplication is
 func RemoveRepeatUintSlice(slc []uint) []uint {
 	if len(slc) < 1024 {
 		return RemoveRepeatUintSliceByLoop(slc)
@@ -410,7 +410,7 @@ func IntSliceToInt64Slice(i []int) []int64 {
 	return result
 }
 
-// ToStringSlice 将任意类型的数据转换为字符串切片
+// ToStringSlice Convert any type of data into a string Slice
 // Example:
 // ```
 // str.ToStringSlice("hello") // ["hello"]
@@ -550,7 +550,7 @@ func InterfaceToMap(i interface{}) map[string][]string {
 	return finalResult
 }
 
-// ParseStringUrlToWebsiteRootPath 将字符串 url 解析为其根路径的URL
+// ParseStringUrlToWebsiteRootPath Parse the string url to the URL of its root path
 // Example:
 // ```
 // str.ParseStringUrlToWebsiteRootPath("https://yaklang.com/abc?a=1") // https://yaklang.com/
@@ -567,7 +567,7 @@ func ParseStringUrlToWebsiteRootPath(url string) (newURL string) {
 	return ins.String()
 }
 
-// ParseStringUrlToUrlInstance 将字符串 url 解析为 URL 结构体并返回错误
+// ParseStringUrlToUrlInstance Parse the string url into a URL structure and return an error
 // Example:
 // ```
 // str.ParseStringUrlToUrlInstance("https://yaklang.com/abc?a=1")
@@ -619,7 +619,7 @@ func ParseStringToHttpsAndHostname(res string) (bool, string) {
 	return urlHttps, host
 }
 
-// ParseStringToHostPort 尝试从字符串中解析出host和port，并与错误一起返回
+// . ParseStringToHostPort tries to parse out the host and port from the string and returns
 // Example:
 // ```
 // host, port, err = str.ParseStringToHostPort("127.0.0.1:8888") // host = "127.0.0.1", port = 8888, err = nil
@@ -630,7 +630,7 @@ func ParseStringToHostPort(raw string) (host string, port int, err error) {
 	if strings.Contains(raw, "://") {
 		urlObject, _ := url.Parse(raw)
 		if urlObject != nil {
-			// 处理 URL
+			// handles the URL
 			portRaw := urlObject.Port()
 			portInt64, err := strconv.ParseInt(portRaw, 10, 32)
 			if err != nil || portInt64 <= 0 {
@@ -667,7 +667,7 @@ func ParseStringToHostPort(raw string) (host string, port int, err error) {
 	return
 }
 
-// UrlJoin 将 字符串 origin 和 字符串数组 paths 拼接成一个新的 URL 字符串，并返回错误
+// UrlJoin Splices the string origin and the string array paths into a new URL string, and returns an error
 // Example:
 // ```
 // newURL, err = str.UrlJoin("https://yaklang.com", "asd", "qwe") // newURL = "https://yaklang.com/asd/qwe", err = nil
@@ -685,7 +685,7 @@ func UrlJoin(origin string, paths ...string) (newURL string, err error) {
 		return "", errors.Errorf("origin:[%s] is not a valid url: %s", origin, err)
 	}
 	if len(paths) == 1 && strings.HasPrefix(paths[0], "//") {
-		// 处理 //baidu.com 这种情况
+		// . Processing //baidu.com In this case
 		paths[0] = fmt.Sprintf("%s:%s", u.Scheme, paths[0])
 	}
 
@@ -711,20 +711,20 @@ func UrlJoin(origin string, paths ...string) (newURL string, err error) {
 			return u.String(), nil
 		}
 	} else {
-		// 处理 URL 的情况
+		// handles URLs
 		inputAsUrl, _ := url.Parse(pathRaw)
 		if inputAsUrl != nil && inputAsUrl.Scheme != "" {
 			return pathRaw, nil
 		}
 
-		// 不是 URL，并且 pathRaw 开头一定不是 /
-		// 那么就看 u.Path 结尾是不是 /
+		// together with the error. It is not a URL, and the beginning of pathRaw must not be /
+		// Then see if the end of u.Path is /
 		// r := path.Join(u.Path, pathRaw)
 		if !strings.HasSuffix(u.Path, "/") && path.Ext(u.Path) == "" {
 			u.Path += "/"
 		}
 
-		// 移除 ./
+		// remove./
 	PATHCLEAN:
 		for {
 			switch true {
@@ -820,7 +820,7 @@ func ByteCountBinary(b int64) string {
 	return fmt.Sprintf("%.1f%ciB", float64(b)/float64(div), "KMGTPE"[exp])
 }
 
-// 每个单词首字母大写
+// The first letter of each word is capitalized
 func InitialCapitalizationEachWords(str string) string {
 	if len(str) < 1 {
 		return ""
@@ -858,15 +858,15 @@ func SliceGroup(origin []string, groupSize int) [][]string {
 }
 
 func ToNsServer(server string) string {
-	// 如果 server 只是一个 IP 则需要把端口加上
+	// If the server is just an IP, you need to add the port
 	ip := net.ParseIP(server)
 	if ip != nil {
 		server = ip.String() + ":53"
 		return server
 	}
 
-	// 这里肯定不是 IP/IP6
-	// 所以我们检测是否包含端口，如果不包含端口，则添加端口
+	// This is definitely not an IP/IP6
+	// so we check if the port is included, if not add the port
 	if strings.Contains(server, ":") {
 		return server
 	}
@@ -880,7 +880,7 @@ func ToNsServer(server string) string {
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-// RandStringBytes 返回在大小写字母表中随机挑选 n 个字符组成的字符串
+// RandStringBytes Returns a string composed of n characters randomly selected from the uppercase and lowercase alphabet
 // Example:
 // ```
 // str.RandStr(10)
@@ -911,7 +911,7 @@ const (
 
 var passwordBase = passwordSepcialChars + LittleChar + BigChar + NumberChar
 
-// IsStrongPassword 判断字符串是否为强密码，强密码的定义为：长度大于8，同时包含特殊字符、小写字母、大写字母、数字
+// IsStrongPassword determines whether the string is a strong password. The definition of a strong password is: the length is greater than 8, and it also contains special characters, Lowercase letters, uppercase letters, numbers
 // Example:
 // ```
 // str.IsStrongPassword("12345678") // false
@@ -947,7 +947,7 @@ func IsStrongPassword(s string) bool {
 	return haveSpecial && haveLittleChar && haveBigChar && haveNumber
 }
 
-// RandSecret 返回在所有可见ascii字符表中随机挑选 n 个字符组成的密码字符串，这个密码经过str.IsStrongPassword验证，即为强密码
+// RandSecret returns a password string composed of n characters randomly selected from all visible ascii character tables. This password is verified by str.IsStrongPassword, which is a strong password. After adding minLen to
 // Example:
 // ```
 // str.RandSecret(10)
@@ -985,16 +985,16 @@ func RandSample(n int, material ...string) string {
 
 func RandSampleInRange(minLen, maxLen int, material ...string) string {
 	if minLen > maxLen {
-		// 如果最小长度大于最大长度，则交换它们
+		// If the minimum length is larger than the maximum length, then swap them
 		minLen, maxLen = maxLen, minLen
 	}
 
-	// 计算随机长度。rand.Intn(n) 生成 [0, n) 范围内的随机整数
-	// 因此，rand.Intn(maxLen - minLen + 1) 生成的是 [0, maxLen - minLen + 1) 范围内的随机数
-	// 加上 minLen 后，生成的随机长度就在 [minLen, maxLen] 范围内
+	// and calculate a random length. rand.Intn(n) generates a random integer
+	// Therefore, rand.Intn(maxLen - minLen + 1) generates a random number
+	// , the generated random length is [minLen, maxLen] Within the range
 	randomLength := minLen + rand.Intn(maxLen-minLen+1)
 
-	// 调用 RandSample 生成并返回随机字符串
+	// Call RandSample to generate and return random String
 	return RandSample(randomLength, material...)
 }
 
@@ -1015,7 +1015,7 @@ func ExtractRawPath(target string) string {
 	return rawPath
 }
 
-// ParseStringToUrls 尝试从给定的字符串(ip,域名)中解析出 URL 列表，补全协议和端口
+// in the range [0, maxLen - minLen + 1) ParseStringToUrls Try to get from the given string ( ip, domain name), complete the protocol and port
 // Example:
 // ```
 // str.ParseStringToUrls("yaklang.com:443", "https://yaklang.io") // [https://yaklang.com, https://yaklang.io]
@@ -1100,7 +1100,7 @@ func DumpHostFileWithTextAndFiles(raw string, divider string, files ...string) (
 }
 
 func DumpFileWithTextAndFiles(raw string, divider string, files ...string) (string, error) {
-	// 构建 targets
+	// Build targets
 	targets := strings.Join(ParseStringToLines(raw), divider)
 	fp, err := ioutil.TempFile("", "tmpfile-*.txt")
 	if err != nil {
@@ -1122,7 +1122,7 @@ func DumpFileWithTextAndFiles(raw string, divider string, files ...string) (stri
 	return fp.Name(), nil
 }
 
-// ParseStringToLines 将字符串按换行符(\n)分割成字符串数组，并去除BOM头和空行
+// ParseStringToLines Split the string into a string array according to the newline character (\n), and remove the BOM header and blank line
 // Example:
 // ```
 // str.ParseStringToLines("Hello World\nHello Yak") // ["Hello World", "Hello Yak"]

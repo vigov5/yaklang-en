@@ -2,7 +2,7 @@ package webfingerprint
 
 var (
 	DefaultWebFingerprintRules = []*WebRule{
-		// phpmyadmin 的指纹比较特殊，需要先识别出是 phpmyadmin 才能进一步确定版本
+		// The fingerprint of phpmyadmin is quite special. You need to identify it first to further determine the version.
 		{
 			Methods: []*WebMatcherMethods{
 				{
@@ -65,12 +65,12 @@ var (
 			},
 		},
 
-		// 无特殊路径以及无特殊操作的指纹识别
+		// Fingerprint identification without special path and no special operation.
 		{
 			Methods: []*WebMatcherMethods{
 				{
 					HTTPHeaders: []*HTTPHeaderMatcher{
-						// 通用匹配规则
+						// Universal matching rules
 						{
 							HeaderName: "Server",
 							HeaderValue: KeywordMatcher{

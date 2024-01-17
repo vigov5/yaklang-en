@@ -59,7 +59,7 @@ func NewPocInvoker() (*PocInvoker, error) {
 	)
 
 	/*
-		校验 xray 是否安装完毕
+		Verify whether xray is installed
 	*/
 	if invoker.xrayBinary != "" {
 		xrayCmd := exec.CommandContext(utils.TimeoutContext(3*time.Second), invoker.xrayBinary, "version")
@@ -93,7 +93,7 @@ func NewPocInvoker() (*PocInvoker, error) {
 	}
 
 	/*
-		校验 nuclei 安装完毕
+		Verify nuclei Installation is complete
 	*/
 	if invoker.nucleiBinary != "" {
 		nucleiCmd := exec.CommandContext(utils.TimeoutContext(3*time.Second), invoker.nucleiBinary, "-version")
@@ -119,7 +119,7 @@ func NewPocInvoker() (*PocInvoker, error) {
 		log.Warnf("cannot find nuclei binary, put it in %#v", nucleiLocations)
 	}
 
-	// 检查执行条件
+	// Check execution conditions
 	if !invoker.isXrayReady.IsSet() && !invoker.isNucleiReady.IsSet() {
 		return nil, utils.Errorf("xray and nuclei missed...")
 	}
@@ -204,7 +204,7 @@ func (p *PocInvoker) execNuclei(ctx context.Context, urlFile string) ([]*PocVul,
 	}
 
 	utils.Debug(func() {
-		// 输出调试内容
+		// Output debugging content
 		nucleiOptions = append(nucleiOptions, "-v")
 	})
 	ins := exec.CommandContext(ctx, p.nucleiBinary, nucleiOptions...)
@@ -246,13 +246,13 @@ func (p *PocInvoker) xrayExec(ctx context.Context, urlFile string) ([]*PocVul, e
 	xrayOptions := []string{
 		"webscan",
 
-		// 锁定目标
+		// Lock target
 		"--url-file", urlFile,
 
-		// 制定 poc 模式
+		// Develop poc mode
 		"--plugin", "phantasm,dirscan",
 
-		// 输出
+		// Output
 		"--json-output", f.Name(),
 	}
 	ins := exec.CommandContext(ctx, p.xrayBinary, xrayOptions...)
@@ -284,7 +284,7 @@ func (p *PocInvoker) xrayExec(ctx context.Context, urlFile string) ([]*PocVul, e
 }
 
 /*
-解析 nuclei 和 xray 的输出结果 （JSON）
+Parse nuclei and xray output results (JSON)
 */
 func HandleXrayResult(raw []byte) []*PocVul {
 	var vuls []*PocVul
@@ -363,7 +363,7 @@ func HandleNucleiResultFromFile(ctx context.Context, fileName string) (chan *Poc
 			log.Errorf("tail -f %v failed: %s", fileName, err)
 		}
 
-		// 清理资源
+		// Clean up resources
 		defer func() {
 			err := t.StopAtEOF()
 			if err != nil {
@@ -421,13 +421,13 @@ func HandleNucleiResultFromFile(ctx context.Context, fileName string) (chan *Poc
 				tags := utils.MapGetRaw(vulInfo, "tags")
 				p.Tags = utils.InterfaceToString(tags)
 
-				// 保存 tags
+				// Save tags
 				risk := PocVulToRisk(p)
 				err = yakit.SaveRisk(risk)
 				if err != nil {
 					log.Errorf("save risk failed: %s", err)
 				}
-				// 输出内容
+				// Output content
 				vCh <- p
 			}
 		}

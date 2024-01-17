@@ -293,7 +293,7 @@ func (s *OnlineClient) DownloadYakitPluginsEx(
 			}
 			page++
 
-			// 设置超时处理的问题
+			// Set timeout issues
 		RETRYDOWNLOAD:
 			plugins, paging, err := s.downloadYakitPlugin(queryType, list, token, page, 30, bindMe, keywords, pluginType, status, isPrivate, tags, userId, userName, scriptName, timeSearch, group)
 			if err != nil {
@@ -580,7 +580,7 @@ func (s *OnlineClient) DownloadNewOnlinePlugins(
 			}
 			page++
 
-			// 设置超时处理的问题
+			// Set timeout issues
 		RETRYDOWNLOAD:
 			plugins, paging, err := s.downloadNewOnlinePlugins(token, isPrivate, keywords, pluginType, tags, userName, userId, timeSearch, group, listType, status, uuid, scriptName, page, 30)
 			if err != nil {

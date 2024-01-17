@@ -20,15 +20,15 @@ const _ = grpc.SupportPackageIsVersion7
 type TunnelClient interface {
 	RemoteIP(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*RemoteIPResponse, error)
 	CreateTunnel(ctx context.Context, opts ...grpc.CallOption) (Tunnel_CreateTunnelClient, error)
-	// 注册一个隧道
+	// Register a tunnel
 	RegisterTunnel(ctx context.Context, in *RegisterTunnelRequest, opts ...grpc.CallOption) (*RegisterTunnelResponse, error)
-	// 获取所有隧道的简要描述信息
+	// Get brief description information of all tunnels
 	GetAllRegisteredTunnel(ctx context.Context, in *GetAllRegisteredTunnelRequest, opts ...grpc.CallOption) (*GetAllRegisteredTunnelResponse, error)
 	GetRegisteredTunnelDescriptionByID(ctx context.Context, in *GetRegisteredTunnelDescriptionByIDRequest, opts ...grpc.CallOption) (*RegisteredTunnel, error)
-	// 随机端口触发器
+	// Random port trigger
 	RequireRandomPortTrigger(ctx context.Context, in *RequireRandomPortTriggerParams, opts ...grpc.CallOption) (*RequireRandomPortTriggerResponse, error)
 	QueryExistedRandomPortTrigger(ctx context.Context, in *QueryExistedRandomPortTriggerRequest, opts ...grpc.CallOption) (*QueryExistedRandomPortTriggerResponse, error)
-	// 随机 ICMP 长度触发器
+	// Random ICMP length trigger
 	QuerySpecificICMPLengthTrigger(ctx context.Context, in *QuerySpecificICMPLengthTriggerParams, opts ...grpc.CallOption) (*QuerySpecificICMPLengthTriggerResponse, error)
 }
 
@@ -140,15 +140,15 @@ func (c *tunnelClient) QuerySpecificICMPLengthTrigger(ctx context.Context, in *Q
 type TunnelServer interface {
 	RemoteIP(context.Context, *Empty) (*RemoteIPResponse, error)
 	CreateTunnel(Tunnel_CreateTunnelServer) error
-	// 注册一个隧道
+	// Register a tunnel
 	RegisterTunnel(context.Context, *RegisterTunnelRequest) (*RegisterTunnelResponse, error)
-	// 获取所有隧道的简要描述信息
+	// Get brief description information of all tunnels
 	GetAllRegisteredTunnel(context.Context, *GetAllRegisteredTunnelRequest) (*GetAllRegisteredTunnelResponse, error)
 	GetRegisteredTunnelDescriptionByID(context.Context, *GetRegisteredTunnelDescriptionByIDRequest) (*RegisteredTunnel, error)
-	// 随机端口触发器
+	// Random port trigger
 	RequireRandomPortTrigger(context.Context, *RequireRandomPortTriggerParams) (*RequireRandomPortTriggerResponse, error)
 	QueryExistedRandomPortTrigger(context.Context, *QueryExistedRandomPortTriggerRequest) (*QueryExistedRandomPortTriggerResponse, error)
-	// 随机 ICMP 长度触发器
+	// Random ICMP length trigger
 	QuerySpecificICMPLengthTrigger(context.Context, *QuerySpecificICMPLengthTriggerParams) (*QuerySpecificICMPLengthTriggerResponse, error)
 	mustEmbedUnimplementedTunnelServer()
 }

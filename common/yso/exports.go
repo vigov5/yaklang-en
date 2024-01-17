@@ -5,7 +5,7 @@ import (
 )
 
 var Exports = map[string]interface{}{
-	// 生成链
+	// Generate chain
 	"ToBytes": ToBytes,
 	"ToBcel":  ToBcel,
 	"ToJson":  ToJson,
@@ -40,20 +40,20 @@ var Exports = map[string]interface{}{
 	"GetJavassistWeld1JavaObject": GetJavassistWeld1JavaObject,
 	"GetJdk7u21JavaObject":        GetJdk7u21JavaObject,
 	"GetJdk8u20JavaObject":        GetJdk8u20JavaObject,
-	//批量获取Gadget
+	//Get gadgets in batches
 	"GetAllGadget":            GetAllGadget,
 	"GetAllTemplatesGadget":   GetAllTemplatesGadget,
 	"GetAllRuntimeExecGadget": GetAllRuntimeExecGadget,
-	//获取Gadget名称
+	//Get gadget name
 	"GetGadgetNameByFun": GetGadgetNameByFun,
-	//用于Shiro检查
+	//Used for Shiro check
 	"GetSimplePrincipalCollectionJavaObject": GetSimplePrincipalCollectionJavaObject,
-	// 加载 java class
+	// Load java class
 	"LoadClassFromBytes":  LoadClassFromBytes,
 	"LoadClassFromBase64": LoadClassFromBase64,
 	"LoadClassFromBCEL":   LoadClassFromBCEL,
 
-	// 只生成恶意类的对象
+	// Only generate objects of malicious classes
 	"GenerateClassObjectFromBytes":                     GenerateClassObjectFromBytes,
 	"GenerateRuntimeExecEvilClassObject":               GenerateRuntimeExecEvilClassObject,
 	"GenerateProcessBuilderExecEvilClassObject":        GenerateProcessBuilderExecEvilClassObject,
@@ -117,8 +117,8 @@ var Exports = map[string]interface{}{
 	"useSleepTemplate":  SetClassSleepTemplate,
 	"useSleepEvilClass": SetSleepEvilClass,
 	"useSleepTime":      SetSleepTime,
-	// 其他设置
-	"useConstructorExecutor":       SetConstruct, // 使用构造器执行
+	// Other settings
+	"useConstructorExecutor":       SetConstruct, // Use constructor to execute
 	"evilClassName":                SetClassName, // className
 	"obfuscationClassConstantPool": SetObfuscation,
 }

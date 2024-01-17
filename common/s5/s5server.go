@@ -175,7 +175,7 @@ func (c *S5Config) HandleS5Request(conn net.Conn) (net.Conn, error) {
 	}
 	_ = reserved
 
-	// 要连接的具体目标
+	// To The specific target of the connection
 	var targetHost string
 
 	var addrBytesRaw []byte
@@ -236,7 +236,7 @@ func (c *S5Config) HandleS5Request(conn net.Conn) (net.Conn, error) {
 		return nil, utils.Error("BUG: act conn is nil")
 	}
 
-	// 告诉客户端已成功连接到目标服务器
+	// Tell the client that it has successfully connected to the target server
 	reply := []byte{socks5Version, replySuccess, 0x00}
 	if host, _, _ := utils.ParseStringToHostPort(actConn.RemoteAddr().String()); utils.IsIPv4(host) {
 		reply = append(reply, addrTypeIPv4)
@@ -289,7 +289,7 @@ func (c *S5Config) ConnectionFallback(src, proxiedConn net.Conn) error {
 	ctxSrc := ctxio.NewReaderWriter(wCtx, src)
 	ctxDst := ctxio.NewReaderWriter(wCtx, dst)
 
-	// 从 src 读取数据，写入 dst
+	// Read data from src, write to dst
 	go func() {
 		defer func() {
 			cancel()
@@ -306,7 +306,7 @@ func (c *S5Config) ConnectionFallback(src, proxiedConn net.Conn) error {
 		}
 	}()
 
-	// 从 dst 读取数据，写入 src
+	// Read data from dst, write to src
 	go func() {
 		defer func() {
 			cancel()
@@ -330,7 +330,7 @@ func (c *S5Config) ConnectionFallback(src, proxiedConn net.Conn) error {
 func (c *S5Config) HijackSource(src, proxiedConn net.Conn) (net.Conn, net.Conn, bool, error) {
 	var sni string
 	var (
-		/* client hello 是否被解密 */
+		/* client hello Whether it is decrypted */
 		clientHelloHacked bool
 		alpnContainsHttp  bool
 		wrapHttp          bool
@@ -340,7 +340,7 @@ func (c *S5Config) HijackSource(src, proxiedConn net.Conn) (net.Conn, net.Conn, 
 		peekableSrc := utils.NewPeekableNetConn(src)
 		src = peekableSrc
 
-		// 尝试劫持 TLS 握手包
+		// Try to hijack the TLS handshake packet
 		firstByte, err := peekableSrc.Peek(1)
 		if err != nil {
 			return nil, nil, false, err
@@ -351,7 +351,7 @@ func (c *S5Config) HijackSource(src, proxiedConn net.Conn) (net.Conn, net.Conn, 
 		}
 		switch firstByte[0] {
 		case 0x16:
-			// TLS 握手包
+			// TLS handshake package
 			results, err := peekableSrc.Peek(6)
 			if err != nil {
 				log.Errorf("peek tls handshake failed: %s", err)
@@ -379,7 +379,7 @@ func (c *S5Config) HijackSource(src, proxiedConn net.Conn) (net.Conn, net.Conn, 
 				alpnContainsHttp = client.MaybeHttp()
 			}
 
-			// TLS 连接成功，直接握手
+			// TLS connection is successful, handshake directly
 			var tlsProxiedConn = tls.Client(proxiedConn, utils.NewDefaultTLSConfig())
 			err = tlsProxiedConn.Handshake()
 			if err != nil {
@@ -425,7 +425,7 @@ func (c *S5Config) HijackSource(src, proxiedConn net.Conn) (net.Conn, net.Conn, 
 	}
 
 	if (clientHelloHacked && alpnContainsHttp) || wrapHttp {
-		// 这个是劫持 http 的标志
+		// . This is a sign of hijacking http.
 	}
 	return src, proxiedConn, true, nil
 }

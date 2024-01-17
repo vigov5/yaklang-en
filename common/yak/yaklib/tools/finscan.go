@@ -28,7 +28,7 @@ type _yakFinPortScanConfig struct {
 	initFilterHosts string
 
 	rateLimitDelayMs  float64
-	rateLimitDelayGap int // 每隔多少数据包 delay 一次？
+	rateLimitDelayGap int // . How many packets are delayed every time?
 
 	excludeHosts *hostsparser.HostsParser
 	excludePorts *filter.StringFilter
@@ -45,7 +45,7 @@ func _finScanOptRateLimit(ms int, count int) finScanOpt {
 	}
 }
 
-// 设置 FIN 扫描的并发可以有效控制精准度
+// Setting the concurrency of FIN scanning can effectively control the accuracy.
 func _finScanOptConcurrent(count int) finScanOpt {
 	return func(config *_yakFinPortScanConfig) {
 		if count <= 0 {
@@ -59,7 +59,7 @@ func _finScanOptConcurrent(count int) finScanOpt {
 	}
 }
 
-// finscan 发出 FIN 包后等待多久？
+// How long does finscan wait after sending a FIN packet?
 func _finScanOptWaiting(sec float64) finScanOpt {
 	return func(config *_yakFinPortScanConfig) {
 		config.waiting = utils.FloatSecondDuration(sec)
@@ -110,14 +110,14 @@ func _finScanOptExcludeHosts(hosts string) finScanOpt {
 	}
 }
 
-// 端口开放的结果保存到文件
+// The result of port opening is saved to a file.
 func _finScanOptOpenPortResult(file string) finScanOpt {
 	return func(config *_yakFinPortScanConfig) {
 		config.outputFile = file
 	}
 }
 
-// 端口开放结果保存文件加个前缀，比如 tcp:// https:// http:// 等
+// The result of port opening is saved in a file with a prefix, such as tcp:// https:// http:// etc.
 func _finScanOptOpenPortResultPrefix(prefix string) finScanOpt {
 	return func(config *_yakFinPortScanConfig) {
 		config.outputFilePrefix = prefix
@@ -136,21 +136,21 @@ func _finScanOptOpenPortInitPortFilter(f string) finScanOpt {
 	}
 }
 
-// 指纹结果保存文件
+// Save file of fingerprint results
 //func _finScanOptFpResult(file string) scanOpt {
 //	return func(config *_yakPortScanConfig) {
 //		config.fingerprintResultFile = file
 //	}
 //}
 
-// 启动指纹扫描
+// Start fingerprint scanning
 //func _finScanOptEnableFpScan() scanOpt {
 //	return func(config *_yakPortScanConfig) {
 //		config.enableFingerprint = true
 //	}
 //}
 
-// 指纹扫描-探测请求超时
+// Fingerprint scanning-detection request timeout
 //
 //	func _finScanOptFingerprintRequestTimeout(i float64) scanOpt {
 //		return func(config *_yakPortScanConfig) {
@@ -266,7 +266,7 @@ func _finscanDo(targetChan chan string, ports string, config *_yakFinPortScanCon
 			stringFilter.Insert(addr)
 
 			if !hostsFilter.Contains(addr) {
-				// 端口不在范围内
+				// The port is not within the range.
 				if !portsFilter.Contains(port) {
 					return
 				}
@@ -313,7 +313,7 @@ func _finscanDo(targetChan chan string, ports string, config *_yakFinPortScanCon
 			}
 
 			log.Infof("start to submit finscan for %s ports: %v", target, ports)
-			// 默认的整体 target 一定要包含进去
+			// The default overall target must be included.
 			hostsFilter.Add(target)
 			if !utils.IsIPv4(target) {
 				hostsFilter.Add(netx.LookupAll(target, netx.WithTimeout(5*time.Second))...)
@@ -321,7 +321,7 @@ func _finscanDo(targetChan chan string, ports string, config *_yakFinPortScanCon
 
 			hostRaw, portRaw, _ := utils.ParseStringToHostPort(target)
 			if portRaw > 0 {
-				// 如果 host 可以解析出端口的话，就需要额外增加 host 的解析
+				// If the host can resolve the port, you need to add additional host resolution.
 				portsFilter.Add(fmt.Sprint(portRaw))
 				hostsFilter.Add(hostRaw)
 				if !utils.IsIPv4(hostRaw) {
@@ -346,8 +346,8 @@ func _finscanDo(targetChan chan string, ports string, config *_yakFinPortScanCon
 	return closeResult, nil
 }
 
-// FinPortScanExports 为了防止网卡过载，5个是上限
-//  1. waiting 实现
+// FinPortScanExports In order to prevent the network card from being overloaded, 5 is the upper limit.
+//  1. waiting to implement
 //  2. timeout
 var FinPortScanExports = map[string]interface{}{
 	"Scan": func(target string, port string, opts ...finScanOpt) (chan *finscan.FinScanResult, error) {

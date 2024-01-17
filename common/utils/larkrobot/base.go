@@ -3,13 +3,13 @@ package larkrobot
 type MsgType string
 
 const (
-	// TextMsg 文本类型
+	// TextMsg Text type
 	TextMsg MsgType = "text"
-	// PostMsg 富文本
+	// PostMsg Rich text
 	PostMsg MsgType = "post"
-	// ImageMsg 图片
+	// ImageMsg Picture
 	ImageMsg MsgType = "image"
-	// InteractiveMsg 卡片
+	// InteractiveMsg Card
 	InteractiveMsg MsgType = "interactive"
 )
 
@@ -19,11 +19,11 @@ type Message interface {
 	ToMessageMap() map[string]interface{}
 }
 
-// TextMessage 文本消息
+// TextMessage text message
 type TextMessage struct {
-	// Text 文本消息内容
+	// Text text message content
 	Text string
-	// AtAll 是否@所有人
+	// AtAll Whether @ everyone
 	AtAll bool
 }
 
@@ -82,7 +82,7 @@ func (post *PostMessage) ToMessageMap() map[string]interface{} {
 	return msg
 }
 
-// ImageMessage 图片
+// ImageMessage Picture
 type ImageMessage struct {
 	// ImageKey image_key
 	ImageKey string
@@ -105,17 +105,17 @@ func (image *ImageMessage) ToMessageMap() map[string]interface{} {
 	return msg
 }
 
-// InteractiveMessage 消息卡片
+// InteractiveMessage Message card
 type InteractiveMessage struct {
-	// Config 用于描述卡片的功能属性
+	// Config Used to describe the functional properties of the card
 	Config *CardConfig
-	// Header 用于配置卡片标题内容
+	// Header is used to configure the card title content
 	Header *CardHeader
-	// CarLink 指定卡片整体的点击跳转链接
+	// CarLink specifies the click jump link of the entire card
 	CarLink *CardLinkElement
-	// Elements 用于定义卡片正文内容
+	// Elements is used to define the card body content
 	Elements []CardContent
-	// i18nElements 为卡片的正文部分定义多语言内容
+	// i18nElements Define multi-language content for the body part of the card
 	i18nElements *I18nInteractiveElement
 }
 
@@ -189,9 +189,9 @@ func (message *InteractiveMessage) ToMessageMap() map[string]interface{} {
 	}
 }
 
-// I18nInteractiveElement 为卡片的正文部分定义多语言内容
+// I18nInteractiveElement defines multi-language content for the card body part
 type I18nInteractiveElement struct {
-	// Elements 多语言内容
+	// Elements multi-language content
 	//
 	//"en_us": [
 	//			//English - card content

@@ -129,7 +129,7 @@ var telnetAuth = &DefaultServiceAuthInfo{
 		var bannerAndFinished = utils.StableReaderEx(conn, CommonTimeoutDuration, 1024)
 		var u = strings.TrimSpace(string(bannerAndFinished))
 		if !utils.MatchAnyOfRegexp(u, `(?i)login`, `(?i)user`) {
-			// 没有匹配到 login 或者 user，看是不是匹配到 password
+			// If login or user is not matched, check if password is matched.
 			if utils.MatchAnyOfRegexp(u, `(?i)password`) {
 				var finalResult = doPassword()
 				finalResult.OnlyNeedPassword = true

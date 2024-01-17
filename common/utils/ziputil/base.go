@@ -14,9 +14,9 @@ import (
 	"github.com/yaklang/yaklang/common/utils/memfile"
 )
 
-// 压缩文件
-// files 文件数组，可以是不同dir下的文件或者文件夹
-// dest 压缩文件存放地址
+// Compressed files
+// files file array, which can be files or folders under different dirs
+// dest The compressed file storage address
 func Compress(files []*os.File, dest string) error {
 	d, _ := os.Create(dest)
 	defer d.Close()
@@ -204,7 +204,7 @@ func DeCompressFromRaw(raw []byte, dest string) error {
 			return err
 		}
 
-		// 打开需要解压的文件
+		// Open the file that needs to be decompressed
 		rc, err := file.Open()
 		if err != nil {
 			return err
@@ -226,7 +226,7 @@ func DeCompressFromRaw(raw []byte, dest string) error {
 	return nil
 }
 
-// 解压
+// Decompress
 func DeCompress(zipFile, dest string) error {
 	raw, err := ioutil.ReadFile(zipFile)
 	if err != nil {

@@ -139,9 +139,9 @@ var resetFilterLock = new(sync.Mutex)
 var loadTemplateLock = new(sync.Mutex)
 
 const naslCodeExecTemplate = `
-naslScriptName = MITM_PARAMS["NASL_SCRIPT_NAME"] // 用于初次加载插件时的预处理操作
-proxy = MITM_PARAMS["PROXY"] // 代理
-opts = [] // nasl 引擎扫描参数
+naslScriptName = MITM_PARAMS["NASL_SCRIPT_NAME"] // Used for the preprocessing operation when loading the plug-in for the first time
+proxy = MITM_PARAMS["PROXY"] // agent
+opts = [] // nasl engine scan parameters
 loadNaslScriptByNameFunc = scriptName => {
 	opts.Append(nasl.plugin(scriptName))
 }
@@ -166,7 +166,7 @@ execNuclei = func(target) {
     if len(proxy) > 0 {
         yakit.Info("PROXY: %v", proxy)
     } 
-	yakit.Info("开始执行插件: %s [%v]", nucleiPoCName, target)
+	yakit.Info("Start executing the plug-in: %s [%v]", nucleiPoCName, target)
     
 	res, err = nuclei.Scan(
         target, nuclei.fuzzQueryTemplate(nucleiPoCName),
@@ -174,10 +174,10 @@ execNuclei = func(target) {
         nuclei.proxy(proxy...),
     )
 	if err != nil {
-		yakit.Error("扫描[%v]失败: %s", target, err)
+		yakit.Error("Scan [%v] failed: %s", target, err)
 		return
 	}
-    yakit.Info("开始等待插件: %v 针对: %v 的返回结果", nucleiPoCName, target)
+    yakit.Info("Start waiting for the plug-in: %v For the return result of: %v", nucleiPoCName, target)
 	for pocVul = range res {
 		yakit.Output(pocVul)		
 		yakit.Output(nuclei.PocVulToRisk(pocVul))		
@@ -316,7 +316,7 @@ func (m *MixPluginCaller) LoadPlugin(scriptName string, params ...*ypb.ExecParam
 	return m.LoadPluginByName(context.Background(), scriptName, params)
 }
 
-// LoadPluginByName 基于脚本名加载插件，如果没有指定代码，则从数据库中加载，如果指定了代码，则默认视为mitm插件执行
+// LoadPluginByName Load the plug-in based on the script name, if no code is specified , then it is loaded from the database. If the code is specified, it is regarded as the mitm plug-in execution by default.
 func (m *MixPluginCaller) LoadPluginByName(ctx context.Context, name string, params []*ypb.ExecParamItem, codes ...string) error {
 	// loadTemplateLock.Lock()
 	// defer loadTemplateLock.Unlock()
@@ -334,7 +334,7 @@ func (m *MixPluginCaller) LoadPluginByName(ctx context.Context, name string, par
 
 	if code == "" {
 		db := consts.GetGormProfileDatabase()
-		// 从数据库加载脚本时，通过脚本名前缀判断脚本类型
+		// When loading the script from the database, determine the script type by the script name prefix
 		if strings.HasSuffix(strings.ToLower(name), ".nasl") {
 			forNasl = true
 			code = naslCodeExecTemplate
@@ -419,9 +419,9 @@ func (m *MixPluginCaller) LoadPluginByName(ctx context.Context, name string, par
 		//v, ok := m.callers.table.Load("LoadPluginByName")
 		//if ok {
 		//	fun := v.(func(args ...interface{}))
-		//	fun(name) // 加载脚本
+		//	fun(name) // Load the script
 		//} else {
-		//	// 加载第一个nasl脚本时，初始化一个nasl脚本引擎用来记录加载的nasl脚本
+		//	// When loading the first nasl script, initialize a nasl script engine to record the loaded nasl script
 		//	engine := NewScriptEngine(100)
 		//
 		//	caller := YakitCallerIf(m.feedbackHandler)
@@ -473,7 +473,7 @@ func (m *MixPluginCaller) LoadPluginByName(ctx context.Context, name string, par
 		//		log.Errorf("init execute plugin finished: %s", err)
 		//		return utils.Errorf("load plugin failed: %s", err)
 		//	}
-		//	// NaslScript加载函数
+		//	// NaslScript loading function
 		//	raw, ok := ins.GetVar(HOOK_NaslScanHandle)
 		//	if !ok {
 		//		return utils.Error("no HOOK_NaslScanHandle found")
@@ -504,7 +504,7 @@ func (m *MixPluginCaller) LoadPluginByName(ctx context.Context, name string, par
 		//		Engine:  executedEngine,
 		//		Verbose: name,
 		//	}})
-		//	// NaslScript加载函数
+		//	// NaslScript loading function
 		//	LoadNaslScriptByName, ok := ins.GetVar(HOOK_LoadNaslScriptByNameFunc)
 		//	if !ok {
 		//		return utils.Error("no HOOK_NaslScanHandle found")
@@ -729,7 +729,7 @@ func (m *MixPluginCaller) MirrorHTTPFlowEx(
 
 	urlObj, err := url.Parse(u)
 	if err != nil {
-		yaklib.GetYakitClientInstance().YakitInfo("解析 URL 失败：%v 原因: %v", u, err)
+		yaklib.GetYakitClientInstance().YakitInfo("Failed to parse the URL: %v Reason: %v", u, err)
 	}
 	if urlObj != nil {
 		host, port, _ := utils.ParseStringToHostPort(u)
@@ -769,7 +769,7 @@ func (m *MixPluginCaller) MirrorHTTPFlowEx(
 				}
 			}
 
-			// 异步+并发限制执行 Nuclei
+			// Asynchronous + concurrency limit execution Nuclei
 			if callers.ShouldCallByName(HOOK_NucleiScanHandle) {
 				m.swg.Add()
 				go func() {

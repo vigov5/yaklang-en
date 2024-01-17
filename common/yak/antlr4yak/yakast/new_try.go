@@ -16,7 +16,7 @@ func (y *YakCompiler) VisitTryStmt(raw yak.ITryStmtContext) interface{} {
 	}
 	y.writeString("try ")
 	recoverFormatBufferFunc := y.switchFormatBuffer()
-	// Assign 错误
+	// Assign error
 	recoverSymbolTableAndScope := y.SwitchSymbolTableInNewScope("try-catch-finally", uuid.New().String())
 
 	var id = -1
@@ -30,20 +30,20 @@ func (y *YakCompiler) VisitTryStmt(raw yak.ITryStmtContext) interface{} {
 		id = id1
 	}
 
-	// 捕获 try block 中可能出现的的异常
-	catchErrorOpCode := y.pushOperator(yakvm.OpCatchError) //开始捕获error
+	// Capture the exception that may occur in the try block
+	catchErrorOpCode := y.pushOperator(yakvm.OpCatchError) //Start catching the error
 	y.tryDepthStack.Push(y.GetNextCodeIndex())
 	y.VisitBlock(i.Block(0))
 	y.tryDepthStack.Pop()
-	y.pushOperator(yakvm.OpStopCatchError) // 结束捕获error
-	jmp1 := y.pushJmp()                    // 执行 try block 后跳转到 finally block
+	y.pushOperator(yakvm.OpStopCatchError) // End catching the error
+	jmp1 := y.pushJmp()                    // Jump to the finally block after executing the try block
 	y.writeString(recoverFormatBufferFunc())
 	y.writeString(" catch ")
 	if text != "" {
 		y.writeString(text + " ")
 	}
 	recoverFormatBufferFunc = y.switchFormatBuffer()
-	catchErrorOpCode.Op1 = yakvm.NewAutoValue(y.GetCodeIndex()) // 捕获到异常后跳转到 catch block
+	catchErrorOpCode.Op1 = yakvm.NewAutoValue(y.GetCodeIndex()) // Jump to the catch block after catching the exception
 	catchErrorOpCode.Op2 = yakvm.NewAutoValue(id)
 	y.VisitBlock(i.Block(1)) // catch block
 	y.writeString(recoverFormatBufferFunc())

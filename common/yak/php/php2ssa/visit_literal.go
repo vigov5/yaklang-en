@@ -51,19 +51,19 @@ func (y *builder) VisitLiteralConstant(raw phpparser.ILiteralConstantContext) ss
 
 	if i.Real() != nil {
 		/*
-			// 匹配小数点后没有数字的情况
+			// Match no digits after the decimal point
 			$number2 = "123."; // LNum '.'
 
-			// 匹配小数点前没有数字的情况
+			// Match no digits before the decimal point
 			$number3 = ".456"; // '.' LNum
 
-			// 匹配有指数部分的数字
+			// Match numbers with exponent parts
 			$number4 = "123.456e7"; // LNum '.' LNum ExponentPart
 			$number5 = "123.456E7"; // LNum '.' LNum ExponentPart
 			$number6 = "123e7";     // LNum ExponentPart
 			$number7 = ".456e7";    // '.' LNum ExponentPart
 
-			// 匹配整数
+			// Match integers
 			$number8 = "123"; // LNum
 		*/
 		pre, exponent, ok := strings.Cut(strings.ReplaceAll(strings.ToLower(i.Real().GetText()), "_", ""), "e")

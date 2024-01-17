@@ -159,7 +159,7 @@ func (f *websiteFromHttpFlow) Get(params *ypb.RequestYakURLParams) (*ypb.Request
 			if result.IsQuery {
 				srcItem.ResourceType = "query"
 				srcItem.VerboseType = "website-file-with-query"
-				srcItem.VerboseName = fmt.Sprintf("GET 参数: %v", result.NextPart)
+				srcItem.VerboseName = fmt.Sprintf("GET parameters: %v", result.NextPart)
 			}
 			if result.IsFile {
 				srcItem.ResourceType = "file"

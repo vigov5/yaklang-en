@@ -91,7 +91,7 @@ func (s *TunnelServer) CreateTunnel(server tpb.Tunnel_CreateTunnelServer) error 
 		if tunnel != nil && tunnel.Port > 0 {
 			port = int32(tunnel.Port)
 			go func() {
-				// 每秒更新一下 TTL
+				// Update TTL every second
 				for {
 					GetTunnel(i.GetId())
 					select {
@@ -148,7 +148,7 @@ func (s *TunnelServer) CreateTunnel(server tpb.Tunnel_CreateTunnelServer) error 
 
 	}
 
-	// 按照 ID 做分流
+	// Divert according to ID
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -223,7 +223,7 @@ func (s *TunnelServer) CreateTunnel(server tpb.Tunnel_CreateTunnelServer) error 
 						log.Errorf("accept conn from %s failed: %s", i.Listener.Addr().String(), err)
 						return
 					}
-					// 为 conn 创建虚拟链接
+					// Create virtual link for conn
 					remoteAddr := conn.RemoteAddr().String()
 					c := &connectionDesc{
 						Connection: conn,
@@ -255,7 +255,7 @@ func (s *TunnelServer) CreateTunnel(server tpb.Tunnel_CreateTunnelServer) error 
 				go func() {
 					defer wg.Done()
 					for {
-						// 从 con 接收，然后转发
+						// Receive from con and then forward
 						var raw []byte
 						var lastAddr *net.UDPAddr
 						var buf = make([]byte, 4096)
@@ -265,7 +265,7 @@ func (s *TunnelServer) CreateTunnel(server tpb.Tunnel_CreateTunnelServer) error 
 								break
 							}
 							lastAddr = addr
-							// 可能还没读完
+							// may not have finished reading
 							if n >= 4096 {
 								raw = append(raw, buf...)
 								buf = make([]byte, 4096)

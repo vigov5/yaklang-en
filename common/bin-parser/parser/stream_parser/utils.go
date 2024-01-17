@@ -446,7 +446,7 @@ func parseLengthByLengthConfig(node *base.Node) (uint64, bool, error) {
 		}
 		if !getLengthOK {
 			if node.Cfg.Has("length-from-field") {
-				// 从field 读取length
+				// Read length
 				if node.Cfg.Has("length-from-field") {
 					fieldName := node.Cfg.GetString("length-from-field")
 					target := getNodeByPath(node, fieldName)
@@ -476,7 +476,7 @@ func parseLengthByLengthConfig(node *base.Node) (uint64, bool, error) {
 							}
 							length = total
 							getLengthOK = true
-							//if node.Cfg.Has("length-for-field") { // 当存在字段限制，且当前节点在限制范围内时，更新parentRemaininigLength
+							//if node.Cfg.Has("length-for-field") { // from field. When there is a field limit and the current node is within the limit, update parentRemaininigLength.
 							//	fieldsStr := node.Cfg.GetString("length-for-field")
 							//	fieldsInScope = strings.Split(fieldsStr, ",")
 							//	for _, field := range fieldsInScope {

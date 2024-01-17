@@ -72,14 +72,14 @@ func (s *Server) AutoUpdateYakModule(_ *ypb.Empty, stream ypb.Yak_AutoUpdateYakM
 	err := s.Exec(&ypb.ExecRequest{
 		Script: `yakit.AutoInitYakit()
 
-yakit.Info("开始更新 yakit-store: %v", "github.com/yaklang/yakit-store")
+yakit.Info("Start updating yakit-store: %v", "github.com/yaklang/yakit-store")
 err = yakit.UpdateYakitStore()
 if err != nil {
-    yakit.Error("更新 yakit-store 官方商店失败: %v", err)
+    yakit.Error("Update yakit-store Official store failed: %v", err)
 }
-yakit.Info("更新 yakit-store 成功")
+yakit.Info("Update yakit-store Successful")
 
-yakit.Info("开始从 nuclei templates 中更新 yaml poc")
+yakit.Info("start updating yaml poc from nuclei templates")
 err = nuclei.UpdatePoC()
 if err != nil {
 	yakit.Error("update poc from github src failed: %s", err)
@@ -245,7 +245,7 @@ func (s *Server) SaveYakScript(ctx context.Context, script *ypb.YakScript) (*ypb
 	case "yak", "mitm", "port-scan":
 		_, err := antlr4yak.New().FormattedAndSyntaxChecking(script.GetContent())
 		if err != nil {
-			return nil, utils.Errorf("save plugin failed! content is invalid(潜在语法错误): %s", err)
+			return nil, utils.Errorf("save plugin failed! content is invalid (potential syntax error): %s", err)
 		}
 	}
 
@@ -320,7 +320,7 @@ func ConvertYakScriptToExecRequest(req *ypb.ExecRequest, script *yakit.YakScript
 			ScriptId: script.ScriptName,
 		}, defers, nil
 	case "nuclei":
-		// 批量模式不太一样
+		// Batch mode is not the same
 		params := req.Params
 		if batchMode {
 			params = append(params, &ypb.ExecParamItem{Key: "--plugin", Value: script.ScriptName})
@@ -606,7 +606,7 @@ func (s *Server) ExportYakPluginBatch(script *yakit.YakScript, dir, OutputPlugin
 		})
 	}
 
-	// 保存 meta
+	// save meta
 	metaRaw, err := json.MarshalIndent(meta, "", "    ")
 	if err != nil {
 		return "", utils.Errorf("marshal meta.json failed: %s", err)
@@ -617,7 +617,7 @@ func (s *Server) ExportYakPluginBatch(script *yakit.YakScript, dir, OutputPlugin
 		return "", utils.Errorf("write meta.json failed: %s", err)
 	}
 
-	// 保存文档
+	// Save Document
 	documentRaw := []byte(fmt.Sprintf(
 		defaultMarkdownDocument,
 		script.Type, scriptName, script.Author,
@@ -633,7 +633,7 @@ func (s *Server) ExportYakPluginBatch(script *yakit.YakScript, dir, OutputPlugin
 		return "", utils.Errorf("write document failed: %s", err)
 	}
 
-	// 保存脚本内容
+	// Save script content
 	scriptStr, _ := strconv.Unquote(script.Content)
 	if scriptStr == "" {
 		scriptStr = script.Content
@@ -872,26 +872,26 @@ func (s *Server) QueryYakScriptRiskDetailByCWE(ctx context.Context, req *ypb.Que
 func (s *Server) YakScriptRiskTypeList(context.Context, *ypb.Empty) (*ypb.YakScriptRiskTypeListResponse, error) {
 	ret := &ypb.YakScriptRiskTypeListResponse{}
 	riskTypeList := map[string]string{
-		"SQL注入":      "89",
+		"SQL injection":      "89",
 		"XSS":        "79",
-		"命令执行/注入":    "77",
-		"代码执行/注入":    "94",
+		"Command execution/Injection":    "77",
+		"Code execution/Injection":    "94",
 		"CSRF":       "352",
-		"文件包含/读取/下载": "41",
-		"文件写入/上传":    "434",
-		"XML外部实体攻击":  "91",
-		"反序列化":       "502",
-		"未授权访问":      "552",
-		"路径遍历":       "22",
-		"敏感信息泄漏":     "200",
-		"身份验证错误":     "305",
-		"垂直/水平权限提升":  "271",
-		"逻辑漏洞":       "840",
-		"默认配置漏洞":     "1188",
-		"弱口令":        "1391",
+		"file contains/Read/Download": "41",
+		"file is written to/Upload":    "434",
+		"XML external entity attack":  "91",
+		"Deserialize":       "502",
+		"Unauthorized access":      "552",
+		"Path traversal":       "22",
+		"Sensitive information leakage":     "200",
+		"Authentication error":     "305",
+		"Vertical/Horizontal privilege escalation":  "271",
+		"Logic vulnerability":       "840",
+		"Default configuration vulnerability":     "1188",
+		"Weak password":        "1391",
 		"SSRF":       "918",
-		"其他漏洞检测":     "",
-		"合规检测":       "",
+		"Other vulnerability detection":     "",
+		"Compliance detection":       "",
 	}
 	for k, v := range riskTypeList {
 		ret.Data = append(ret.Data, &ypb.RiskTypeLists{
@@ -947,7 +947,7 @@ func (s *Server) SaveNewYakScript(ctx context.Context, script *ypb.SaveNewYakScr
 	case "yak", "mitm", "port-scan":
 		_, err := antlr4yak.New().FormattedAndSyntaxChecking(script.GetContent())
 		if err != nil {
-			return nil, utils.Errorf("save plugin failed! content is invalid(潜在语法错误): %s", err)
+			return nil, utils.Errorf("save plugin failed! content is invalid (potential syntax error): %s", err)
 		}
 	}
 	script.ScriptName = strings.TrimSpace(script.ScriptName)
@@ -956,15 +956,15 @@ func (s *Server) SaveNewYakScript(ctx context.Context, script *ypb.SaveNewYakScr
 
 	if script.Id > 0 {
 		if yakScript != nil && int64(yakScript.ID) != script.Id {
-			return nil, utils.Errorf("save plugin failed! 插件名重复")
+			return nil, utils.Errorf("save plugin failed! Duplicate plug-in name")
 		}
 		yakScript, _ = yakit.GetYakScript(s.GetProfileDatabase(), script.Id)
 		if yakScript == nil {
-			return nil, utils.Errorf("更新插件不存在")
+			return nil, utils.Errorf("The update plug-in does not exist")
 		}
 		var err error
 		if (script.ScriptName != yakScript.ScriptName && len(yakScript.OnlineBaseUrl) <= 0) || yakScript.ScriptName == script.ScriptName {
-			// 更新
+			// Update
 			err = yakit.CreateOrUpdateYakScript(s.GetProfileDatabase(), script.Id, GRPCYakScriptToYakScript(script))
 		} else {
 			err = yakit.CreateOrUpdateYakScriptByName(s.GetProfileDatabase(), script.ScriptName, GRPCYakScriptToYakScript(script))
@@ -974,7 +974,7 @@ func (s *Server) SaveNewYakScript(ctx context.Context, script *ypb.SaveNewYakScr
 		}
 	} else {
 		if yakScript != nil {
-			return nil, utils.Errorf("save plugin failed! 插件名重复")
+			return nil, utils.Errorf("save plugin failed! Duplicate plug-in name")
 		}
 		err := yakit.CreateOrUpdateYakScriptByName(s.GetProfileDatabase(), script.ScriptName, GRPCYakScriptToYakScript(script))
 		if err != nil {
@@ -1027,11 +1027,11 @@ func (s *Server) ImportYakScript(req *ypb.ImportYakScriptRequest, stream ypb.Yak
 	})
 	defer func() {
 		if errorCount > 0 {
-			message += fmt.Sprintf("执行失败: %v 个", errorCount)
+			message += fmt.Sprintf("Execution failed: %v", errorCount)
 			messageType = "finalError"
 		}
 		if successCount > 0 {
-			message += fmt.Sprintf("执行成功: %v 个", successCount)
+			message += fmt.Sprintf("Successful execution: %v", successCount)
 		}
 		if message == "" {
 			message = "finished"
@@ -1047,7 +1047,7 @@ func (s *Server) ImportYakScript(req *ypb.ImportYakScriptRequest, stream ypb.Yak
 		typeStr := yakit.YakScriptLocalType(dir)
 		if typeStr == "" {
 			stream.Send(&ypb.ImportYakScriptResult{
-				Message:     fmt.Sprintf("import [%s] yakScript  failed: %s", dir, "文件名不符合上传"),
+				Message:     fmt.Sprintf("import [%s] yakScript  failed: %s", dir, "file name does not match upload"),
 				MessageType: "error",
 			})
 			continue
@@ -1157,11 +1157,11 @@ func (s *Server) ExportLocalYakScriptStream(req *ypb.ExportLocalYakScriptRequest
 	})
 	defer func() {
 		if errorCount > 0 {
-			message += fmt.Sprintf("执行失败: %v 个", errorCount)
+			message += fmt.Sprintf("Execution failed: %v", errorCount)
 			messageType = "finalError"
 		}
 		if successCount > 0 {
-			message += fmt.Sprintf("执行成功: %v 个", successCount)
+			message += fmt.Sprintf("Successful execution: %v", successCount)
 		}
 		if message == "" {
 			message = "finished"

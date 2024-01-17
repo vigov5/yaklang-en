@@ -22,7 +22,7 @@ type TextParser struct {
 	engine *antlr4yak.Engine
 }
 
-// NewTextParser 创建一个新的文本解析器
+// NewTextParser creates a new text parser
 func NewTextParser() *TextParser {
 	parser := &TextParser{
 		Scripts: map[string]*TextHandlingScript{
@@ -52,7 +52,7 @@ func (t *TextParser) ParseLine(r io.Reader, handler func(line string, r map[stri
 
 		t.engine.SetVar("FILE_LINE", line)
 
-		// 自动选择合适的规则来解析
+		// automatically selects the appropriate rule to parse
 		if matchedRule == "" {
 			for name, subRule := range t.Scripts {
 				_ = name
@@ -63,7 +63,7 @@ func (t *TextParser) ParseLine(r io.Reader, handler func(line string, r map[stri
 
 				if matchedRaw, ok := t.engine.GetVar("MATCHED"); ok {
 					if matched, typeOk := matchedRaw.(bool); typeOk && matched {
-						// 规则匹配上了
+						// The rules match
 						matchedRule = subRule.ParsingScript
 					}
 				}

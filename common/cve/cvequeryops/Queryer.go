@@ -98,7 +98,7 @@ func FixCVEProduct(cveQuery *CVEQueryInfo, db *gorm.DB) *CVEQueryInfo {
 	var fixName []string
 	var fixCPE []cveresources.CPE
 	for i := 0; i < len(cveQuery.Products); i++ {
-		if info, ok := cveresources.CommonFix[cveQuery.Products[i]]; ok { //查询基础修复里有没有对应的畸形名
+		if info, ok := cveresources.CommonFix[cveQuery.Products[i]]; ok { //Query whether there are corresponding malformed names in the basic repair
 			if info.Vendor != "" {
 				fixCPE = append(fixCPE, cveresources.CPE{
 					Part:    "*",
@@ -111,10 +111,10 @@ func FixCVEProduct(cveQuery *CVEQueryInfo, db *gorm.DB) *CVEQueryInfo {
 			fixName = append(fixName, cveresources.CommonFix[cveQuery.Products[i]].ProductName)
 			continue
 		}
-		fixRes, err := cveresources.FixProductName(cveQuery.Products[i], db) //尝试通用方法修复
+		fixRes, err := cveresources.FixProductName(cveQuery.Products[i], db) //Try a common method to repair
 		if err != nil {
 			log.Warningf("find product name failed: %s[%s]", err, cveQuery.Products[i])
-		} else { //修复好的所有产品名放入查询条件里
+		} else { //Put all the repaired product names into the query conditions
 			fixName = append(fixName, fixRes...)
 		}
 	}
@@ -123,7 +123,7 @@ func FixCVEProduct(cveQuery *CVEQueryInfo, db *gorm.DB) *CVEQueryInfo {
 	}
 
 	for i := 0; i < len(cveQuery.CPE); i++ {
-		if info, ok := cveresources.CommonFix[cveQuery.CPE[i].Product]; ok { //查询基础修复里有没有对应的畸形名
+		if info, ok := cveresources.CommonFix[cveQuery.CPE[i].Product]; ok { //Query whether there are corresponding malformed names in the basic repair
 			vendorStr := cveQuery.CPE[i].Vendor
 			if info.Vendor != "" {
 				vendorStr = info.Vendor
@@ -141,7 +141,7 @@ func FixCVEProduct(cveQuery *CVEQueryInfo, db *gorm.DB) *CVEQueryInfo {
 		if err != nil {
 			log.Warningf("find product name failed: %s[%s]", err, cveQuery.CPE[i].Product)
 		} else {
-			//修复后所有可能的产品名放入CPE中
+			//Put all possible product names after the repair into the CPE
 			for _, name := range fixRes {
 				cpeItem := cveresources.CPE{
 					Part:    cveQuery.CPE[i].Part,
@@ -389,7 +389,7 @@ func MakeSqlSentence(info *CVEQueryInfo) (string, []interface{}) {
 		info.Products = cveresources.Set(info.Products)
 		clause := " ("
 
-		//构造Vendor和Product查询子句
+		//Construct Vendor and Product query clauses
 		var inSideSql []string
 		for _, vendor := range info.Vendors {
 			inSideSql = append(inSideSql, " vendor LIKE ? ")
@@ -430,7 +430,7 @@ func MakeSqlSentence(info *CVEQueryInfo) (string, []interface{}) {
 	if len(info.Severity) > 0 {
 
 		clause := " ("
-		//构造Vendor和Product查询子句
+		//Construct Vendor and Product query clauses
 		var inSideSql []string
 		for _, level := range info.Severity {
 			inSideSql = append(inSideSql, " severity == ? ")

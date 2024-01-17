@@ -300,8 +300,8 @@ func (y *YakMatcher) executeRaw(config *Config, rsp []byte, duration float64, va
 			dslEngine := NewNucleiDSLYakSandbox()
 			matcherFunc = func(fullResponse string, sub string) bool {
 				loadVars := LoadVarFromRawResponse(rsp, duration, sufs...)
-				//加载 resp 中的变量
-				for k, v := range vars { // 合并若有重名以 vars 为准
+				//load the variables in resp.
+				for k, v := range vars { // If there are duplicate names in the merge, vars shall prevail.
 					loadVars[k] = v
 				}
 

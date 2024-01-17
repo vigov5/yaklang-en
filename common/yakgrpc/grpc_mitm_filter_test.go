@@ -41,7 +41,7 @@ func RunMITMTestServer(
 		}
 		msgStr := spew.Sdump(msg)
 		// fmt.Println("MTIM CLIENT RECV: " + msgStr)
-		if strings.Contains(msgStr, `MITM 服务器已启动`) {
+		if strings.Contains(msgStr, `MITM server started`) {
 			go func() {
 				defer wg.Done()
 				onLoad(stream)
@@ -286,9 +286,9 @@ sleep(0.3)
 			{"cccc", 0},
 			{"ccc", 0},
 			{"cc", 0},
-			{"text/plain", 0},     //text 命中 前半部分
-			{"textplain/test", 1}, //text 无法命中
-			{"textplain/text", 0}, // text 命中 后半部分
+			{"text/plain", 0},     //text hits the first half
+			{"textplain/test", 1}, //text cannot hit
+			{"textplain/text", 0}, // text hits the second half
 		} {
 			var path = "/"
 			var contentType = utils.InterfaceToString(ct[0])

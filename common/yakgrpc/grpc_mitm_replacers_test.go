@@ -12,7 +12,7 @@ import (
 func TestHookColorWithRequest(t *testing.T) {
 	replacer := NewMITMReplacer()
 	replacer.SetRules(&ypb.MITMContentReplacer{
-		Rule:             `百度`,
+		Rule: `Baidu`,
 		NoReplace:        true,
 		Result:           ``,
 		Color:            "",
@@ -34,7 +34,7 @@ Sec-Fetch-Mode: no-cors
 Sec-Fetch-Site: same-origin
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36
 
-{"product": "百度"}`)
+{"product": "Baidu"}`)
 	req, err := lowhttp.ParseBytesToHttpRequest(requestBytes)
 	if err != nil {
 		t.Fatal(err)

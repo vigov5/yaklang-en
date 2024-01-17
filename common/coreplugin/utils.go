@@ -21,7 +21,7 @@ var initDB = sync.Once{}
 func GetCorePluginData(name string) []byte {
 	codeBytes, err := basePlugin.ReadFile(fmt.Sprintf("base-yak-plugin/%v.yak", name))
 	if err != nil {
-		log.Errorf("%v不是core plugin", name)
+		log.Errorf("%v is not a core plugin", name)
 		return nil
 	}
 	return codeBytes

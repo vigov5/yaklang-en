@@ -34,7 +34,7 @@ const (
 // Add final block to squelch unexpected EOF error from flate reader
 var TAIL = []byte{0, 0, 0xff, 0xff, 0x01, 0x00, 0x00, 0xff, 0xff}
 
-// ExtractURLFromHTTPRequestRaw 从原始 HTTP 请求报文中提取 URL，返回URL结构体与错误
+// ExtractURLFromHTTPRequestRaw Extracts the URL from the original HTTP request message and returns the URL structure and error
 // Example:
 // ```
 // url, err := str.ExtractURLFromHTTPRequestRaw(b"GET / HTTP/1.1\r\nHost: www.yaklang.com\r\n\r\n", false)
@@ -139,7 +139,7 @@ func TrimSpaceHTTPPacket(raw []byte) []byte {
 	return bytes.TrimFunc(raw, unicode.IsSpace)
 }
 
-// ExtractURLFromHTTPRequest 从 HTTP 请求结构体中提取 URL，返回URL结构体与错误
+// ExtractURLFromHTTPRequest Extracts the URL from the HTTP request structure and returns the URL structure and error
 // Example:
 // ```
 // v, err = http.Raw("GET / HTTP/1.1\r\nHost: www.yaklang.com\r\n\r\n")
@@ -203,7 +203,7 @@ func ExtractURLFromHTTPRequest(r *http.Request, https bool) (*url.URL, error) {
 	}
 
 	if strings.HasSuffix(host, ":443") && strings.HasPrefix(raw, "https://") {
-		// 修复 https :443 的不必要情况
+		// Repairs the unnecessary situation of https:443
 		raw += host[:len(host)-4]
 	} else {
 		raw += host
@@ -238,7 +238,7 @@ func ExtractURLFromHTTPRequest(r *http.Request, https bool) (*url.URL, error) {
 	return uIns, nil
 }
 
-// ExtractBodyFromHTTPResponseRaw 从原始 HTTP 响应报文中提取 body
+// ExtractBodyFromHTTPResponseRaw Extracts the body from the original HTTP response message
 // Example:
 // ```
 // body, err = str.ExtractBodyFromHTTPResponseRaw(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok") // body = b"ok"
@@ -248,7 +248,7 @@ func ExtractBodyFromHTTPResponseRaw(res []byte) ([]byte, error) {
 	return raw, nil
 }
 
-// ParseStringToHTTPResponse 将字符串解析为 HTTP 响应
+// ParseStringToHTTPResponse will The string is parsed into HTTP response
 // Example:
 // ```
 // res, err := str.ParseStringToHTTPResponse("HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok")
@@ -257,7 +257,7 @@ func ParseStringToHTTPResponse(res string) (*http.Response, error) {
 	return ParseBytesToHTTPResponse([]byte(res))
 }
 
-// MergeUrlFromHTTPRequest 将传入的 target 与 原始 HTTP 请求报文中的 URL 进行合并，并返回合并后的 URL
+// MergeUrlFromHTTPRequest Merges the incoming target with the URL in the original HTTP request message and returns the merged URL
 // Example:
 // ```
 // url = str.MergeUrlFromHTTPRequest(b"GET /z HTTP/1.1\r\nHost: www.yaklang.com\r\n\r\n", "/a/b", true) // url = "https://www.yaklang.com/z/a/b"
@@ -485,7 +485,7 @@ func SplitHTTPPacket(
 		bodyRaw = nil
 	}
 
-	// 单独修复请求中的问题
+	// Fix the problems in the request separately
 	//if !strings.HasPrefix(headersRaw, "HTTP/") {
 	//	if bytes.HasSuffix(bodyRaw, []byte("\n\n")) {
 	//		bodyRaw = bodyRaw[:len(bodyRaw)-2]
@@ -495,7 +495,7 @@ func SplitHTTPPacket(
 	return headersRaw, bodyRaw
 }
 
-// SplitHTTPHeadersAndBodyFromPacket 将传入的 HTTP 报文分割为 headers 和 body，如果传入了hook，则会在每次读取到一行 header 时调用 hook
+// SplitHTTPHeadersAndBodyFromPacket Split the incoming HTTP message into headers and body, if a hook is passed in, the hook will be called every time a row of headers is read.
 // Example:
 // ```
 // headers, body = str.SplitHTTPHeadersAndBodyFromPacket(b"GET / HTTP/1.1\r\nHost: www.yaklang.com\r\n\r\n")
@@ -759,7 +759,7 @@ func FixRequestHostAndPort(r *http.Request) {
 	r.URL.Host = r.Host
 }
 
-// IsResp 判断传入的数据是否为 HTTP 响应报文
+// IsResp Determines whether the incoming data is an HTTP response message
 // Example:
 // ```
 // poc.IsResp(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok") // true

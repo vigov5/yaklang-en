@@ -18,7 +18,7 @@ func TestAntlrEngine(t *testing.T) {
 
 	cases := []YakTestCase{
 		{
-			Name: "测试数据库",
+			Name: "test database",
 			Src: fmt.Sprintf(`
 a = string(file.ReadFile("/tmp/text-111.txt")[0])
 dump(a)
@@ -26,5 +26,5 @@ dump(a)
 		},
 	}
 
-	Run("测试数据库链接", t, cases...)
+	Run("Test database link", t, cases...)
 }

@@ -34,7 +34,7 @@ Content-Type: image/png
 ------WebKitFormBoundarySwLsJXBjLJWfghXP
 Content-Disposition: form-data; name="submit"
 
-上传
+Upload
 ------WebKitFormBoundarySwLsJXBjLJWfghXP--
 `),
 	})
@@ -68,7 +68,7 @@ Content-Disposition: form-data; name="upload_file"; filename="1_create_topic.png
 ------WebKitFormBoundarySwLsJXBjLJWfghXP
 Content-Disposition: form-data; name="submit"
 
-上传
+Upload
 ------WebKitFormBoundarySwLsJXBjLJWfghXP--
 `),
 	})

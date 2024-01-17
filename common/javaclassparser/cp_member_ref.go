@@ -2,9 +2,9 @@ package javaclassparser
 
 /*
 *
-ConstantFieldrefInfo、ConstantMethodrefInfo、ConstantInterfaceMethodrefInfo
-这三个结构体继承自ConstantMemberrefInfo
-Go语言没有“继承”的概念，而是通过结构体嵌套的方式实现的
+ConstantFieldrefInfo, ConstantMethodrefInfo, ConstantInterfaceMethodrefInfo
+These three structures inherit the concept of ConstantMemberrefInfo
+Go language does not have“Inherits”, but are implemented through structure nesting
 */
 type ConstantMemberrefInfo struct {
 	ClassIndex              uint16
@@ -15,7 +15,7 @@ type ConstantMemberrefInfo struct {
 
 /*
 *
-字段符号引用
+Field symbol reference
 
 	CONSTANT_FIELDREF_INFO {
 		u1 tag;
@@ -30,7 +30,7 @@ type ConstantFieldrefInfo struct {
 
 /*
 *
-普通（非接口）方法符号引用
+Ordinary (non-interface) method symbol reference
 
 	CONSTANT_METHODREF_INFO {
 		u1 tag;
@@ -45,7 +45,7 @@ type ConstantMethodrefInfo struct {
 
 /*
 *
-接口方法符号引用
+Interface method symbol reference
 
 	CONSTANT_INTERFACEMETHODREF_INFO {
 		u1 tag;

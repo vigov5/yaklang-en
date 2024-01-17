@@ -27,7 +27,7 @@ func (s *StringFilter) build(str string) []byte {
 	}()
 
 	if s.conf.TTL > 0 {
-		// 如果最后一个元素都是过期的，直接释放掉之前的 container
+		// If the last element is expired, directly release the previous container
 		now := utils.TimestampMs() / 1000
 		if s.lastUpdated != 0 && (now-s.lastUpdated >= s.conf.TTL) {
 			s.container = NewDirCuckoo()
@@ -46,7 +46,7 @@ func (s *StringFilter) Exist(str string) bool {
 	return s.container.Lookup(s.build(str))
 }
 
-// 返回值是 true，插入成功，false 容器满了, 无法继续添加
+// is true, the insertion is successful, false the container is full, and no more additions can be made.
 func (s *StringFilter) Insert(str string) bool {
 	s.Lock()
 	defer s.Unlock()
@@ -60,7 +60,7 @@ func NewStringFilter(config *Config, container *cuckoo.Filter) *StringFilter {
 	}
 }
 
-// NewFilter 创建一个默认的字符串布谷鸟过滤器，布谷鸟过滤器用于判断一个元素是否在一个集合中，它存在极低的假阳性（即说存在的元素实际上不存在），通常这个集合中的元素数量非常大才会使用布谷鸟过滤器。
+// NewFilter creates a default string cuckoo filter. The cuckoo filter is used to determine whether an element is in a set. It has extremely low false positives (that is, the element that is said to exist does not actually exist). Usually in this set The cuckoo filter is only used if the number of elements is very large.
 // Example:
 // ```
 // f = str.NewFilter()
@@ -85,10 +85,10 @@ func NewFilterWithSize(entries, total uint) *StringFilter {
 	return f
 }
 
-// RemoveDuplicatePorts 解析两个字符串形式的端口列表，并使用布谷鸟过滤器进行去重。
-// 这个函数首先创建一个布谷鸟过滤器，然后将两个输入字符串解析为端口列表。
-// 接着，它遍历这两个列表，将每个端口添加到布谷鸟过滤器中，如果这个端口之前没有被添加过，
-// 那么它也会被添加到结果列表中。最后，函数返回结果列表，其中包含两个输入字符串中的所有唯一端口。
+// RemoveDuplicatePorts Parses two lists of ports as strings and uses a cuckoo filter for deduplication.
+// function first creates a cuckoo filter and then parses the two input strings. is the port list.
+// Next, it iterates through these two lists and adds each port to the cuckoo filter. If the port has not been added before, the
+// then it will also be added to the results list. Finally, the function returns a resulting list containing all unique ports from the two input strings.
 // Example:
 // ```
 // RemoveDuplicatePorts("10086-10088,23333", "10086,10089,23333") // [10086, 10087, 10088, 23333, 10089]
@@ -99,13 +99,13 @@ func RemoveDuplicatePorts(ports1, ports2 string) []int {
 	parsedPorts1 := utils.ParseStringToPorts(ports1)
 	parsedPorts2 := utils.ParseStringToPorts(ports2)
 
-	// 合并并排序 ports1 和 ports2
+	// merge and sort ports1 and ports2
 	allPorts := append(parsedPorts1, parsedPorts2...)
 	sort.Ints(allPorts)
 
 	var uniquePorts []int
 
-	// 将唯一的元素添加到结果中
+	// and adds the unique element
 	for _, port := range allPorts {
 		if !filter.Exist(strconv.Itoa(port)) {
 			filter.Insert(strconv.Itoa(port))
@@ -116,11 +116,11 @@ func RemoveDuplicatePorts(ports1, ports2 string) []int {
 	return uniquePorts
 }
 
-// FilterPorts 接受两个字符串形式的端口列表作为参数，返回一个新的端口列表，
-// 其中包含了在 `ports1` 中但不在 `ports2` 中的所有端口。
-// 这个函数首先将两个输入字符串解析为端口列表，然后创建一个映射（或集合）来存储 `ports2` 中的所有端口。
-// 然后，它遍历 `ports1` 中的每个端口，如果这个端口不在 `ports2` 中，那么它就会被添加到结果列表中。
-// 最后，函数返回结果列表，其中包含了所有只在 `ports1` 中出现的端口。
+// FilterPorts accepts two port lists as strings as arguments, returns a new port list,
+// to the result containing all ports that are in `ports1` but not in `ports2`.
+// This function first parses the two input strings into port lists, and then creates a map (or collection) to store all ports in `ports2`.
+// Then, it iterates through each port in `ports1`, and if the port is not in `ports2`, then it is added to the results list. The return value of
+// Finally, the function returns a list of all ports that only appear in `ports1`.
 // Example:
 // ```
 // FilterPorts("1-10", "2-10") // [1]

@@ -144,7 +144,7 @@ ssa.Parse(
 				EndLine:     2,
 				EndColumn:   9,
 			}
-			// 标准库函数
+			// Standard library function
 			funcDecl := getFuncDeclByName("ssa.Parse")
 			desc := getFuncDeclDesc(funcDecl, "Parse")
 			want := desc
@@ -158,7 +158,7 @@ ssa.Parse(
 				EndLine:     5,
 				EndColumn:   22,
 			}
-			// 标准库变量
+			// Standard library variable
 			instance := getInstanceByName("ssa.Javascript")
 			desc := getInstanceDesc(instance)
 			want := desc

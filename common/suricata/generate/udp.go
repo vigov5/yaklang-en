@@ -27,7 +27,7 @@ func newUDPGen(r *rule.Rule) (Generator, error) {
 	for mdf, r := range contentRuleMap(r.ContentRuleConfig.ContentRules) {
 		switch mdf {
 		case modifier.UDPHDR:
-			// 暂不支持
+			// Not supported yet
 		case modifier.Default:
 			g.payload = parse2ContentGen(r, WithNoise(noiseAll))
 		default:

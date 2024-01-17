@@ -2,8 +2,8 @@ package yaklib
 
 import "os"
 
-// Get 获取对应键名的环境变量值
-// ! 已弃用，可以使用 `os.Getenv` 代替
+// Get to get the environment variable value of the corresponding key name
+// ! Deprecated, you can use `os.Getenv` instead of
 // Example:
 // ```
 // env.Get("PATH")
@@ -12,8 +12,8 @@ func _getEnv(key string) string {
 	return os.Getenv(key)
 }
 
-// Set 设置对应键名的环境变量值
-// ! 已弃用，可以使用 `os.Setenv` 代替
+// Set to set the environment variable value of the corresponding key name
+// ! Deprecated, you can use `os.Setenv` instead of
 // Example:
 // ```
 // env.Set("YAK_PROXY", "http://127.0.0.1:10808")

@@ -49,15 +49,15 @@ func IsGBK(data []byte) bool {
 	var i int = 0
 	for i < length {
 		if data[i] <= 0x7f {
-			//编码0~127,只有一个字节的编码，兼容ASCII码
+			//Encoding 0~127, only one byte encoding, compatible with ASCII code
 			i++
 			continue
 		} else {
-			//非双字节编码 最后只剩一位
+			//There is only one bit left in the non-double-byte encoding.
 			if i+1 == length {
 				return false
 			}
-			//大于127的使用双字节编码，落在gbk编码范围内的字符
+			//greater than 127 uses double-byte encoding, and characters falling within the gbk encoding range
 			if data[i] >= 0x81 &&
 				data[i] <= 0xfe &&
 				data[i+1] >= 0x40 &&
@@ -73,11 +73,11 @@ func IsGBK(data []byte) bool {
 	return true
 }
 
-// UTF-8编码格式的判断
+// UTF- 8 Judgment of encoding format
 func preNUm(data byte) int {
 	var mask byte = 0x80
 	var num int = 0
-	//8bit中首个0bit前有多少个1bits
+	//How many 1bits are there before the first 0bit in 8bits?
 	for i := 0; i < 8; i++ {
 		if (data & mask) == mask {
 			num++
@@ -101,17 +101,17 @@ func IsUtf8(data []byte) bool {
 			// 1111_0XXX 10XX_XXXX 10XX_XXXX 10XX_XXXX
 			// 1111_10XX 10XX_XXXX 10XX_XXXX 10XX_XXXX 10XX_XXXX
 			// 1111_110X 10XX_XXXX 10XX_XXXX 10XX_XXXX 10XX_XXXX 10XX_XXXX
-			// preNUm() 返回首个字节的8个bits中首个0bit前面1bit的个数，该数量也是该字符所使用的字节数
+			// preNUm() returns the number of 1 bits before the first 0 bit in the 8 bits of the first byte, this number is also the number of bytes used for the character
 			i++
 			for j := 0; j < num-1; j++ {
-				//判断后面的 num - 1 个字节是不是都是10开头
+				//determines whether the following num - 1 bytes all start with 10
 				if (data[i] & 0xc0) != 0x80 {
 					return false
 				}
 				i++
 			}
 		} else {
-			//其他情况说明不是utf-8
+			//Other situations indicate that it is not UTF-8.
 			return false
 		}
 	}

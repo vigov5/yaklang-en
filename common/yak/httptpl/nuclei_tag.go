@@ -17,7 +17,7 @@ type NucleiTag struct {
 }
 
 func (n *NucleiTag) Exec(raw *parser.FuzzResult, params ...map[string]*parser.TagMethod) ([]*parser.FuzzResult, error) {
-	// 变量渲染
+	// variable rendering
 	if n.GetVar != nil {
 		if v, ok := n.GetVar(string(raw.GetData())); ok {
 			return []*parser.FuzzResult{parser.NewFuzzResultWithData(v)}, nil
@@ -26,7 +26,7 @@ func (n *NucleiTag) Exec(raw *parser.FuzzResult, params ...map[string]*parser.Ta
 		}
 	}
 	s := string(raw.GetData())
-	// payload 直接渲染
+	// payload directly renders
 	if v, ok := n.Payload[s]; ok {
 		if n.AttackMode == "pitchfork" || n.AttackMode == "sync" {
 			n.Labels = []string{"1"}
@@ -37,7 +37,7 @@ func (n *NucleiTag) Exec(raw *parser.FuzzResult, params ...map[string]*parser.Ta
 		}
 		return result, nil
 	}
-	// 沙箱执行
+	// sandbox execution
 	if n.ExecDSL != nil {
 		res, err := n.ExecDSL(s)
 		if err != nil {
@@ -48,7 +48,7 @@ func (n *NucleiTag) Exec(raw *parser.FuzzResult, params ...map[string]*parser.Ta
 	return []*parser.FuzzResult{parser.NewFuzzResultWithData("{{" + string(raw.GetData()) + "}}")}, nil
 }
 
-// RenderNucleiTagWithVar 渲染变量 （只渲染变量不执行）
+// RenderNucleiTagWithVar renders the variable (only renders the variable and does not execute)
 func RenderNucleiTagWithVar(raw string, vars map[string]any) (result string, err error) {
 	defer func() {
 		if e := recover(); e != nil {
@@ -71,7 +71,7 @@ func RenderNucleiTagWithVar(raw string, vars map[string]any) (result string, err
 	return string(res.GetData()), nil
 }
 
-// ExecNucleiTag 执行包含tag的字符串
+// ExecNucleiTag executes the string containing the tag
 func ExecNucleiTag(raw string, vars map[string]any) (result string, err error) {
 	defer func() {
 		if e := recover(); e != nil {
@@ -96,7 +96,7 @@ func ExecNucleiTag(raw string, vars map[string]any) (result string, err error) {
 	return string(res[0]), err
 }
 
-// FuzzNucleiTag 使用payload对包含tag的字符串进行fuzz
+// FuzzNucleiTag uses the payload to fuzz the string containing the tag
 func FuzzNucleiTag(raw string, vars map[string]any, payload map[string][]string, mode string) (result [][]byte, err error) {
 	defer func() {
 		if e := recover(); e != nil {

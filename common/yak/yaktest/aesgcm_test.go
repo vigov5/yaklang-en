@@ -30,10 +30,10 @@ originData = codec.EncodeToHex(codec.AESGCMDecrypt(codec.DecodeBase64("6ZmI6I2j5
 dump(originData)`
 	cases := []YakTestCase{
 		{
-			Name: "AES GCM 配置",
+			Name: "AES GCM configuration",
 			Src:  code,
 		},
 	}
 
-	Run("AES GCM 配置", t, cases...)
+	Run("AES GCM configuration", t, cases...)
 }

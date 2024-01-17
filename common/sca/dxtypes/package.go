@@ -35,7 +35,7 @@ type Package struct {
 
 	Potential bool
 
-	// 订正 CPE 和 强制关联 CVE
+	// Revised CPE and forced correlation CVE
 	AmendedCPE    []string
 	AssociatedCVE []string
 }

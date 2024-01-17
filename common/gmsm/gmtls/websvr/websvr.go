@@ -23,7 +23,7 @@ const (
 	sm2EncKeyPath   = "./certs/sm2_enc_key.pem"
 )
 
-// RSA配置
+// RSA configuration
 func loadRsaConfig() (*gmtls.Config, error) {
 	cert, err := gmtls.LoadX509KeyPair(rsaCertPath, rsaKeyPath)
 	if err != nil {
@@ -32,7 +32,7 @@ func loadRsaConfig() (*gmtls.Config, error) {
 	return &gmtls.Config{Certificates: []gmtls.Certificate{cert}}, nil
 }
 
-// SM2配置
+// SM2 configuration
 func loadSM2Config() (*gmtls.Config, error) {
 	sigCert, err := gmtls.LoadX509KeyPair(sm2SignCertPath, sm2SignKeyPath)
 	if err != nil {
@@ -48,7 +48,7 @@ func loadSM2Config() (*gmtls.Config, error) {
 	}, nil
 }
 
-// 切换GMSSL/TSL
+// Switch GMSSL/TSL
 func loadAutoSwitchConfig() (*gmtls.Config, error) {
 	rsaKeypair, err := gmtls.LoadX509KeyPair(rsaCertPath, rsaKeyPath)
 	if err != nil {
@@ -66,9 +66,9 @@ func loadAutoSwitchConfig() (*gmtls.Config, error) {
 	return gmtls.NewBasicAutoSwitchConfig(&sigCert, &encCert, &rsaKeypair)
 }
 
-// 双向身份认证 服务端配置
+// Two-way identity authentication server configuration
 func loadServerMutualTLCPAuthConfig() (*gmtls.Config, error) {
-	// 签名密钥对/证书 和 加密密钥对/证书
+	// Signing key pair/Certificate and encryption key pair/certificate
 	sigCert, err := gmtls.LoadX509KeyPair(sm2SignCertPath, sm2SignKeyPath)
 	if err != nil {
 		return nil, err
@@ -79,7 +79,7 @@ func loadServerMutualTLCPAuthConfig() (*gmtls.Config, error) {
 
 	}
 
-	// 信任的根证书
+	// Trusted root certificate
 	certPool := x509.NewCertPool()
 	cacert, err := ioutil.ReadFile(SM2CaCertPath)
 	if err != nil {
@@ -95,20 +95,20 @@ func loadServerMutualTLCPAuthConfig() (*gmtls.Config, error) {
 	}, nil
 }
 
-// 要求客户端身份认证
+// Require client identity authentication
 func loadAutoSwitchConfigClientAuth() (*gmtls.Config, error) {
 	config, err := loadAutoSwitchConfig()
 	if err != nil {
 		return nil, err
 	}
-	// 设置需要客户端证书请求，标识需要进行客户端的身份认证
+	// Settings require client certificate request, identifying the need for client identity authentication
 	config.ClientAuth = gmtls.RequireAndVerifyClientCert
 	return config, nil
 }
 
-// 获取 客户端服务端双向身份认证 配置
+// Get client server two-way identity authentication configuration
 func bothAuthConfig() (*gmtls.Config, error) {
-	// 信任的根证书
+	// Trusted root certificate
 	certPool := x509.NewCertPool()
 	cacert, err := ioutil.ReadFile(SM2CaCertPath)
 	if err != nil {
@@ -128,9 +128,9 @@ func bothAuthConfig() (*gmtls.Config, error) {
 
 }
 
-// 获取 单向身份认证（只认证服务端） 配置
+// Obtaining one-way identity authentication (only authenticating the server) Configuring
 func singleSideAuthConfig() (*gmtls.Config, error) {
-	// 信任的根证书
+	// Trusted root certificate
 	certPool := x509.NewCertPool()
 	cacert, err := ioutil.ReadFile(SM2CaCertPath)
 	if err != nil {
@@ -144,9 +144,9 @@ func singleSideAuthConfig() (*gmtls.Config, error) {
 	}, nil
 }
 
-// 获取 客户端服务端双向身份认证 配置
+// Get client server two-way identity authentication configuration
 func rsaBothAuthConfig() (*tls.Config, error) {
-	// 信任的根证书
+	// Trusted root certificate
 	certPool := x.NewCertPool()
 	cacert, err := ioutil.ReadFile(RSACaCertPath)
 	if err != nil {
@@ -166,9 +166,9 @@ func rsaBothAuthConfig() (*tls.Config, error) {
 
 }
 
-// 获取 单向身份认证（只认证服务端） 配置
+// Obtaining one-way identity authentication (only authenticating the server) Configuring
 func rsaSingleSideAuthConfig() (*tls.Config, error) {
-	// 信任的根证书
+	// Trusted root certificate
 	certPool := x.NewCertPool()
 	cacert, err := ioutil.ReadFile(RSACaCertPath)
 	if err != nil {

@@ -61,7 +61,7 @@ func (y *SyntaxFlowVisitor) VisitFilterStatement(raw sf.IFilterStatementContext)
 		y.VisitExistedRef(i.ExistedRef())
 	}
 
-	// 默认向右
+	// Default right
 	if ret := i.GetDirection(); ret != nil {
 		if ret.GetText() == ">>" {
 			y.EmitDirection(">>")

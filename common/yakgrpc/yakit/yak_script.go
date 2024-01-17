@@ -32,7 +32,7 @@ type YakScript struct {
 	Tags       string `json:"tags,omitempty"`
 	Ignored    bool   `json:"ignore"`
 
-	// 加载本地的数据
+	// Load local data
 	FromLocal bool   `json:"from_local"`
 	LocalPath string `json:"local_path"`
 
@@ -51,38 +51,38 @@ type YakScript struct {
 	GeneralModuleKey     string `json:"general_module_key"`
 	FromGit              string `json:"from_git"`
 
-	// 这个是自动填写的，一般不需要自己来填写
-	// 条件是 Params 中有一个名字为 target 的必填参数
+	// named target is automatically filled in. Generally, you do not need to fill it in yourself.
+	// The condition is that there is one in Params The required parameter
 	IsBatchScript bool `json:"is_batch_script"`
 	IsExternal    bool `json:"is_external"`
 
 	EnablePluginSelector bool   `json:"enable_plugin_selector"`
 	PluginSelectorTypes  string `json:"plugin_selector_types"`
 
-	// Online ID: 线上插件的 ID
+	// Online ID: ID of the online plug-in
 	OnlineId           int64  `json:"online_id"`
 	OnlineScriptName   string `json:"online_script_name"`
 	OnlineContributors string `json:"online_contributors"`
 	OnlineIsPrivate    bool   `json:"online_is_private"`
 
-	// 这个插件所属用户 ID
+	// The user ID to which this plug-in belongs
 	UserId int64 `json:"user_id"`
-	// 这个插件的 UUID
+	// The UUID of this plug-in
 	Uuid           string      `json:"uuid"`
 	HeadImg        string      `json:"head_img"`
 	OnlineBaseUrl  string      `json:"online_base_url"`
 	BaseOnlineId   int64       `json:"BaseOnlineId"`
 	OnlineOfficial bool        `json:"online_official"`
 	OnlineGroup    string      `json:"online_group"`
-	sourceScript   interface{} // 用于存储原始的 script(可能是由原类型是NaslScript)
+	sourceScript   interface{} // Used to store the original script (maybe the original type is NaslScript)
 
-	IsCorePlugin bool   `json:"is_core_plugin"` // 判断是否是核心插件
+	IsCorePlugin bool   `json:"is_core_plugin"` // Determine whether it is a core plug-in
 	RiskType     string `json:"risk_type"`
-	// 漏洞详情 建议，描述，cwe
+	// Vulnerability details suggestions, description , cwe
 	RiskDetail string `json:"risk_detail"`
-	// 漏洞类型-补充说明
+	// Vulnerability type - Supplementary explanation
 	RiskAnnotation string `json:"risk_annotation"`
-	// 协作者
+	// Collaborator
 	CollaboratorInfo string `json:"collaborator_info"`
 }
 
@@ -253,7 +253,7 @@ func CreateOrUpdateYakScriptByName(db *gorm.DB, scriptName string, i interface{}
 
 	db = db.Model(&YakScript{})
 
-	// 锁住更新步骤，太快容易整体被锁
+	// locks the update step, too fast and the whole can be locked
 	yakScriptOpLock.Lock()
 	if db := db.Where("script_name = ?", scriptName).Assign(i).FirstOrCreate(&YakScript{}); db.Error != nil {
 		yakScriptOpLock.Unlock()
@@ -513,7 +513,7 @@ func FilterYakScript(db *gorm.DB, params *ypb.QueryYakScriptRequest) *gorm.DB {
 		}, strings.Split(params.GetKeyword(), ","), false)
 	}
 
-	// 判断是否是历史脚本
+	// Determine whether it is a historical script
 	if !params.GetIsHistory() {
 		db = db.Where("is_history = ?", false)
 	}
@@ -523,16 +523,16 @@ func FilterYakScript(db *gorm.DB, params *ypb.QueryYakScriptRequest) *gorm.DB {
 		db = bizhelper.FuzzQueryStringArrayOrLike(db, "tags", tags)
 	}
 
-	// 判断是不是通用模块
+	// Determine whether it is a general module
 	if params.GetIsGeneralModule() {
 		db = bizhelper.QueryByBool(db, "is_general_module", true)
 	}
-	// 判断是否是批量脚本
+	// Determine whether it is a batch script
 	if params.GetIsBatch() {
 		db = bizhelper.QueryByBool(db, "is_batch_script", true)
 	}
 
-	// 排除 workflow
+	// Exclude workflow
 	if params.GetExcludeNucleiWorkflow() {
 		db = db.Where(
 			"(local_path not like ?) AND (local_path not like ?)",
@@ -548,7 +548,7 @@ func FilterYakScript(db *gorm.DB, params *ypb.QueryYakScriptRequest) *gorm.DB {
 		db = db.Where("author like ?", "%"+params.GetUserName()+"%")
 	}
 
-	// 排除特定脚本
+	// excludes specific scripts
 	db = bizhelper.ExactQueryExcludeStringArrayOr(db, "script_name", params.GetExcludeScriptNames())
 	if len(params.GetIncludedScriptNames()) > 0 {
 		if len(utils.StringArrayFilterEmpty(params.GetExcludeScriptNames())) > 0 || len(tags) > 0 {

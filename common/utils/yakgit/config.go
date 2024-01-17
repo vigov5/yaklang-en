@@ -79,10 +79,10 @@ func (c *config) ToAuth() gitHttp.AuthMethod {
 
 type Option func(*config) error
 
-// handleReference 是一个选项函数，它接收一个回调函数，这个函数有一个参数，其为引用记录结构体(reference)，每次遍历到过滤后的引用时，就会调用这个回调函数
+// handleReference is an option function, which receives a callback function. This function has a Parameter, which is the reference record structure (reference). Every time the filtered reference is traversed, this callback function will be called.
 // Example:
 // ```
-// // 遍历提交记录，过滤名字中包含ci的引用记录，打印剩余的每个引用记录
+// // traverses the submission records, filters the reference records whose names contain ci, and prints each remaining reference record
 // git.IterateCommit("D:/coding/golang/src/yaklang",
 // git.filterReference((ref) => {return !ref.Name().Contains("ci")}),
 // git.handleReference((ref) => { println(ref.String()) }))
@@ -94,10 +94,10 @@ func WithHandleGitReference(f func(r *plumbing.Reference) error) Option {
 	}
 }
 
-// filterReference 是一个选项函数，它接收一个回调函数，这个函数有一个参数，其为引用记录结构体(reference)，每次遍历到引用时，就会调用这个回调函数，这个函数还有一个返回值，通过这个返回值来决定是否过滤掉这个引用
+// filterReference is an option function that receives a callback function. This function has one parameter, which is the reference record structure (reference). This callback function will be called every time the reference is traversed. This function also has a return value. Use this return value to decide whether to filter out this reference.
 // Example:
 // ```
-// // 遍历提交记录，过滤名字中包含ci的引用记录，打印剩余的每个引用记录
+// // traverses the submission records, filters the reference records whose names contain ci, and prints each remaining reference record
 // git.IterateCommit("D:/coding/golang/src/yaklang",
 // git.filterReference((ref) => {return !ref.Name().Contains("ci")}),
 // git.handleReference((ref) => { println(ref.String()) }))
@@ -109,10 +109,10 @@ func WithFilterGitReference(f func(r *plumbing.Reference) bool) Option {
 	}
 }
 
-// handleCommit 是一个选项函数，它接收一个回调函数，这个函数有一个参数，其为提交记录结构体(commit)，每次遍历到一个过滤后的提交记录时，就会调用这个回调函数
+// handleCommit is an option function that receives a callback function. This function has one parameter, which is the commit record structure (commit). Each time a filtered commit record is traversed This callback function will be called when
 // Example:
 // ```
-// // 遍历提交记录，打印每个提交记录
+// // during a checkout operation. Traverse the commit records and print each commit record
 // git.IterateCommit("D:/coding/golang/src/yaklang", git.handleCommit((c) => { println(c.String()) }))
 // ```
 func WithHandleGitCommit(f func(r *object.Commit) error) Option {
@@ -122,10 +122,10 @@ func WithHandleGitCommit(f func(r *object.Commit) error) Option {
 	}
 }
 
-// filterCommit 是一个选项函数，它接收一个回调函数，这个函数有一个参数，其为提交记录结构体(commit)，每次遍历到提交记录时，就会调用这个回调函数，这个函数还有一个返回值，通过这个返回值来决定是否过滤掉这个提交记录
+// filterCommit is an option function. It receives a callback function. This function has one parameter, which is commit. Record structure (commit), every time a commit record is traversed, this callback function will be called. This function also has a return value, which is used to decide whether to filter out the commit record.
 // Example:
 // ```
-// // 遍历提交记录，过滤作者名字为xxx的提交记录，打印剩余的每个提交记录
+// // traverses the submission records, filters the submission records whose author name is xxx, and prints each remaining submission record
 // git.IterateCommit("D:/coding/golang/src/yaklang",
 // git.filterCommit((c) => { return c.Author.Name != "xxx" }),
 // git.handleCommit((c) => { println(c.String()) }))
@@ -137,7 +137,7 @@ func WithFilterGitCommit(f func(r *object.Commit) bool) Option {
 	}
 }
 
-// verify 是一个选项函数，用于指定其他 Git 操作（例如Clone）时是否验证TLS证书
+// verify is an option function used to specify whether to verify the TLS certificate when other Git operations (such as Clone)
 // Example:
 // ```
 // git.Clone("https://github.com/yaklang/yaklang", "C:/Users/xxx/Desktop/yaklang", git.recursive(true), git.verify(false))
@@ -149,10 +149,10 @@ func WithVerifyTLS(b bool) Option {
 	}
 }
 
-// noFetchTags 是一个选项函数，用于指定获取(fetch)操作时是否不拉取标签
+// noFetchTags is an option function used to specify whether not to pull during the fetch operation The label
 // Example:
 // ```
-// git.Fetch("C:/Users/xxx/Desktop/yaklang", git.noFetchTags(true)) // 不拉取标签
+// git.Fetch("C:/Users/xxx/Desktop/yaklang", git.noFetchTags(true)) // Do not pull tags
 // ```
 func WithNoFetchTags(b bool) Option {
 	return func(c *config) error {
@@ -161,10 +161,10 @@ func WithNoFetchTags(b bool) Option {
 	}
 }
 
-// fetchAllTags 是一个选项函数，用于指定获取(fetch)操作时是否拉取所有标签
+// fetchAllTags is an option function, used to specify the fetch operation Whether to pull all tags when
 // Example:
 // ```
-// git.Fetch("C:/Users/xxx/Desktop/yaklang", git.fetchAllTags(true)) // 拉取所有标签
+// git.Fetch("C:/Users/xxx/Desktop/yaklang", git.fetchAllTags(true)) // pulls all tags
 // ```
 func WithFetchAllTags(b bool) Option {
 	return func(c *config) error {
@@ -173,7 +173,7 @@ func WithFetchAllTags(b bool) Option {
 	}
 }
 
-// fetchAllTags 是一个选项函数，用于指定检出(checkout)操作时是否创建新分支
+// during a checkout operation. fetchAllTags is an option function used to specify whether to create a new branch
 // Example:
 // ```
 // git.Checkout("C:/Users/xxx/Desktop/yaklang", "feat/new-branch", git.checkoutCreate(true))
@@ -185,7 +185,7 @@ func WithCheckoutCreate(b bool) Option {
 	}
 }
 
-// fetchAllTags 是一个选项函数，用于指定检出(checkout)操作时是否强制
+// fetchAllTags is an option function used to specify whether to force
 // Example:
 // ```
 // git.Checkout("C:/Users/xxx/Desktop/yaklang", "old-branch", git.checkoutForce(true))
@@ -197,7 +197,7 @@ func WithCheckoutForce(b bool) Option {
 	}
 }
 
-// checkoutKeep 是一个选项函数，用于指定检出(checkout)操作时，本地更改（索引或工作树更改）是否被保留，如果保留，就可以将它们提交到目标分支，默认为false
+// checkoutKeep is an option function used to specify whether local changes (index or working tree changes) are retained during checkout (checkout) operations. If If retained, they can be committed to the target branch. The default is false.
 // Example:
 // ```
 // git.Checkout("C:/Users/xxx/Desktop/yaklang", "old-branch", git.checkoutKeep(true))
@@ -209,7 +209,7 @@ func WithCheckoutKeep(b bool) Option {
 	}
 }
 
-// depth 是一个选项函数，用于指定其他 Git 操作（例如Clone）时的最大深度，默认为1
+// depth is an option function used to specify the maximum depth when other Git operations (such as Clone), the default is 1
 // Example:
 // ```
 // git.Clone("https://github.com/yaklang/yaklang", "C:/Users/xxx/Desktop/yaklang", git.Depth(1))
@@ -221,7 +221,7 @@ func WithDepth(depth int) Option {
 	}
 }
 
-// force 是一个选项函数，用于指定其他 Git 操作（例如Pull）时是否强制执行，默认为false
+// force is an options function used to specify other Git operations (such as Pull) Whether to enforce execution, the default is false
 // Example:
 // ```
 // git.Pull("C:/Users/xxx/Desktop/yaklang", git.verify(false), git.force(true))
@@ -233,7 +233,7 @@ func WithForce(b bool) Option {
 	}
 }
 
-// remote 是一个选项函数，用于指定其他 Git 操作（例如Pull）时的远程仓库名称，默认为origin
+// remote is an option function, used When specifying the remote warehouse name for other Git operations (such as Pull), the default is origin
 // Example:
 // ```
 // git.Pull("C:/Users/xxx/Desktop/yaklang", git.verify(false), git.remote("origin"))
@@ -245,7 +245,7 @@ func WithRemote(remote string) Option {
 	}
 }
 
-// recursive 是一个选项函数，用于指定其他 Git 操作（例如Clone）时的是否递归克隆子模块，默认为false
+// recursive is an option function used to specify whether to recursively clone submodules during other Git operations (such as Clone), the default is false
 // Example:
 // ```
 // git.Clone("https://github.com/yaklang/yaklang", "C:/Users/xxx/Desktop/yaklang", git.recursive(true))
@@ -257,7 +257,7 @@ func WithRecuriveSubmodule(b bool) Option {
 	}
 }
 
-// context 是一个选项函数，用于指定其他 Git 操作（例如Clone）时的上下文
+// context is an option function, used to specify the context for other Git operations (such as Clone)
 // Example:
 // ```
 // git.Clone("https://github.com/yaklang/yaklang", "C:/Users/xxx/Desktop/yaklang", git.context(context.New()))
@@ -269,7 +269,7 @@ func WithContext(ctx context.Context) Option {
 	}
 }
 
-// auth 是一个选项函数，用于指定其他 Git 操作（例如Clone）时的认证用户名和密码
+// auth is an option function used to specify other Git operations ( For example, the authentication username and password when Clone)
 // Example:
 // ```
 // git.Clone("https://github.com/yaklang/yaklang", "C:/Users/xxx/Desktop/yaklang", git.auth("admin", "admin"))
@@ -282,7 +282,7 @@ func WithUsernamePassword(username, password string) Option {
 	}
 }
 
-// threads 是一个GitHack选项函数，用于指定并发数，默认为8
+// threads Is a GitHack option function, used to specify the number of concurrency, the default is 8
 // Example:
 // ```
 // git.GitHack("http://127.0.0.1:8787/git/website", "C:/Users/xxx/Desktop/githack-test", git.threads(8))
@@ -294,7 +294,7 @@ func WithThreads(threads int) Option {
 	}
 }
 
-// useLocalGitBinary 是一个GitHack选项函数，用于指定是否使用本地环境变量的git二进制文件来执行`git fsck`命令，这个命令用于尽可能恢复完整的git仓库，默认为true
+// useLocalGitBinary is a GitHack option function, used to specify whether to use the git binary file of the local environment variable to execute the `git fsck` command. This command is used to restore the complete git repository as much as possible. The default is true
 // Example:
 // ```
 // git.GitHack("http://127.0.0.1:8787/git/website", "C:/Users/xxx/Desktop/githack-test", git.useLocalGitBinary(true))
@@ -306,7 +306,7 @@ func WithUseLocalGitBinary(b bool) Option {
 	}
 }
 
-// httpOpts 是一个GitHack选项函数，用于指定GitHack的HTTP选项，其接收零个到多个poc的请求选项函数
+// httpOpts is a GitHack options function used to specify GitHacks HTTP options, which receives zero to multiple POC request options function
 // Example:
 // ```
 // git.GitHack("http://127.0.0.1:8787/git/website", "C:/Users/xxx/Desktop/githack-test", git.httpOpts(poc.timeout(10), poc.https(true)))

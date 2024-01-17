@@ -16,14 +16,14 @@ func (v *Frame) assign(left, right *Value) {
 		return
 	}
 
-	// 最基础的情况，左边是一个值，右边是 n 个值，右边的可以直接全部给左边
+	// is when the type is needed. There is one value on the left and n values on the right. The right ones can be directly given to the left
 	if len(leftValueList) == 1 {
 		left := leftValueList[0]
 		if len(rightValueList) == 1 {
-			// 左一右一最简单赋值
+			// , one on the left and one on the right. The simplest assignment is
 			left.Assign(v, rightValueList[0])
 		} else {
-			// 左一右N
+			// Left one right N
 			left.Assign(v, NewValues(rightValueList))
 			//tbl, err := v.RootSymbolTable.FindSymbolTableBySymbolId(leftValueList[0].SymbolId)
 			//if err != nil {
@@ -34,7 +34,7 @@ func (v *Frame) assign(left, right *Value) {
 		return
 	}
 
-	// 左边是 n 个值，右边是 1 个值，右边要拆开，类型需要时 Array 和 Slice
+	// The left side has n values, and the right side It is 1 value, and the right side needs to be split. The most basic situation of Array and Slice
 	if len(rightValueList) == 1 {
 		right := rightValueList[0]
 		if !right.IsIterable() {
@@ -56,7 +56,7 @@ func (v *Frame) assign(left, right *Value) {
 		return
 	}
 
-	// 左边是 n 个值，右边是 m 个值，都大于一，那么，必须相等才可以，否则挂掉
+	// There are n on the left Value, there are m values on the right, all greater than one, then they must be equal, otherwise
 	if len(rightValueList) != len(leftValueList) {
 		panic("multi-assign failed: left value length[" + fmt.Sprint(len(leftValueList)) + "] != right value length[" + fmt.Sprint(len(rightValueList)) + "]")
 	}
@@ -84,7 +84,7 @@ func (v *Frame) luaLocalAssign(leftPart, rightPart *Value) {
 		return
 	}
 
-	// 右边只有一个值 这种情况就不存在覆盖的情况
+	// . In this case, there is only one value on the right. There is an overwriting situation
 	if len(rightValueList) == 1 {
 		right := rightValueList[0]
 		if right.Value == nil {
@@ -93,7 +93,7 @@ func (v *Frame) luaLocalAssign(leftPart, rightPart *Value) {
 			}
 			return
 		}
-		// 在lua中table在赋值时直接会被赋值 属于不可迭代 对应table实现用的是map 也是不可迭代 正好处理了这种情况
+		// In Lua, the table will be assigned directly when assigning a value, which belongs to the non-iterable corresponding table The implementation uses map, which is also non-iterable and just handles this situation.
 		if !right.IsIterable() {
 			for index, left := range leftValueList {
 				if index == 0 {
@@ -104,10 +104,10 @@ func (v *Frame) luaLocalAssign(leftPart, rightPart *Value) {
 			}
 			return
 		}
-		// 右侧可迭代 考虑其值个数
+		// can iterate and consider the number of values.
 		rightValueLen := right.Len()
 		leftValueLen := len(leftValueList)
-		if rightValueLen != leftValueLen { // 左右不等了 这时候就得看情况忽略值或者补nil
+		if rightValueLen != leftValueLen { // is not equal. At this time, you have to ignore the value or fill in nil depending on the situation.
 			if rightValueLen > leftValueLen {
 				if _, ok := right.Value.([]interface{}); ok {
 					right.Value = right.Value.([]interface{})[:len(leftValueList)]
@@ -134,8 +134,8 @@ func (v *Frame) luaLocalAssign(leftPart, rightPart *Value) {
 		return
 	}
 
-	// 左右均存在多个值 这时会有类似绑定赋值的操作
-	// 此时左右一一对应 左右拆开后 类似于 len(leftValueList) == 1的情况
+	// . There are multiple values on the left and right. At this time, there will be an operation similar to binding assignment.
+	// . At this time, the left and right correspond to each other one-to-one. After the left and right are separated, it is similar to the situation of len(leftValueList) == 1.
 
 	leftLen, rightLen := len(leftValueList), len(rightValueList)
 
@@ -156,7 +156,7 @@ func (v *Frame) luaLocalAssign(leftPart, rightPart *Value) {
 			left.Assign(v, right)
 			continue
 		}
-		// 这里有个小坑 reflect.TypeOf(nil).Kind() 会异常 所以先处理右边存在nil的情况
+		// There is a small The pitfall reflect.TypeOf(nil).Kind() will be abnormal, so first deal with the case where nil exists on the right side
 		if right.IsIterable() {
 			if _, ok := right.CallSliceIndex(0).(*Value); ok {
 				left.Assign(v, NewValue("__assign_middle__", right.CallSliceIndex(0).(*Value).Value, ""))
@@ -164,8 +164,8 @@ func (v *Frame) luaLocalAssign(leftPart, rightPart *Value) {
 				left.Assign(v, NewValue("__assign_middle__", right.CallSliceIndex(0), ""))
 			}
 			continue
-		} else { // 右侧不可迭代
-			// 左一右一最简单赋值
+		} else { // The right side is non-iterable
+			// , one on the left and one on the right. The simplest assignment is
 			left.Assign(v, right)
 			continue
 		}
@@ -184,8 +184,8 @@ func (v *Frame) luaGlobalAssign(leftPart, rightPart *Value) {
 		return
 	}
 
-	//多赋值有点复杂 这里分几种情况
-	//左边只有一个值 算是多赋值的一种特例 特殊处理
+	//will fail. Multiple assignments are a bit complicated. There are several situations. The right side of
+	//There is only one value on the left, which is a special case of multi-assignment.
 	//if len(leftValueList) == 1 {
 	//	left := leftValueList[0]
 	//	right := rightValueList[0]
@@ -193,22 +193,22 @@ func (v *Frame) luaGlobalAssign(leftPart, rightPart *Value) {
 	//		left.GlobalAssign(v, right)
 	//		return
 	//	}
-	//	// 这里有个小坑 reflect.TypeOf(nil).Kind() 会异常 所以先处理右边存在nil的情况
+	//	// There is a small The pitfall reflect.TypeOf(nil).Kind() will be abnormal, so first deal with the case where nil exists on the right side
 	//	if right.IsIterable() {
-	//		if _, ok := right.CallSliceIndex(0).(*Value); ok { // 这里是检测函数返回值是一个函数的情况
+	//		if _, ok := right.CallSliceIndex(0).(*Value); ok { // Here is the case where the return value of the detection function is a function
 	//			left.GlobalAssign(v, NewValue("__assign_middle__", right.CallSliceIndex(0).(*Value).Value, ""))
 	//		} else {
 	//			left.GlobalAssign(v, NewValue("__assign_middle__", right.CallSliceIndex(0), ""))
 	//		}
 	//		return
-	//	} else { // 右侧不可迭代
-	//		// 左一右一最简单赋值
+	//	} else { // The right side is non-iterable
+	//		// , one on the left and one on the right. The simplest assignment is
 	//		left.GlobalAssign(v, right)
 	//		return
 	//	}
 	//}
 
-	// 右边只有一个值 这种情况就不存在覆盖的情况
+	// . In this case, there is only one value on the right. There is an overwriting situation
 	if len(rightValueList) == 1 {
 		right := rightValueList[0]
 		if right.Value == nil {
@@ -217,7 +217,7 @@ func (v *Frame) luaGlobalAssign(leftPart, rightPart *Value) {
 			}
 			return
 		}
-		// 在lua中table在赋值时直接会被赋值 属于不可迭代 对应table实现用的是map 也是不可迭代 正好处理了这种情况
+		// In Lua, the table will be assigned directly when assigning a value, which belongs to the non-iterable corresponding table The implementation uses map, which is also non-iterable and just handles this situation.
 		if !right.IsIterable() {
 			for index, left := range leftValueList {
 				if index == 0 {
@@ -228,10 +228,10 @@ func (v *Frame) luaGlobalAssign(leftPart, rightPart *Value) {
 			}
 			return
 		}
-		// 右侧可迭代 考虑其值个数
+		// can iterate and consider the number of values.
 		rightValueLen := right.Len()
 		leftValueLen := len(leftValueList)
-		if rightValueLen != leftValueLen { // 左右不等了 这时候就得看情况忽略值或者补nil
+		if rightValueLen != leftValueLen { // is not equal. At this time, you have to ignore the value or fill in nil depending on the situation.
 			if rightValueLen > leftValueLen {
 				if _, ok := right.Value.([]interface{}); ok {
 					right.Value = right.Value.([]interface{})[:len(leftValueList)]
@@ -258,8 +258,8 @@ func (v *Frame) luaGlobalAssign(leftPart, rightPart *Value) {
 		return
 	}
 
-	// 左右均存在多个值 这时会有类似绑定赋值的操作
-	// 此时左右一一对应 左右拆开后 类似于 len(leftValueList) == 1的情况
+	// . There are multiple values on the left and right. At this time, there will be an operation similar to binding assignment.
+	// . At this time, the left and right correspond to each other one-to-one. After the left and right are separated, it is similar to the situation of len(leftValueList) == 1.
 
 	leftLen, rightLen := len(leftValueList), len(rightValueList)
 
@@ -280,7 +280,7 @@ func (v *Frame) luaGlobalAssign(leftPart, rightPart *Value) {
 			left.GlobalAssign(v, right)
 			continue
 		}
-		// 这里有个小坑 reflect.TypeOf(nil).Kind() 会异常 所以先处理右边存在nil的情况
+		// There is a small The pitfall reflect.TypeOf(nil).Kind() will be abnormal, so first deal with the case where nil exists on the right side
 		if right.IsIterable() {
 			if _, ok := right.CallSliceIndex(0).(*Value); ok {
 				left.GlobalAssign(v, NewValue("__assign_middle__", right.CallSliceIndex(0).(*Value).Value, ""))
@@ -288,8 +288,8 @@ func (v *Frame) luaGlobalAssign(leftPart, rightPart *Value) {
 				left.GlobalAssign(v, NewValue("__assign_middle__", right.CallSliceIndex(0), ""))
 			}
 			continue
-		} else { // 右侧不可迭代
-			// 左一右一最简单赋值
+		} else { // The right side is non-iterable
+			// , one on the left and one on the right. The simplest assignment is
 			left.GlobalAssign(v, right)
 			continue
 		}

@@ -19,7 +19,7 @@ dump(conn.RecvString())
 func TestMisc_Syntax_FixLine(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试空指针引用1",
+			Name: "Test null pointer reference 1",
 			Src: `
 defer fn{
 	err = recover()
@@ -52,7 +52,7 @@ sd
 func TestMisc_Syntax_FixLine_TCP(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试空指针引用1",
+			Name: "Test null pointer reference 1",
 			Src: `
 conn, err = tcp.Connect("127.0.0.1", 9999, tcp.clientTimeout(3))
 if err != nil {
@@ -72,7 +72,7 @@ dump(conn.Send("asdfasd"))
 func TestMisc_Syntax_FixUndefinedCall(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用",
+			Name: "Test undefined reference",
 			Src: `defer fn{
 	err = recover()
 	if !str.MatchAllOfSubString(err, "sd.Abc", "sd.abc") {
@@ -90,7 +90,7 @@ sd.abc
 func TestMisc_Syntax_FixValueCall(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用",
+			Name: "Test undefined reference",
 			Src: `
 loglevel("info")
 defer fn{
@@ -113,7 +113,7 @@ a.abc
 func TestMisc_Syntax_FixValueCall1(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用",
+			Name: "Test undefined reference",
 			Src: `
 loglevel("info")
 defer fn{
@@ -136,7 +136,7 @@ a[0].abc
 func TestMisc_Syntax_FixValueCall2(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用",
+			Name: "Test undefined reference",
 			Src: `
 loglevel("info")
 defer fn{
@@ -159,7 +159,7 @@ a[1].abc
 func TestMisc_Syntax_FixValueCall3(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用",
+			Name: "Test undefined reference",
 			Src: `
 loglevel("info")
 defer fn{
@@ -182,7 +182,7 @@ a[31].abc
 func TestMisc_Syntax_FixValueCall4(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用",
+			Name: "Test undefined reference",
 			Src: `
 loglevel("info")
 defer fn{
@@ -206,7 +206,7 @@ a[b].abc
 func TestMisc_Syntax_FixValueCall4_MAP(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用：map",
+			Name: "Test undefined reference: map",
 			Src: `
 loglevel("info")
 defer fn{
@@ -230,7 +230,7 @@ a[b].abc
 func TestMisc_Syntax_FixValueCall4_MAP11(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用：map",
+			Name: "Test undefined reference: map",
 			Src: `
 loglevel("info")
 defer fn{
@@ -254,7 +254,7 @@ a[111].abc
 func TestMisc_Syntax_FixValueCall4_MAP1(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用：map",
+			Name: "Test undefined reference: map",
 			Src: `
 loglevel("info")
 defer fn{
@@ -277,7 +277,7 @@ func TestMisc_Syntax_FixValueCall4_UndefinedCALL(t *testing.T) {
 	os.Setenv("YAKLANGDEBUG", "1")
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用：map",
+			Name: "Test undefined reference: map",
 			Src: `
 loglevel("info")
 defer fn{
@@ -301,7 +301,7 @@ func TestMisc_Syntax_FixValueCall4_UndefinedCALL1(t *testing.T) {
 	os.Setenv("YAKLANGDEBUG", "1")
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用：map",
+			Name: "Test undefined reference: map",
 			Src: `
 loglevel("info")
 defer fn{
@@ -326,7 +326,7 @@ func TestMisc_Syntax_StringCast(t *testing.T) {
 	os.Setenv("YAKLANGDEBUG", "1")
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用：map",
+			Name: "Test undefined reference: map",
 			Src: `
 loglevel("info")
 defer fn{
@@ -347,7 +347,7 @@ println(string(asdfasdsd))
 func TestMisc_Syntax_DumpZero(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用：map",
+			Name: "Test undefined reference: map",
 			Src: `
 defer fn{
 	err := recover()
@@ -370,7 +370,7 @@ str.ParseStringToHosts(ccccc)
 func TestMisc_Syntax_DumpZero_UndefinedCall(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用：map",
+			Name: "Test undefined reference: map",
 			Src: `
 defer fn{
 	err := recover()
@@ -391,7 +391,7 @@ str.MatchAllOfSubS(abc, "aa")
 func TestMisc_Syntax_DStructCall(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试undefined引用：map",
+			Name: "Test undefined reference: map",
 			Src: `
 defer fn{
 	err := recover()
@@ -414,7 +414,7 @@ func TestMisc_Syntax_NilCall(t *testing.T) {
 	//os.Setenv("YAKLANGDEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "测试空指针引用1",
+			Name: "Test null pointer reference 1",
 			Src: `a=nil;
 
 
@@ -443,7 +443,7 @@ func TestMisc_Syntax_NilCall111(t *testing.T) {
 	//os.Setenv("YAKLANGDEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "测试空指针引用1",
+			Name: "Test null pointer reference 1",
 			Src: `a=nil;
 
 
@@ -468,7 +468,7 @@ func TestMisc_FuncAsParamCall(t *testing.T) {
 	//os.Setenv("YAKLANGDEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "函数参数调用失败",
+			Name: "Function parameter call fails",
 			Src: `a=nil;
 
 defer fn{
@@ -490,7 +490,7 @@ func TestMisc_FuncAsParamCall_RetError(t *testing.T) {
 	//os.Setenv("YAKLANGDEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "函数返回值失败",
+			Name: "Function return value fails",
 			Src: `a=nil;
 
 defer fn{
@@ -517,7 +517,7 @@ func TestMisc_FuncAsParamCall_RetError1111(t *testing.T) {
 	//os.Setenv("YAKLANGDEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "函数返回值失败",
+			Name: "Function return value fails",
 			Src: `a=nil;
 
 av = []byte("abc*****")
@@ -534,7 +534,7 @@ func TestMisc_FuncAsParamCall_RetError1(t *testing.T) {
 	//os.Setenv("YAKLANGDEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "函数返回值失败",
+			Name: "Function return value fails",
 			Src: `a=nil;
 
 defer fn{
@@ -560,7 +560,7 @@ func TestMisc_FuncAsParamCall_PhpMyAdmin(t *testing.T) {
 	//os.Setenv("YAKLANGDEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "函数返回值失败",
+			Name: "Function return value fails",
 			Src: `a=nil;
 
 res, _ = servicescan.Scan("188.165.236.5", "443")
@@ -579,7 +579,7 @@ func TestMisc_TypeConvert(t *testing.T) {
 	//os.Setenv("YAKLANGDEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "函数返回值失败",
+			Name: "Function return value fails",
 			Src: `a=nil;
 
 a = ["abc"]
@@ -602,13 +602,13 @@ func TestMisc_NeNil(t *testing.T) {
 	os.Setenv("DEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "函数定义域问题",
+			Name: "Function domain problem",
 			Src: `
 a, err := http.Get("asdfasdfssss")
 dump(a, err)
 
 if a != nil {
-	panic("判定不等失败")
+	panic("Determination of inequality fails")
 }
 `,
 		},
@@ -621,7 +621,7 @@ func TestMisc_TestFunctionDefination(t *testing.T) {
 	os.Setenv("DEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "函数定义域问题",
+			Name: "Function domain problem",
 			Src: `a=nil;
 
 def b() {
@@ -644,7 +644,7 @@ func TestMisc_HTTPRequestToHistory(t *testing.T) {
 	os.Setenv("DEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "函数定义域问题",
+			Name: "Function domain problem",
 			Src: `req, err := http.NewRequest("GET", "https://baidu.com")
 die(err)
 
@@ -659,7 +659,7 @@ freq.Show()
 	Run("yaklang http to fuzz.HTTPRequest", t, cases...)
 }
 
-// 测试函数写错的情况
+// Test the situation when the function is written incorrectly
 func TestMisc_ParseError(t *testing.T) {
 	var src = `
 1
@@ -682,7 +682,7 @@ freq.Show()`
 	spew.Dump(result[0])
 }
 
-// 测试普通错误
+// Test common errors
 func TestMisc_ParseError1(t *testing.T) {
 	var src = `
 1,
@@ -705,7 +705,7 @@ freq.Show()`
 	spew.Dump(result[0])
 }
 
-// 测试声明问题
+// Test statement problem
 func TestMisc_ParseError2(t *testing.T) {
 	var src = `
 a = {"123": 1, 
@@ -722,7 +722,7 @@ a = {"123": 1,
 	spew.Dump(result[0])
 }
 
-// 测试声明问题
+// Test statement problem
 func TestMisc_ParseError3(t *testing.T) {
 	var src = `
 a = {"123": 1, 
@@ -741,7 +741,7 @@ a = {"123": 1,
 	spew.Dump(result[0])
 }
 
-// 测试声明问题：Chinese Comma
+// Test declaration problem: Chinese Comma
 func TestMisc_ParseError3_ChineseComma(t *testing.T) {
 	var src = `
 a = {"123": 1, 
@@ -751,7 +751,7 @@ a = {"123": 1,
 `
 	result := yak.AnalyzeStaticYaklang(src)
 	if len(result) <= 0 {
-		panic("无法检测到错误！")
+		panic("Unable to detect mistake!")
 	}
 	if result[0].StartLineNumber <= 0 {
 		panic("error invalid")
@@ -760,20 +760,20 @@ a = {"123": 1,
 	spew.Dump(result[0])
 }
 
-// 测试声明问题：Chinese Comma
+// Test declaration problem: Chinese Comma
 func TestMisc_ParseError3_Chinese(t *testing.T) {
 	var src = `
 a = {"123": 1, 
 
 
 
-"1111111": 1 中文
+"1111111": 1 Chinese
 
 }
 `
 	result := yak.AnalyzeStaticYaklang(src)
 	if len(result) <= 0 {
-		panic("无法检测到错误！")
+		panic("Unable to detect mistake!")
 	}
 	if result[0].StartLineNumber <= 0 {
 		panic("error invalid")
@@ -782,7 +782,7 @@ a = {"123": 1,
 	spew.Dump(result[0])
 }
 
-// 测试声明变量混合中文语法错误：Chinese Comma
+// Test declaration variable mixed Chinese syntax error: Chinese Comma
 func TestMisc_ParseError3_ChineseWithUndefined(t *testing.T) {
 	var src = `
 
@@ -792,13 +792,13 @@ a = {"123": 1,
 
 
 
-"1111111": 1 中文
+"1111111": 1 Chinese
 
 }
 `
 	result := yak.AnalyzeStaticYaklang(src)
 	if len(result) <= 0 {
-		panic("无法检测到错误！")
+		panic("Unable to detect mistake!")
 	}
 	if result[0].StartLineNumber <= 0 {
 		panic("error invalid")
@@ -811,7 +811,7 @@ func TestMisc_TailF(t *testing.T) {
 	os.Setenv("DEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "函数定义域问题",
+			Name: "Function domain problem",
 			Src: `a=nil;
 
 go func{file.TailF("/tmp/test.tailf", func(i){
@@ -841,7 +841,7 @@ func TestMisc_ZeroValueCall(t *testing.T) {
 	os.Setenv("DEBUG", "123")
 	cases := []YakTestCase{
 		{
-			Name: "函数定义域问题",
+			Name: "Function domain problem",
 			Src: `f, _ = poc.ParseBytesToHTTPRequest([]byte("asfsadfasd"))
 f.Close()
 `,
@@ -870,8 +870,8 @@ func TestSyntaxError(t *testing.T) {
 	*/
 
 	os.Setenv("YAKMODE", "vm")
-	StaticAnalyze("语法错误分析", t, YakTestCase{
-		Name: "测试基础语法错误",
+	StaticAnalyze("Syntax error analysis", t, YakTestCase{
+		Name: "Test basic syntax error",
 		Src:  "if {abc+=}",
 	})
 }

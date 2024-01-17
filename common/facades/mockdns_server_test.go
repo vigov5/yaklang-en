@@ -1,6 +1,6 @@
 package facades
 
-// 这个测试和raw_net_dns.go测试内容重复，防止循环导包，注释掉了
+// This test duplicates the test content of raw_net_dns.go to prevent looping of package imports, so it is commented out.
 //func TestMockDNSServerDefault(t *testing.T) {
 //	for i := 0; i < 10; i++ {
 //

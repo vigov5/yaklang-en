@@ -214,9 +214,9 @@ func TestGRPCMUSTPASS_Smuggle_Plugin_Positive(t *testing.T) {
 		yakit.InitialDatabase()
 	})
 
-	codeBytes := GetCorePluginData("HTTP请求走私")
+	codeBytes := GetCorePluginData("HTTP request smuggling")
 	if codeBytes == nil {
-		t.Errorf("无法从bindata获取%v", "HTTP请求走私.yak")
+		t.Errorf("Unable to get %v from bindata", "HTTP request smuggling.yak")
 		return
 	}
 	client, err := yakgrpc.NewLocalClient()

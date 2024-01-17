@@ -25,7 +25,7 @@ func (f *Matcher) matchWithContext(ctx context.Context, ip net.IP, port int, con
 		State:  UNKNOWN,
 	}
 
-	// 获取需要匹配的指纹
+	// Obtain the fingerprint that needs to be matched.
 	firstBlock, blocks, bestMode := GetRuleBlockByConfig(port, config)
 	if len(blocks) <= 0 && firstBlock == nil {
 		return nil, errors.New("empty rules is not allowed")
@@ -75,7 +75,7 @@ func (f *Matcher) matchWithContext(ctx context.Context, ip net.IP, port int, con
 		default:
 		}
 
-		// 处理结果
+		// processing result
 		probeSwg.Add()
 		go func() {
 			defer probeSwg.Done()
@@ -132,7 +132,7 @@ func mergeStates(states ...PortState) PortState {
 	return CLOSED
 }
 
-// 当 ProbesMax 设置的比较大时,后探测的结果中可能是存在正确的指纹信息的
+// When ProbesMax is set to a relatively large value, the post-detection result may contain correct fingerprint information.
 func mergeInfo(rawInfos ...*FingerprintInfo) *FingerprintInfo {
 	var info []*FingerprintInfo
 	for _, r := range rawInfos {
@@ -159,7 +159,7 @@ func mergeInfo(rawInfos ...*FingerprintInfo) *FingerprintInfo {
 		if infoIns.Port != root.Port {
 			continue
 		}
-		// 当有 Raw 字段时，代表和 match rule 匹配成功了
+		// When there is a Raw field, it means that the match rule is successfully matched.
 		if len(root.Raw) == 0 && len(infoIns.Raw) != 0 {
 			root = infoIns
 		}

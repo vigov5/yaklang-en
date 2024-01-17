@@ -270,7 +270,7 @@ func (g *Group) FeedHTTPFlow(src, dst string, srcPort, dstPort int, req *http.Re
 		}
 	}
 
-	// TODO: 这里需要考虑一下，如果httpRequest chan满了，那么就会阻塞，这样会导致整个程序阻塞
+	// TODO: You need to consider here. If the httpRequest chan is full, it will block, which will cause the entire program to block.
 	g.feedHTTPFlow(flow)
 }
 

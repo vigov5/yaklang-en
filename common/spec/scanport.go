@@ -11,7 +11,7 @@ import (
 )
 
 type ScanPortTask struct {
-	// 扫描目标
+	// Scan target
 	Hosts string `json:"host"`
 	Ports string `json:"port"`
 }
@@ -19,22 +19,22 @@ type ScanPortTask struct {
 type ScanResultType string
 
 const (
-	// 只有端口开放信息
+	// Only port open information
 	ScanResult_PortState ScanResultType = "port_state"
 
-	// Fp.MatcherResult 包含指纹信息
+	// Fp.MatcherResult contains fingerprint information
 	ScanResult_Fingerprint ScanResultType = "fingerprint"
 
-	// *yakit.Report 整体报告
+	// *yakit.Report overall report
 	ScanResult_Report ScanResultType = "report"
 
-	// HttpFlow 的资产信息
+	// HttpFlow asset information
 	ScanResult_HTTPFlow ScanResultType = "http-flow"
 
-	// 漏洞信息，弱密码啥的也应该包含在这个里面
+	// Vulnerability information, weak passwords and the like should also be included in this
 	ScanResult_Vuln ScanResultType = "vuln"
 
-	// 发现域名资产啥的
+	// Discover domain name assets and other information
 	ScanResult_Domain ScanResultType = "domain"
 )
 
@@ -42,7 +42,7 @@ type ScanResult struct {
 	Type    ScanResultType  `json:"type"`
 	Content json.RawMessage `json:"content"`
 
-	// 如果这三个字段有的话，说明是分布式任务，需要额外处理一下这个内容
+	// If these three fields are present, it means that it is a distributed task, and this content needs to be processed additionally
 	TaskId    string `json:"task_id"`
 	RuntimeId string `json:"runtime_id"`
 	SubTaskId string `json:"sub_task_id"`

@@ -10,7 +10,7 @@ type OpcodeFlag int
 const (
 	OpNop OpcodeFlag = iota
 
-	// OpTypeCast 从栈中取出两个值，第一个值为类型，第二个值为具体需要转换的值，进行类型转换，并把结果推入栈中
+	// OpTypeCast takes out two values from the stack, the first value is the type, and the second value is the specific value that needs to be converted, perform type conversion, and push the result into the stack
 	OpTypeCast // type convert
 	// Unary
 	OpNot  // !
@@ -62,116 +62,116 @@ const (
 	OpType // type
 	OpMake // make
 
-	OpPush     // 把一个 Op1 压入栈
-	OpPushfuzz // 把一个 Op1，执行 Fuzz String 操作，并且压入栈
+	OpPush     // Push an Op1 onto the stack
+	OpPushfuzz // Put an Op1, perform the Fuzz String operation, and push it onto the stack
 
 	/*
-		for range 和 for in 需要对右值表达式结果进行迭代，需要配合 Op 实现
+		for range and for in needs to iterate the result of the rvalue expression, and needs to cooperate with Op to implement
 	*/
-	OpRangeNext // 从栈中取出一个元素，然后迭代, 并且压入栈
-	OpInNext    // 从栈中取出一个元素，然后迭代, 并且压入栈, 与range稍微有点区别，比如可以解包slice以及迭代slice时第一个值时value而不是index
-	OpEnterFR   // 进入for range, 从栈中peek值创建迭代器，并往IteratorStack栈中压入迭代器
-	OpExitFR    // 退出for range, 判断IteratorStack是否已经结束，如果未结束则跳到for range开头(Unary),否则将pop IteratorStack并继续执行后续代码
+	OpRangeNext // takes an element from the stack, then iterates, and pushes it onto the stack
+	OpInNext    // takes an element from the stack, then iterates, and pushes it onto the stack. It is slightly different from range. For example, you can unpack a slice and the first value when iterating a slice is value instead of index.
+	OpEnterFR   // Enter for range, create an iterator from the peek value in the stack, and push the iterator into the IteratorStack stack.
+	OpExitFR    // exits for range and determines whether the IteratorStack has been End, if it is not over, jump to the beginning of the for range (Unary), otherwise it will pop IteratorStack and continue to execute the subsequent code
 
-	OpList // 这个操作有一个参数，从栈中取多少个元素组成 list，用 unary: int 标记
+	OpList // lvalue reference, is an exclusive push generally used for assignment
 
-	// OpAssign 这个操作有两个参数
-	// 左右值一般都会是 ValueList，所以 TypeVerbose 为 list, 将会设定类型断言 []*Value
-	// popArgN 后，0 为右值，1 为左值
+	// OpAssign This operation has two parameters
+	// will generally be ValueList, so TypeVerbose is list. , the type assertion [] will be set.*Value
+	// After popArgN, 0 is an rvalue and 1 is an lvalue
 	OpAssign
 
-	// OpFastAssign 快速赋值，存在于特殊的赋值中
-	// 从栈中取两个值，arg1 为符号左，arg2 为具体值
-	// 进行快速赋值，直接把值赋值给符号左，并且把 arg2 继续压入栈
+	// OpNewSlice is used to create Slice from the stack, take out unary data, infer the type, and then combine it into a slice
+	// and take two values from the stack. arg1 is the left symbol and arg2 is the specific value.
+	// performs fast assignment, directly assigns the value to the symbol left, and continues to push arg2 onto the stack.
 	OpFastAssign
 
-	// push 一个符号对应的值，这个值没有操作数 op1 op2 只操作 unary
+	// push A value corresponding to a symbol, this value has no operands op1 op2 only operates unary
 	OpPushRef
-	// 左值引用，是一个专属 push 一般用于赋值需要替换 **Value 的时候
-	// 这个只操作了 Unary，Unary 传递具体的符号
+	// OpFastAssign fast assignment, exists in special assignments **Value
+	// This only operates. Unary, Unary passes the specific symbol
 	OpPushLeftRef
 
-	// 除了跳转指令之外，其他指令都不应该直接操作 index！
-	// JMP 无条件跳转到第几条指令，unary 记录指令数
+	// . Except for the jump instruction, other instructions should not directly operate the index!
+	// JMP to unconditionally jump to which instruction, and unary records the number of instructions
 	OpJMP
-	// 从栈中取出一个值，如果值为 true 跳转到 unary 的指令中
+	// takes a value from the stack. If the value is true, jumps to the instruction of unary.
 	OpJMPT
-	// 从栈中取出一个值，值为 false 跳转到 unary 的指令中
+	// takes a value from the stack. The value is false and jumps to the unary instruction.
 	OpJMPF
-	// 从栈中查看最近的一个值，值为 true 则跳转到 unary 位置，否则 pop 出栈数据
+	// with variable parameters and checks the latest value from the stack. If the value is true, jump to the unary position. Otherwise, pop the stack data TbbbT. The left and right values of
 	OpJMPTOP
-	// 从栈中查看最近的一个值，值为 false 则跳转到 unary 位置，否则 pop 出栈数据
+	// From the stack Check the latest value. If the value is false, jump to the unary position. Otherwise, pop the stack data
 	OpJMPFOP
 
-	// OpBreak 这个语句是为 break 设置的语句，一般是用来记录跳转到的位置，基本等同于 JMP
-	// 不一样的是 Break 的位置，其实是无法事先预知的，
-	// 所以需要 for 循环结束的最后一步，去寻找当前 for 循环中没有被设置过的 break 语句
-	// 没有被设置之前，Unary 应该是小于等于零的
-	// 因为 Break 也操作了指针，所以 OpBreak 结束后也不应该操作指针
+	// OpBreak This statement is set for break. It is generally used to record the jump location. It is basically equivalent to JMP.
+	// The difference is that the position of Break cannot be predicted in advance.
+	// . Therefore, the last step at the end of the for loop is needed to find the value that is not set in the current for loop. When passing the break statement
+	// Before being set, Unary should be less than or equal to zero
+	// Because Break also operates the pointer, so it should not happen after OpBreak ends. Operation pointer
 	//
-	// 和 JMP 不一样的地方是，Break/Continue 会破坏 scope 栈的平衡
-	// 所以，这两个执行的时候，需要附带栈推出
+	// . The difference between/and then pop out the content that should be called in the stack
+	// . Therefore, these two executions When you need to add the stack to push
 	OpBreak
 	OpContinue
 
-	// OpCall / OpVariadicCall 从 unary 中取应该 pop 多少个数
-	// 并且再重栈中 pop 出应该调用的内容
+	// OpCall / OpVariadicCall takes the number of pops from unary.
+	// and JMP is that Break
 	OpCall
-	OpVariadicCall /*这个是针对可变参数的调用*/
+	OpVariadicCall /*This is a call for variable parameters.*/
 
-	// OpPushId push 一个引用名字，这个名字可能是无法获取到符号表中的符号，但是被使用了
-	// 所以这个不能使用 unary，使用 op1 类型为 Identifier 作为操作数，找不到就是 nil 或者 undefined
+	// OpPushId push a reference name. This name may not be available. Symbols in the symbol table, but are used
+	// that needs to be executed when the virtual machine exits, so this cannot use unary, use op1 type Identifier as the operand, if not found, it is nil or undefined
 	OpPushId
 
-	// OpPop 一般用于维持栈平衡，比如说 push 一个表达式语句，一般不会 pop，需要用 OpPop 来弹出
+	// OpPop is generally used to maintain stack balance. For example, push an expression statement, which generally does not pop. You need to use OpPop to pop.
 	OpPop
 
-	// OpNewMap 这个指令用于创建一个 map，从栈中取出 unary * 2 个数据，然后俩俩组合，左边为 key 右边为 value
+	// OpNewMap This command is used to create a map and remove unary from the stack * needs to be replaced. This operation has one parameter. Take how many elements from the stack to form a list. Use unary: int to mark the 2 data of TbbbT, and then combine them. The left side is the key and the right side is the value.
 	OpNewMap
 
-	// OpNewMapWithType 这个指令用于创建一个 map，从栈中取出 unary * 2 个数据，然后俩俩组合，左边为 key 右边为 value, 再取出 Type，组合成 Map
+	// OpNewMapWithType This instruction is used to create a map, take unary * 2 data, and then combines the two, with the key on the left and the value on the right, and then takes out the Type and combines it into Map
 	OpNewMapWithType
 
-	// OpNewSlice 用于从栈中创建 Slice，取出 unary 个数据，推断类型，然后组合成 slice
+	// Continue will be destroyed. scope stack balance
 	OpNewSlice
 
-	// OpNewSliceWithType 从栈中创建 Slice，取出 unary 个操作数，再取出 Type，组合成 Slice
+	// OpNewSliceWithType Create Slice from the stack, take out unary operands, then take out the Type, combine it into Slice
 	OpNewSliceWithType
 
-	// OpSliceCall 索引Silice
+	// OpSliceCall index Silice
 	OpIterableCall
 
-	// OpReturn 从栈取一个数据出来，复制给返回值缓存数据，一般来说，可以用 lastStackValue 来取数
+	// OpReturn takes a data from the stack and copies it to the return value cache data. Generally speaking, you can use lastStackValue to get the number.
 	OpReturn
 
-	// OpDefer 执行 op1，一般 op1 的值必须是 codes 也就是 []*Opcode
-	// 作为虚拟机退出的时候需要执行的值
+	// OpDefer executes op1, generally the value of op1 must be codes, which is []*Opcode
+	// from the stack as the value
 	OpDefer
-	// OpAssert 从栈中取出几一个或两个参数，然后断言类型，如果是false，就 panic参数第二个参数
+	// OpAssert Takes one or two parameters from the stack, and then asserts the type. If it is false, panic the second parameter. The parameter
 	OpAssert
 
-	// OpMemberCall 获取map或结构体的成员变量或方法
+	// OpMemberCall Gets member variables or methods of map or structure
 	OpMemberCall
 
-	// OpAsyncCall 执行 goroutine
-	// unary 为
+	// OpAsyncCall Execute goroutine
+	// unary is
 	OpAsyncCall
 
-	// OpScope 会新创建一个定义域，通过 OpScopeEnd 来停止定义域
-	// 定义域是一个树形结构，保存了父定义域的引用，因为需要看到父定义域的内容
+	// OpScope will create a new domain and stop the domain through OpScopeEnd
+	// domain is a tree structure, which saves the reference of the parent domain, because we need to see the content of the parent domain.
 	OpScope
 	OpScopeEnd
 
-	// include 会直接从栈中pop文件路径然后执行
+	// include will directly pop the file path from the stack and then execute
 	OpInclude
 
-	// OpPanic 主动 panic 掉，然后把错误交给 Defer 的 Recover 实现
+	// OpPanic actively panics and then returns the error. Implement
 	OpPanic
 	OpRecover
 
-	// OpEllipsis 函数不定参数调用拆包
+	// for Defers Recover. The OpEllipsis function calls unpacking
 	OpEllipsis
-	// OpBitwiseNot 按位取反
+	// OpBitwiseNot Bitwise inversion
 	OpBitwiseNot
 
 	OpCatchError
@@ -290,7 +290,7 @@ type Code struct {
 	Op1   *Value
 	Op2   *Value
 
-	// 记录 Opcode 的位置
+	// records the position of Opcode.
 	SourceCodeFilePath *string
 	SourceCodePointer  *string
 	StartLineNumber    int
@@ -347,7 +347,7 @@ func (c *Code) String() string {
 		}
 	case OpPushId, OpPushfuzz:
 		buf.WriteString(c.Op1.String())
-		// 特殊的 push 用来处理 f 作为 prefix 的前缀 push string
+		// Special push is used to process f as prefix prefix push string
 	case OpAdd, OpSub, OpMul, OpDiv, OpMod, OpIn, OpSendChan:
 	case OpGt, OpLt, OpGtEq, OpLtEq, OpEq, OpNotEq, OpPlusEq, OpMinusEq, OpMulEq, OpDivEq, OpModEq, OpAndEq, OpOrEq, OpXorEq, OpShlEq, OpShrEq:
 	case OpPop, OpReturn, OpRecover, OpPanic:

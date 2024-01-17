@@ -23,20 +23,20 @@ import (
 type Godzilla struct {
 	Url string
 	//
-	// 连接参数
+	// connection parameters
 	Pass string
-	// 密钥
+	// The key
 	SecretKey []byte
-	// shell 类型
+	// shell type
 	ShellScript string
-	// 加密模式
+	// encryption mode
 	EncMode string
 	Proxy   string
-	// 自定义 header 头
+	// Custom header header
 	Headers map[string]string
-	// request 开头的干扰字符
+	// The interfering character at the beginning of the request
 	ReqLeft string
-	// request 结尾的干扰字符
+	// The interfering character at the end of the request
 	ReqRight string
 
 	req             *http.Request
@@ -187,7 +187,7 @@ func (g *Godzilla) ClientRequestEncodeFormGo(en codecFunc) {
 }
 
 func (g *Godzilla) setDefaultParams() map[string]string {
-	// TODO 添加所有参数
+	// TODO Add all parameters
 	g.dynamicFuncName["test"] = "test"
 	g.dynamicFuncName["getBasicsInfo"] = "getBasicsInfo"
 	g.dynamicFuncName["execCommand"] = "execCommand"
@@ -204,7 +204,7 @@ func (g *Godzilla) setContentType() {
 	}
 }
 
-// 原生的加密方式
+// The native encryption method
 func (g *Godzilla) enCryption(binCode []byte) ([]byte, error) {
 	enPayload, err := godzilla.Encryption(binCode, g.SecretKey, g.Pass, g.EncMode, g.ShellScript, true)
 	if err != nil {
@@ -261,7 +261,7 @@ func (g *Godzilla) getPayload(binCode string) ([]byte, error) {
 	return payload, nil
 }
 
-// 修改并且记录修改前后的对应关系
+// Modify and record the correspondence before and after the modification
 func (g *Godzilla) dynamicUpdateClassName(oldName string, classContent []byte) ([]byte, error) {
 	clsObj, err := javaclassparser.Parse(classContent)
 	if err != nil {
@@ -272,10 +272,10 @@ func (g *Godzilla) dynamicUpdateClassName(oldName string, classContent []byte) (
 	if err != nil {
 		return nil, err
 	}
-	// 原始的 class 就叫 payloav4,代表哥斯拉 v4 版本
+	// The original class is called payloav4, which represents the Godzilla v4 version
 	g.dynamicFuncName[oldName+".java"] = fakeSourceFileName + ".java"
 
-	// 替换 execCommand() 函数为 execCommand2() 函数, 这里只是暂时一下替换函数名的功能
+	// replaces the execCommand() function with the execCommand2() function. This is just a temporary replacement of the function name.
 	//err = clsObj.SetMethodName("getBasicsInfo", "getBasicsInfo2")
 	//if err != nil {
 	//	return nil, err
@@ -283,7 +283,7 @@ func (g *Godzilla) dynamicUpdateClassName(oldName string, classContent []byte) (
 	//g.dynamicFuncName["getBasicsInfo"] = "getBasicsInfo2"
 
 	newClassName := payloads.RandomClassName()
-	// 随机替换类名
+	// Randomly replace the class name
 	err = clsObj.SetClassName(newClassName)
 	if err != nil {
 		return nil, err
@@ -325,19 +325,19 @@ func (g *Godzilla) sendPayload(data []byte) ([]byte, error) {
 		return nil, err
 	}
 	if len(body) == 0 {
-		return nil, utils.Error("返回数据为空")
+		return nil, utils.Error("The return data is empty")
 	}
 	deBody, err := g.deCryption(body)
 	if err != nil {
 		return nil, err
 	}
-	log.Debugf("默认解密后: %s", string(deBody))
+	log.Debugf("After decryption by default: %s", string(deBody))
 	return g.echoResultDecode(deBody)
 }
 
-// EvalFunc 个人简单理解为调用远程 shell 的一个方法，以及对指令的序列化，并且发送指令
+// EvalFunc. Personally, I simply understand it as a method to call the remote shell, serialize the instructions, and send the instructions.
 func (g *Godzilla) EvalFunc(className, funcName string, parameter *godzilla.Parameter) ([]byte, error) {
-	// 填充随机长度
+	// fills in the random length
 	r1, r2 := utils.RandSampleInRange(10, 20), utils.RandSampleInRange(10, 20)
 	parameter.AddString(r1, r2)
 	if className != "" && len(strings.Trim(className, " ")) > 0 {
@@ -369,7 +369,7 @@ func newParameter() *godzilla.Parameter {
 	return godzilla.NewParameter()
 }
 
-// Include 远程 shell 加载插件
+// Include remote shell load plug-in
 func (g *Godzilla) Include(codeName string, binCode []byte) (bool, error) {
 	parameter := newParameter()
 	switch g.ShellScript {
@@ -396,7 +396,7 @@ func (g *Godzilla) Include(codeName string, binCode []byte) (bool, error) {
 				return false, utils.Error(resultString)
 			}
 		} else {
-			return false, utils.Errorf("类: %s 映射不存在", codeName)
+			return false, utils.Errorf("class: %s mapping does not exist", codeName)
 		}
 	case ypb.ShellScript_ASPX.String():
 		parameter.AddString("codeName", codeName)
@@ -474,7 +474,7 @@ func (g *Godzilla) InjectPayloadIfNoCookie() error {
 	return nil
 }
 
-// 销毁一个会话中的全部数据,可以清除缓存文件夹中的 sess_PHPSESSID 文件
+// Destroy all data in a session, you can clear the sess_PHPSESSID file in the cache folder
 func (g *Godzilla) close() (bool, error) {
 	parameter := newParameter()
 	res, err := g.EvalFunc("", "close", parameter)

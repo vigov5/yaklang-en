@@ -10,7 +10,7 @@ import (
 )
 
 /*
-//AES GCM 加密后的payload shiro 1.4.2版本更换为了AES-GCM加密方式
+//AES GCM encrypted payload Shiro 1.4.2 version replaced with AES-GCM encryption method
 
 	func AES_GCM_Encrypt(key []byte, Content []byte) string {
 		block, _ := aes.NewCipher(key)
@@ -81,7 +81,7 @@ func AESGCMDecryptWithNonceSize(key []byte, data interface{}, nonceRaw []byte, n
 		return nil, errors.Errorf("create gcm failed: %s", err)
 	}
 
-	// 兼容 nonce
+	// Compatible with nonce
 	var nonce = make([]byte, nonceSize)
 	if nonceRaw != nil {
 		copy(nonce, nonceRaw)

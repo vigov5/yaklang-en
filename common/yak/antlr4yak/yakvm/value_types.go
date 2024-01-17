@@ -32,10 +32,10 @@ var (
 )
 
 /*
-关于类型的描述，我们通过一些简单的方式可以保证
- 1. 在 golang => yak 的时候，清理到不好的类型，比如 uint 与 float32，其他的类型均是可以接受的
-    但是因为有限的情况下，int64 和 int 是可以接受的，但是再大就有点小问题了（需要注意的是，一般 x64 系统中，int64 和 int 是一样的）
- 2. 所以在计算过程中 yak => golang 的过程中，我们不希望调用到任何 uint 类型的东西
+Regarding the description of the type, we can use some simple methods to ensure that when
+ 1. You can also convert in golang => yak, bad types are cleaned up, such as uint and float32. Other types are acceptable.
+    . However, due to limited circumstances, int64 and int are acceptable, but no matter how large they are, there will be a small problem (it should be noted that generally x64 systems , int64 and int are the same)
+ 2. So in During the calculation process, yak => . In the process of golang, we do not want to call anything of uint type
 */
 func IsInt(v interface{}) bool {
 	switch v.(type) {
@@ -67,7 +67,7 @@ func GuessBasicType(vals ...interface{}) reflect.Type {
 	for index, val := range vals {
 		kindI = reflect.ValueOf(val).Kind()
 		if index == 0 {
-			// 识别第一个类型
+			// identifies the first type
 			if kindI == reflect.String {
 				last = literalReflectType_String
 			} else if kindI == reflect.Uint8 {
@@ -83,13 +83,13 @@ func GuessBasicType(vals ...interface{}) reflect.Type {
 		}
 
 		if kindI == reflect.String {
-			// 这个类型不存在兼容问题
+			// is required, there is no compatibility issue with this type
 			if last.Kind() != reflect.String {
 				return anyT
 			}
 		} else if IsInt(val) {
-			// 一般来说，Int 和 Float 应该是可以互相转换的，使用最兼容类型
-			// 兼容性 float64 是兼容性最高的
+			// . Generally speaking, Int and Float should be mutually convertible. Use the most compatible type
+			// . Compatibility float64 is the most compatible
 			if last.Kind() != reflect.Int {
 				if last.Kind() > reflect.Int && last.Kind() <= reflect.Float64 {
 					continue
@@ -124,7 +124,7 @@ func GuessValuesTypeToBasicType(vals ...*Value) reflect.Type {
 	last := anyT
 	for index, i := range vals {
 		if index == 0 {
-			// 识别第一个类型
+			// identifies the first type
 			if i.IsByte() {
 				last = literalReflectType_Byte
 			} else if i.IsString() {
@@ -144,13 +144,13 @@ func GuessValuesTypeToBasicType(vals ...*Value) reflect.Type {
 		}
 
 		if i.IsStringOrBytes() {
-			// 这个类型不存在兼容问题
+			// is required, there is no compatibility issue with this type
 			if last.Kind() != reflect.String && !i.IsBytes() {
 				return anyT
 			}
 		} else if i.IsInt() {
-			// 一般来说，Int 和 Float 应该是可以互相转换的，使用最兼容类型
-			// 兼容性 float64 是兼容性最高的
+			// . Generally speaking, Int and Float should be mutually convertible. Use the most compatible type
+			// . Compatibility float64 is the most compatible
 			if last.Kind() != reflect.Int {
 				if last.Kind() > reflect.Int && last.Kind() <= reflect.Float64 {
 					continue
@@ -229,14 +229,14 @@ func (v *Frame) AutoConvertReflectValueByType(
 		return nil
 	}
 
-	// 类型相同，不需要转换
+	// has the same type, no need to convert
 	if reflectType == reflectValue.Type() {
 		return nil
 	}
 
 	targetKind := reflectType.Kind()
 	if targetKind == reflect.Interface {
-		// 证明是别名，例如time.Duration 是 int64 类型别名，但是有自己实现的方法，所以不应该转换
+		// proves to be an alias. For example, time.Duration is an alias of the int64 type, but it has its own implementation method, so
 		pkgPath := reflectValue.Type().PkgPath()
 		if pkgPath != "" {
 			return nil
@@ -331,7 +331,7 @@ func (v *Frame) AutoConvertReflectValueByType(
 		} else {
 			return utils.Errorf("cannot convert yaklang.Function to native calling...")
 		}
-	case reflect.Slice, reflect.Array: // 数组类型转换
+	case reflect.Slice, reflect.Array: // array type conversion
 		if srcKind == reflect.Slice || srcKind == reflect.Array {
 			resValRef := reflect.MakeSlice(reflectType, reflectValue.Len(), reflectValue.Len())
 			reflectValueRef := reflect.ValueOf(reflectValue.Interface())
@@ -352,9 +352,9 @@ func (v *Frame) AutoConvertReflectValueByType(
 			return nil
 		}
 	}
-	// 2022.9.12 新增一些类型自动转换装置！
-	//    1. 如果要求 []byte/[]uint8, 输入为 string 可以自动转换
-	//    2. 如果要求为 string, 输入为 []byte / []uint8 也可以转
+	// 2022.9.12 Added some automatic type conversion devices!
+	//    should not be converted. 1. If []byte/[]uint8, the input is string and can be automatically converted to
+	//    2. If required is string, input is []byte / []uint8
 	if srcKind == reflect.String &&
 		targetKind == reflect.Slice && reflectType.Elem().Kind() == reflect.Uint8 {
 		strValue, ok := reflectValue.Interface().(string)

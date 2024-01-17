@@ -47,7 +47,7 @@ func GetGlobalHealthManager() *healthinfo.Manager {
 	return _globalHealthManager
 }
 
-// SetMonitorInterval 设置全局健康管理器的监控间隔(单位：秒)，如果在全局健康管理器运行时调用，会重置全局健康管理器
+// SetMonitorInterval Sets the monitoring interval (unit: seconds) of the global health manager. If called when the global health manager is running, it will reset the global health manager
 // Example:
 // ```
 // hids.SetMonitorInterval(1)
@@ -66,7 +66,7 @@ func SetMonitorIntervalFloat(i float64) {
 	}
 }
 
-// Init 初始化全局健康管理器
+// Init Initializes the global health manager
 // Example:
 // ```
 // hids.Init()
@@ -75,7 +75,7 @@ func InitHealthManager() {
 	GetGlobalHealthManager()
 }
 
-// ShowMonitorInterval 在标准输出中输出全局健康管理器的监控间隔(单位：秒)
+// ShowMonitorInterval Outputs the global health manager in the standard output monitoring interval (unit: seconds)
 // Example:
 // ```
 // hids.ShowMonitorInterval()

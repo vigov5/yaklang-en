@@ -110,7 +110,7 @@ func (p *ICMPTrigger) handlePacket(interfaceIP net.IP, packet gopacket.Packet) {
 		)
 		var desc *remoteICMPIPDesc
 		descRaw, ok := p.remoteICMPIP.Get(remoteAddr.String())
-		// 该远程IP没有记录
+		// There is no record of this remote IP
 		if !ok {
 			newDesc := &remoteICMPIPDesc{
 				IP:              remoteAddr,
@@ -119,13 +119,13 @@ func (p *ICMPTrigger) handlePacket(interfaceIP net.IP, packet gopacket.Packet) {
 				connectionCache: make(map[string]uint16),
 			}
 			newDesc.ConnectionDesc.SetTTL(time.Minute)
-			// ttl到期删除
+			// ttl expiration delete
 			newDesc.ConnectionDesc.SetExpirationCallback(func(key string, value interface{}) {
 				newDesc.cacheMutex.Lock()
 				defer newDesc.cacheMutex.Unlock()
 				delete(newDesc.connectionCache, key)
 			})
-			// 添加
+			// Add
 			newDesc.ConnectionDesc.SetNewItemCallback(func(key string, value interface{}) {
 				newDesc.cacheMutex.Lock()
 				defer newDesc.cacheMutex.Unlock()

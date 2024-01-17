@@ -8,82 +8,82 @@ type HIDSTimestampType string
 type HIDSSoftwareType string
 
 var (
-	// 进程监控
+	// process monitoring
 	HIDSEvent_Proccessings     HIDSEvent = "proccessings"
 	HIDSEvent_ProccessingEvent HIDSEvent = "processing-event"
 	HIDSEvent_ProccessingTouch HIDSEvent = "processing-touch"
 
-	// 网络连接情况
-	// 谨慎处理:
-	//    1. 注意服务器某些情况下会有很多从外对内的连接, 如果针对这种情况过分处理会导致资源消耗过大
-	//    2. 可以参考 telegraf 对 gopsutil 的使用
-	//    3. 如果有必要, 抄代码出来, 一定要避免 (1) 中造成的问题: 可以找找有没有分页/或者预筛选的办法
-	// 需要处理以下连接:
-	// 1. 本地监听端口 (Status 为 LISTEN 的状态的端口, 上报) (重点)
-	// 2. 对外连接的端口 (估计不会太多, 这个必须处理) (重点)
-	// 3. 尽量避免 HA/NGINX 这种过多的连接对监控的影响
+	// network connection status
+	// Handle with caution :
+	//    1. Note that in some cases the server will have a lot of connections from the outside to the inside. If this situation is over-handled, it will cause excessive resource consumption.
+	//    2. You can refer to telegrafs use of gopsutil
+	//    3. If necessary, copy the code and be sure to avoid the problems caused in (1): You can check if there is paging/or pre-screening method
+	// needs to handle the following connections:
+	// 1. The local listening port (the port whose Status is LISTEN) is reported. ) (Key points)
+	// 2. Ports for external connections (it is estimated that there will not be too many, this must be processed) (Key points)
+	// 3. Try to avoid HA/NGINX The impact of excessive connections on monitoring
 	//
 	HIDSEvent_Connections     HIDSEvent = "connections"
 	HIDSEvent_ConnectionTouch HIDSEvent = "connections-touch"
 	HIDSEvent_ConnectionEvent HIDSEvent = "connection-event"
 
-	// nginx / apache 监控
+	// nginx / apache monitors
 	HIDSEvent_NginxFound   HIDSEvent = "nginx-found"
 	HIDSEvent_NginxMissed  HIDSEvent = "nginx-missed"
 	HIDSEvent_ApacheFound  HIDSEvent = "apache-found"
 	HIDSEvent_ApacheMissed HIDSEvent = "apache-missed"
 
-	// ssh 审计分析
-	// 1. 获取 SSH 精确版本信息
-	// 2. 配置文件, 公钥私钥监控
-	// 3. 配置文件关键选项:
-	//    1. 是否允许密码登录
-	//    2. 是否允许空密码
-	//    3. 密钥登录
+	// ssh audit analysis
+	// 1. obtain SSH accurate version information
+	// 2. Configuration file, public key and private key monitoring
+	// 3. Configuration file key options:
+	//    1. Whether to allow password login
+	//    2. Whether to allow empty passwords
+	//    3. Key login
 	HIDSEvent_SSHAudit HIDSEvent = "ssh-audit"
 
-	// 文件改变
-	// 暂时默认监控 /etc /bin /usr/bin ~/.ssh 下的文件内容
+	// file changes
+	// temporary default monitoring /etc /bin /usr/bin ~/File contents under .ssh
 	HIDSEvent_FileChanged HIDSEvent = `file-changed`
 
-	// 监测到 webshell
+	// monitors the webshell
 	HIDSEvent_WebShell HIDSEvent = "webshell"
 
-	// 节点被扫描 (NIDS 的功能, 可以选择性)
+	// nodes are scanned (NIDS function, optional)
 	HIDSEvent_Scanned HIDSEvent = "scanned"
 
-	// 关键配置文件
+	// key configuration file
 	HIDSEvent_ConfigFile HIDSEvent = "config-file"
 
-	// 漏洞信息
+	// vulnerability information
 	HIDSEvent_VulnInfo HIDSEvent = "vuln-info"
 
-	// 危险文件样本
+	// Dangerous file samples
 	HIDSEvent_DangerousFileSample HIDSEvent = "dangerous-file-sample"
 
-	// 攻击行为
+	// attack behavior
 	HIDSEvent_Attack HIDSEvent = "attack"
 
 	HIDSEvent_ReverseShell HIDSEvent = "reverse-shell"
 
-	//请求配置
+	//Request configuration
 	HIDSEvent_RequestConfig HIDSEvent = "request_config"
 
-	//上报主机用户信息
+	//reporting host user information
 	HIDSEvent_ReportHostUser HIDSEvent = "report_host_user"
-	//上报所有登陆成功用户信息
+	//reports all user information that successfully logged in
 	HIDSEvent_ReportAllUsrLoginOK HIDSEvent = "all_user_login_ok"
-	//上报所有登陆失败用户信息
+	//Report all user information that failed to log in
 	HIDSEvent_ReportAllUsrLoginFail HIDSEvent = "all_user_login_fail"
-	//上报所有登陆失败用户信息文件过大
+	//reports all user information files that failed to log in Too large
 	HIDSEvent_ReportAllUsrLoginFailFileTooLarge HIDSEvent = "all_user_login_fail_file_too_large"
-	//用户账号暴力破击
+	//user account brute force attack
 	HIDSEvent_UserLoginAttempt HIDSEvent = "user_login_attempt"
-	//软件信息上报
+	//software information reporting
 	HIDSEvent_ReportSoftwareVersion HIDSEvent = "report_software_version"
-	//开启启动软件信息
+	//enable startup software information
 	HIDSEvent_BootSoftware HIDSEvent = "boot_software"
-	//定时任务
+	//scheduled task
 	HIDSEvent_Crontab HIDSEvent = "crontab"
 )
 

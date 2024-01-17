@@ -48,84 +48,84 @@ func (r *FuzzHTTPRequest) DisableAutoEncode(b bool) FuzzHTTPRequestIf {
 }
 
 type FuzzHTTPRequestIf interface {
-	// Repeat 重复数据包
+	// Repeat Repeat the data packet
 	// Example:
 	// ```
 	//
 	// ```
 	Repeat(i int) FuzzHTTPRequestIf
 
-	// 模糊测试参数时不进行自动编码
+	// When fuzzing parameters No automatic encoding
 	DisableAutoEncode(bool) FuzzHTTPRequestIf
 
-	// 标注是否进行自动编码
+	// Mark whether to perform automatic encoding
 	NoAutoEncode() bool
 
-	// 模糊测试 http.Request 的 method 字段
+	// Fuzz test the method of http.Request Field
 	FuzzMethod(method ...string) FuzzHTTPRequestIf
 
-	// 模糊测试 Path 字段
+	// Fuzz Test Path Field
 	FuzzPath(...string) FuzzHTTPRequestIf
 
-	// FuzzPathAppend 模糊测试 Path，追加 Path
+	// FuzzPathAppend Fuzz test Path, append Path
 	FuzzPathAppend(...string) FuzzHTTPRequestIf
 
-	// 模糊测试 HTTPHeader 字段
+	// Fuzz test the HTTPHeader field
 	FuzzHTTPHeader(interface{}, interface{}) FuzzHTTPRequestIf
 
-	// 模糊测试 Query
+	// Fuzz test Query
 	FuzzGetParamsRaw(queryRaw ...string) FuzzHTTPRequestIf
 
-	// 模糊测试 Query 中的字段
+	// Fuzz test the field
 	FuzzGetParams(interface{}, interface{}) FuzzHTTPRequestIf
 
-	// 模糊测试被Base64编码后Query中的字段
+	// Fuzz test the field in the Query after being Base64 encoded
 	FuzzGetBase64Params(interface{}, interface{}) FuzzHTTPRequestIf
 
 	// FuzzGetParamJson
 	FuzzGetJsonPathParams(any, string, any) FuzzHTTPRequestIf
 
-	// 模糊测试 Post
+	// Fuzz test Post
 	FuzzPostRaw(...string) FuzzHTTPRequestIf
 
-	// 模糊测试 PostParam
+	// Fuzz test PostParam
 	FuzzPostParams(k, v interface{}) FuzzHTTPRequestIf
 
-	// 模糊测试被Base64编码后Post中的字段
+	// Fuzz test Query
 	FuzzPostBase64Params(k, v interface{}) FuzzHTTPRequestIf
 
-	// 测试 PostJson 中的数据
+	// Test the data in PostJson
 	FuzzPostJsonParams(k, v interface{}) FuzzHTTPRequestIf
 
-	// 测试 PostJsonPath 中的数据
+	// Test the data in PostJsonPath
 	FuzzPostJsonPathParams(k any, jp string, v any) FuzzHTTPRequestIf
 
-	// 测试 Cookie 中的数据
+	// Test the data in the cookie
 	FuzzCookieRaw(value interface{}) FuzzHTTPRequestIf
 
-	// 按键值对测试 Cookie 中的数据
+	// in the Cookie after being Base64 encoded Test the data in the Cookie by key-value pair
 	FuzzCookie(k, v interface{}) FuzzHTTPRequestIf
 
-	// 模糊测试被Base64编码后Cookie中的字段
+	// in Query Fuzz test the field
 	FuzzCookieBase64(k, v interface{}) FuzzHTTPRequestIf
 
-	// 测试 multipart 携带字段
+	// Test the multipart carrying field
 	FuzzFormEncoded(k, v interface{}) FuzzHTTPRequestIf
 
-	// 测试上传文件的文件名
+	// Test the file name of the uploaded file
 	FuzzUploadFileName(k, v interface{}) FuzzHTTPRequestIf
 
-	// 测试上传文件的文件内容
+	// Test the file content of the uploaded file
 	FuzzUploadFile(k, v interface{}, content []byte) FuzzHTTPRequestIf
 
-	// 测试文件上传内容
+	// Test the uploaded file content
 	FuzzUploadKVPair(k, v interface{}) FuzzHTTPRequestIf
 
 	// CookieJsonPath
 	FuzzCookieJsonPath(any, string, any) FuzzHTTPRequestIf
 	FuzzCookieBase64JsonPath(any, string, any) FuzzHTTPRequestIf
 
-	// 测试被 Base64 编码后的 Get Post 参数
+	// Test after being Base64 encoded Get Post Parameter
 	FuzzGetBase64JsonPath(any, string, any) FuzzHTTPRequestIf
 	FuzzPostBase64JsonPath(any, string, any) FuzzHTTPRequestIf
 

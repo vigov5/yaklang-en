@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-// 测试P7填充Reader
+// Test P7 fill Reader
 func TestPaddingFileReader_Read(t *testing.T) {
 	srcIn := bytes.NewBuffer(bytes.Repeat([]byte{'A'}, 16))
 	p := NewPKCS7PaddingReader(srcIn, 16)
@@ -17,11 +17,11 @@ func TestPaddingFileReader_Read(t *testing.T) {
 		want    int
 		wantErr error
 	}{
-		{"读取文件 1B", make([]byte, 1), 1, nil},
-		{"交叉读取 15B 文件 1B", make([]byte, 16), 16, nil},
-		{"填充读取 3B", make([]byte, 3), 3, nil},
-		{"超过填充读取 16B", make([]byte, 16), 12, nil},
-		{"文件结束 16B", make([]byte, 16), 0, io.EOF},
+		{"Read file 1B", make([]byte, 1), 1, nil},
+		{"Cross-read 15B File 1B", make([]byte, 16), 16, nil},
+		{"Fill read 3B", make([]byte, 3), 3, nil},
+		{"Exceed padding and read 16B", make([]byte, 16), 12, nil},
+		{"End of file 16B", make([]byte, 16), 0, io.EOF},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -31,13 +31,13 @@ func TestPaddingFileReader_Read(t *testing.T) {
 				return
 			}
 			if got != tt.want {
-				t.Errorf("Read() 读取到了 = %v, 但是需要 %v", got, tt.want)
+				t.Errorf("Read() read = %v, but %v is needed", got, tt.want)
 			}
 		})
 	}
 }
 
-// 测试P7填充Writer
+// Test P7 padding Writer
 func TestPKCS7PaddingWriter_Write(t *testing.T) {
 	src := []byte{
 		0, 1, 2, 3, 4, 5, 6, 7,
@@ -67,6 +67,6 @@ func TestPKCS7PaddingWriter_Write(t *testing.T) {
 	}
 
 	if !bytes.Equal(out.Bytes(), src) {
-		t.Fatalf("去除填充后实际为 %02X,期待去除填充之后的结果为 %02X", out.Bytes(), src)
+		t.Fatalf("After removing padding, the actual value is %02X, expect to remove padding The result is %02X", out.Bytes(), src)
 	}
 }

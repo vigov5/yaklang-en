@@ -134,13 +134,13 @@ func (l *LuaTranslator) VisitLocalVarWithName(isAssign bool, name string, attrib
 	}
 
 	modifier := ""
-	// TODO: close attribute的实现
+	// TODO: implementation of close attribute
 	if optionalModifier.NAME() != nil {
 		modifier = optionalModifier.NAME().GetText()
 	}
 
 	if modifier != "" {
-		if modifier == "close" { // close还没实现
+		if modifier == "close" { // close has not been implemented yet
 			panic("close attribute not implemented yet")
 		} else if modifier != "const" {
 			panic("unknown attribute '" + modifier + "'")
@@ -183,12 +183,12 @@ func (l *LuaTranslator) VisitVarSuffix(raw lua.IVarSuffixContext, isAssign bool,
 	}
 	nameAndArgs := i.AllNameAndArgs()
 	if nameAndArgs != nil {
-		// 链式调用
+		// chain call
 		for _, nameAndArg := range nameAndArgs {
 			l.VisitNameAndArgs(nameAndArg)
 		}
 	}
-	if exp := i.Exp(); exp != nil { // [exp] 数组情况
+	if exp := i.Exp(); exp != nil { // [exp] Array situation
 		l.VisitExp(exp)
 		if isAssign && isInitialized {
 			l.pushListWithLen(2)

@@ -32,7 +32,7 @@ func metaCharsetChanger(raw []byte) []byte {
 	if len(raw) <= 0 {
 		return raw
 	}
-	// 这里很关键，需要移除匹配到的内容
+	// This is critical. You need to remove the matched content.
 	buf := bytes.NewBuffer(nil)
 	var slash [][2]int
 	lastEnd := 0
@@ -95,7 +95,7 @@ func CharsetToUTF8(bodyRaw []byte, mimeType string, originCharset string) ([]byt
 	var encodeHandler encoding.Encoding
 	switch originCharset {
 	case "gbk", "gb18030":
-		// 如果无法检测编码，就看看18030是不是符合
+		// If the encoding cannot be detected, see if 18030 conforms to
 		replaced, _ := codec.GB18030ToUtf8(bodyRaw)
 		if replaced != nil {
 			handledChineseEncoding = true
@@ -104,7 +104,7 @@ func CharsetToUTF8(bodyRaw []byte, mimeType string, originCharset string) ([]byt
 	default:
 		encodeHandler, _ = charsetPrescan(bodyRaw)
 		if encodeHandler == nil && checkingGB18030 && !utf8.Valid(bodyRaw) {
-			//// 如果无法检测编码，就看看18030是不是符合
+			//// If the encoding cannot be detected, see if 18030 conforms to
 			//replaced, err := codec.GB18030ToUtf8(bodyRaw)
 			//if err != nil {
 			//	log.Debugf("gb18030 to utf8 failed: %v", err)
@@ -171,23 +171,23 @@ func GetOverrideContentType(bodyPrescan []byte, contentType string) (overrideCon
 	return overrideContentType, originCharset
 }
 
-// FixHTTPResponse 尝试对传入的响应进行修复，并返回修复后的响应，响应体和错误
+// FixHTTPResponse Try to repair the incoming response and return the repaired response, response body and error
 // Example:
 // ```
-// fixedResponse, body, err = str.FixHTTPResponse(b"HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=gbk\r\n\r\n<html>你好</html>")
+// fixedResponse, body, err = str.FixHTTPResponse(b"HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=gbk\r\n\r\n<html>Hello</html>")
 // ```
 func FixHTTPResponse(raw []byte) (rsp []byte, body []byte, _ error) {
 	// log.Infof("response raw: \n%v", codec.EncodeBase64(raw))
 
 	isChunked := false
-	// 这两个用来处理编码特殊情况
+	// These two are used to handle special cases of encoding.
 	var contentEncoding string
 	var contentType string
 	headers, body := SplitHTTPHeadersAndBodyFromPacket(raw, func(line string) {
 		if strings.HasPrefix(strings.ToLower(line), "content-type:") {
 			_, contentType = SplitHTTPHeader(line)
 		}
-		// 判断内容
+		// Determine the content
 		line = strings.ToLower(line)
 		if strings.HasPrefix(line, "transfer-encoding:") && utils.IContains(line, "chunked") {
 			isChunked = true
@@ -221,7 +221,7 @@ func FixHTTPResponse(raw []byte) (rsp []byte, body []byte, _ error) {
 		}
 	}
 
-	// 如果 bodyRaw 是图片的话，则不处理，如何判断是图片？
+	// . If the bodyRaw is an image, it will not be processed. How to determine if it is an image?
 	skipped := false
 	if len(bodyRaw) > 0 {
 		if utils.IsImage(bodyRaw) {
@@ -229,7 +229,7 @@ func FixHTTPResponse(raw []byte) (rsp []byte, body []byte, _ error) {
 		}
 	}
 
-	// 取前几百个字节，来检测到底类型
+	// and take the first few hundred bytes to detect the type.
 	var bodyPrescan []byte
 	if len(bodyRaw) > 200 {
 		bodyPrescan = bodyRaw[:200]
@@ -240,7 +240,7 @@ func FixHTTPResponse(raw []byte) (rsp []byte, body []byte, _ error) {
 	/*originCharset is lower!!!*/
 	_ = originCharset
 
-	// 都解开了，来处理编码问题
+	// are all solved to deal with encoding issues.
 	if bodyRaw != nil && !skipped {
 		var mimeType string
 		_, params, _ := mime.ParseMediaType(contentType)
@@ -251,14 +251,14 @@ func FixHTTPResponse(raw []byte) (rsp []byte, body []byte, _ error) {
 		}
 
 		if overrideContentType == "" {
-			// 如果类型一致，不需要替换，那么还是只处理 content-type 和编码问题
+			// If the types are consistent and no replacement is needed, then only the content-type and encoding issues are dealt with
 			bodyRaw, mimeType = CharsetToUTF8(bodyRaw, contentType, originCharset)
 			if mimeType != contentType {
 				headerBytes = ReplaceMIMEType(headerBytes, mimeType)
 			}
-			// 是 Js，但是不包含 UTF8，按理说应该给他加成 UTF8
+			// . It is Js, but does not include UTF8, it stands to reason that it should be added to UTF8
 			if utils.IContains(mimeType, "javascript") && !ctUTF8 && len(bodyRaw) > 0 {
-				// 这个顺序千万不要弄错了喔，一定要先判断是不是 UTF8，再去判断中文编码
+				// . Do not mess with this order. Wrong, you must first determine whether it is UTF8, and then determine the Chinese encoding
 				if !codec.IsUtf8(bodyRaw) {
 					if codec.IsGBK(bodyRaw) {
 						decoded, err := codec.GbkToUtf8(bodyRaw)
@@ -309,7 +309,7 @@ func RemoveCEHeaders(headerBytes []byte) []byte {
 	return contentEncodingRegexp.ReplaceAll(headerBytes, []byte{})
 }
 
-// ReplaceBody 将原始 HTTP 请求报文中的 body 替换为指定的 body，并指定是否为 chunked，返回新的 HTTP 请求报文
+// ReplaceBody Replace the body in the original HTTP request message with the specified body, and specify whether it is chunked. Return a new HTTP request message
 // Example:
 // ```
 // poc.ReplaceBody(`POST / HTTP/1.1
@@ -323,7 +323,7 @@ func ReplaceHTTPPacketBody(raw []byte, body []byte, chunk bool) (newHTTPRequest 
 }
 
 func ReplaceHTTPPacketBodyEx(raw []byte, body []byte, chunk bool, forceCL bool) []byte {
-	// 移除左边空白字符
+	// Remove the left blank characters
 	raw = TrimLeftHTTPPacket(raw)
 	reader := bufio.NewReader(bytes.NewBuffer(raw))
 	firstLineBytes, err := utils.BufioReadLine(reader)
@@ -335,7 +335,7 @@ func ReplaceHTTPPacketBodyEx(raw []byte, body []byte, chunk bool, forceCL bool) 
 		string(firstLineBytes),
 	}
 
-	// 接下来解析各种 Header
+	// . Next, parse various Header
 	for {
 		lineBytes, err := utils.BufioReadLine(reader)
 		if err != nil && err != io.EOF {
@@ -344,13 +344,13 @@ func ReplaceHTTPPacketBodyEx(raw []byte, body []byte, chunk bool, forceCL bool) 
 		line := string(lineBytes)
 		line = strings.TrimSpace(line)
 
-		// Header 解析完毕
+		// Header. After parsing,
 		if line == "" {
 			break
 		}
 
 		lineLower := strings.ToLower(line)
-		// 移除 chunked
+		// to remove chunked
 		if strings.HasPrefix(lineLower, "transfer-encoding:") && utils.IContains(line, "chunked") {
 			continue
 		}
@@ -360,14 +360,14 @@ func ReplaceHTTPPacketBodyEx(raw []byte, body []byte, chunk bool, forceCL bool) 
 		//	continue
 		//}
 
-		// 设置 content-length
+		// Set content-length
 		if strings.HasPrefix(lineLower, "content-length") {
 			continue
 		}
 		headers = append(headers, line)
 	}
 
-	// 空 body
+	// Null body
 	if body == nil {
 		raw := strings.Join(headers, CRLF) + CRLF + CRLF
 		return []byte(raw)
@@ -400,7 +400,7 @@ func ReplaceHTTPPacketBodyEx(raw []byte, body []byte, chunk bool, forceCL bool) 
 	return buf.Bytes()
 }
 
-// ParseBytesToHTTPResponse 将字节数组解析为 HTTP 响应
+// ParseBytesToHTTPResponse parses byte arrays into HTTP responses.
 // Example:
 // ```
 // res, err := str.ParseBytesToHTTPResponse(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok")

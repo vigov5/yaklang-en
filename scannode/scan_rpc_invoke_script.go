@@ -93,7 +93,7 @@ func (s *ScanNode) rpc_invokeScript(ctx context.Context, node string, req *scanr
 				}
 				var title = utils.MapGetFirstRaw(rawData, "TitleVerbose", "Title")
 				if title == "" {
-					title = "暂无标题"
+					title = "No title yet"
 				}
 				var target = utils.MapGetFirstRaw(rawData, "Url", "url")
 				var host = utils.MapGetString(rawData, "Host")
@@ -151,7 +151,7 @@ func (s *ScanNode) rpc_invokeScript(ctx context.Context, node string, req *scanr
 		params = append(params, "--runtime-id", runtimeId)
 	}
 
-	// 把用户传入的参数转换为命令行参数
+	// Convert the parameters passed in by the user into command line parameters
 	var paramsKeyValue = make(map[string]interface{})
 	var paramsRaw interface{}
 	_ = json.Unmarshal([]byte(req.ScriptJsonParam), &paramsRaw)
@@ -169,7 +169,7 @@ func (s *ScanNode) rpc_invokeScript(ctx context.Context, node string, req *scanr
 		params = append(params, utils.InterfaceToString(v))
 	}
 
-	// 要执行的代码内容
+	// Content of the code to be executed
 	f, err := consts.TempFile("distributed-yakcode-*.yak")
 	if err != nil {
 		return nil, err
@@ -181,7 +181,7 @@ func (s *ScanNode) rpc_invokeScript(ctx context.Context, node string, req *scanr
 	}()
 
 	baseCmd := []string{"distyak", f.Name()}
-	// 执行脚本
+	// Execute the script
 	log.Infof("yak %v %v", f.Name(), params)
 	cmd := exec.CommandContext(ctx, scanNodePath,
 		append(baseCmd, params...)...)
@@ -206,7 +206,7 @@ func (s *ScanNode) rpc_invokeScript(ctx context.Context, node string, req *scanr
 	err = cmd.Run()
 	defer func() {
 		log.Infof("auto gen report %v start...", f.Name())
-		// 不管 Run 成功与否，都执行生成报告的操作
+		// Execute the operation of generating the report regardless of whether Run is successful or not.
 		err = genReportFromKey(ctx, node, s.helper, broker, req)
 		if err != nil {
 			log.Errorf("gen report from key failed: %s", err)

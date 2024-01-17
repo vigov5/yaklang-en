@@ -925,7 +925,7 @@ func (f *FuzzHTTPRequest) fuzzCookie(k, v interface{}, encoded ...EncodedFunc) (
 		newCookie.Store(key, &http.Cookie{Name: key, Value: value})
 
 		_req, _ := rebuildHTTPRequest(req, 0)
-		// 增加新的 Cookie
+		// Add new cookies
 		_req.Header.Del("Cookie")
 		newCookie.Range(func(key, value interface{}) bool {
 			c, _ := value.(*http.Cookie)

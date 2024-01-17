@@ -30,7 +30,7 @@ func init() {
 					return funk.Keys(v.Value)
 				}
 			}),
-			Description: "获取所有元素的key",
+			Description: "Get the keys of all elements",
 		},
 		"Values": {
 			Name:       "Values",
@@ -40,7 +40,7 @@ func init() {
 					return funk.Values(v.Value)
 				}
 			}),
-			Description: "获取所有元素的value",
+			Description: "Get the values of all elements",
 		},
 		"Entries": {
 			Name:       "Entries",
@@ -62,7 +62,7 @@ func init() {
 					return result
 				}
 			}),
-			Description: "获取所有元素的entity",
+			Description: "Get the entity of all elements",
 		},
 		"ForEach": {
 			Name:       "ForEach",
@@ -73,7 +73,7 @@ func init() {
 					return nil
 				}
 			}),
-			Description: "遍历元素",
+			Description: "Traverse the elements",
 		},
 		"Set": {
 			Name:       "Set",
@@ -92,7 +92,7 @@ func init() {
 					return true
 				}
 			}),
-			Description: "设置元素的值，如果key不存在则添加",
+			Description: "Set the value of the element, add it if the key does not exist",
 		},
 		"Remove": {
 			Name:       "Remove",
@@ -104,7 +104,7 @@ func init() {
 					return nil
 				}
 			}),
-			Description: "移除一个值",
+			Description: "Remove a value",
 		},
 		"Has": {
 			Name:       "Has",
@@ -120,7 +120,7 @@ func init() {
 					return ok
 				}
 			}),
-			Description: "判断map元素中是否包含key",
+			Description: "Determine whether the map element contains the key",
 		},
 		"Length": {
 			Name:       "Length",
@@ -130,7 +130,7 @@ func init() {
 					return reflect.ValueOf(v.Value).Len()
 				}
 			}),
-			Description: "获取元素长度",
+			Description: "Get the length of the element",
 		},
 	}
 	aliasMapBuildinMethod("Entries", "Items")

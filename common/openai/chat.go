@@ -41,7 +41,7 @@ func NewOpenAIClient(opt ...ConfigOption) *Client {
 }
 
 func (c *Client) TranslateToChinese(data string) (string, error) {
-	prompt := fmt.Sprintf(`把下面内容翻译成中文并放在JSON中（以result存结果）:\n%v`, strconv.Quote(data))
+	prompt := fmt.Sprintf(`Translate the following content into Chinese and put it in JSON (save the result as result):\n%v`, strconv.Quote(data))
 	results, err := c.Chat(prompt)
 	if err != nil {
 		return "", err

@@ -6,17 +6,17 @@ runtimeID = env.Get("YAK_RUNTIME_ID")
 yakit.StatusCard("RuntimeIDFromRisks", runtimeID)
 
 # Input your code!
-updateStatus = s => yakit.StatusCard("当前状态", s)
+updateStatus = s => yakit.StatusCard("Current status", s)
 
-updateStatus("解析参数")
-yakit.Info("解析参数")
-yakit.Info("开始处理扫描参数")
+updateStatus("parsing parameters")
+yakit.Info("parsing parameters")
+yakit.Info("Start processing scan parameters")
 
 targetFiles = cli.String("target-file")
 
 hostCount = cli.Int("host-count")
 
-// 恢复任务的指针
+// Resume task Pointer
 recordPtr = cli.Int("record-ptr", cli.setDefault(0))
 recordFile = cli.String("record-file")
 
@@ -78,15 +78,15 @@ finishingThreshold = cli.Int("finishing-threshold", cli.setDefault(1))
 cli.check()
 yakit.SetProgress(baseProgress + 0.01)
 sleep(1)
-yakit.Info("用户自定义字典预处理")
-// 定义存储用户名与密码的字典
+yakit.Info("users Custom dictionary preprocessing")
+// Define a dictionary to store usernames and passwords
 userdefinedUsernameList = make([]string)
 userdefinedPasswordList = make([]string)
 
-// 获取用户列表
+// Get user list
 userRaw, _ := file.ReadFile(userList)
 if len(userRaw) <= 0 {
-    yakit.Error("用户文件字典获取失败")
+    yakit.Error("User file dictionary acquisition failed")
 } else {
     userdefinedUsernameList = str.ParseStringToLines(string(userRaw))
 }
@@ -94,7 +94,7 @@ if len(userRaw) <= 0 {
 
 passRaw, _ := file.ReadFile(passList)
 if len(passRaw) <= 0 {
-    yakit.Error("用户密码文件获取失败")
+    yakit.Error("User password file acquisition failed")
 } else {
     userdefinedPasswordList = str.ParseStringToLines(string(passRaw))
 }
@@ -103,7 +103,7 @@ if len(passRaw) <= 0 {
 bruteOpt = []
 
 if minDelay > 0 && maxDelay > 0 {
-    yakit.Info("单目标测试随机延迟：%v-%v/s", minDelay, maxDelay)
+    yakit.Info("Single target test random delay: %v-%v/s", minDelay, maxDelay)
     opt = append(bruteOpt, brute.minDelay(minDelay), brute.maxDelay(maxDelay))
 }
 
@@ -117,13 +117,13 @@ if finishingThreshold > 0 {
 
 
 if bruteConcurrent > 0 {
-    yakit.Info("设置最多同时爆破目标：%v", concurrent)
+    yakit.Info("Set maximum simultaneous blasting targets: %v", concurrent)
     opt = append(bruteOpt, brute.concurrentTarget(bruteConcurrent))
 }
 
 
 if taskConcurrent > 0 {
-    yakit.Info("设置单目标爆破并发：%v", taskConcurrent)
+    yakit.Info("Set single target blasting concurrency: %v", taskConcurrent)
     opt = append(bruteOpt, brute.concurrent(taskConcurrent))
 }
 
@@ -186,12 +186,12 @@ if fpMode == "all" {
 
 
 if excludePorts != "" {
-    yakit.Info("设置排除端口：%v", excludePorts)
+    yakit.Info("Set excluded port: %v", excludePorts)
     tcpOps = append(tcpOps, servicescan.excludePorts(excludePorts))
 }
 
 if excludeHosts != "" {
-    yakit.Info("设置排除主机：%v", excludeHosts)
+    yakit.Info("sets excluded hosts: %v", excludeHosts)
     tcpOps = append(tcpOps, servicescan.excludeHosts(excludeHosts))
 }
 
@@ -210,27 +210,27 @@ yakit.SetProgress(baseProgress + 0.02)
 sleep(1)
 var synscanEnable = false
 try {
-    yakit.Info("检测 SYN 扫描是否可用中")
+    yakit.Info("Detect SYN Scanning is available")
     yakit.SetProgress(baseProgress+ 0.02)
     baseProgress += 0.05
     for res in synscan.Scan("127.0.0.1", "80", synscan.wait(1))~ {  }
 
 
     synscanEnable = true
-    yakit.StatusCard("SYN 扫描", "可用")
+    yakit.StatusCard("SYN Scan", "Detect SYN Scanning for availability")
 } catch err {
-    yakit.Error("SYN 扫描不可用，原因是：%v", err)
+    yakit.Error("SYN scan is unavailable because: %v", err)
     if str.Contains(sprintf("%v", err), "couldn't load wpcap.dll") {
-        yakit.StatusCard("SYN失败", "请安装Npcap", "SYN扫描失败")
+        yakit.StatusCard("SYN failed", "Please install Npcap", "SYN scan failed")
     }
 
 }
 
 
 /*
-    插件处理模块
+    Plug-in processing module
 */
-yakit.Info("开始创建插件调用模块")
+yakit.Info("Start creating plug-in calling module")
 scriptNames = x.If(
     scriptNameFile != "",
     x.Filter(
@@ -245,12 +245,12 @@ scriptNames = x.If(
 
 pluginsL = len(scriptNames)
 
-yakit.StatusCard("加载插件", f"0/${pluginsL}")
+yakit.StatusCard("loading plug-in", f"0/${pluginsL}")
 
 manager, err := hook.NewMixPluginCaller()
 
 if err != nil {
-    updateStatus("创建插件调用模块失败")
+    updateStatus("Failed to create plug-in calling module")
     die(err)
 }
 
@@ -279,19 +279,19 @@ x.Foreach(
 onlyBrute = false
 if loadPluginFinished > 0 || loadPluginFailed > 0 {
     yakit.StatusCard(
-        "加载插件",
+        "loading plug-in",
         f"${loadPluginFinished}/${loadPluginFailed+loadPluginFinished}",
     )
 } else if enableBrute {
     onlyBrute = true
-    yakit.StatusCard("加载插件", "弱口令检测")
+    yakit.StatusCard("loading plug-in", "weak password detection")
 } else {
-    yakit.StatusCard("加载插件失败ID", "请检查是否导入了插件", "加载插件失败")
-    die("没有插件加载")
+    yakit.StatusCard("Failed to load plug-in ID", "Please check whether the plug-in", "Failed to load plug-in")
+    die("No plugin loaded")
 }
 
 
-yakit.Info("扫描参数设置完成，准备扫描~")
+yakit.Info("scanning parameters are set and ready to scan~")
 
 pingOpt = []
 
@@ -328,13 +328,13 @@ if excludeHosts != "" {
 HostAliveFile = ""
 aliveHostCount = 0
 if !skippedHostAliveScan && recordPtr == 0 {
-    yakit.Info("开始探测存活~")
+    yakit.Info("starts to detect survival ~")
     hostRaw, _ = file.ReadFile(targetFiles)
     hosts = str.ReplaceAll(string(hostRaw), "\n", ",")
 
     ScanHostCount = 0
     showAliveHostCount = func() {
-        yakit.StatusCard("存活主机数/扫描主机数", f"${aliveHostCount}/${ScanHostCount}")
+        yakit.StatusCard("Number of surviving hosts/Number of scanned hosts", f"${aliveHostCount}/${ScanHostCount}")
     }
     aliveHostStr = ""
     // os.RemoveAll(targetFiles)~
@@ -351,18 +351,18 @@ if !skippedHostAliveScan && recordPtr == 0 {
     }
 
     hostCount = ScanHostCount
-    yakit.StatusCard("Ping存活主机数", aliveHostCount)
+    yakit.StatusCard("Ping number of surviving hosts", aliveHostCount)
     aliveHostStr = str.Trim(aliveHostStr, "\n")
 
     HostAliveFile = file.Join(yakit.GetHomeTempDir(), runtimeID)
     file.Save(HostAliveFile, aliveHostStr)~
     if len(aliveHostStr) == 0 {
-        yakit.Error("没有存活主机")
-        //die("没有存活主机")
+        yakit.Error("No surviving hosts")
+        //die("No surviving hosts")
     }
 
 } else {
-    yakit.Info("跳过存活探测~")
+    yakit.Info("Skip survival detection~")
 }
 
 if recordPtr > 0 && !skippedHostAliveScan {
@@ -382,10 +382,10 @@ files.Push(inputFiles...)
 
 hostTotal = hostCount
 portTotal = len(str.RemoveDuplicatePorts(tcpPorts, synPorts))
-// 需要传递给报告的参数
-yakit.StatusCard("扫描主机数", hostTotal)
-yakit.StatusCard("扫描端口数", portTotal)
-yakit.StatusCard("开放端口数/已扫主机数", "-/-")
+// No surviving hosts
+yakit.StatusCard("Number of scanned hosts", hostTotal)
+yakit.StatusCard("Scan the port number", portTotal)
+yakit.StatusCard("Number of open ports/Number of scanned hosts", "-/-")
 
 totalTasks = hostTotal * portTotal
 portResultFinalTotal = 0
@@ -503,8 +503,8 @@ bruteScan = func(result) {
             pL = append(pL, defaultpass...)
         }
 
-        bruteTasks := len(uL) * len(pL) // 计算爆破任务数量
-        totalTasks += bruteTasks // 将爆破任务数量添加到总任务数中
+        bruteTasks := len(uL) * len(pL) // Calculate the number of blasting tasks
+        totalTasks += bruteTasks // Add the number of blasting tasks to the total number of tasks
 
 
         addr := str.HostPort(result.Target, result.Port)
@@ -520,7 +520,7 @@ bruteScan = func(result) {
         )
         if err != nil {
             yakit.Error(
-                "构建弱口令与未授权扫描失败：%v",
+                "Unauthorized access [%v]: %v",
                 err,
             )
             return
@@ -529,7 +529,7 @@ bruteScan = func(result) {
 
         res, err := instance.Start(addr)
         if err != nil {
-            yakit.Error("输入目标失败：%v", err)
+            yakit.Error("Failed to enter target: %v", err)
             return
         }
 
@@ -537,7 +537,7 @@ bruteScan = func(result) {
         riskTarget = addr
         for rt := range res {
             yakit.Info("rt string %v ", rt.String())
-            updateProgress(1) // 更新进度
+            updateProgress(1) // Update progress
             if rt == nil {
                 continue
             }
@@ -548,21 +548,21 @@ bruteScan = func(result) {
             if rt.Username == "" && rt.Password == "" {
                 risk.NewRisk(
                     riskTarget, risk.severity("high"), risk.type("weak-pass"),
-                    risk.typeVerbose("未授权访问"),
-                    risk.title(sprintf("未授权访问[%v]：%v", rt.Type, rt.Target)),
-                    risk.titleVerbose(sprintf("未授权访问[%v]：%v", rt.Type, rt.Target)),
-                    risk.description("由于配置不当或管理疏忽，某些服务、接口或应用存在未授权访问的风险。攻击者可以直接访问这些资源而不需要任何身份验证，这可能会导致敏感数据的泄露、系统的滥用或其他恶意行为。"),
-                    risk.solution(`1. 审核所有公开可访问的服务、接口和应用，确保它们都有适当的访问控制。
-2. 使用身份验证机制，如用户名/密码、API密钥或OAuth。
-3. 定期监控和审查访问日志，以检测任何可疑或未授权的活动。`),
+                    risk.typeVerbose("Unauthorized access to"),
+                    risk.title(sprintf("Unauthorized access [%v]: %v", rt.Type, rt.Target)),
+                    risk.titleVerbose(sprintf("Unauthorized access [%v]: %v", rt.Type, rt.Target)),
+                    risk.description("Due to improper configuration or management negligence, some services, interfaces or applications There is a risk of unauthorized access. Attackers can directly access these resources without any authentication, which may lead to the disclosure of sensitive data, abuse of the system, or other malicious behavior."),
+                    risk.solution (`1. Audit all publicly accessible services, interfaces and applications to ensure that they have appropriate access controls.
+2. Use authentication mechanism, such as username/password, API key or OAuth.
+3. Regularly monitor and review access logs to detect any suspicious or unauthorized activity. `),
                     risk.details({"username": rt.Username, "password": rt.Password, "target": rt.Target}),
                 )
             } else {
                 risk.NewRisk(
                     riskTarget,risk.severity("high"),risk.type("weak-pass"),
-                    risk.typeVerbose("弱口令"),
-                    risk.description("网站管理、运营人员由于安全意识不足，为了方便、避免忘记密码等，使用了非常容易记住的密码，或者是直接采用了系统的默认密码等。攻击者利用此漏洞可直接进入应用系统或者管理系统，从而进行系统、网页、数据的篡改与删除，非法获取系统、用户的数据，甚至可能导致服务器沦陷。"),
-                    risk.solution("用户层面 : 不要使用常见的弱口令作为密码,不要多个系统或者社交账号使用同一套密码,定期修改密码,建议使用包含随机值的或者随机生成的字符串作为系统密码"),
+                    risk.typeVerbose("Weak password"),
+                    risk.description("website management and operation personnel have insufficient security awareness and use very easy-to-remember passwords for convenience and to avoid forgetting passwords, or directly adopt the systems default password, etc. . Attackers can use this vulnerability to directly enter the application system or management system, thereby tampering and deleting the system, web pages, and data, illegally obtaining system and user data, and may even cause the server to collapse."),
+                    risk.solution("User level: Do not use common weak passwords as passwords. Do not use the same password for multiple systems or social accounts. Change passwords regularly. It is recommended to use random values or randomly generated strings as system The password"),
                     risk.title(sprintf(
                         "Weak Password[%v]：%v user(%v) pass(%v)",
                         rt.Type,
@@ -570,7 +570,7 @@ bruteScan = func(result) {
                         rt.Username,
                         rt.Password,
                     )),
-                    risk.titleVerbose(sprintf("弱口令[%v]：%v user(%v) pass(%v)", rt.Type, rt.Target, rt.Username, rt.Password)),
+                    risk.titleVerbose(sprintf("Weak password [%v]: %v user(%v) pass(%v)", rt.Type, rt.Target, rt.Username, rt.Password)),
                     risk.details({"username": rt.Username, "password": rt.Password, "target": rt.Target}),
                 )
             }
@@ -594,9 +594,9 @@ handleServiceScanResult = func(result) {
 }
 
 /*
-    端口扫描部分分为两大块儿
-    1. 重点端口 TCP 扫描
-    2. 同步非重点端口 SYN 扫描
+    Port scanning part is divided into two parts
+    1. Key port TCP scan
+    2. Synchronize non-key port SYN Scan
 */
 
 ScanHostCount = 0
@@ -616,15 +616,15 @@ addOpenPortCount = func() {
     openPortCountLock.Lock()
     defer openPortCountLock.Unlock()
     OpenPortCount++
-    yakit.StatusCard("开放端口数/已扫主机数", f"${OpenPortCount}/${ScanHostCount}")
+    yakit.StatusCard("Number of open ports/Number of scanned hosts", f"${OpenPortCount}/${ScanHostCount}")
     if skippedHostAliveScan {
         aliveHostCount := len(aliveHostCountList)
-        yakit.StatusCard("存活主机数/扫描主机数", f"${aliveHostCount}/${ScanHostCount}")
+        yakit.StatusCard("Number of surviving hosts/Number of scanned hosts", f"${aliveHostCount}/${ScanHostCount}")
     }
 
 }
 
-/* 进行 TCP 扫描*/
+/* performs TCP scanning*/
 
 func handleTCP(target) {
     try {
@@ -645,7 +645,7 @@ func handleTCP(target) {
         }
 
     } catch err {
-        yakit.Error("处理 TCP 指纹识别失败: %v", err)
+        yakit.Error("Processing TCP fingerprinting failed: %v", err)
     }finally{
         p = 1 * len(str.ParseStringToPorts(str.Trim(tcpPorts, ",")))
         updateProgress(p)
@@ -682,7 +682,7 @@ func handleSYN(target) {
             }
 
         } catch err {
-            yakit.Error("SYN 处理 TCP 指纹识别失败: %v", err)
+            yakit.Error("SYN processing TCP fingerprinting failed: %v", err)
         }finally{
             p = 1 * len(str.ParseStringToPorts(str.Trim(synPorts, ",")))
             updateProgress(p)
@@ -694,16 +694,16 @@ swg = sync.NewSizedWaitGroup(20)
 
 fileReader, err = file.NewMultiFileLineReader(files...)
 if err != nil {
-    yakit.Error("无法创建文件读取管理器：%v", err)
+    yakit.Error("Unable to create file reading manager: %v", err)
     die(err)
 }
 
 
 if recordPtr > 0 {
-    yakit.Info("恢复文件指针到 %d", recordPtr)
+    yakit.Info("Restore file pointer to %d", recordPtr)
     err = fileReader.SetRecoverPtr(targetFiles, recordPtr)
     if err != nil {
-        yakit.Error("恢复文件指针失败：%v", err)
+        yakit.Error("Failed to restore file pointer: %v", err)
         die(err)
     }
 
@@ -712,7 +712,7 @@ if recordPtr > 0 {
 
 for fileReader.Next(){
     var currentTarget = fileReader.Text()
-    yakit.StatusCard("当前文件指针", fileReader.GetLastRecordPtr())
+    yakit.StatusCard("Current file pointer", fileReader.GetLastRecordPtr())
     swg.Add()
     go func {
         defer swg.Done()
@@ -747,11 +747,11 @@ yakit.SetProgress(0.94)
 go fn {
     yakit.Info("Start Vuln Check...")
     for {
-        yakit.Info("漏洞检测中...")
+        yakit.Info("Vulnerability detection in progress...")
         sleep(3)
-        yakit.Info("漏洞检测中.....")
+        yakit.Info("vulnerability detection...")
         sleep(3)
-        yakit.Info("漏洞检测中........")
+        yakit.Info("vulnerability detection.... ....")
         sleep(3)
     }
 }
@@ -764,8 +764,8 @@ if aliveHostCount != 0  {
 }
 
 if hostCountSec != 0 {
-    // 根据存活 ip + (加载成功的插件数 * 2s)/concurrent  + 开放端口数
-    // 定时器，超过一定时间，就扫描结束
+    // According to surviving ip + (number of successfully loaded plug-ins * 2s)/concurrent + number of open ports
+    // timer, if it exceeds a certain time, the scan ends
     waitTimeSec = hostCountSec + (loadPluginFinished * 2)/20 + OpenPortCount
     yakit.Info("waitTimeSec %v", waitTimeSec)
     if waitTimeSec < 10 {
@@ -773,7 +773,7 @@ if hostCountSec != 0 {
     }
     time.AfterFunc(waitTimeSec * 1000 * 1000 * 1000, func() {
         yakit.SetProgress(1)
-        yakit.Info("AfterFunc 本次扫描任务已完成。")
+        yakit.Info("AfterFunc This scan task has been completed.")
         os.Exit(0)
     })
 }
@@ -782,4 +782,4 @@ bruteWg.Wait()
 yakit.Info("brute end success!")
 manager.Wait()
 yakit.SetProgress(1)
-yakit.Info("本次扫描任务已完成。")
+yakit.Info("This scanning task has been completed.")

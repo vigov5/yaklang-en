@@ -96,7 +96,7 @@ func _ParseNucleiTag(raw string) []*NucleiTagData {
 }
 
 func CreateYakTemplateFromNucleiTemplateRaw(tplRaw string) (*YakTemplate, error) {
-	// 渲染了randstr
+	// Rendered randstr
 	//if strings.Contains(tplRaw, "{{") {
 	//	tplRaw = ExpandPreprocessor(tplRaw)
 	//}

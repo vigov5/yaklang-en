@@ -22,7 +22,7 @@ func (s *Server) SaveFuzzerLabel(ctx context.Context, req *ypb.SaveFuzzerLabelRe
 		item.Hash = item.CalcHash()
 		count := yakit.QueryWebFuzzerLabelCount(s.GetProfileDatabase())
 		if count >= 20 {
-			return nil, utils.Errorf("已超出常用标签限制数量，请删除后再进行添加")
+			return nil, utils.Errorf("The limit of common tags has been exceeded. Please delete it before adding it.")
 		}
 		err := yakit.CreateOrUpdateWebFuzzerLabel(s.GetProfileDatabase(), item.Hash, item)
 		if err != nil {
@@ -30,7 +30,7 @@ func (s *Server) SaveFuzzerLabel(ctx context.Context, req *ypb.SaveFuzzerLabelRe
 		}
 	}
 	if len(errLabel) > 0 {
-		return nil, utils.Errorf(strings.Join(errLabel, ",") + "添加失败")
+		return nil, utils.Errorf(strings.Join(errLabel, ",") + "Adding failed")
 	}
 	return &ypb.Empty{}, nil
 }

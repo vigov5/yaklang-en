@@ -186,16 +186,16 @@ func (s *Server) DeleteScreenRecorders(ctx context.Context, req *ypb.QueryScreen
 		file.Close()
 		err := os.RemoveAll(k.Filename)
 		if err != nil {
-			log.Error("删除本地数据库失败：" + err.Error())
+			log.Error("failed to delete the local database:" + err.Error())
 		}
 		err = yakit.DeleteScreenRecorder(s.GetProjectDatabase(), int64(k.ID))
 		if err != nil {
 			deleteNum++
-			log.Error("删除录屏失败：" + err.Error())
+			log.Error("failed to delete the screen recording:" + err.Error())
 		}
 	}
 	if deleteNum > 0 {
-		return nil, utils.Error(fmt.Sprintf("%v%v", deleteNum, "条视频数据删除失败"))
+		return nil, utils.Error(fmt.Sprintf("%v%v", deleteNum, "failed to delete the video data"))
 	}
 	return &ypb.Empty{}, nil
 }
@@ -228,7 +228,7 @@ func (s *Server) UploadScreenRecorders(ctx context.Context, req *ypb.UploadScree
 		file.Close()
 	}
 	if uploadNum > 0 {
-		return nil, utils.Error(fmt.Sprintf("%v%v", uploadNum, "条视频数据上传失败"))
+		return nil, utils.Error(fmt.Sprintf("%v%v", uploadNum, "failed to upload the video data"))
 	}
 	return &ypb.Empty{}, nil
 }
@@ -255,12 +255,12 @@ func (s *Server) GetOneScreenRecorders(ctx context.Context, req *ypb.GetOneScree
 }
 
 func AfterAndBeforeIsExit(id int64) (before, after bool) {
-	// 下一条
+	// Next article
 	beforeData, _ := yakit.IsExitScreenRecorder(consts.GetGormProjectDatabase(), id, "asc")
 	if beforeData != nil {
 		before = true
 	}
-	// 上一条
+	// Previous article
 	afterData, _ := yakit.IsExitScreenRecorder(consts.GetGormProjectDatabase(), id, "desc")
 	if afterData != nil {
 		after = true

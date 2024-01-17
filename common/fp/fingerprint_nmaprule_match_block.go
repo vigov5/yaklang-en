@@ -20,7 +20,7 @@ func getDeadlineFromContext(ctx context.Context, timeout time.Duration) time.Tim
 	return time.Now().Add(timeout)
 }
 
-// 设置 Banner 检查函数
+// Set Banner check function
 var bannerToString = func(banner []byte) string {
 	if banner == nil {
 		return ""

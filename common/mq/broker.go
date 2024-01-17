@@ -35,7 +35,7 @@ type Broker struct {
 	// runtime
 	consumingParams []*ConsumingParam
 
-	// 是否正在运行中
+	// Is it running?
 	wg        *sync.WaitGroup
 	isServing *abool.AtomicBool
 

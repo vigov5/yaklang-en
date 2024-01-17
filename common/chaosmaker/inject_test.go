@@ -16,7 +16,7 @@ func init() {
 }
 
 func TestChaosRules(t *testing.T) {
-	// 注册/pprof路由
+	// Register/pprof routing
 	go func() {
 		http.ListenAndServe(":6060", nil)
 	}()

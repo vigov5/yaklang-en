@@ -29,22 +29,22 @@ func (s *VulinServer) registerLoginRoute() {
 	var keyF jwt.Keyfunc = func(token *jwt.Token) (interface{}, error) {
 		return []byte(key), nil
 	}
-	jwtGroup := r.PathPrefix("/jwt").Name("登陆 JWT").Subrouter()
+	jwtGroup := r.PathPrefix("/jwt").Name("login JWT").Subrouter()
 	jwtRoutes := []*VulInfo{
 		{
 			DefaultQuery: "",
 			Path:         "/login",
-			Title:        "登陆(JWT)",
+			Title:        "login (JWT)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == "GET" {
-					// 不存在登录信息
+					// No login information exists
 					writer.Header().Set("Content-Type", "text/html")
 					writer.Write(jwtLoginPage)
 					return
 				}
 
 				if request.Method == "POST" {
-					// 登录
+					// Login
 					username := request.FormValue("username")
 					password := request.FormValue("password")
 					if username == "" || password == "" {

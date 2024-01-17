@@ -67,7 +67,7 @@ var sshAuth = &DefaultServiceAuthInfo{
 		}
 		defer client.Close()
 
-		// 创建SSH会话
+		// Create SSH session
 		session, err := client.NewSession()
 		if err != nil {
 			log.Errorf("ssh: %v create session failed: %s", i.Target, err)

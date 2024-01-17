@@ -29,11 +29,11 @@ var MitmExports = map[string]interface{}{
 	"useDefaultCA":         mitmConfigUseDefault,
 }
 
-// Start 启动一个 MITM (中间人)代理服务器，它的第一个参数是端口，接下来可以接收零个到多个选项函数，用于影响中间人代理服务器的行为
-// 如果没有指定 CA 证书和私钥，那么将使用内置的证书和私钥
+// Start Start A MITM (man-in-the-middle) proxy server, its first parameter is the port, and then it can receive zero to more option functions, which are used to affect the behavior of the middle-man proxy server.
+// will be called. If the CA certificate and CA certificate are not specified. private key, then the built-in certificate and private key
 // Example:
 // ```
-// mitm.Start(8080, mitm.host("127.0.0.1"), mitm.callback(func(isHttps, urlStr, req, rsp) { http.dump(req); http.dump(rsp)  })) // 启动一个中间人代理服务器，并将请求和响应打印到标准输出
+// mitm.Start(8080, mitm.host("127.0.0.1"), mitm.callback(func(isHttps, urlStr, req, rsp) { http.dump(req); http.dump(rsp)  })) // starts a man-in-the-middle proxy server and prints requests and responses to the standard output. Whether
 // ```
 func startMitm(
 	port int,
@@ -52,7 +52,7 @@ type mitmConfig struct {
 	useDefaultMitmCert bool
 	maxContentLength   int
 
-	// 是否开启透明劫持
+	// is enabled. Transparent hijacking
 	isTransparent            bool
 	hijackRequest            func(isHttps bool, urlStr string, req []byte, forward func([]byte), reject func())
 	hijackWebsocketDataFrame func(isHttps bool, urlStr string, req []byte, forward func([]byte), reject func())
@@ -62,8 +62,8 @@ type mitmConfig struct {
 
 type mitmConfigOpt func(config *mitmConfig)
 
-// isTransparent 是一个选项函数，用于指定中间人代理服务器是否开启透明劫持模式，默认为false
-// 在开启透明模式下，所有流量都会被默认转发，所有的回调函数都会被忽略
+// isTransparent is an option function used to specify whether the middleman proxy server turns on transparent hijacking mode. The default is false
+// . When transparent mode is enabled, all traffic will be forwarded by default, and all callback functions will be ignored.
 // Example:
 // ```
 // mitm.Start(8080, mitm.isTransparent(true))
@@ -74,7 +74,7 @@ func mitmConfigIsTransparent(b bool) mitmConfigOpt {
 	}
 }
 
-// context 是一个选项函数，用于指定中间人代理服务器的上下文
+// context is an option function used to specify the context of the middleman proxy server.
 // Example:
 // ```
 // mitm.Start(8080, mitm.context(context.Background()))
@@ -85,8 +85,8 @@ func mitmConfigContext(ctx context.Context) mitmConfigOpt {
 	}
 }
 
-// useDefaultCA 是一个选项函数，用于指定中间人代理服务器是否使用内置的证书和私钥，默认为true
-// 默认的证书与私钥路径：~/yakit-projects/yak-mitm-ca.crt 和 ~/yakit-projects/yak-mitm-ca.key
+// useDefaultCA is an option function used to specify Whether the middleman proxy server uses built-in certificates and private keys, the default is true
+// Default certificate and private key path: ~/yakit-projects/yak-mitm-ca.crt and ~/yakit-projects/yak-mitm-ca.key
 // Example:
 // ```
 // mitm.Start(8080, mitm.useDefaultCA(true))
@@ -97,7 +97,7 @@ func mitmConfigUseDefault(t bool) mitmConfigOpt {
 	}
 }
 
-// host 是一个选项函数，用于指定中间人代理服务器的监听地址，默认为空，即监听所有网卡
+// host is an option function used to specify the listening address of the middleman proxy server. The default is empty, that is, listening to all network cards
 // Example:
 // ```
 // mitm.Start(8080, mitm.host("127.0.0.1"))
@@ -108,7 +108,7 @@ func mitmConfigHost(host string) mitmConfigOpt {
 	}
 }
 
-// callback 是一个选项函数，用于指定中间人代理服务器的回调函数，当接收到请求和响应后，会调用该回调函数
+// callback is an option function used to specify the callback function of the middleman proxy server. When the request and response are received, Calling this callback function
 // Example:
 // ```
 // mitm.Start(8080, mitm.callback(func(isHttps, urlStr, req, rsp) { http.dump(req); http.dump(rsp)  }))
@@ -119,12 +119,12 @@ func mitmConfigCallback(f func(bool, string, *http.Request, *http.Response)) mit
 	}
 }
 
-// hijackHTTPRequest 是一个选项函数，用于指定中间人代理服务器的请求劫持函数，当接收到请求后，会调用该回调函数
-// 通过调用该回调函数的第四个参数，可以修改请求内容，通过调用该回调函数的第五个参数，可以丢弃请求
+// hijackHTTPRequest is an option function used to specify the request hijacking function of the middleman proxy server. When the request is received, the callback function
+// . By calling the fourth parameter of this callback function, the request content can be modified. By calling this callback The fifth parameter of the function can discard the request
 // Example:
 // ```
 // mitm.Start(8080, mitm.hijackHTTPRequest(func(isHttps, urlStr, req, modified, dropped) {
-// // 添加一个额外的请求头
+// // will be called to add an additional request header
 // req = poc.ReplaceHTTPPacketHeader(req, "AAA", "BBB")
 // modified(req)
 // }
@@ -136,12 +136,12 @@ func mitmConfigHijackHTTPRequest(h func(isHttps bool, u string, req []byte, modi
 	}
 }
 
-// hijackHTTPResponse 是一个选项函数，用于指定中间人代理服务器的响应劫持函数，当接收到响应后，会调用该回调函数
-// 通过调用该回调函数的第四个参数，可以修改响应内容，通过调用该回调函数的第五个参数，可以丢弃响应
+// hijackHTTPResponse is an option function used to specify the response hijacking function of the middleman proxy server. When receiving After receiving the response, the callback function
+// By calling the fourth parameter of the callback function, the response content can be modified, and by calling the fifth parameter of the callback function, the response can be discarded
 // Example:
 // ```
 // mitm.Start(8080, mitm.hijackHTTPResponse(func(isHttps, urlStr, rsp, modified, dropped) {
-// // 修改响应体为hijacked
+// // Modify the response body to hijacked
 // rsp = poc.ReplaceBody(rsp, b"hijacked", false)
 // modified(rsp)
 // }
@@ -153,13 +153,13 @@ func mitmConfigHijackHTTPResponse(h func(isHttps bool, u string, rsp []byte, mod
 	}
 }
 
-// hijackHTTPResponseEx 是一个选项函数，用于指定中间人代理服务器的响应劫持函数，当接收到响应后，会调用该回调函数
-// 通过调用该回调函数的第五个参数，可以修改响应内容，通过调用该回调函数的第六个参数，可以丢弃响应
-// 它与 hijackHTTPResponse 的区别在于，它可以获取到原始请求报文
+// will be used. hijackHTTPResponseEx is an option function used to specify the response hijacking function of the middleman proxy server. When the response is received, the callback function
+// By calling the fifth parameter of this callback function, the response content can be modified, by calling the sixth parameter of this callback function Parameters, you can discard the response
+// The difference between it and hijackHTTPResponse is that it can obtain the original request message
 // Example:
 // ```
 // mitm.Start(8080, mitm.hijackHTTPResponseEx(func(isHttps, urlStr, req, rsp, modified, dropped) {
-// // 修改响应体为hijacked
+// // Modify the response body to hijacked
 // rsp = poc.ReplaceBody(rsp, b"hijacked", false)
 // modified(rsp)
 // }
@@ -171,8 +171,8 @@ func mitmConfigHijackHTTPResponseEx(h func(bool, string, []byte, []byte, func([]
 	}
 }
 
-// wsforcetext 是一个选项函数，用于强制指定中间人代理服务器的 websocket 劫持的数据帧转换为文本帧，默认为false
-// ! 已弃用
+// wsforcetext is an option function used to force the specified middle-man proxy. The data frame hijacked by the servers websocket is converted into a text frame, the default is false
+// ! Deprecated
 // Example:
 // ```
 // mitm.Start(8080, mitm.wsforcetext(true))
@@ -183,10 +183,10 @@ func mitmConfigWSForceTextFrame(b bool) mitmConfigOpt {
 	}
 }
 
-// wscallback 是一个选项函数，用于指定中间人代理服务器的 websocket 劫持函数，当接收到 websocket 请求或响应后，会调用该回调函数
-// 该回调函数的第一个参数是请求或响应的内容
-// 第二个参数是一个布尔值，用于指示该内容是请求还是响应，true 表示请求，false 表示响应
-// 通过该回调函数的返回值，可以修改请求或响应的内容
+// wscallback is an option function used to specify the websocket hijacking function of the middleman proxy server when a websocket request or response is received After that, the callback function
+// The first parameter of the callback function is the content of the request or response
+// when receiving requests and responses. The second parameter is a Boolean value for Indicates whether the content is a request or a response, true indicates a request, false indicates a response
+// Through the return value of this callback function, the content of the request or response can be modified
 // Example:
 // ```
 // mitm.Start(8080, mitm.wscallback(func(data, isRequest) { println(data); return data }))
@@ -197,7 +197,7 @@ func mitmConfigWSCallback(f func([]byte, bool) interface{}) mitmConfigOpt {
 	}
 }
 
-// rootCA 是一个选项函数，用于指定中间人代理服务器的根证书和私钥
+// rootCA is an option function used to specify the root certificate and private key of the middleman proxy server
 // Example:
 // ```
 // mitm.Start(8080, mitm.rootCA(cert, key))
@@ -209,7 +209,7 @@ func mitmConfigCertAndKey(cert, key []byte) mitmConfigOpt {
 	}
 }
 
-// maxContentLength 是一个选项函数，用于指定中间人代理服务器的最大的请求和响应内容长度，默认为10MB
+// will be called. maxContentLength is an option function used to Specify the maximum request and response content length of the middleman proxy server, the default is 10MB
 // Example:
 // ```
 // mitm.Start(8080, mitm.maxContentLength(100 * 1000 * 1000))
@@ -220,12 +220,12 @@ func mitmMaxContentLength(i int) mitmConfigOpt {
 	}
 }
 
-// Bridge 启动一个 MITM (中间人)代理服务器，它的第一个参数是端口，第二个参数是下游代理服务器地址，接下来可以接收零个到多个选项函数，用于影响中间人代理服务器的行为
-// Bridge 与 Start 类似，但略有不同，Bridge可以指定下游代理服务器地址，同时默认会在接收到请求和响应时打印到标准输出
-// 如果没有指定 CA 证书和私钥，那么将使用内置的证书和私钥
+// Bridge starts a MITM (man-in-the-middle) proxy server. Its first parameter is the port, the second parameter is the downstream proxy server address, and then it can receive zero to more option functions for Affects the behavior of the middleman proxy server
+// Bridge is similar to Start, but slightly different. Bridge can specify the downstream proxy server address, and by default will print to the standard output
+// will be called. If the CA certificate and CA certificate are not specified. private key, then the built-in certificate and private key
 // Example:
 // ```
-// mitm.Bridge(8080, "", mitm.host("127.0.0.1"), mitm.callback(func(isHttps, urlStr, req, rsp) { http.dump(req); http.dump(rsp)  })) // 启动一个中间人代理服务器，并将请求和响应打印到标准输出
+// mitm.Bridge(8080, "", mitm.host("127.0.0.1"), mitm.callback(func(isHttps, urlStr, req, rsp) { http.dump(req); http.dump(rsp)  })) // starts a man-in-the-middle proxy server and prints requests and responses to the standard output. Whether
 // ```
 func startBridge(
 	port interface{},

@@ -9,31 +9,31 @@ import (
 
 const LASTCPUPERCENT_KEY = "LastCPUPercent"
 
-// CPUPercentCallback 当 CPU 使用率发生变化时，调用 callback 函数
+// CPUPercentCallback When the CPU usage changes, call the callback function
 // Example:
 // ```
 // hids.Init()
 // hids.CPUPercentCallback(func(i) {
-// if (i > 50) { println("cpu precent is over 50%") } // 当 CPU 使用率超过50%时输出信息
+// if (i > 50) { println("cpu precent is over 50%") } // When the CPU usage exceeds 50%, output information
 // })
 // ```
 func CPUPercentCallback(callback func(i float64)) {
 	GetGlobalHealthManager().RegisterCPUPercentCallback(callback)
 }
 
-// CPUPercentCallback 当 CPU 使用率平均值发生变化时，调用 callback 函数
+// CPUPercentCallback When the average CPU usage changes, call the callback function
 // Example:
 // ```
 // hids.Init()
 // hids.CPUAverageCallback(func(i) {
-// if (i > 50) { println("cpu average precent is over 50%") } // 当 CPU 使用率平均值超过50%时输出信息
+// if (i > 50) { println("cpu average precent is over 50%") } // When the average CPU usage exceeds 50%, output information
 // })
 // ```
 func CPUAverageCallback(callback func(i float64)) {
 	GetGlobalHealthManager().RegisterCPUAverageCallback(callback)
 }
 
-// CPUPercent 获取当前系统的 CPU 使用率
+// CPUPercent to obtain the CPU usage of the current system.
 // Example:
 // ```
 // printf("%f%%\n", hids.CPUPercent())
@@ -47,7 +47,7 @@ func CPUPercent() float64 {
 	}
 }
 
-// CPUAverage 获取当前系统的 CPU 使用率平均值
+// CPUAverage Get the average CPU usage of the current system
 // Example:
 // ```
 // printf("%f%%\n", hids.CPUAverage())

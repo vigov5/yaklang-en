@@ -53,7 +53,7 @@ type quakeQueryParam struct {
 type quakeUserInfo struct {
 	Id      string `json:"id"`
 	IsBaned bool   `json:"baned"`
-	// 当月剩余
+	// Remainder of the month
 	MonthRemainingCredit int    `json:"month_remaining_credit"`
 	TotalCredit          int    `json:"total_credit"`
 	ConstantCredit       int    `json:"constant_credit"`

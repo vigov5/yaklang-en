@@ -52,7 +52,7 @@ Content-Length: 3
 		return rsp
 	})
 
-	client, err := NewLocalClient() // 新建一个 yakit client
+	client, err := NewLocalClient() // Create a new yakit client
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -61,7 +61,7 @@ Content-Length: 3
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// 启动MITM服务器
+	// is discarded. Start the MITM server
 	stream, err := client.MITM(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -109,22 +109,22 @@ assert rsp.Contains(token), "gzip + chunk failed"
 }
 
 func TestGRPCMUSTPASS_MITM_ALL(t *testing.T) {
-	client, err := NewLocalClient() // 新建一个 yakit client
+	client, err := NewLocalClient() // Create a new yakit client
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	var (
-		started           bool // MITM正常启动（此时MITM开启HTTP2支持）
-		passthroughTested bool // Mock的普通HTTP服务器正常工作
-		echoTested        bool // 将MITM作为代理向mock的http服务器发包 这个过程成功说明 MITM开启H2支持的情况下 能够正确处理H1请求
-		gzipAutoDecode    bool // 将MITM作为代理向mock的http服务器发包 同时客户端发包被gzip编码 mitm正常处理 mock服务器正常处理 说明整个流程正确处理了gzip编码的情况
-		chunkDecode       bool // 将MITM作为代理向mock的http服务器发包 同时客户端发包被gzip编码 且使用chunk编码 mitm正常处理 mock服务器正常处理 说明整个流程正确处理了gzip+chunk编码的情况
-		h2Test            bool // 将MITM作为代理向mock的http2服务器发包 这个过程成功说明 MITM开启H2支持的情况下 能够正确处理H2请求和响应
+		started           bool // MITM starts normally (at this time MITM turns on HTTP2 support)
+		passthroughTested bool // Mocks ordinary HTTP server works normally.
+		echoTested        bool // . Use MITM as a proxy to send packets to the mock http server. The success of this process shows that MITM can correctly handle H1 requests when H2 support is enabled.
+		gzipAutoDecode    bool // uses MITM as a proxy to send packets to the mocks http server. At the same time, the clients packets are gzip encoded. mitm processes them normally. The mock server handles them normally. This means that the entire process correctly handles gzip encoding. The situation
+		chunkDecode       bool // uses MITM as a proxy to send packets to the mocks http server. At the same time, the client sends packets that are gzip encoded and use chunk encoding mitm. The normal processing of the mock server shows that the entire process correctly handles the gzip+chunk encoding situation
+		h2Test            bool // uses MITM as a proxy to send packets to the mock http2 server. The success of this process shows that MITM can work correctly when H2 support is turned on. Process H2 requests and responses
 	)
 
 	var mockHost, mockPort = utils.DebugMockHTTPEx(func(req []byte) []byte {
-		passthroughTested = true // 测试标识位 收到了http请求
+		passthroughTested = true // test flag received http request
 		rsp, _, _ := lowhttp.FixHTTPResponse([]byte(`HTTP/1.1 200 OK
 Content-Type: text/html
 Content-Length: 3
@@ -172,7 +172,7 @@ Content-Length: 3
 		return req
 	})
 	h2Addr := utils.HostPort(h2Host, h2Port)
-	// 测试我们的h2 mock服务器是否正常工作
+	// Test whether our h2 mock server is working normally
 	_, err = yak.NewScriptEngine(10).ExecuteEx(`
 rsp,req = poc.HTTP(getParam("packet"), poc.http2(true), poc.https(true))~
 `, map[string]any{
@@ -194,7 +194,7 @@ Host: ` + h2Addr,
 		panic("IMPORT MITM REPLACER RULE FAILED")
 	}
 
-	// 启动MITM服务器
+	// is discarded. Start the MITM server
 	stream, err := client.MITM(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -234,14 +234,14 @@ Host: www.example.com
 					"proxy": proxy,
 					"token": token,
 				}
-				// 将MITM作为代理向mock的http服务器发包 这个过程成功说明 MITM开启H2支持的情况下 能够正确处理H1请求
+				// . Use MITM as a proxy to send packets to the mock http server. The success of this process shows that MITM can correctly handle H1 requests when H2 support is enabled.
 				_, err := yak.NewScriptEngine(10).ExecuteEx(`
 log.info("Start to send packet echo")
 packet := getParam("packet")
 host, port = getParam("host"), getParam("port")
 rsp, req = poc.HTTP(string(packet), poc.proxy(getParam("proxy")), poc.host(host), poc.port(port))~
 if rsp.Contains(getParam("token")) {
-	println("基础发包测试：success")	
+	println("basic packet sending test: success")	
 }else{
 	die("echo test not pass!")
 }
@@ -380,30 +380,30 @@ println("-----------------------------------------------------------------------
 }
 
 func TestGRPCMUSTPASS_MITM_GM(t *testing.T) {
-	client, err := NewLocalClient() // 新建一个 yakit client
+	client, err := NewLocalClient() // Create a new yakit client
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	var (
-		started                bool // MITM正常启动（此时MITM开启HTTP2支持）
-		gmPassthroughTested    bool // Mock的GM-HTTPS服务器正常工作
-		httpPassthroughTested  bool // Mock的HTTP服务器正常工作
-		httpsPassthroughTested bool // Mock的HTTPS服务器正常工作
-		httpTest               bool // 将开启了GM支持的MITM作为代理向mock的HTTP服务器发包 这个过程成功说明 MITM开启GM支持的情况下 能够正确处理HTTP请求和响应
-		httpsTest              bool // 将开启了GM支持的MITM作为代理向mock的HTTPS服务器发包 这个过程成功说明 MITM开启GM支持的情况下 能够正确处理Vanilla-HTTPS请求和响应
-		gmTest                 bool // 将开启了GM支持的MITM作为代理向mock的GM-HTTPS服务器发包 这个过程成功说明 MITM开启GM支持的情况下 能够正确处理GM-HTTPS请求和响应
+		started                bool // MITM starts normally (at this time MITM turns on HTTP2 support)
+		gmPassthroughTested    bool // Mocks GM-HTTPS server works normally
+		httpPassthroughTested  bool // Mocks HTTP server works normally.
+		httpsPassthroughTested bool // Mocks HTTPS server works normally
+		httpTest               bool // will come in the second time. MITM with GM support will be turned on as a proxy to send packets to the mock HTTP server. This process is successful when MITM turns on GM support. Can correctly handle HTTP requests and responses
+		httpsTest              bool // uses MITM with GM support enabled as a proxy to send packets to the mock HTTPS server. This process successfully shows that MITM can correctly handle Vanilla-HTTPS when GM support is enabled. Request and response
+		gmTest                 bool // Use MITM with GM support turned on as a proxy to send packets to the mock GM-HTTPS server. This process successfully shows that MITM can correctly handle GM-HTTPS requests and responses when GM support is turned on.
 	)
 
 	var mockGMHost, mockGMPort = utils.DebugMockGMHTTP(context.Background(), func(req []byte) []byte {
-		gmPassthroughTested = true // 测试标识位 收到了http请求
+		gmPassthroughTested = true // test flag received http request
 		rsp, _, _ := lowhttp.FixHTTPResponse([]byte(`HTTP/1.1 200 OK
 Content-Type: text/html
 Content-Length: 3
 
 111`))
 		_, body := lowhttp.SplitHTTPHeadersAndBodyFromPacket(req)
-		rsp = lowhttp.ReplaceHTTPPacketBodyFast(rsp, body) // 返回包的body是请求包的body
+		rsp = lowhttp.ReplaceHTTPPacketBodyFast(rsp, body) // The body of the returned package is the body of the request package
 		if lowhttp.GetHTTPPacketHeader(req, "Content-Encoding") == "gzip" {
 			rsp = lowhttp.ReplaceHTTPPacketHeader(rsp, "Content-Encoding", "gzip")
 		}
@@ -413,14 +413,14 @@ Content-Length: 3
 		return rsp
 	})
 	var mockHost, mockPort = utils.DebugMockHTTPEx(func(req []byte) []byte {
-		httpPassthroughTested = true // 测试标识位 收到了http请求
+		httpPassthroughTested = true // test flag received http request
 		rsp, _, _ := lowhttp.FixHTTPResponse([]byte(`HTTP/1.1 200 OK\n
 Content-Type: text/html
 Content-Length: 3
 
 111`))
 		_, body := lowhttp.SplitHTTPHeadersAndBodyFromPacket(req)
-		rsp = lowhttp.ReplaceHTTPPacketBodyFast(rsp, body) // 返回包的body是请求包的body
+		rsp = lowhttp.ReplaceHTTPPacketBodyFast(rsp, body) // The body of the returned package is the body of the request package
 		if lowhttp.GetHTTPPacketHeader(req, "Content-Encoding") == "gzip" {
 			rsp = lowhttp.ReplaceHTTPPacketHeader(rsp, "Content-Encoding", "gzip")
 		}
@@ -430,14 +430,14 @@ Content-Length: 3
 		return rsp
 	})
 	var mockHttpsHost, mockHttpsPort = utils.DebugMockHTTPSEx(func(req []byte) []byte {
-		httpsPassthroughTested = true // 测试标识位 收到了http请求
+		httpsPassthroughTested = true // test flag received http request
 		rsp, _, _ := lowhttp.FixHTTPResponse([]byte(`HTTP/1.1 200 OK\n
 Content-Type: text/html
 Content-Length: 3
 
 111`))
 		_, body := lowhttp.SplitHTTPHeadersAndBodyFromPacket(req)
-		rsp = lowhttp.ReplaceHTTPPacketBodyFast(rsp, body) // 返回包的body是请求包的body
+		rsp = lowhttp.ReplaceHTTPPacketBodyFast(rsp, body) // The body of the returned package is the body of the request package
 		if lowhttp.GetHTTPPacketHeader(req, "Content-Encoding") == "gzip" {
 			rsp = lowhttp.ReplaceHTTPPacketHeader(rsp, "Content-Encoding", "gzip")
 		}
@@ -456,7 +456,7 @@ Content-Length: 3
 	var proxy = "http://127.0.0.1:" + fmt.Sprint(rPort)
 	_ = proxy
 
-	// 启动MITM服务器
+	// is discarded. Start the MITM server
 	stream, err := client.MITM(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -581,7 +581,7 @@ if rsp.Contains(getParam("token")) {
 				httpsTest = true
 			}
 
-			// 执行查询操作
+			// Execute query operation
 			_, flows, err = yakit.QueryHTTPFlow(consts.GetGormProjectDatabase(), &ypb.QueryHTTPFlowRequest{
 				SearchURL: "/HTTP" + token,
 			})
@@ -627,16 +627,16 @@ if rsp.Contains(getParam("token")) {
 
 }
 
-// TestGRPCMUSTPASS_MITM_Drop 测试MITM设置手动劫持并丢弃响应后MITM响应的行为和HTTP History的记录是否符合预期
+// TestGRPCMUSTPASS_MITM_Drop Test MITM settings to manually hijack and drop After the response, the MITM response behavior and the HTTP History record are as expected.
 func TestGRPCMUSTPASS_MITM_Drop(t *testing.T) {
-	client, err := NewLocalClient() // 新建一个 yakit client
+	client, err := NewLocalClient() // Create a new yakit client
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	var (
-		started         bool // MITM正常启动（此时MITM开启HTTP2支持
-		h2Test          bool // 将MITM作为代理向mock的http2服务器发包 这个过程成功说明 MITM开启H2支持的情况下 能够正确处理H2请求和响应
+		started         bool // MITM starts normally ( At this time, MITM enables HTTP2 support
+		h2Test          bool // uses MITM as a proxy to send packets to the mock http2 server. The success of this process shows that MITM can work correctly when H2 support is turned on. Process H2 requests and responses
 		h2serverHandled int
 	)
 
@@ -654,7 +654,7 @@ func TestGRPCMUSTPASS_MITM_Drop(t *testing.T) {
 	log.Infof("start to mock h2 server: %v", utils.HostPort(h2Host, h2Port))
 	var rPort = utils.GetRandomAvailableTCPPort()
 	var proxy = "http://127.0.0.1:" + fmt.Sprint(rPort)
-	// 测试我们的h2 mock服务器是否正常工作
+	// Test whether our h2 mock server is working normally
 	_, err = yak.NewScriptEngine(10).ExecuteEx(`
 rsp,req = poc.HTTP(getParam("packet"), poc.http2(true), poc.https(true),poc.save(false))~
 `, map[string]any{
@@ -665,7 +665,7 @@ Host: ` + h2Addr,
 	if err != nil {
 		t.Fatal(err)
 	}
-	// 启动MITM服务器
+	// is discarded. Start the MITM server
 	stream, err := client.MITM(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -687,14 +687,14 @@ Host: ` + h2Addr,
 		}
 		if strings.Contains(spew.Sdump(rsp), `starting mitm server`) && !started {
 			started = true
-			// 前置测试会替换默认的规则导致运行到MITM GRPC测试时，过滤器不再是默认值，这会影响手动劫持规则，导致connect请求被拦截，进而超时
-			// 因此此处做重置过滤器操作
+			// pre-test will replace the default rules, causing the filter to no longer be the default value when running to the MITM GRPC test, which will affect the manual hijacking rules, causing the connect request to be intercepted, and then time out
+			// . Therefore, reset the filter operation
 			stream.Send(&ypb.MITMRequest{
 				SetResetFilter: true,
 			})
 			stream.Send(&ypb.MITMRequest{
 				SetAutoForward:   true,
-				AutoForwardValue: false, //手动劫持
+				AutoForwardValue: false, //manual hijacking
 			})
 			time.Sleep(time.Second * 3)
 			manual = true
@@ -736,7 +736,7 @@ a, b, _ = poc.HTTP(string(packet), poc.proxy(getParam("proxy")), poc.https(true)
 					if err != nil {
 						t.Fatal(err)
 					}
-					if len(flows) > 0 && len(flows[0].Response) == 0 { // 被用户手动丢弃的请求 不会有响应
+					if len(flows) > 0 && len(flows[0].Response) == 0 { // Requests that are manually discarded by the user will not respond
 						h2Test = true
 					} else if len(flows) == 0 {
 						t.Fatal("/mitm/test/h2/drop/token/" + token + " not found")
@@ -776,7 +776,7 @@ a, b, _ = poc.HTTP(string(packet), poc.proxy(getParam("proxy")), poc.https(true)
 }
 
 func TestGRPCMUSTPASS_MITM_DnsAndHosts(t *testing.T) {
-	client, err := NewLocalClient() // 新建一个 yakit client
+	client, err := NewLocalClient() // Create a new yakit client
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -887,7 +887,7 @@ func TestGRPCMUSTPASS_MITM_DnsAndHosts(t *testing.T) {
 }
 
 func TestMitmDropWithHijackResp(t *testing.T) {
-	client, err := NewLocalClient() // 新建一个 yakit client
+	client, err := NewLocalClient() // Create a new yakit client
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -907,7 +907,7 @@ ok
 	log.Infof("start to mock h2 server: %v", utils.HostPort(host, port))
 	var rPort = utils.GetRandomAvailableTCPPort()
 	var proxy = "http://127.0.0.1:" + fmt.Sprint(rPort)
-	//启动mitm服务器
+	//Start mitm server
 	stream, err := client.MITM(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -956,12 +956,12 @@ Host: ` + addr)
 			hasDrop = true
 			useID = rsp.GetId()
 		}
-		//启动完毕之后换手动劫持，开始发包
+		//After the startup is completed, switch to manual hijacking and start sending packets.
 		if strings.Contains(spew.Sdump(rsp), `starting mitm server`) && !started {
 			started = true
 			stream.Send(&ypb.MITMRequest{
 				SetAutoForward:   true,
-				AutoForwardValue: false, //手动劫持
+				AutoForwardValue: false, //manual hijacking
 			})
 			time.Sleep(1 * time.Second)
 			go func() {
@@ -977,7 +977,7 @@ Host: ` + addr)
 }
 
 func TestHijackResp(t *testing.T) {
-	client, err := NewLocalClient() // 新建一个 yakit client
+	client, err := NewLocalClient() // Create a new yakit client
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -996,7 +996,7 @@ ok
 	log.Infof("start to mock http server: %v", utils.HostPort(host, port))
 	var rPort = utils.GetRandomAvailableTCPPort()
 	var proxy = "http://127.0.0.1:" + fmt.Sprint(rPort)
-	//启动mitm服务器
+	//Start mitm server
 	stream, err := client.MITM(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -1043,12 +1043,12 @@ Host: ` + addr
 			useID = rsp.GetId()
 			hasForward = true
 		}
-		//启动完毕之后换手动劫持，开始发包
+		//After the startup is completed, switch to manual hijacking and start sending packets.
 		if strings.Contains(spew.Sdump(rsp), `starting mitm server`) && !started {
 			started = true
 			stream.Send(&ypb.MITMRequest{
 				SetAutoForward:   true,
-				AutoForwardValue: false, //手动劫持
+				AutoForwardValue: false, //manual hijacking
 			})
 			time.Sleep(1 * time.Second)
 			go func() {
@@ -1103,7 +1103,7 @@ func TestGRPCMUSTPASS_MITM_CancelHijackResponse(t *testing.T) {
 
 		} else if len(rcpResponse.GetRequest()) > 0 {
 
-			// 模拟用户点击切换劫持响应为从不
+			// simulates user clicks to switch the hijacking response to never.
 			if !once {
 				once = true
 				stream.Send(&ypb.MITMRequest{
@@ -1113,7 +1113,7 @@ func TestGRPCMUSTPASS_MITM_CancelHijackResponse(t *testing.T) {
 				time.Sleep(100 * time.Microsecond)
 				stream.Send(&ypb.MITMRequest{
 					Id:                   rcpResponse.GetId(),
-					CancelhijackResponse: true, // 代表取消劫持响应
+					CancelhijackResponse: true, // represents the cancellation of hijacking response
 				})
 				time.Sleep(100 * time.Microsecond)
 			}
@@ -1123,7 +1123,7 @@ func TestGRPCMUSTPASS_MITM_CancelHijackResponse(t *testing.T) {
 				Request: rcpResponse.GetRequest(),
 			})
 
-			// 如果劫持了响应，第二次会进来
+			// If the response is hijacked,
 			if len(rcpResponse.GetResponse()) > 0 {
 				t.Fatalf("Should not hijack response, but hijacked")
 			}

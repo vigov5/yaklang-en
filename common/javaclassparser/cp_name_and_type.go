@@ -2,7 +2,7 @@ package javaclassparser
 
 /*
 *
-给出字段或方法的名称和描述符
+is given The name and descriptor of the field or method
 
 	CONSTANT_NAMEANDTYPE_INFO {
 		u1 tag;
@@ -12,10 +12,10 @@ package javaclassparser
 */
 type ConstantNameAndTypeInfo struct {
 	Type string
-	//字段或方法名 指向一个CONSTANT_UTF8_INFO
+	//The field or method name points to a CONSTANT_UTF8_INFO
 	NameIndex        uint16
 	NameIndexVerbose string
-	//字段或方法的描述符 指向一个CONSTANT_UTF8_INFO
+	//The descriptor of the field or method points to a CONSTANT_UTF8_INFO
 	DescriptorIndex        uint16
 	DescriptorIndexVerbose string
 }
@@ -26,20 +26,20 @@ func (self *ConstantNameAndTypeInfo) readInfo(cp *ClassParser) {
 }
 
 /**
-(1)类型描述符
-	①基本类型
+(1) Type descriptor
+	①Basic type
 	byte -> B
 	short -> S
 	char -> C
 	int -> I
-	long -> J *注意long的描述符是J不是L
+	long -> J *. Note that the descriptor of long is J not L
 	float -> F
 	double -> D
-	②引用类型的描述符是 L+类的完全限定名+分号
-	③数组类型的描述符是 [+数组元素类型描述符
+	②The descriptor of the reference type is L+the fully qualified name of the class + semicolon
+	③The descriptor of the array type is [+array element type descriptor
 
-(2)字段描述符就是字段类型的描述符
-(3)方法描述符是 （分号分割的参数类型描述符） + 返回值类型描述符，void返回值由单个字母V表示
+(2) The field descriptor is the descriptor of the field type
+(3) The method descriptor is (semicolon separated parameter type descriptor) + Return value type descriptor, void return value is represented by a single letter V
 
-紫苑注：boolean的基本类型应该是Z
+Ziyuan Note: The basic type of boolean should be Z
 */

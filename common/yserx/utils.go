@@ -425,7 +425,7 @@ func _rawIdentToJavaSerializable(raw []byte) (JavaSerializable, error) {
 			return nil, err
 		}
 
-		//	这儿有点特殊，如果是 TC_ARRAY 需要针对 [B 的 bytescode 做优化，不然大的离谱了
+		//	This is a bit special. If it is TC_ARRAY, it needs to be optimized for the bytescode of [B, otherwise it will be ridiculously large.
 		_ = json.Unmarshal(_getBytes(m, "bytescode"), &j.Bytescode)
 		if j.Bytescode {
 			err = json.Unmarshal(_getBytes(m, "bytes"), &j.Bytes)

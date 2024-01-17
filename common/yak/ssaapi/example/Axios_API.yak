@@ -94,13 +94,13 @@ var instance = axios.create({
     timeout:1000,
     headers:{"X-Custom-Header":"foobar"}
 })      
-//创建实例时设置
-//实例创建后修改默认值（设置全局axios默认值）
+//Set when creating an instance
+//Modify the default value after the instance is created (set the global axios default value)
 axios.defaults.baseURL = "https://api.example.com";
 axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
-// 并发：axios.all(iterable)
+// Concurrency: axios.all(iterable)
 axios.all([
     axios.get("https://api.github.com/xxx/1"),
     axios.get("https://api.github.com/xxx/2")
@@ -134,18 +134,18 @@ const service = axios.create({
 })
 
 axios.interceptors.request.use(function(config){
-        //发送请求之前做些什么
+        //What to do before sending a request
         return config;
     },function(error){
-        //请求错误之后做些什么
+        //What to do after a request error
         return Promise.reject(error);
     })
-    //响应添加拦截器
+    //Add an interceptor in response
     axios.interceptors.response.use(function(config){
-        //发送请求之前做些什么
+        //What to do before sending a request
         return config;
     },function(error){
-        //请求错误之后做些什么
+        //What to do after a request error
         return Promise.reject(error);
     })
 

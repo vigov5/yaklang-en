@@ -178,7 +178,7 @@ func (sm3 *SM3) update2(msg []byte) [8]uint32 {
 	return digest
 }
 
-// 创建哈希计算实例
+// Create a hash calculation instance
 func New() hash.Hash {
 	var sm3 SM3
 
@@ -226,7 +226,7 @@ func (sm3 *SM3) Write(p []byte) (int, error) {
 	return toWrite, nil
 }
 
-// 返回SM3哈希算法摘要值
+// and return the SM3 hash algorithm digest value
 // Sum appends the current hash to b and returns the resulting slice.
 // It does not change the underlying hash state.
 func (sm3 *SM3) Sum(in []byte) []byte {

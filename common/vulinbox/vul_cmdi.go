@@ -13,12 +13,12 @@ import (
 func (s *VulinServer) registerPingCMDI() {
 	r := s.router
 
-	cmdIGroup := r.PathPrefix("/exec").Name("命令注入测试案例 (Unsafe Mode)").Subrouter()
+	cmdIGroup := r.PathPrefix("/exec").Name("Command injection test case (Unsafe Mode)").Subrouter()
 	cmdIRoutes := []*VulInfo{
 		{
 			DefaultQuery: "ip=127.0.0.1",
 			Path:         "/ping/shlex",
-			Title:        "Shlex  解析的命令注入",
+			Title:        "Shlex parsed command injection",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				ip := request.URL.Query().Get("ip")
 				if ip == "" {
@@ -34,7 +34,7 @@ func (s *VulinServer) registerPingCMDI() {
 				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 				defer cancel()
 				outputs, err1 := exec.CommandContext(ctx, list[0], list[1:]...).CombinedOutput()
-				// 尝试将 GBK 转换为 UTF-8
+				// Attempt to convert GBK to UTF-8
 				utf8Outputs, err2 := utils.GbkToUtf8(outputs)
 				if err2 != nil {
 					writer.Write(outputs)
@@ -51,7 +51,7 @@ func (s *VulinServer) registerPingCMDI() {
 		{
 			DefaultQuery: "ip=127.0.0.1",
 			Path:         "/ping/bash",
-			Title:        "Bash  解析的命令注入",
+			Title:        "Bash parsed command injection",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				ip := request.URL.Query().Get("ip")
 				if ip == "" {
@@ -62,7 +62,7 @@ func (s *VulinServer) registerPingCMDI() {
 				ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 				defer cancel()
 				outputs, err1 := exec.CommandContext(ctx, `bash`, "-c", raw).CombinedOutput()
-				// 尝试将 GBK 转换为 UTF-8
+				// Attempt to convert GBK to UTF-8
 				utf8Outputs, err2 := utils.GbkToUtf8(outputs)
 				if err2 != nil {
 					writer.Write(outputs)

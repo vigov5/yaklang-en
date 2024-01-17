@@ -26,12 +26,12 @@ type YakCompiler struct {
 	lexerErrorListener  *ErrorListener
 	parserErrorListener *ErrorListener
 	errorStrategy       *ErrorStrategy
-	// 语法错误的问题处理
+	// Handling syntax errors
 
-	// 新增语句绑定起止位置
+	// adds the start and end position of the new statement binding.
 	currentStartPosition, currentEndPosition *Position
 
-	// 格式化
+	// Formatting
 	formatted                                    *bytes.Buffer
 	indent                                       int
 	sourceCodeFilePathPointer, sourceCodePointer *string
@@ -39,11 +39,11 @@ type YakCompiler struct {
 	rootSymtbl                                   *yakvm.SymbolTable
 	currentSymtbl                                *yakvm.SymbolTable
 	programCounter                               int
-	// 为了精简，栈只存 for 开始位置
+	// In order to simplify, the stack only stores the start position of for
 	forDepthStack    *vmstack.Stack
 	switchDepthStack *vmstack.Stack
 	tryDepthStack    *vmstack.Stack
-	// 编译过程语法错误的地方
+	// The place where syntax errors occur during compilation
 	lexerErrors    YakMergeError
 	parserErrors   YakMergeError
 	compilerErrors YakMergeError
@@ -53,7 +53,7 @@ type YakCompiler struct {
 	lexer                     *yak.YaklangLexer
 	parser                    *yak.YaklangParser
 	strict                    bool
-	indeterminateUndefinedVar [][2]any // [0] 为变量名 [1] 为错误信息
+	indeterminateUndefinedVar [][2]any // [0] is the variable name [1] is the error message.
 	extVars                   []string
 	extVarsMap                map[string]struct{}
 	contextInfo               *vmstack.Stack
@@ -89,7 +89,7 @@ func (y *YakCompiler) NowInSwitch() bool {
 	return y.switchDepthStack.Len() > 0
 }
 
-// peekForStartIndex 检查当前最近的 for 循环的开始位置，一般为了设置 continue
+// peekForStartIndex checks the start position of the most recent for loop, usually to set continue
 func (y *YakCompiler) peekForStartIndex() int {
 	result := y.peekForContext()
 	if result == nil {
@@ -211,7 +211,7 @@ func (y *YakCompiler) Compiler(code string) bool {
 	}
 	y.VisitProgram(raw.(*yak.ProgramContext))
 
-	// 检查全局定义的变量，允许在非全局作用域内调用全局定义域内定义的变量
+	// checks the globally defined variables and allows calling variables defined in the global scope in non-global scope.
 	errorMap := make(map[any]*YakError)
 	for _, compilerError := range y.compilerErrors {
 		errorMap[reflect.ValueOf(compilerError).Pointer()] = compilerError
@@ -286,7 +286,7 @@ func (y *YakCompiler) VisitProgram(raw yak.IProgramContext, inline ...bool) inte
 	}
 	y.writeAllWS(i.AllWs())
 
-	// 遇到每一个 program 确定是要给人家新开定义域的！
+	// When encountering each program, make sure it is Open a new domain for others!
 	y.programCounter++
 
 	noEmptyStmts := funk.Filter(i.StatementList().(*yak.StatementListContext).AllStatement(), func(i yak.IStatementContext) bool {

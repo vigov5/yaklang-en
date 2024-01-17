@@ -244,13 +244,13 @@ c[0]
 
 func TestParseSSA_Valid1(t *testing.T) {
 	p := ParseSSA(`<?php 
-// 声明一个数组
+// Declare an array
 $array = array("apple", "banana", "cherry");
 
-// 访问数组中的元素
-echo $array[0]; // 输出 "apple"
-echo $array[1]; // 输出 "banana"
-echo $array[2]; // 输出 "cherry"
+// Access elements in an array
+echo $array[0]; // Output "apple"
+echo $array[1]; // Output "banana"
+echo $array[2]; // Output "cherry"
 
 `, nil)
 	p.Show()

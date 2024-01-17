@@ -157,7 +157,7 @@ func MakeOpenAITranslateCWE(cwe *cveresources.CWE, apiKey string, proxies ...str
 
 	log.Infof("start to generate cwe solution: %v", cwe.CWEString())
 	if cwe.CWESolution == "" && cwe.NameZh != "" {
-		solution, err := client.Chat(fmt.Sprintf("请给出 %v 的100字以内的安全建议或修复方案", strconv.Quote(cwe.NameZh)))
+		solution, err := client.Chat(fmt.Sprintf("Please give %v’s security suggestions or fixes within 100 words", strconv.Quote(cwe.NameZh)))
 		if err != nil {
 			log.Errorf("generate solution failed: %s", err)
 		}
@@ -186,7 +186,7 @@ func MakeOpenAIWorking(src *cveresources.CVE, cveDescription string, apiKey stri
 		return utils.Errorf("%v's translating existed", d.CVE)
 	}
 
-	var tmpl = fmt.Sprintf(`把 %v 整理成 JSON 数据，要求是中文，提取标题(title)，并给出中文翻译(desc)，并给出修复方案(solution)`, strconv.Quote(cveDescription))
+	var tmpl = fmt.Sprintf(`Organize %v into JSON data, the requirement is Chinese, extract the title (title), give the Chinese translation (desc), and give the repair plan (solution)`, strconv.Quote(cveDescription ))
 	var proxyReal string
 	if len(proxy) > 0 {
 		proxyReal = proxy[0]

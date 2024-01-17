@@ -45,37 +45,37 @@ func (e *EventSeverity) String() string {
 
 type AuditLog struct {
 	/*
-	   日志本身的属性
+	   The attributes of the log itself
 	*/
-	// Logagent 查询日志的具体时间
+	// Logagent Query log specific time
 	QueryTimestamp int64 `json:"query_timestamp" `
 
 	LogRecordID uint `json:"record_id"`
-	//请求的url的唯一ID
+	//The unique ID of the URL requested
 	RequestId string `json:"request_id"`
 
-	// 日志记录具体的时间戳
+	// Log record specific timestamp
 	Timestamp int64 `json:"log_timestamp" gorm:"index"`
 
 	// level
 	Level EventSeverity `json:"event_severity"`
 
 	/*
-		日志记录的内容 （谁 - 什么时间 - 使用什么/在哪里（发生在那个接口中: url / source ）- 做了一件什么事 - 产生了什么额外数据/影响 ）
+		The content of the log record (who - when - what is used/(it occurs in that interface: url / source ) - What was done Event - What additional data is generated/Impact)
 	*/
 
-	// 操作用户，可能是用户名也可能是系统名
-	OperationUser string `json:"operation_user" gorm:"index"` // 谁
-	Organization  string // 这个人的组织
-	VpnId         string `json:"vpn_account" gorm:"index"` // 如果通过 VPN 操作产生的日志
+	// The operating user, which may be the user name or the system name
+	OperationUser string `json:"operation_user" gorm:"index"` // Who
+	Organization  string // If the persons organization
+	VpnId         string `json:"vpn_account" gorm:"index"` // If the log generated through VPN operation
 
-	// 发生在那个接口中？
-	UrlPath  string `json:"url_path" gorm:"index"` // 针对 URL 产生的日志
-	Source   string `json:"log_type" gorm:"index"` // 日志发生在哪个系统中？
-	SpotInfo string `json:"spot_info"`             // 发生现场信息 - 哪个模块？哪个文件？哪个函数？
+	// occur in?
+	UrlPath  string `json:"url_path" gorm:"index"` // Log generated for URL
+	Source   string `json:"log_type" gorm:"index"` // In which system does the log occur?
+	SpotInfo string `json:"spot_info"`             // Event information - Which module? Which file? Which function?
 
-	// 网络与协议相关内容
-	// 操作的源、目的网络地址
+	// Network and protocol related content
+	// Source and destination network address of the operation
 	DstIP   string `json:"dst_ip"`
 	DstPort int    `json:"dst_port"`
 	SrcIP   string `json:"src_ip"`
@@ -90,80 +90,80 @@ type AuditLog struct {
 	HttpHost            string         `json:"http_host"`
 	HttpRequestBody     postgres.Jsonb `json:"http_request_body" `
 
-	// 日志的内容
+	// Log content
 	//Content map[string]interface{} `json:"content" gorm:"type: jsonb"`
 	Content postgres.Jsonb `json:"content"  `
 
-	// 这个 ExtraData 代表的是从日志内容中取出的日志内容
-	// 假如 content 包含着身份证、手机号等信息，被正则捕获或者分析，提取的数据会结构化后放入 ExtraData 中
-	// 或者 JSON 如果被提取出来，也会被提取，放入 extra data 中
+	// This ExtraData represents the log content extracted from the log content
+	// If the content contains ID card, mobile phone number and other information, and is captured or analyzed by regular expressions, the extracted data will be structured and put into ExtraData.
+	// or JSON is extracted, it will also be extracted and put into the extra data. Where is
 	ExtraData postgres.Jsonb `json:"extra" `
-	//sso登陆返回的token
+	//Token returned by sso login
 	BetaUserToken string `json:"beta_user_token" `
-	DeptPath      string `json:"dept_path"` //部门路径
-	PsnStatus     string `json:"psnStatus"` //人员状态 1在职 0离职
+	DeptPath      string `json:"dept_path"` //Department path
+	PsnStatus     string `json:"psnStatus"` //Personnel status 1 Incumbent 0 Resigned
 }
 
 type RpmsPerson struct {
-	WorkCity       string      `json:"workCity"`      //工作城市
-	PsnStatus      string      `json:"psnStatus"`     //人员状态 1在职 0离职
-	IdType         string      `json:"idType"`        //证件类型
-	Org            string      `json:"org"`           //组织
-	Name           string      `json:"name"`          //员工姓名
-	MobileMd5      string      `json:"mobileMd5"`     //电话号码脱敏前的MD5
-	Mobile         string      `json:"mobile"`        //联系电话
-	JoinDate       interface{} `json:"joinDate"`      //入职日期
-	IdMd5          string      `json:"idMd5"`         //证件号码脱敏前MD5值
-	IdNo           string      `json:"idNo"`          //证件号码
-	Email          string      `json:"email"`         //企业邮箱
-	DispatchCorp   string      `json:"dispatchCorp"`  //派遣公司
-	DismissingDate interface{} `json:"dimissionDate"` //离职日期
-	DeptPath       string      `json:"deptPath"`      //部门路径
-	Dept           string      `json:"dept"`          //部门
-	DeptLevel1     string      `json:"dept_level1"`   //一级部门
-	DeptLevel2     string      `json:"dept_level2"`   //二级部门
-	DeptLevel3     string      `json:"dept_level3"`   //三级部门
-	Code           string      `json:"code"`          //员工工号
-	PsnClass       string      `json:"psnClass"`      //员工类型
+	WorkCity       string      `json:"workCity"`      //Working city
+	PsnStatus      string      `json:"psnStatus"`     //Personnel status 1 Incumbent 0 Resigned
+	IdType         string      `json:"idType"`        //ID type
+	Org            string      `json:"org"`           //Organization
+	Name           string      `json:"name"`          //Employee name
+	MobileMd5      string      `json:"mobileMd5"`     //Phone number MD5 before desensitization
+	Mobile         string      `json:"mobile"`        //Contact number
+	JoinDate       interface{} `json:"joinDate"`      //Joining date
+	IdMd5          string      `json:"idMd5"`         //ID number MD5 value before desensitization
+	IdNo           string      `json:"idNo"`          //ID number
+	Email          string      `json:"email"`         //Corporate email address
+	DispatchCorp   string      `json:"dispatchCorp"`  //Dispatch company
+	DismissingDate interface{} `json:"dimissionDate"` //Resigning date
+	DeptPath       string      `json:"deptPath"`      //Department path
+	Dept           string      `json:"dept"`          //Department
+	DeptLevel1     string      `json:"dept_level1"`   //First-level department
+	DeptLevel2     string      `json:"dept_level2"`   //Secondary department
+	DeptLevel3     string      `json:"dept_level3"`   //Third-level department
+	Code           string      `json:"code"`          //Employee ID
+	PsnClass       string      `json:"psnClass"`      //Employee type
 }
 
 type SsoLogin struct {
-	UserId        string `json:"user_id"`        // 用户的唯一ID
-	Email         string `json:"email"`          // sso登陆邮箱账号账号
-	LoginIp       string `json:"login_ip"`       // 登陆的ip信息
-	TargetSystem  string `json:"target_system"`  // 登陆的目标系统
-	DeviceId      string `json:"device_id"`      // 手机登陆的设备ID
-	FingerPrint   string `json:"fingerprint"`    //浏览器登陆的设备ID
-	LoginCountry  string `json:"login_country"`  // 登陆ip的地理属性
+	UserId        string `json:"user_id"`        // The unique ID of the user
+	Email         string `json:"email"`          // Sso login email account account number
+	LoginIp       string `json:"login_ip"`       // Login IP information
+	TargetSystem  string `json:"target_system"`  // Login target system
+	DeviceId      string `json:"device_id"`      // Device ID for mobile phone login
+	FingerPrint   string `json:"fingerprint"`    //Device ID for browser login
+	LoginCountry  string `json:"login_country"`  // Geographical attribute of login IP
 	LoginProvince string `json:"login_province"` //
 	LoginCity     string `json:"login_city"`     //
 
 }
 
 type BI struct {
-	TracerReportId   string `json:"tracerReportId"`   // 报表id
-	TracerReportName string `json:"tracerReportName"` //报表名称
-	DateKey          string `json:"datekey"`          //时间 （20200619）
-	AreaInfo         string `json:"areaInfo"`         //地区，城市
-	AreaName         string `json:"areaName"`         //区域名称
-	ClassInfo        string `json:"classInfo"`        //品类
-	ClassName        string `json:"className"`        //品类名称
-	MmcInfo          string `json:"mmcInfo"`          //商户归属
-	MmcName          string `json:"mmcName"`          //商户归属名称
-	CustomerType     string `json:"customerType"`     //家庭餐厅code
-	CustomerName     string `json:"customerName"`     //家庭/个人、餐厅
+	TracerReportId   string `json:"tracerReportId"`   // Report id
+	TracerReportName string `json:"tracerReportName"` //Report name
+	DateKey          string `json:"datekey"`          //Time (20200619)
+	AreaInfo         string `json:"areaInfo"`         //Region , City
+	AreaName         string `json:"areaName"`         //Region name
+	ClassInfo        string `json:"classInfo"`        //Category
+	ClassName        string `json:"className"`        //category Name
+	MmcInfo          string `json:"mmcInfo"`          //Merchant attribution
+	MmcName          string `json:"mmcName"`          //Merchant name
+	CustomerType     string `json:"customerType"`     //Family restaurant code
+	CustomerName     string `json:"customerName"`     //Family/Individual, restaurant
 }
 
 type Authentication struct {
-	UserId        string `json:"user_id"`         // 用户的唯一ID
-	TargetUrlPath string `json:"target_url_path"` // 访问的目标url
-	TargetSystem  string `json:"target_system"`   // 被访问url所属的系统
-	AccessResult  bool   `json:"access_result"`   // 鉴权结果，true=可以访问 false=拒绝访问
-	RealIp        string `json:"real_ip"`         // 访问的真实发起IP地址
-	ForwardIp     string `json:"forward_ip"`      // 转发服务的IP
+	UserId        string `json:"user_id"`         // The unique ID of the user
+	TargetUrlPath string `json:"target_url_path"` // Target url accessed
+	TargetSystem  string `json:"target_system"`   // The system to which the accessed url belongs
+	AccessResult  bool   `json:"access_result"`   // Authentication result, true=can access false=denied access
+	RealIp        string `json:"real_ip"`         // The real originating IP address of the access
+	ForwardIp     string `json:"forward_ip"`      // IP of forwarding service
 }
 
-// 钉钉报告消息，用
+// DingTalk report message, use
 type DingReportMsg struct {
 	Date          string `json:"date"`
 	Name          string `json:"name"`

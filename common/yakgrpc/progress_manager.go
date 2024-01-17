@@ -30,10 +30,10 @@ type Progress struct {
 	CreatedAt            int64
 	CurrentProgress      float64
 	YakScriptOnlineGroup string
-	// 记录指针
+	// record pointer
 	LastRecordPtr int64
 	TaskName      string
-	// 额外信息
+	// corresponding to uid is also deleted.
 	ExtraInfo string
 }
 
@@ -132,7 +132,7 @@ func (p *ProgressManager) GetProgressByUid(uid string, removeOld bool) (*ypb.Exe
 
 	if removeOld {
 		p.SaveProgressToDatabase(KEY_ProgressManager, progress)
-		// 同时也删除 uid 对应的任务
+		// At the same time, the task
 		yakit.DelKey(p.db, uid)
 	}
 
@@ -161,7 +161,7 @@ func (p *ProgressManager) GetSimpleProgressByUid(uid string, removeOld, isPop bo
 		if isPop {
 			runtimeId := gjson.Get(req.LastRecord.ExtraInfo, `Params.#(Key="runtime_id").Value`).String()
 			os.Remove(filepath.Join(consts.GetDefaultYakitBaseTempDir(), runtimeId))
-			// 同时也删除 uid 对应的任务
+			// At the same time, the task
 			yakit.DelKey(p.db, uid)
 		}
 	}

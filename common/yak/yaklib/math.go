@@ -22,8 +22,8 @@ var MathExport = map[string]interface{}{
 	"SqrtE":       math.SqrtE,
 }
 
-// Round 返回四舍五入到最近的整数
-// 存在一些特殊情况：Round(±0) = ±0，Round(±Inf) = ±Inf，Round(NaN) = NaN
+// Round Returns rounded to the nearest integer
+// There are some special cases: Round(±0) = ±0, Round(±Inf) = ±Inf, Round(NaN) = NaN
 // Example:
 // ```
 // math.Round(1.5) // 2
@@ -33,8 +33,8 @@ func Round(x float64) float64 {
 	return math.Round(x)
 }
 
-// Sqrt 返回一个数的平方根
-// 如果x < 0，返回NaN
+// Sqrt Returns the square root of a number
+// that is not less than x If x < 0, returns NaN
 // Example:
 // ```
 // math.Sqrt(4) // 2
@@ -44,7 +44,7 @@ func Sqrt(x float64) float64 {
 	return math.Sqrt(x)
 }
 
-// Pow 返回x的y次方
+// Pow Returns x raised to the yth power
 // Example:
 // ```
 // math.Pow(2, 3) // 8
@@ -54,7 +54,7 @@ func Pow(x, y float64) float64 {
 	return math.Pow(x, y)
 }
 
-// Pow10 返回10的n次方
+// Pow10 returns 10 to the nth power
 // Example:
 // ```
 // math.Pow10(2) // 100
@@ -64,7 +64,7 @@ func Pow10(n int) float64 {
 	return math.Pow10(n)
 }
 
-// Floor 返回不大于x的最大整数
+// Floor Returns the largest integer
 // Example:
 // ```
 // math.Floor(1.5) // 1
@@ -74,7 +74,7 @@ func Floor(x float64) float64 {
 	return math.Floor(x)
 }
 
-// Ceil 返回不小于x的最小整数
+// Ceil Returns the value
 // Example:
 // ```
 // math.Ceil(1.5) // 2
@@ -84,7 +84,7 @@ func Ceil(x float64) float64 {
 	return math.Ceil(x)
 }
 
-// RoundToEven 返回四舍五入到最近的偶整数
+// RoundToEven Returns rounded to the nearest even integer
 // Example:
 // ```
 // math.RoundToEven(1.5) // 2
@@ -96,7 +96,7 @@ func RoundToEven(x float64) float64 {
 	return math.RoundToEven(x)
 }
 
-// Abs 返回x的绝对值
+// Abs Returns the absolute value of x
 // Example:
 // ```
 // math.Abs(-1) // 1
@@ -106,7 +106,7 @@ func Abs(x float64) float64 {
 	return math.Abs(x)
 }
 
-// NaN 返回一个IEEE-574 “非数字”的值
+// NaN Returns an IEEE-574 “not greater than x Non-number”of the smallest integer
 // Example:
 // ```
 // math.NaN()
@@ -115,7 +115,7 @@ func NaN() float64 {
 	return math.NaN()
 }
 
-// IsNaN 判断一个数是否是NaN
+// IsNaN Determine whether a number is NaN
 // Example:
 // ```
 // math.IsNaN(1) // false

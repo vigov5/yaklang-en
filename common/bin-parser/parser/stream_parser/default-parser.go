@@ -88,7 +88,7 @@ func InitNode(node *base.Node) error {
 	return walkNode(node)
 }
 
-// OnRoot 设置了Ctx: root、rootNodeMap; Cfg：parent、lastNode,writer,buffer、isTerminal
+// OnRoot sets Ctx: root, rootNodeMap; Cfg: parent, lastNode, writer, buffer, isTerminal
 func (d *DefParser) OnRoot(node *base.Node) error {
 	rootChildMap := make(map[string]*base.Node)
 	node.Ctx.SetItem(CfgRootMap, rootChildMap)
@@ -175,7 +175,7 @@ func (d *DefParser) Operate(operator *Operator, node *base.Node) error {
 
 		rootNode.Ctx.SetItem("writer", node.Ctx.GetItem("writer"))
 		rootNode.Ctx.SetItem("buffer", node.Ctx.GetItem("buffer"))
-		// 补充runtime cfg
+		// adds runtime cfg
 		rootNode.Cfg = base.AppendConfig(node.Cfg, rootNode.Cfg)
 		rootNode.Cfg.SetItem(CfgParent, node.Cfg.GetItem(CfgParent))
 		rootNode.Cfg.DeleteItem(CfgImport)
@@ -521,7 +521,7 @@ func (d *DefParser) Parse(data *base.BitReader, node *base.Node) error {
 				}
 				delimitern := 0
 				byts := []byte{}
-				// 循环读取数据，直到遇到delimiter结束
+				// loops to read data until it encounters delimiter.
 				for {
 					b, err := data.ReadBits(8)
 					if err != nil {

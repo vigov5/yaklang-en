@@ -437,7 +437,7 @@ func (ka *eccKeyAgreementGM) generateClientKeyExchange(config *Config, clientHel
 	if err != nil {
 		return nil, nil, err
 	}
-	// GMT0024 通信时密文采用 GMT009 ASN1方式组织
+	// GMT0024 ciphertext is organized in GMT009 ASN1 format during communication.
 	encrypted, err = sm2.CipherMarshal(encrypted)
 	if err != nil {
 		return nil, nil, err

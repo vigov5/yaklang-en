@@ -46,7 +46,7 @@ func GetSystemDnsServers() ([]string, error) {
 			}
 		}()
 	}
-	// 去重 servers
+	// Deduplicate servers
 	servers = RemoveRepeatStringSlice(servers)
 	return servers, nil
 }

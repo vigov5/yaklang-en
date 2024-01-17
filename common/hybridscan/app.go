@@ -19,11 +19,11 @@ type HyperScanCenter struct {
 	fpScanPool     *fp.Pool
 	fpTargetStream chan *fp.PoolTask
 
-	// 指纹回调函数的处理
+	// fingerprint callback function processing
 	fpResultHandlerMutex *sync.Mutex
 	fpResultHandlers     map[string]fp.PoolCallback
 
-	// 开放端口回调
+	// Open port callback
 	openPortHandlerMutex *sync.Mutex
 	openPortHandlers     map[string]func(ip net.IP, port int)
 }

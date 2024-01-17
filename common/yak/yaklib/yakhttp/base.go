@@ -125,7 +125,7 @@ func yakHttpConfig_Timeout(f float64) HttpOption {
 
 /*
 *
-http 扩展包
+for post http extension package
 */
 var rawRequest = func(i interface{}) (*http.Request, error) {
 
@@ -202,10 +202,10 @@ func GetAllBody(raw interface{}) []byte {
 }
 
 var HttpExports = map[string]interface{}{
-	// 获取原生 Raw 请求包
+	// for get Get the native Raw request package
 	"Raw": rawRequest,
 
-	// 快捷方式
+	// shortcut
 	"Get": func(url string, opts ...HttpOption) (*YakHttpResponse, error) {
 		return httpRequest("GET", url, opts...)
 	},
@@ -214,16 +214,16 @@ var HttpExports = map[string]interface{}{
 	},
 	"Request": httpRequest,
 
-	// Do 和 Request 组合发起请求
+	// Do and Request are combined to initiate a request
 	"Do":         Do,
 	"NewRequest": NewHttpNewRequest,
 
-	// 获取响应内容的 response
+	// Get the response of the response content
 	"GetAllBody": GetAllBody,
 
 	//
 
-	// 调试信息
+	// debugging information
 	"dump":     dump,
 	"show":     httpShow,
 	"dumphead": dumphead,
@@ -253,9 +253,9 @@ var HttpExports = map[string]interface{}{
 	// json
 	"json": JsonBody,
 
-	// urlencode params 区别于 body，这个会编码
-	// params 针对 get 请求
-	// data 针对 post 请求
+	// urlencode params is different from the body. This will encode
+	// params Request
+	// data Request
 	"params":     GetParams,
 	"postparams": PostParams,
 
@@ -412,7 +412,7 @@ func httpRequest(method, url string, options ...HttpOption) (*YakHttpResponse, e
 	for _, opt := range options {
 		opt(req)
 	}
-	// client复用，实现会话管理
+	// client reuse to implement session management
 	var client *http.Client
 	if req.session != nil {
 		client = GetClient(req.session)

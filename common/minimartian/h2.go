@@ -45,7 +45,7 @@ func (p *Proxy) proxyH2(closing chan bool, cc *tls.Conn, url *url.URL) error {
 		if httpctx.GetContextBoolInfoFromRequest(req, httpctx.REQUEST_CONTEXT_KEY_IsDropped) {
 			return []byte(`HTTP/2 200 OK
 Content-Type: text/html
-`), io.NopCloser(bytes.NewBufferString(proxyutil.GetPrettyErrorRsp("请求被用户丢弃"))), nil
+`), io.NopCloser(bytes.NewBufferString(proxyutil.GetPrettyErrorRsp("The request was dropped by the user"))), nil
 		} else {
 			rsp, err := p.execLowhttp(req)
 			if err != nil {

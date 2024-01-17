@@ -18,8 +18,8 @@ func (y *YakCompiler) VisitFunctionCall(raw yak.IFunctionCallContext) interface{
 	defer recoverRange()
 	y.writeString("(")
 
-	// 函数调用需要先把参数压栈
-	// 调用的时候，call n 表示要取多少数出来
+	// function calls need to push the parameters onto the stack first. When calling
+	// , call n indicates how many numbers to take out.
 	var argCount = 0
 	if i.OrdinaryArguments() != nil {
 		argCount, _ = y.VisitOrdinaryArguments(i.OrdinaryArguments())
@@ -55,7 +55,7 @@ func (y *YakCompiler) VisitOrdinaryArguments(raw yak.IOrdinaryArgumentsContext) 
 	tokenStart := i.BaseParserRuleContext.GetStart().GetColumn()
 	lineLength := tokenStart
 	eachParamOneLine := false
-	// 先遍历一次，计算每个表达式的长度，如果过长，就需要换行
+	// First traverse once and calculate the length of each expression. If it is too long, you need to wrap it.
 	for i, e := range allExpressions {
 		expressionTokenLengths[i] = len(e.GetText())
 		if !eachParamOneLine && expressionTokenLengths[i] > FORMATTER_RECOMMEND_PARAM_LENGTH {
@@ -71,7 +71,7 @@ func (y *YakCompiler) VisitOrdinaryArguments(raw yak.IOrdinaryArgumentsContext) 
 	for index, expr := range allExpressions {
 		lineLength += expressionTokenLengths[index]
 
-		if lenOfAllExpressions > 1 { // 如果不是只有一个参数，超出单行最长长度或任意一个参数过长，就换行
+		if lenOfAllExpressions > 1 { // . If there is not only one parameter, the maximum length of a single line is exceeded. If the length or any parameter is too long, wrap it in a new line.
 			if eachParamOneLine {
 				y.writeNewLine()
 				if !hadIncIndent {
@@ -89,19 +89,19 @@ func (y *YakCompiler) VisitOrdinaryArguments(raw yak.IOrdinaryArgumentsContext) 
 
 		y.VisitExpression(expr)
 
-		// 如果是最后一个参数且有...，就要加...
+		// If it is the last parameter and there is..., you need to add...
 		if index == lenOfAllExpressions-1 {
 			if ellipsis != nil {
 				y.pushEllipsis(lenOfAllExpressions)
 				y.writeString("...")
 			}
 		}
-		// 如果不是最后一个参数或者每个参数一行就要加,
+		// If it is not the last parameter or each parameter is in one line, it must be added.
 		if index != lenOfAllExpressions-1 || eachParamOneLine {
 			y.writeString(", ")
 			lineLength += 2
 		}
-		// 如果是最后一个参数且每个参数一行，就要换行
+		// If it is the last parameter and each parameter is in one line, it must be changed to
 		if index == lenOfAllExpressions-1 && eachParamOneLine {
 			y.writeNewLine()
 			if hadIncIndent {

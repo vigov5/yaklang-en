@@ -33,7 +33,7 @@ func TestServer_CreateYaklangShell(t *testing.T) {
 		panic("scope not right")
 	}
 
-	// 检查 a 的值是否可以获到
+	// Check if the value of a is available
 	stream.Send(&ypb.YaklangShellRequest{Input: "a ++"})
 	rsp, err = stream.Recv()
 	if err != nil {
@@ -50,7 +50,7 @@ func TestServer_CreateYaklangShell(t *testing.T) {
 	}
 	spew.Dump(rsp.Scope)
 
-	// 检查 a 的值是否可以获到
+	// Check if the value of a is available
 	stream.Send(&ypb.YaklangShellRequest{Input: "a + 12"}) // 14
 	rsp, err = stream.Recv()
 	if err != nil {

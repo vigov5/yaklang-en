@@ -23,16 +23,16 @@ import (
 )
 
 func GetLocalIPAddressViaIface() string {
-	// 获取所有网络接口的地址信息
+	// Get the address information of all network interfaces
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
 		fmt.Println("Error getting interface addresses:", err)
 		return ""
 	}
 
-	// 遍历所有地址信息，查找IP地址
+	// Traverse all address information and find the IP address
 	for _, addr := range addrs {
-		// 判断地址是否为IP地址
+		// determines whether the address is an IP address
 		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
 			return ipnet.IP.String()
 		}
@@ -65,14 +65,14 @@ func GetLocalIPAddress() string {
 		return ret
 	}
 
-	// 获取本地主机的默认IP地址
+	// Get the default IP address of the local host
 	ips, err := net.LookupIP("")
 	if err != nil {
 		fmt.Println("Error getting local IP address:", err)
 		return ""
 	}
 
-	// 遍历IP地址列表，输出第一个IPv4地址
+	// Traverse the IP address list and output the first IPv4 address
 	for _, ip := range ips {
 		if ip.To4() != nil {
 			return ip.String()
@@ -125,7 +125,7 @@ func GetNExcludeExcludeHighPort(n int, excluded ...string) []int {
 
 var ParseStringToInts = ParseStringToPorts
 
-// ParseStringToPorts 将字符串解析成 Port 列表， Port 可以以逗号分隔，并且会解析-分隔的范围
+// ParseStringToPorts Concatenate the string Parse into a Port list, Port can be separated by commas, and will parse - separated range
 // Example:
 // ```
 // str.ParseStringToPorts("10086-10088,23333") // [10086, 10087, 10088, 23333]
@@ -205,7 +205,7 @@ func ParsePortToProtoPort(port int) (string, int) {
 	return "tcp", port
 }
 
-// SplitHostsToPrivateAndPublic 将 hosts 按照私有 IP 和公有 IP 分开
+// SplitHostsToPrivateAndPublic Separate hosts according to private IP and public IP
 // Example:
 // ```
 // str.SplitHostsToPrivateAndPublic("127.0.0.1", "8.8.8.8", "10.0.0.1") // ["127.0.0.1", "10.0.0.1"], ["8.8.8.8"]
@@ -221,7 +221,7 @@ func SplitHostsToPrivateAndPublic(hosts ...string) (privs, pub []string) {
 	return
 }
 
-// ExtractHost 尝试从字符串中解析出host和port，并返回host
+// ExtractHost Try to extract the string from the string Parse out the host and port, and return the host
 // Example:
 // ```
 // str.ExtractHost("127.0.0.1:8888") // 127.0.0.1
@@ -243,7 +243,7 @@ func ExtractHostPort(raw string) string {
 	return raw
 }
 
-// ParseStringToHosts 将字符串解析成 Host 列表， Host 可以以逗号分隔，并且会解析 CIDR 网段
+// ParseStringToHosts parses the string into a Host list, Host can be separated by commas, and CIDR network segments will be parsed
 // Example:
 // ```
 // str.ParseStringToHosts("192.168.0.1/32,127.0.0.1") // ["192.168.0.1", "127.0.0.1"]
@@ -251,20 +251,20 @@ func ExtractHostPort(raw string) string {
 func ParseStringToHosts(raw string) []string {
 	targets := []string{}
 	for _, h := range strings.Split(raw, ",") {
-		// 解析 IP
+		// Parse the IP
 		if ret := net.ParseIP(FixForParseIP(h)); ret != nil {
 			targets = append(targets, ret.String())
 			continue
 		}
 
-		// 解析 CIDR 网段
+		// Parse CIDR network segment
 		_ip, netBlock, err := net.ParseCIDR(h)
 		if err != nil {
 			if strings.Count(h, "-") == 1 {
-				// 这里开始解析 1.1.1.1-3 的情况
+				// Here we start parsing 1.1.1.1-3 Situation
 				rets := strings.Split(h, "-")
 
-				// 检查第一部分是不是 IP 地址
+				// Check whether the first part is an IP address
 				var startIP net.IP
 				if startIP = net.ParseIP(rets[0]); startIP == nil {
 					targets = append(targets, h)
@@ -313,13 +313,13 @@ func ParseStringToHosts(raw string) []string {
 			continue
 		}
 
-		// 如果是 IPv6 的网段，暂不处理
+		// If it is an IPv6 network segment, do not process it yet
 		if _ip.To4() == nil {
 			targets = append(targets, h)
 			continue
 		}
 
-		// 把 IPv4 专成 int
+		// Specially convert IPv4 into int
 		low, err := IPv4ToUint32(netBlock.IP)
 		if err != nil {
 			targets = append(targets, h)
@@ -374,7 +374,7 @@ func ParseHostToAddrString(host string) string {
 	return host
 }
 
-// IsIPv6 判断字符串是否是 IPv6 地址
+// IsIPv6 Determine whether the string is an IPv6 address
 // Example:
 // ```
 // str.IsIPv6("::1") // true
@@ -388,7 +388,7 @@ func IsIPv6(raw string) bool {
 	return false
 }
 
-// IsIPv4 判断字符串是否是 IPv4 地址
+// IsIPv4 Determine whether the string is an IPv4 address
 // Example:
 // ```
 // str.IsIPv4("::1") // false
@@ -453,7 +453,7 @@ func IsProtobuf(raw []byte) bool {
 
 }
 
-// HostPort 将 host 和 port 拼接成 host:port 的形式
+// HostPort Splice the host and port into the form of host:port
 // Example:
 // ```
 // str.HostPort("yaklang.com", 443) // yaklang.com:443
@@ -468,8 +468,8 @@ func ProtoHostPort(proto string, host string, port int) string {
 	return HostPort(host, port)
 }
 func FixForParseIP(host string) string {
-	// 如果传入了 [::] 给 net.ParseIP 则会失败...
-	// 所以这里要特殊处理一下
+	// will fail if [::] is passed to net.ParseIP...
+	// So special treatment is required here
 	if strings.Count(host, ":") >= 2 {
 		if strings.HasPrefix(host, "[") && strings.HasSuffix(host, "]") {
 			return host[1 : len(host)-1]
@@ -482,7 +482,7 @@ type HostsFilter struct {
 	origin []string
 
 	strActions []string
-	// 这些 Action 如果返回值为 True 说明，在范围内，如果为 False 则不在范围内
+	// If the return value of these Actions is True, it means that it is within the scope. If it is False, it is not within the scope.
 	ipActions []func(ip net.IP) bool
 	mutex     *sync.Mutex
 }
@@ -491,7 +491,7 @@ func (f *HostsFilter) createAction(h string) {
 	defaultAction := func(t string) bool {
 		return h == t
 	}
-	// 针对单个 IP 进行处理
+	// Perform for a single IP Processing
 	if ret := net.ParseIP(h); ret != nil {
 		f.ipActions = append(f.ipActions, func(ip net.IP) bool {
 			return ip.String() == ret.String()
@@ -499,16 +499,16 @@ func (f *HostsFilter) createAction(h string) {
 		return
 	}
 
-	// 解析 CIDR 网段
+	// Parse CIDR network segment
 	_, netBlock, err := net.ParseCIDR(h)
 	if err != nil {
-		// 如果输入的不是 CIDR 网段
-		// 检查 1.1.1.1-3 的情况
+		// If the input is not a CIDR network segment
+		// Check the situation of 1.1.1.1-3
 		if strings.Count(h, "-") == 1 {
-			// 这里开始解析 1.1.1.1-3 的情况
+			// Here we start parsing 1.1.1.1-3 Situation
 			rets := strings.Split(h, "-")
 
-			// 检查第一部分是不是 IP 地址
+			// Check whether the first part is an IP address
 			var startIP net.IP
 			if startIP = net.ParseIP(rets[0]); startIP == nil {
 				f.strActions = append(f.strActions, h)
@@ -582,7 +582,7 @@ func (f *HostsFilter) Contains(target string) bool {
 	f.mutex.Lock()
 	defer f.mutex.Unlock()
 
-	// 如果解析出 IP 优先判断 IP
+	// If the IP is parsed, the IP will be judged first
 	if len(f.ipActions) > 0 {
 		ret := net.ParseIP(target)
 		if ret != nil {

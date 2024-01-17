@@ -14,72 +14,72 @@ import (
 type ConfigOption func(config *Config)
 
 type Config struct {
-	// 针对那种传输层协议进行指纹识别？
+	// For that Transport layer protocol for fingerprinting?
 	TransportProtos []TransportProto
 
-	// 在主动模式发包的基础上进行探测控制
-	// 稀有度越大，表示这个服务在现实存在的可能性越小
-	// 取值范围为1-9
-	// 默认值为 5
+	// Probe control based on active mode packet sending
+	// The greater the rarity, the less likely this service is to exist in reality.
+	// The value range is 1-9
+	// The default value is 5
 	RarityMax int
 
 	/*
-		Probe 为主动发送一些数据包来检测指纹信息的机制，以下选项可以控制 Probe 的使用
+		Probe is to actively send some Data packets are used to detect fingerprint information. The following options can control the use of Probe.
 	*/
-	// 主动模式，这个模式下，会主动发包进行探测指纹，（启用 Probe）
-	// 默认值为 false
+	// Active mode. In this mode, packets will be actively sent to detect fingerprints (Probe is enabled).
+	// can be cached. The default value is false.
 	ActiveMode bool
 
-	// 默认每一个 Probe 的超时时间
+	// defaults to the timeout of each Probe.
 	ProbeTimeout time.Duration
 
-	// 发送 Probe 的数量限制，默认值为 5
+	// The limit on the number of probes sent, the default value is 5
 	ProbesMax int
 
-	// 发送 Probe 的并发量，默认值为 5
+	// Concurrency of sending Probe, the default value is 5
 	ProbesConcurrentMax int
 
-	// 指定规则
+	// Specify rules
 	FingerprintRules map[*NmapProbe][]*NmapMatch
 
-	// 指纹检测时候取的数据大小，意味着多大的数据会参与到指纹识别中
-	// 2048 为默认值
-	// 主机指纹识别的时间与这个值成正比
+	// Data taken during fingerprint detection Size, means how much data will be involved in fingerprinting.
+	// 2048 is the default value
+	// The time of host fingerprinting is proportional to this value.
 	FingerprintDataSize int
 
 	/* Web Fingerprint */
-	// Active Mode 这里的 ActiveMode 应该和当前配置保持一致，所以暂时不需要设置
+	// Active Mode. The ActiveMode here should be consistent with the current configuration, so there is no need to set
 
 	//
-	// ForceEnableWebFingerprint 表示强制检测 Web 指纹
+	// ForceEnableWebFingerprint means forced detection of Web fingerprints
 	ForceEnableWebFingerprint bool
 
-	// OnlyEnableWebFingerprint 表示值进行 Web 指纹识别
-	//    这个选项为 True 的时候，行为将会覆盖 ForceEnableWebFingerprint
+	// OnlyEnableWebFingerprint indicates the value for Web fingerprinting.
+	//    When this option is True, the behavior will override ForceEnableWebFingerprint
 	OnlyEnableWebFingerprint bool
 
-	// 禁用专门的 Web 指纹扫描
+	// Disable special Web fingerprint scanning
 	DisableWebFingerprint bool
 
-	// 这个选项标志着，如果 Web 指纹检测中途已经检测出了某些指纹，也应该继续检测其他指纹
+	// This option indicates that if some fingerprints have been detected during the Web fingerprint detection, other fingerprints should also continue to be detected
 	WebFingerprintUseAllRules bool
 
-	// 爬虫发现的最大 URL 数量，默认是 5 个
+	// The maximum number of URLs discovered by the crawler, the default is 5
 	CrawlerMaxUrlCount int
 
-	// 使用指定的 WebRule 来测试 Web 指纹，默认为使用默认指纹
+	// Use the specified WebRule to test the Web Fingerprint, the default is to use the default fingerprint
 	WebFingerprintRules []*webfingerprint.WebRule
 
-	// 并发池的大小配置（单体不生效）
+	// Concurrency pool size configuration (single does not take effect)
 	PoolSize int
 
-	// 为端口扫描设置代理
+	// is the port. Scan and set proxy
 	Proxies []string
 
-	// 在同一个引擎进程内，可以缓存
+	// In the same engine process,
 	EnableCache bool
 
-	// 设置数据库缓存，可以跨进程
+	// for the time being. Set up the database cache, which can be used across processes.
 	EnableDatabaseCache bool
 
 	// Exclude

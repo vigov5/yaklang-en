@@ -14,35 +14,35 @@ var ElementKeyword = append(ElementAttribute, ElementProperty...)
 
 var usernameKeyword = []string{
 	"username", "admin",
-	"用户名", "账户名", "账号",
+	"User name", "Account name", "Account",
 	"telephone", "email",
-	"手机", "电话", "邮箱",
+	"Mobile phone", "Phone", "Email",
 }
 
 var simpleUsernameKeyword = []string{
 	"user", "admin", "tele", "email",
-	"用户", "账户", "账号", "手机", "电话", "邮箱",
+	"User", "Account", "Account", "Mobile phone", "Phone", "Email",
 }
 
 var passwordKeyword = []string{
-	"password", "pwd", "密码",
+	"password", "pwd", "Password",
 }
 
 var simplePasswordKeyword = []string{
-	"pass", "pwd", "密码",
+	"pass", "pwd", "Password",
 }
 
 var captchaKeyword = []string{
 	"captcha", "register", "check", "validate",
-	"验证码", "校验码", "注册码", "verifica", "verify",
+	"Verification code", "Verification code", "Registration code", "verifica", "verify",
 }
 
 var simpleCaptchaKeyword = []string{
-	"capt", "reg", "验证", "校验", "注册", "validate", "verif",
+	"capt", "reg", "Verification", "Verification", "Register", "validate", "verif",
 }
 
 var loginKeyword = []string{
-	"登录", "login", "submit",
+	"Login", "login", "submit",
 }
 
 var KeywordDict = map[string][]string{

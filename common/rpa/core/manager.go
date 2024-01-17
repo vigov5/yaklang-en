@@ -38,14 +38,14 @@ type Manager struct {
 	captchaUrl string
 
 	whiteSubdomainGlob []glob.Glob
-	whiteNetwork       []*net.IPNet // C段
+	whiteNetwork       []*net.IPNet // C segment
 	blackSubdomainGlob []glob.Glob
 	blackNetwork       []*net.IPNet
 	excludedSuffix     []string
 	excludedFileName   []string
 	includedSuffix     []string
 
-	// 控制页面并发
+	// control page concurrency
 	concurrent         int
 	pageSizedWaitGroup *utils.SizedWaitGroup
 
@@ -66,7 +66,7 @@ type Manager struct {
 }
 
 type Req struct {
-	// 当前请求所属深度
+	// The depth of the current request
 	depth int
 
 	request         *http.Request
@@ -75,10 +75,10 @@ type Req struct {
 	responseHeaders *http.Header
 	responseBody    []byte
 
-	// 如果请求失败了，原因是
+	// If the request fails, the reason is
 	err error
 
-	// 这个请求是不是可能和登录相关？
+	// Is this request possibly related to login?
 	baseURL *url.URL
 }
 
@@ -111,18 +111,18 @@ func (m *Manager) init() error {
 	}
 	// log.Infof("timeout:%s", m.config.timeout)
 
-	//设置cookie
+	//Set cookie
 	if len(m.config.cookie) > 0 {
 		m.Browser.SetCookies(m.config.cookie)
 	}
 
-	// 设置并发
+	// set concurrency
 	if m.concurrent <= 0 {
 		m.concurrent = 10
 	}
 	m.pageSizedWaitGroup = utils.NewSizedWaitGroup(m.concurrent)
 
-	// 设置爬虫基础的限制：限制域名和 IP
+	// Set crawler basic restrictions: limit domain name and IP
 	for _, u := range m.StartUrls {
 		host, _, err := utils.ParseStringToHostPort(u)
 		if err != nil {
@@ -151,7 +151,7 @@ func (m *Manager) init() error {
 		}
 	}
 
-	// 劫持请求
+	// hijack request
 	log.Infof("start to set hijack requests")
 	m.hijackRouters = m.Browser.HijackRequests()
 	m.hijackRouters.MustAdd("*", func(hijack *rod.Hijack) {

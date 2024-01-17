@@ -33,15 +33,15 @@ type Generator interface {
 	CheckVisible(str string) bool
 }
 
-// Generate 根据正则表达式生成所有匹配的字符串，返回生成的字符串切片和错误
-// 对于一些可能匹配多次的元字符:
-// *     : 则只会生成匹配 0 次或 1 次的字符串
-// +     : 则只会生成匹配 1 次或 2 次的字符串
-// {n,m} : 则会生成匹配 n 次到 m 次的字符串
-// {n,}  : 则只会生成匹配 n 次或 n+1 次的字符串
+// . Generate Generate all matching strings based on the regular expression and return the generated string slice and error
+// . For some metacharacters that may match multiple times:
+// *     : it will only generate a string that matches 0 or 1 times
+// +: will only generate strings matching 1 or 2 times.
+// {n,m} : then it will generate a string that matches n to m times
+// {n,}  : will only generate matches n times. Or string n+1 times
 // Example:
 // ```
-// regen.Generate("[a-z]+") // a-z 单个字母，aa-zz 两个字母
+// regen.Generate("[a-z]+") // a-z single letter, aa-zz two letters
 // ```
 func Generate(pattern string) ([]string, error) {
 	generator, err := NewGenerator(pattern, &GeneratorArgs{
@@ -53,11 +53,11 @@ func Generate(pattern string) ([]string, error) {
 	return generator.Generate(), nil
 }
 
-// GenerateOne 根据正则表达式生成一个匹配的字符串，返回生成的字符串和错误
+// GenerateOne generates a matching string based on the regular expression and returns the generated string and error
 // Example:
 // ```
-// regen.GenerateOne("[a-z]") // a-z 中随机一个字母
-// regen.GenerateOne("^(13[0-9]|14[57]|15[0-9]|18[0-9])\d{8}$") // 生成一个手机号
+// regen.GenerateOne("[a-z]") // a-z
+// regen.GenerateOne("^(13[0-9]|14[57]|15[0-9]|18[0-9])\d{8}$") // . Generate a mobile phone number
 // ```
 func GenerateOne(pattern string) (string, error) {
 	generator, err := NewGeneratorOne(pattern, &GeneratorArgs{
@@ -69,11 +69,11 @@ func GenerateOne(pattern string) (string, error) {
 	return generator.Generate()[0], nil
 }
 
-// GenerateVisibleOne 根据正则表达式生成一个匹配的字符串(都是可见字符)，返回生成的字符串和错误
+// GenerateVisibleOne Generates a matching string (all visible characters) according to the regular expression, returns the generated string and a random letter in the error
 // Example:
 // ```
-// regen.GenerateVisibleOne("[a-z]") // a-z 中随机一个字母
-// regen.GenerateVisibleOne("^(13[0-9]|14[57]|15[0-9]|18[0-9])\d{8}$") // 生成一个手机号
+// regen.GenerateVisibleOne("[a-z]") // a-z
+// regen.GenerateVisibleOne("^(13[0-9]|14[57]|15[0-9]|18[0-9])\d{8}$") // . Generate a mobile phone number
 // ```
 func GenerateVisibleOne(pattern string) (string, error) {
 	generator, err := NewGeneratorVisibleOne(pattern, &GeneratorArgs{
@@ -91,15 +91,15 @@ func GenerateVisibleOne(pattern string) (string, error) {
 	return generated, nil
 }
 
-// MustGenerate 根据正则表达式生成所有匹配的字符串，如果生成失败则会崩溃，返回生成的字符串切片
-// 对于一些可能匹配多次的元字符:
-// *     : 则只会生成匹配 0 次或 1 次的字符串
-// +     : 则只会生成匹配 1 次或 2 次的字符串
-// {n,m} : 则会生成匹配 n 次到 m 次的字符串
-// {n,}  : 则只会生成匹配 n 次或 n+1 次的字符串
+// MustGenerate Generates all matching characters according to the regular expression String, if the generation fails, it will crash and return the generated string slice
+// . For some metacharacters that may match multiple times:
+// *     : it will only generate a string that matches 0 or 1 times
+// +: will only generate strings matching 1 or 2 times.
+// {n,m} : then it will generate a string that matches n to m times
+// {n,}  : will only generate matches n times. Or string n+1 times
 // Example:
 // ```
-// regen.MustGenerate("[a-z]+") // a-z 单个字母，aa-zz 两个字母
+// regen.MustGenerate("[a-z]+") // a-z single letter, aa-zz two letters
 // ```
 func MustGenerate(pattern string) []string {
 	generator, err := NewGenerator(pattern, &GeneratorArgs{
@@ -111,11 +111,11 @@ func MustGenerate(pattern string) []string {
 	return generator.Generate()
 }
 
-// MustGenerateOne 根据正则表达式生成一个匹配的字符串，如果生成失败则会崩溃，返回生成的字符串
+// MustGenerateOne Generate a matching string based on the regular expression. If the generation fails, it will crash and return the generated string
 // Example:
 // ```
-// regen.MustGenerateOne("[a-z]") // a-z 中随机一个字母
-// regen.MustGenerateOne("^(13[0-9]|14[57]|15[0-9]|18[0-9])\d{8}$") // 生成一个手机号
+// regen.MustGenerateOne("[a-z]") // a-z
+// regen.MustGenerateOne("^(13[0-9]|14[57]|15[0-9]|18[0-9])\d{8}$") // . Generate a mobile phone number
 // ```
 func MustGenerateOne(pattern string) string {
 	generator, err := NewGeneratorOne(pattern, &GeneratorArgs{
@@ -127,11 +127,11 @@ func MustGenerateOne(pattern string) string {
 	return generator.Generate()[0]
 }
 
-// MustGenerateVisibleOne 根据正则表达式生成一个匹配的字符串(都是可见字符)，如果生成失败则会崩溃，返回生成的字符串
+// . MustGenerateVisibleOne generates a matching string (all visible characters) based on the regular expression. If the generation fails, it will crash and return the generated string
 // Example:
 // ```
-// regen.MustGenerateVisibleOne("[a-z]") // a-z 中随机一个字母
-// regen.MustGenerateVisibleOne("^(13[0-9]|14[57]|15[0-9]|18[0-9])\d{8}$") // 生成一个手机号
+// regen.MustGenerateVisibleOne("[a-z]") // a-z
+// regen.MustGenerateVisibleOne("^(13[0-9]|14[57]|15[0-9]|18[0-9])\d{8}$") // . Generate a mobile phone number
 // ```
 func MustGenerateVisibleOne(pattern string) string {
 	generator, err := NewGeneratorVisibleOne(pattern, &GeneratorArgs{

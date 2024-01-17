@@ -3,7 +3,7 @@ host, port := tcp.MockServe("TETSSDFSDFSDF")
 target = str.HostPort(host, port)
 
 var nucleiPluginNames = [] // ["[wordpress-plugins-lifterlms]: WordPress Plugin lifterlms Listing"]// ["[wordpress-plugins-lifterlms]: WordPress Plugin lifterlms Listing"]
-var nonNucleiPluginNames = [] // ["ThinkPHP RCE 被动扫描"]
+var nonNucleiPluginNames = [] // ["ThinkPHP RCE passive scanning"]
 
 wg = sync.NewWaitGroup()
 wg.Add(2)
@@ -37,7 +37,7 @@ go func {
     try {
         caller = hook.NewMixPluginCaller()~
         nonNucleiPluginNames.Map(i => {
-            yakit.Info("开始加载插件:[%v]", i)
+            yakit.Info("Start loading plug-in: [%v]", i)
             caller.LoadPlugin(i)
         })
         for result in str.ParseStringToUrls(target) {

@@ -36,7 +36,7 @@ func (a *anNode) Handler(*Node) any {
 
 var _ Node = (*anNode)(nil)
 
-// 给两个节点添加有向边
+// Add directed edges to two nodes
 func AddEdge(a *anNode, b *anNode) {
 	a.next = append(a.next, b)
 	b.prev = append(b.prev, a)
@@ -60,7 +60,7 @@ func TestTarjan(t *testing.T) {
 	// 	count += 1
 	// }
 
-	// 图关系 scc1 3 scc2 1.2
+	// Graph relationship scc1 3 scc2 1.2
 	// root->sec
 	// sec->root
 	// sec->third

@@ -102,12 +102,12 @@ func (v *Frame) getCodeReview(sourceCode *string, code *Code, i *VMPanic) string
 		lenOfText := len(runeText)
 
 		if nowLine == code.StartLineNumber {
-			flag = 1 // 后面的行全红
+			flag = 1 // are all red.
 			if code.EndColumnNumber >= lenOfText && lenOfText > 0 {
 				codeReview += pio.Red(string(runeText[code.StartColumnNumber:]) + "\n")
 				continue
 			} else {
-				// 右闭区间
+				// , the right closed interval
 				code.EndColumnNumber++
 			}
 			codeReview += string(runeText[:code.StartColumnNumber])
@@ -121,7 +121,7 @@ func (v *Frame) getCodeReview(sourceCode *string, code *Code, i *VMPanic) string
 			continue
 		}
 		if nowLine == code.EndLineNumber {
-			flag = 2 // 最后一行，影响范围的红
+			flag = 2 // The last line, the red
 		}
 		if flag == 1 {
 			codeReview += pio.Red(text + "\n")
@@ -160,7 +160,7 @@ func (v *VMPanic) Error() string {
 		} else {
 			lineReview = fmt.Sprintf("--> %d-%d", code.StartLineNumber, code.EndLineNumber)
 		}
-		if strings.Contains(codeReview, "\n") { // 多行显示
+		if strings.Contains(codeReview, "\n") { // of the affected range is displayed in multiple lines. The lines following
 			lineReviewLen := len(lineReview) + 1
 			codeReview = strings.ReplaceAll(codeReview, "\n", "\n"+strings.Repeat(" ", lineReviewLen))
 			source = append(source, fmt.Sprintf(

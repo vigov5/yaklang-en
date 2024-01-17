@@ -31,12 +31,12 @@ func ReadWithContextTickCallback(ctx context.Context, rc io.Reader, callback fun
 	)
 	go func() {
 		for scanner.Scan() {
-			// 根据上下文退出
+			// Exit according to context
 			if ctx.Err() != nil {
 				break
 			}
 
-			// 临时读一下现有指纹信息
+			// Temporarily read the existing fingerprint information
 			mux.Lock()
 			buf = append(buf, scanner.Bytes()...)
 			mux.Unlock()

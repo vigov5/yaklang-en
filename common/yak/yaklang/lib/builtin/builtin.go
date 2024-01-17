@@ -17,7 +17,7 @@ import (
 
 // -----------------------------------------------------------------------------
 
-// panic 崩溃并打印错误信息
+// panic Crash and print error message
 // Example:
 // ```
 // panic("something happened")
@@ -26,7 +26,7 @@ func Panic(v interface{}) {
 	panic(v)
 }
 
-// panicf 崩溃并根据格式化打印错误信息
+// panicf Crash and print error message according to format
 // Example:
 // ```
 // panicf("something happened: %v", err)
@@ -39,8 +39,8 @@ func Panicf(format string, args ...interface{}) {
 
 var zeroVal reflect.Value
 
-// mkmap 创建指定类型的映射（map）
-// ! 已弃用，可以使用 make 语句代替
+// mkmap Creates a map of the specified type (map)
+// ! Deprecated, use make statement instead
 // Example:
 // ```
 // m = mkmap("string:var") // map[string]any
@@ -52,8 +52,8 @@ func Mkmap(typ interface{}, n ...int) interface{} {
 	return reflect.MakeMap(types.Reflect(typ)).Interface()
 }
 
-// mapOf 返回指定类型的映射类型，可用于 mkmap 中
-// ! 已弃用，可以使用 make 语句代替
+// mapOf returns the mapping type of the specified type, which can be used in mkmap
+// ! Deprecated, use make statement instead
 // Example:
 // ```
 // m = mkmap(mapOf("string", "var")) // map[string]any
@@ -62,8 +62,8 @@ func MapOf(key, val interface{}) interface{} {
 	return reflect.MapOf(types.Reflect(key), types.Reflect(val))
 }
 
-// mapFrom 根据传入的键值对初始化映射（map）
-// ! 已弃用，可以使用 map 初始化语句代替
+// mapFrom based on the incoming key-value pair Initialize mapping (map)
+// ! Deprecated, you can use the map initialization statement instead
 // Example:
 // ```
 // m = mapFrom("a", 1, "b", 2) // {"a": 1, "b": 2}
@@ -147,7 +147,7 @@ func MapFrom(args ...interface{}) interface{} {
 	}
 }
 
-// delete 从map中删除key
+// delete deletes the key from the map
 // Example:
 // ```
 // m = {"a": 1, "b": 2}
@@ -166,8 +166,8 @@ func Delete(m interface{}, key interface{}) {
 	reflect.ValueOf(m).SetMapIndex(reflect.ValueOf(key), zeroVal)
 }
 
-// set 设置一个对象的值，对象可以是数组(array)，切片(slice)，映射(map)或结构体(struct)或结构体引用(ptr)
-// ! 已弃用，可以使用初始化语句或赋值语句代替
+// set sets the value of an object. The object Can be an array, slice, map or structure (struct) or structure reference (ptr)
+// ! Deprecated, you can use an initialization statement or assignment statement instead
 // Example:
 // ```
 // a = make([]int, 3)
@@ -271,7 +271,7 @@ func setMapMember(o reflect.Value, args ...interface{}) {
 	}
 }
 
-// close 用于关闭已经打开的通道(channel)，关闭一个已经关闭的通道会导致运行时崩溃
+// close is used to close the already opened Channel. Closing a closed channel will cause a runtime crash.
 // Example:
 // ```
 // ch = make(chan int)
@@ -292,7 +292,7 @@ func CloseChan(v interface{}) {
 	reflect.ValueOf(v).Close()
 }
 
-// get 从map中获取键值，如果键不存在，则返回默认值
+// get Get the key value from the map, if the key does not exist, return the default value
 // Example:
 // ```
 // m = {"a": 1, "b": 2}
@@ -342,7 +342,7 @@ func GetVar(m interface{}, key interface{}) interface{} {
 	return &yaklangspec.DataIndex{Data: m, Index: key}
 }
 
-// len 返回集合对象的长度，对象可以是数组(array)，切片(slice)，映射(map)，字符串(string)或通道(channel)
+// len returns the length of the collection object. The object can be an array, a slice, a map, a string or a channel.
 // Example:
 // ```
 // a = [1, 2, 3]
@@ -358,7 +358,7 @@ func Len(a interface{}) int {
 	return reflect.ValueOf(a).Len()
 }
 
-// cap 返回集合对象的容量，对象可以是数组(array)，切片(slice)或通道(channel)
+// cap returns the capacity of the collection object. The object can be an array, a slice or a channel.
 // Example:
 // ```
 // a = make([]int, 0, 3)
@@ -374,12 +374,12 @@ func Cap(a interface{}) int {
 	return reflect.ValueOf(a).Cap()
 }
 
-// sub 返回数组或切片的子切片
-// ! 已弃用，可以使用切片语句代替
+// sub returns the array or a subslice of the slice
+// ! Deprecated, you can use slicing statements instead
 // Example:
 // ```
 // a = [1, 2, 3, 4, 5]
-// b = sub(a, 1, 3) // [2, 3] 相当于 a[1:3]
+// b = sub(a, 1, 3) // [2, 3] is equivalent to a[1:3]
 // ```
 func SubSlice(a, i, j interface{}) interface{} {
 	va := reflect.ValueOf(a)
@@ -395,7 +395,7 @@ func SubSlice(a, i, j interface{}) interface{} {
 	return va.Slice(i1, j1).Interface()
 }
 
-// copy 将 src 数组/切片复制到 dst 数组/切片中，并返回复制的元素个数
+// copy copies the src array/copies the slice to the dst array/slice, and return the number of copied elements
 // Example:
 // ```
 // a = [1, 2, 3]
@@ -407,7 +407,7 @@ func Copy(dst, src interface{}) int {
 	return reflect.Copy(reflect.ValueOf(dst), reflect.ValueOf(src))
 }
 
-// append 将元素追加到数组或切片中，并将结果返回
+// append Appends elements to an array or slice and returns the result
 // Example:
 // ```
 // a = [1, 2, 3]
@@ -514,8 +514,8 @@ func appendStrings(a []string, vals ...interface{}) interface{} {
 	return a
 }
 
-// mkslice 创建指定类型的切片（slice）
-// ! 已弃用，可以使用 make 语句代替
+// mkslice Creates the specified type Slice
+// ! Deprecated, use make statement instead
 // Example:
 // ```
 // a = mkslice("var") // []any
@@ -544,8 +544,8 @@ func Mkslice(typ interface{}, args ...interface{}) interface{} {
 	return reflect.MakeSlice(typSlice, n, cap).Interface()
 }
 
-// sliceFrom 根据传入的键值对初始化切片（slice）
-// ! 已弃用，可以使用 slice 初始化语句代替
+// sliceFrom initializes the slice (slice) according to the incoming key-value pair
+// ! Deprecated, you can use the slice initialization statement instead of
 // Example:
 // ```
 // a = sliceFrom(1, 2, 3) // [1, 2, 3]
@@ -582,8 +582,8 @@ func SliceFromTy(args ...interface{}) interface{} {
 	return Append(ret, args[1:]...)
 }
 
-// sliceOf 返回指定类型的切片类型，可用于 mkslice 中
-// ! 已弃用，可以使用 make 语句代替
+// sliceOf Returns the slice type of the specified type, which can be used in mkslice
+// ! Deprecated, use make statement instead
 // Example:
 // ```
 // m = mkslice(sliceOf("var")) // []any
@@ -630,7 +630,7 @@ func MapInit(args ...interface{}) interface{} {
 	return ret.Interface()
 }
 
-// print 在标准输出中使用默认格式进行格式化并打印信息
+// print on standard output Format and print the information using the default format in
 // Example:
 // ```
 // print("hello yak")
@@ -640,7 +640,7 @@ func print(a ...any) (n int, err error) {
 	return fmt.Print(a...)
 }
 
-// printf 在标准输出中根据格式说明符进行格式化并打印信息
+// printf Format and print information in standard output according to the format specifier
 // Example:
 // ```
 // printf("hello %s", "yak")
@@ -650,7 +650,7 @@ func printf(format string, a ...any) (n int, err error) {
 	return fmt.Printf(format, a...)
 }
 
-// println 在标准输出中使用默认格式进行格式化并打印信息（包含换行）
+// println Use default format to format and print message on standard output (including newlines) )
 // Example:
 // ```
 // println("hello world")
@@ -660,7 +660,7 @@ func println(a ...any) (n int, err error) {
 	return fmt.Println(a...)
 }
 
-// sprint 使用默认格式进行格式化并返回字符串
+// sprint uses the default format to format and returns a string
 // Example:
 // ```
 // sprint({"a": 1, "b": 2}, 1, [1, 2, 3])
@@ -669,7 +669,7 @@ func sprint(a ...any) string {
 	return fmt.Sprint(a...)
 }
 
-// sprintf 根据格式说明符进行格式化任意个数的参数并返回字符串
+// sprintf formats any number of parameters according to the format specifier and returns the string
 // Example:
 // ```
 // sprintf("%v %d %v", {"a": 1, "b": 2}, 1, [1, 2, 3])
@@ -678,7 +678,7 @@ func sprintf(format string, a ...any) string {
 	return fmt.Sprintf(format, a...)
 }
 
-// sprintln 使用默认格式进行格式化并返回字符串（包含换行）
+// sprintln Use the default format for formatting and returns a string (including newlines)
 // Example:
 // ```
 // sprintln({"a": 1, "b": 2}, 1, [1, 2, 3])
@@ -687,7 +687,7 @@ func sprintln(a ...any) string {
 	return fmt.Sprintln(a...)
 }
 
-// fprint 使用默认格式进行格式化任意个数的参数并写入w
+// fprint uses the default format to format any number of parameters and writes w
 // Example:
 // ```
 // fprint(os.Stderr, "error")
@@ -696,7 +696,7 @@ func fprint(w io.Writer, a ...any) (n int, err error) {
 	return fmt.Fprint(w, a...)
 }
 
-// fprintf 根据格式说明符进行格式化任意个数的参数并写入w
+// fprintf formats any number of parameters according to the format specifier. And write w
 // Example:
 // ```
 // fprintf(os.Stderr, "value = %v", value)
@@ -705,7 +705,7 @@ func fprintf(w io.Writer, format string, a ...any) (n int, err error) {
 	return fmt.Fprintf(w, format, a...)
 }
 
-// fprintln 使用默认格式进行格式化任意个数的参数并写入w（包含换行）
+// fprintln Use the default format Format any number of parameters and write w (including newlines)
 // Example:
 // ```
 // fprintln(os.Stderr, "error")

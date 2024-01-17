@@ -96,8 +96,8 @@ func Map(key, elem interface{}) interface{} {
 
 // -----------------------------------------------------------------------------
 
-// make 创建切片（slice）, 映射（map）, 通道（chan）
-// ! 已弃用，可以使用 make 语句代替
+// make creates slices, maps, and channels
+// ! Deprecated, use make statement instead
 func Make(typ yaksepc.GoTyper, args ...int) interface{} {
 	t := typ.GoType()
 	switch t.Kind() {

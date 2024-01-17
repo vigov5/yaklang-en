@@ -5,6 +5,6 @@ type RuleSyntaxVisitor struct {
 	Errors []error
 	Rules  []*Rule
 
-	// 设置环境变量规则
+	// Set environment variable rules
 	Environment map[string]string
 }

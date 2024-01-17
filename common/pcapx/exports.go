@@ -75,7 +75,7 @@ func RegenerateTCPTraffic(raw []byte, localIPAddress string, opt ...ConfigOption
 	originalSrcIP := ip.SrcIP
 	originalSrcPort := tcp.SrcPort
 
-	// 出站流量
+	// outbound traffic
 	tcp.SrcPort = mySrcPort
 	ip.SrcIP = mySrcIp
 
@@ -84,7 +84,7 @@ func RegenerateTCPTraffic(raw []byte, localIPAddress string, opt ...ConfigOption
 		ComputeChecksums: true,
 	}, link, ip, tcp, payload)
 
-	// 进站流量
+	// inbound traffic
 	tcp.SrcPort = originalSrcPort
 	ip.SrcIP = originalSrcIP
 	tcp.DstPort = mySrcPort
@@ -256,7 +256,7 @@ func InjectTCPIP(raw []byte, opt ...ConfigOption) {
 		log.Error("serialize packet failed")
 		return
 	}
-	// 增加统计信息
+	// Add statistics
 	if link.DstMAC != nil {
 		globalStatistics.AddLinkLayerStatistics(link.DstMAC.String())
 	}
@@ -308,7 +308,7 @@ func InjectUDPIP(raw []byte, opt ...ConfigOption) {
 		log.Error("serialize packet failed")
 		return
 	}
-	// 增加统计信息
+	// Add statistics
 	if link.DstMAC != nil {
 		globalStatistics.AddLinkLayerStatistics(link.DstMAC.String())
 	}
@@ -354,7 +354,7 @@ func InjectICMPIP(raw []byte, opt ...ConfigOption) {
 		log.Error("serialize packet failed")
 		return
 	}
-	// 增加统计信息
+	// Add statistics
 	if link.DstMAC != nil {
 		globalStatistics.AddLinkLayerStatistics(link.DstMAC.String())
 	}

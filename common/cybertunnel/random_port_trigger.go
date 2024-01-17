@@ -40,7 +40,7 @@ type localPortDesc struct {
 	CurrentRemoteAddr string
 	LastTimestamp     int64
 
-	// 缓存一下结果
+	// Cache the result
 	addrCache  map[string]int64 // key: addr value: timestamp
 	cacheMutex *sync.Mutex
 }
@@ -102,7 +102,7 @@ func (p *RandomPortTrigger) handlePacket(interfaceIP net.IP, packet gopacket.Pac
 			remoteAddr := utils.HostPort(ipv4.SrcIP.String(), int(l.SrcPort))
 			localPortInt := int(l.DstPort)
 
-			// 记录远程 IP 对应的端口
+			// Record the port corresponding to the remote IP
 			var desc *remoteIPDesc
 			descRaw, ok := p.remoteIP.Get(ipv4.SrcIP.String())
 			if !ok {
@@ -130,7 +130,7 @@ func (p *RandomPortTrigger) handlePacket(interfaceIP net.IP, packet gopacket.Pac
 			}
 			desc.ConnectionDesc.Set(remoteAddr, localPortInt)
 
-			// 记录本地端口
+			// Record the local port
 			var localDesc *localPortDesc
 			localDescRaw, ok := p.localPort.Load(int(l.DstPort))
 			if !ok {

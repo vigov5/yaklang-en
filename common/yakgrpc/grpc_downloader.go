@@ -39,7 +39,7 @@ func (s *Server) DownloadWithStream(proxy string, fileGetter func() (urlStr stri
 		return utils.Errorf("cannot get file: %v", err)
 	}
 
-	info(0, "获取下载材料大小: Fetching Download Material Basic Info")
+	info(0, "Fetching Download Material Basic Info")
 	client := utils.NewDefaultHTTPClientWithProxy(proxy)
 	client.Timeout = time.Hour
 	rsp, err := client.Head(targetUrl)
@@ -51,7 +51,7 @@ func (s *Server) DownloadWithStream(proxy string, fileGetter func() (urlStr stri
 	if err != nil {
 		return utils.Errorf("cannot fetch cl: %v", err)
 	}
-	info(0, "共需下载大小为：Download %v Total", utils.ByteSize(uint64(i)))
+	info(0, "Total required download size is: Download %v Total", utils.ByteSize(uint64(i)))
 	rsp, err = client.Get(targetUrl)
 	if err != nil {
 		return utils.Errorf("download material failed: %s", err)
@@ -90,10 +90,10 @@ func (s *Server) DownloadWithStream(proxy string, fileGetter func() (urlStr stri
 	_, err = io.Copy(fp, io.TeeReader(rsp.Body, prog))
 	if err != nil {
 		fp.Close()
-		info(0, "下载文件失败: Download Failed: %s", err)
+		info(0, "Download file failed: Download Failed: %s", err)
 		return nil
 	}
 	fp.Close()
-	info(100, "下载文件成功：Download Finished")
+	info(100, "Download file successfully: Download Finished")
 	return nil
 }

@@ -91,7 +91,7 @@ func ExtractObjectIndexes(c string) [][2]int {
 		if r != nil {
 			raw, ok := r.(string)
 			if ok && raw == state_jsonObj {
-				// 记录结果
+				// recording result
 				ret, ok := objectDepthIndexTable[objectDepth]
 				if ok && ret >= 0 {
 					results = append(results, [2]int{objectDepthIndexTable[objectDepth], index + 1})
@@ -112,7 +112,7 @@ func ExtractObjectIndexes(c string) [][2]int {
 		return basicState.(string)
 	}
 
-	// 启动栈状态机
+	// startup stack state machine
 	pushState(state_data)
 	var last byte
 	var ch byte
@@ -186,14 +186,14 @@ func ExtractObjectIndexes(c string) [][2]int {
 			}
 		case state_BacktickString:
 			/*
-				这个很特殊，有几种情况需要处理
+				This is very special, there are several situation needs to be dealt with
 				`abc`
 				`abc${"123" + `abc`}`
 			*/
 			switch ch {
 			case '{':
 				if last == '$' {
-					// ${ 开头的，认为这是 expr
+					// ${ , thinking this is expr
 					pushState(state_esExpr)
 					continue
 				}
@@ -204,7 +204,7 @@ func ExtractObjectIndexes(c string) [][2]int {
 				}
 			}
 		case state_reset:
-			// 空状态回溯，多半是有问题的
+			// empty state traceback, most likely it starts with the problematic
 			//currentPair[0] = -1
 			//currentPair[1] = -1
 			//currentPair[2] = -1
@@ -212,7 +212,7 @@ func ExtractObjectIndexes(c string) [][2]int {
 		}
 	}
 
-	// 收缩结果
+	// shrinking result
 	var blocks [][2]int
 	var currentBlock = [2]int{-1, -1}
 	sort.SliceStable(results, func(i, j int) bool {
@@ -234,7 +234,7 @@ func ExtractObjectIndexes(c string) [][2]int {
 		}
 
 		if result[0] >= currentBlock[0] && result[1] <= currentBlock[1] && currentBlockIsJson() {
-			// 被包含的内容
+			// included content
 			continue
 		} else {
 			blocks = append(blocks, [2]int{currentBlock[0], currentBlock[1]})
@@ -265,10 +265,10 @@ func ExtractJSONWithRaw(raw string) (results []string, rawStr []string) {
 		if ret, ok := JsonValidObject([]byte(jsonStr)); ok {
 			if !json.Valid([]byte(jsonStr)) {
 				rawStr = append(rawStr, jsonStr)
-				// 修复后的 JSON
+				// repaired JSON
 				extraValid = append(extraValid, string(ret))
 			} else {
-				// 完美的 JSON
+				// Perfect JSON
 				results = append(results, jsonStr)
 			}
 		} else {

@@ -17,7 +17,7 @@ type RequestIf interface {
 	RequestRaw() []byte
 }
 
-// Url 返回当前请求的URL字符串
+// Url Returns the URL string of the current request
 // Example:
 // ```
 // req.Url()
@@ -29,7 +29,7 @@ func (r *Req) Url() string {
 	return r.request.URL.String()
 }
 
-// Request 返回当前请求的原始请求结构体引用
+// Request Returns the original request structure reference of the current request
 // Example:
 // ```
 // req.Request()
@@ -42,7 +42,7 @@ func (r *Req) Request() *http.Request {
 	return reqIns
 }
 
-// RequestRaw 返回当前请求的原始请求报文
+// RequestRaw Returns the original request report of the current request Text
 // Example:
 // ```
 // req.RequestRaw()
@@ -51,7 +51,7 @@ func (r *Req) RequestRaw() []byte {
 	return r.requestRaw
 }
 
-// Response 返回当前请求的原始响应结构体引用与错误
+// Response Returns the original response structure reference and error of the current request
 // Example:
 // ```
 // resp, err = req.Response()
@@ -66,7 +66,7 @@ func (r *Req) Response() (*http.Response, error) {
 	return r.response, nil
 }
 
-// ResponseRaw 返回当前请求的原始响应报文
+// ResponseRaw Returns the original response message of the current request
 // Example:
 // ```
 // req.ResponseRaw()
@@ -75,7 +75,7 @@ func (r *Req) ResponseRaw() []byte {
 	return r.responseRaw
 }
 
-// ResponseBody 返回当前请求的原始响应体
+// ResponseBody Returns the original response body of the current request
 // Example:
 // ```
 // req.ResponseBody()
@@ -84,7 +84,7 @@ func (r *Req) ResponseBody() []byte {
 	return r.responseBody
 }
 
-// IsHttps 返回当前请求是否是https请求
+// IsHttps Returns whether the current request is an https request
 // Example:
 // ```
 // req.IsHttps()

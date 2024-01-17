@@ -61,7 +61,7 @@ func (w *WebSocketModifier) ModifyRequest(req *http.Request) error {
 		return nil
 	}
 
-	// 如果请求存在permessage-deflate扩展则设置isDeflate
+	// . If the request contains the permessage-deflate extension, set isDeflate
 	isDeflate := lowhttp.IsPermessageDeflate(req.Header)
 
 	// hijack request
@@ -160,7 +160,7 @@ func (w *WebSocketModifier) ModifyRequest(req *http.Request) error {
 		return errors.Wrap(err, "lowhttp.DumpHTTPResponse")
 	}
 	fixRsp := w.ResponseHijackCallback(req, rspIns, rspBytes)
-	// 这里不校验，也没关系，反正本来就是为了更好兼容 "劫持部分"
+	// . It does not matter if there is no verification here. Anyway, it is for better compatibility with "hijacking part when permessage-deflate is extended."
 	//websocketAccept := rsp.Header.Get("Sec-WebSocket-Accept")
 	//checkSum := lowhttp.ComputeWebsocketAcceptKey(webSocketKey)
 	//if webSocketKey != "" && websocketAccept != checkSum {
@@ -174,10 +174,10 @@ func (w *WebSocketModifier) ModifyRequest(req *http.Request) error {
 		return utils.Errorf("101 switch protocol failed: now %v", rsp.StatusCode)
 	}
 
-	// 如果响应中不存在permessage-deflate扩展则要反设置isDeflate
+	// If the permessage-deflate extension does not exist in the response, set isDeflate
 	serverSupportDeflate := lowhttp.IsPermessageDeflate(rsp.Header)
 
-	// 当服务端不支持permessage-deflate扩展时，客户端也不应该使用
+	// when the server does not support it. Clients should also not use the
 	if !serverSupportDeflate && isDeflate {
 		isDeflate = false
 	}
@@ -195,7 +195,7 @@ func (w *WebSocketModifier) ModifyRequest(req *http.Request) error {
 	ts := time.Now().UnixNano()
 
 	log.Infof("start to build websocket hijack tunnel: %v", conn.RemoteAddr())
-	// 透明模式
+	// Transparent mode
 	if w.websocketHijackMode == nil || !w.websocketHijackMode.IsSet() {
 		go w.copySync(lowhttp.NewFrameWriter(remoteConn, isDeflate), lowhttp.NewFrameReader(brw.Reader, isDeflate), true, req, rsp, cancel, ts)
 		go w.copySync(lowhttp.NewFrameWriter(brw.Writer, isDeflate), lowhttp.NewFrameReader(remoteConn, isDeflate), false, req, rsp, cancel, ts)

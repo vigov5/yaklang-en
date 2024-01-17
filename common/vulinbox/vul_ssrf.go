@@ -23,7 +23,7 @@ func (s *VulinServer) registerSSRF() {
 		DefaultRender(`<h1>Hello, Welcome to Vulinbox!</h1>`, writer, request)
 	})
 
-	ssrfGroup := s.router.PathPrefix("/ssrf").Name("SSRF 参数多种情况的测试").Subrouter()
+	ssrfGroup := s.router.PathPrefix("/ssrf").Name("SSRF parameter testing in various situations").Subrouter()
 
 	ssrfGroup.HandleFunc("/flag", func(writer http.ResponseWriter, request *http.Request) {
 		if strings.Contains(request.Host, "127.0.0.1") {
@@ -42,7 +42,7 @@ func (s *VulinServer) registerSSRF() {
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				raw := request.URL.Query().Get("json")
 				if raw == "" {
-					writer.Write([]byte(`暂无数据！`))
+					writer.Write([]byte (`No data yet!`))
 					return
 				}
 				var m = make(map[string]interface{})
@@ -78,7 +78,7 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "url=http://www.baidu.com/",
 			Path:         "/in-get",
-			Title:        "SSRF GET 中 URL 参数",
+			Title:        "SSRF GET medium URL parameters",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				ref := request.URL.Query().Get("url")
 				var u = fmt.Sprint(ref)
@@ -101,37 +101,37 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "",
 			Path:         "/in-post",
-			Title:        "SSRF POST 中 URL 参数",
+			Title:        "URL parameter in SSRF POST",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == "GET" {
 					writer.Header().Set("Content-Type", "text/html; charset=utf8")
 					writer.Write([]byte(`
 <form action="/ssrf/in-post" method="post">
-	<label for="name">姓名:</label>
+	<label for="name">Name:</label>
 	<input type="text" id="name" name="name" ><br><br>
 
-	<label for="email">邮箱:</label>
+	<label for="email">Email:</label>
 	<input type="email" id="email" name="email" ><br><br>
 
-	<label for="age">年龄:</label>
+	<label for="age">Age:</label>
 	<input type="number" id="age" name="age" min="2" max="120" ><br><br>
 
 	
 	<label for="url">URL</label>
 	<input id='url' name="url"><br><br>
 
-	<label for="gender">性别:</label>
+	<label for="gender">Gender:</label>
 	<select id="gender" name="gender" >
-		<option value="">请选择</option>
-		<option value="male">男</option>
-		<option value="female">女</option>
-		<option value="other">其他</option>
+		<option value="">Please select</option>
+		<option value="male">male</option>
+		<option value="female">Female</option>
+		<option value="other">Other</option>
 	</select><br><br>
 
-	<label for="message">留言:</label>
+	<label for="message">Message:</label>
 	<textarea id="message" name="message" rows="5" ></textarea><br><br>
 
-	<input type="submit" value="提交">
+	<input type="submit" value="Submit">
 </form>
 `))
 					return
@@ -167,19 +167,19 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "",
 			Path:         "/rebinding/in-post",
-			Title:        "SSRF POST 中 URL 参数 (DNS Rebinding)",
+			Title:        "SSRF POST (DNS Rebinding)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == "GET" {
 					writer.Header().Set("Content-Type", "text/html; charset=utf8")
 					writer.Write([]byte(`
 <form action="/ssrf/rebinding/in-post" method="post">
-	<label for="name">姓名:</label>
+	<label for="name">Name:</label>
 	<input type="text" id="name" name="name" ><br><br>
 
-	<label for="email">邮箱:</label>
+	<label for="email">Email:</label>
 	<input type="email" id="email" name="email" ><br><br>
 
-	<label for="age">年龄:</label>
+	<label for="age">Age:</label>
 	<input type="number" id="age" name="age" min="2" max="120" ><br><br>
 
 	
@@ -189,18 +189,18 @@ func (s *VulinServer) registerSSRF() {
 	<label for="timeout">TimeOut</label>
 	<input type="number" id='timeout' name="timeout" min="10" max="120"><br><br>
 
-	<label for="gender">性别:</label>
+	<label for="gender">Gender:</label>
 	<select id="gender" name="gender" >
-		<option value="">请选择</option>
-		<option value="male">男</option>
-		<option value="female">女</option>
-		<option value="other">其他</option>
+		<option value="">Please select</option>
+		<option value="male">male</option>
+		<option value="female">Female</option>
+		<option value="other">Other</option>
 	</select><br><br>
 
-	<label for="message">留言:</label>
+	<label for="message">Message:</label>
 	<textarea id="message" name="message" rows="5" ></textarea><br><br>
 
-	<input type="submit" value="提交">
+	<input type="submit" value="Submit">
 </form>
 `))
 					return
@@ -249,37 +249,37 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "",
 			Path:         "/in-post-multipart",
-			Title:        "SSRF POST 中 URL 参数(Multipart)",
+			Title:        "SSRF POST URL parameters (Multipart)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == "GET" {
 					writer.Header().Set("Content-Type", "text/html; charset=utf8")
 					writer.Write([]byte(`
 <form action="/ssrf-in-post" method="post" enctype="multipart/form-data">
-	<label for="name">姓名:</label>
+	<label for="name">Name:</label>
 	<input type="text" id="name" name="name" ><br><br>
 
-	<label for="email">邮箱:</label>
+	<label for="email">Email:</label>
 	<input type="email" id="email" name="email" ><br><br>
 
-	<label for="age">年龄:</label>
+	<label for="age">Age:</label>
 	<input type="number" id="age" name="age" min="2" max="120" ><br><br>
 
 	
 	<label for="url">URL</label>
 	<input id='url' name="url"><br><br>
 
-	<label for="gender">性别:</label>
+	<label for="gender">Gender:</label>
 	<select id="gender" name="gender" >
-		<option value="">请选择</option>
-		<option value="male">男</option>
-		<option value="female">女</option>
-		<option value="other">其他</option>
+		<option value="">Please select</option>
+		<option value="male">male</option>
+		<option value="female">Female</option>
+		<option value="other">Other</option>
 	</select><br><br>
 
-	<label for="message">留言:</label>
+	<label for="message">Message:</label>
 	<textarea id="message" name="message" rows="5" ></textarea><br><br>
 
-	<input type="submit" value="提交">
+	<input type="submit" value="Submit">
 </form>
 `))
 					return
@@ -300,7 +300,7 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "",
 			Path:         "/json-in-post-param",
-			Title:        "SSRF POST参数是JSON（包含URL）的情况",
+			Title:        "SSRF POST parameter is JSON (including URL)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 
 				return
@@ -311,7 +311,7 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "destUrl=/redirect/main",
 			Path:         "/redirect/basic",
-			Title:        "完全开放重定向",
+			Title:        "Fully open redirection",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var u = LoadFromGetParams(request, "destUrl")
 				if strings.Contains(u, `redirect/basic`) {
@@ -326,7 +326,7 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "destUrl=/redirect/main",
 			Path:         "/redirect/redirect-hell",
-			Title:        "完全开放重定向(无限重定向)",
+			Title:        "Fully open redirection (unlimited redirection)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var u = LoadFromGetParams(request, "destUrl")
 				writer.Header().Set("Location", u)
@@ -337,7 +337,7 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "redUrl=/redirect/main",
 			Path:         "/redirect/js/basic",
-			Title:        "完全开放重定向（JS location.href）",
+			Title:        "Fully open redirection (JS location.href)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var u = LoadFromGetParams(request, "redUrl")
 				DefaultRender(`
@@ -357,7 +357,7 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "redirect_to=/redirect/main",
 			Path:         "/redirect/js/basic1",
-			Title:        "完全开放重定向（JS location.replace）",
+			Title:        "Fully open to redirect Orientation (JS location.replace) URL parameters in",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var u = LoadFromGetParams(request, "redirect_to")
 				DefaultRender(`
@@ -377,7 +377,7 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "redirect=/redirect/main",
 			Path:         "/redirect/js/basic2",
-			Title:        "完全开放重定向（JS location.assign）",
+			Title:        "Fully open redirection (JS location.assign)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var u = LoadFromGetParams(request, "redirect")
 				DefaultRender(`
@@ -397,7 +397,7 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "redirect=/redirect/main",
 			Path:         "/redirect/meta/case1",
-			Title:        "完全开放重定向（meta 延迟跳转）",
+			Title:        "Fully open redirection (meta delayed jump)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var u = LoadFromGetParams(request, "redirect")
 				DefaultRenderEx(true, `<!DOCTYPE html>
@@ -416,7 +416,7 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "redirect=/redirect/main",
 			Path:         "/redirect/meta/case2",
-			Title:        "完全开放重定向（meta）",
+			Title:        "Fully open redirection (meta)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var u = LoadFromGetParams(request, "redirect")
 				DefaultRenderEx(true, `<!DOCTYPE html>
@@ -435,7 +435,7 @@ func (s *VulinServer) registerSSRF() {
 		{
 			DefaultQuery: "redirect=/redirect/main",
 			Path:         "/redirect/safe",
-			Title:        "安全的重定向(只重定向path)",
+			Title:        "Safe redirect (only redirect path)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var u = LoadFromGetParams(request, "redirect")
 				DefaultRenderEx(true, `<!DOCTYPE html>

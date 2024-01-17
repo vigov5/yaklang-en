@@ -13,19 +13,19 @@ func TestSyncRootTag(t *testing.T) {
 		code   string
 		expect []string
 	}{
-		{ // 基础
+		{ // basic
 			code:   "{{array(aaa|bbb|ccc)}}{{array(aaa|bbb|ccc)}}",
 			expect: []string{"aaaaaa", "bbbbbb", "cccccc"},
 		},
-		{ // 标签内设置同步的情况
+		{ // label synchronization settings
 			code:   "{{array::1(aaa|bbb|ccc)}}{{array::1(aaa|bbb|ccc)}}",
 			expect: []string{"aaaaaa", "bbbbbb", "cccccc"},
 		},
-		{ // 标签内设置同步的情况
+		{ // label synchronization settings
 			code:   "{{array(aaa|bbb|ccc)}}{{array::1(aaa|bbb|ccc)}}",
 			expect: []string{"aaaaaa", "bbbbbb", "cccccc"},
 		},
-		{ // 只同步最外层
+		{ // Only synchronize the outermost
 			code:   "{{echo({{array(a|b|c)}}{{array(a|b|c)}})}}",
 			expect: []string{"aa", "ba", "ca", "ab", "bb", "cb", "ac", "bc", "cc"},
 		},

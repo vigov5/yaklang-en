@@ -26,7 +26,7 @@ func (s *StructHelper) String() string {
 	var buf bytes.Buffer
 	bufHandler := &buf
 	_, _ = fmt.Fprintf(bufHandler, "type %v.(%v) struct {\n", s.PkgPath, s.Name)
-	_, _ = fmt.Fprintf(bufHandler, "  Fields(可用字段): \n")
+	_, _ = fmt.Fprintf(bufHandler, "  Fields (available fields): \n")
 	prefix := "      "
 	for _, f := range s.Fields {
 		suffix := ""
@@ -36,7 +36,7 @@ func (s *StructHelper) String() string {
 		_, _ = fmt.Fprintf(bufHandler, "%v%v: %v  %v\n", prefix, f.Name, DumpReflectType(f.Type), suffix)
 	}
 
-	_, _ = fmt.Fprintf(bufHandler, "  StructMethods(结构方法/函数): \n")
+	_, _ = fmt.Fprintf(bufHandler, "  StructMethods (structural method/function): \n")
 	for _, m := range s.Methods {
 		suffix := ""
 		//if m.Tag.Get("ydoc") != "" {
@@ -45,7 +45,7 @@ func (s *StructHelper) String() string {
 		_, _ = fmt.Fprintf(bufHandler, "%v%v%v\n", prefix, DumpReflectTypeEx(m.Func.Type(), true, m.Name), suffix)
 	}
 
-	_, _ = fmt.Fprintf(bufHandler, "  PtrStructMethods(指针结构方法/函数): \n")
+	_, _ = fmt.Fprintf(bufHandler, "  PtrStructMethods (pointer structure method/function): \n")
 	for _, m := range s.PtrMethods {
 		suffix := ""
 		//if m.Tag.Get("ydoc") != "" {

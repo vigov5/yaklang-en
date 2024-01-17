@@ -33,36 +33,36 @@ type CVE struct {
 	CVSSVersion      string
 	CVSSVectorString string
 
-	// 攻击路径
+	// Attack path
 	AccessVector string
-	// 攻击复杂度
+	// Attack complexity
 	AccessComplexity string
-	// 需要认证
+	// Requires certification
 	Authentication string
-	// 机密性影响（泄密）
+	// Confidentiality Impact (Leakage)
 	ConfidentialityImpact string
-	// 完整性影响（破坏程度）
+	// Integrity impact (level of damage)
 	IntegrityImpact string
-	// 可用性影响（导致服务不可用）
+	// Availability impact (resulting in service unavailability)
 	AvailabilityImpact string
-	// 基础评分
+	// Base score
 	BaseCVSSv2Score float64
 
-	// 严重等级
+	// Severity rating
 	Severity string
-	// 漏洞利用评分
+	// Exploit score
 	ExploitabilityScore float64
-	// 漏洞影响评分
+	// Vulnerability impact score
 	ImpactScore float64
 
-	// 可获取所有权限
+	// Can obtain all permissions
 	ObtainAllPrivilege bool
-	// 可获取用户权限
+	// User permissions available
 	ObtainUserPrivilege bool
-	// 可获取其他权限
+	// Additional permissions available
 	ObtainOtherPrivilege bool
 
-	// 是否需要用户交互
+	// Whether user interaction is required
 	UserInteractionRequired bool
 
 	PublishedDate    time.Time
@@ -104,11 +104,11 @@ func AccessComplexityVerbose(i string) string {
 	i = strings.ToLower(i)
 	switch i {
 	case "low":
-		return "容易"
+		return "Easy"
 	case "medium":
-		return "一般"
+		return "General"
 	case "high":
-		return "困难"
+		return "Hard"
 	default:
 		return "-"
 	}
@@ -118,17 +118,17 @@ func SeverityVerbose(i string) string {
 	i = strings.ToLower(i)
 	switch i {
 	case "trace", "debug", "note":
-		return "调试信息"
+		return "debugging information"
 	case "info", "fingerprint", "infof", "default":
-		return "信息/指纹"
+		return "information/fingerprint"
 	case "low":
-		return "低危"
+		return "low risk"
 	case "middle", "warn", "warning", "medium":
-		return "中危"
+		return "medium risk"
 	case "high":
-		return "高危"
+		return "High risk"
 	case "fatal", "critical", "panic":
-		return "严重"
+		return "severe"
 	default:
 		return "-"
 	}

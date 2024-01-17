@@ -13,7 +13,7 @@ func TestGRPCMUSTPASS_SSTI(t *testing.T) {
 		panic(err)
 	}
 
-	pluginName := "SSTI Expr 服务器模版表达式注入"
+	pluginName := "SSTI Expr Server Template Expression Injection"
 	vul := VulInfo{
 		Path: []string{"/expr/injection?a=1", "/expr/injection?b={%22a%22:%201}", "/expr/injection?c=abc"},
 		ExpectedResult: map[string]int{
@@ -24,5 +24,5 @@ func TestGRPCMUSTPASS_SSTI(t *testing.T) {
 		StrictMode: false,
 	}
 
-	Must(CoreMitmPlugTest(pluginName, server, vul, client, t), "SSTI插件对于注入检测结果不符合预期")
+	Must(CoreMitmPlugTest(pluginName, server, vul, client, t), "The injection detection results of the SSTI plug-in do not meet expectations")
 }

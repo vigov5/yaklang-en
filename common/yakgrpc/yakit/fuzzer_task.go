@@ -29,27 +29,27 @@ func init() {
 }
 
 /*
-这个结构用于保存当前测试的结果
+This structure is used to save the results of the current test
 
-包含：基本参数+请求数据
+Contains: basic parameters + request data
 
-耗时+执行结果
+Time consumption + execution results
 
-执行结果包含，失败原因与执行成功的原因。
+update includes the reason for failure and the reason for successful execution.
 
-总共有多少个请求
+How many requests are there in total
 */
 type WebFuzzerTask struct {
 	gorm.Model
 
-	// 原始请求 json+quote
+	// Original request json+quote
 	RawFuzzTaskRequest string `json:"raw_fuzz_task_request"`
 
-	// 对应前端的组织形式
+	// Corresponding organizational form of the front end
 	FuzzerIndex    string `json:"fuzzer_index"`
 	FuzzerTabIndex string `json:"fuzzer_tab_index"`
 
-	// HTTP 数据流总量
+	// Total amount of HTTP data flow
 	HTTPFlowTotal        int    `json:"http_flow_total"`
 	HTTPFlowSuccessCount int    `json:"http_flow_success_count"`
 	HTTPFlowFailedCount  int    `json:"http_flow_failed_count"`
@@ -57,7 +57,7 @@ type WebFuzzerTask struct {
 	Reason               string `json:"reason"` // if not ok
 	Host                 string `json:"host"`
 	Port                 int    `json:"port"`
-	// retry 相关
+	// retry related
 	RetryRootID uint `json:"retry_root_id"`
 }
 
@@ -143,7 +143,7 @@ func QueryFuzzerHistoryTasks(db *gorm.DB, req *ypb.QueryHistoryHTTPFuzzerTaskExP
 		orderby = "id"
 	}
 
-	// 返回的任务跳过重试的任务
+	// The returned task skips the retried task
 	db = db.Where("id = retry_root_id or retry_root_id is null or retry_root_id = 0")
 
 	var (
@@ -156,13 +156,13 @@ func QueryFuzzerHistoryTasks(db *gorm.DB, req *ypb.QueryHistoryHTTPFuzzerTaskExP
 		return nil, nil, utils.Errorf("pagination failed: %s", db.Error)
 	}
 
-	// 对重试任务进行处理
+	// for retry tasks The task
 
-	// 先获取所有task的id
+	// First get the IDs of all tasks
 	ids := lo.Map(returnTasks, func(i *WebFuzzerTask, _ int) uint {
 		return uint(i.ID)
 	})
-	// 找到重试任务，计算总共成功的数量
+	// Find the retry task and calculate the total number of successes
 	if db = oldDB.Model(&WebFuzzerTask{}).Select([]string{"retry_root_id", "http_flow_success_count"}).Where("retry_root_id IN (?)", ids).Find(&tasks); db.Error != nil {
 		return nil, nil, utils.Errorf("search by retry_root_id failed: %s", db.Error)
 	}
@@ -173,7 +173,7 @@ func QueryFuzzerHistoryTasks(db *gorm.DB, req *ypb.QueryHistoryHTTPFuzzerTaskExP
 		}
 		successCountMap[task.RetryRootID] += task.HTTPFlowSuccessCount
 	}
-	// 更新返回的任务
+	// execution result returned by processing
 	for _, task := range returnTasks {
 		if successCount, ok := successCountMap[uint(task.ID)]; ok {
 			task.HTTPFlowSuccessCount = successCount

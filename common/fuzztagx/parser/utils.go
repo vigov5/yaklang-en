@@ -10,13 +10,13 @@ type trieNode struct {
 	failure    *trieNode
 	patternLen int
 	id         int
-	flag       int // 对节点的标记，可以用来标记结束节点
+	flag       int // The mark of the node can be used to mark the end node
 }
 
-// IndexAllSubstrings 只遍历一次查找所有子串位置
-// 返回值是一个二维数组，每个元素是一个[2]int类型匹配结果，其中第一个元素是规则index，第二个元素是索引位置
+// IndexAllSubstrings Only traverse once to find all substring positions
+// The return value is a two-dimensional array, each element is a [2]int type Matching result, the first element is the rule index, the second element is the index position
 func IndexAllSubstrings(s string, patterns ...string) (result [][2]int) {
-	// 构建trie树
+	// Build a trie tree
 	root := &trieNode{
 		children:   make(map[rune]*trieNode),
 		failure:    nil,
@@ -41,7 +41,7 @@ func IndexAllSubstrings(s string, patterns ...string) (result [][2]int) {
 		node.flag = 1
 		node.patternLen = len(pattern)
 	}
-	// 构建Failure
+	// Build Failure
 	queue := make([]*trieNode, 0)
 	root.failure = root
 
@@ -69,7 +69,7 @@ func IndexAllSubstrings(s string, patterns ...string) (result [][2]int) {
 		}
 	}
 
-	// 查找
+	// Find
 	node := root
 	for i, char := range s {
 		for node != root && node.children[char] == nil {
@@ -106,7 +106,7 @@ func (e *Escaper) Escape(s string) string {
 	return res
 }
 func (e *Escaper) Unescape(s string) (string, error) {
-	// 构建trie树
+	// Build a trie tree
 	root := &trieNode{
 		children:   make(map[rune]*trieNode),
 		failure:    nil,
@@ -145,7 +145,7 @@ func (e *Escaper) Unescape(s string) (string, error) {
 				ch := runeData[i]
 				if node.children[ch] != nil {
 					node = node.children[ch]
-					if node.flag == 1 { // 匹配成功
+					if node.flag == 1 { // Match success
 						result += patterns[node.id]
 						data = string(runeData[i+1:])
 						node = root
@@ -159,7 +159,7 @@ func (e *Escaper) Unescape(s string) (string, error) {
 				}
 			}
 		} else {
-			index := strings.Index(data, e.escapeSymbol) // 查找后面第一个转义符
+			index := strings.Index(data, e.escapeSymbol) // Find the first escape character after
 			if index != -1 {
 				result += data[:index]
 				data = data[index+len(e.escapeSymbol):]

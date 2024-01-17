@@ -107,8 +107,8 @@ func (s *VulinServer) registerCryptoJS() {
 <body>
 <div>
 	<p class="success-container">
-        <h1>恭喜您！登录成功！</h1>
-        <p>欢迎，您已成功登录。</p>
+        <h1>Congratulations! login successful!</h1>
+        <p>Welcome, you have logged in successfully.</p>
     </p>
 </div>
 </body>
@@ -125,19 +125,19 @@ func (s *VulinServer) registerCryptoJS() {
 		onceGenerator.Do(initKey)
 		return handler
 	})
-	cryptoGroup := r.PathPrefix("/crypto").Name("高级前端加解密与验签实战").Subrouter()
+	cryptoGroup := r.PathPrefix("/crypto").Name("Advanced front-end encryption and decryption and signature verification.").Subrouter()
 	cryptoRoutes := []*VulInfo{
 		{
 			Path:  "/sign/hmac/sha256",
-			Title: "前端验证签名（验签）表单：HMAC-SHA256",
+			Title: ": HMAC-SHA256",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				unsafeTemplateRender(writer, request, cryptoJSlibTemplateHtml, map[string]any{
 					"url":         `/crypto/sign/hmac/sha256/verify`,
 					`extrakv`:     "username: jsonData.username, password: jsonData.password,",
-					"title":       "HMAC-sha256 验签",
+					"title":       "HMAC-sha256 Signature verification",
 					"datafield":   "signature",
 					"key":         `CryptoJS.enc.Utf8.parse("1234123412341234")`,
-					"info":        "签名验证（又叫验签或签名）是验证请求参数是否被篡改的一种常见安全手段，验证签名方法主流的有两种，一种是 KEY+哈希算法，例如 HMAC-MD5 / HMAC-SHA256 等，本案例就是这种方法的典型案例。生成签名的规则为：username=*&password=*。在提交和验证的时候需要分别对提交数据进行处理，签名才可以使用和验证",
+					"info":        "Signature verification (also called signature verification or signature) ) is a common security method to verify whether request parameters have been tampered with. There are two mainstream methods for verifying signatures. One is KEY+hash algorithm, such as HMAC-MD5 / HMAC-SHA256, etc., this case is a typical case of this method. The rules for generating signatures are: username=*&password=*. The submitted data needs to be processed separately during submission and verification before the signature can be used and verified.",
 					"encrypt":     `CryptoJS.HmacSHA256(word, key.toString(CryptoJS.enc.Utf8)).toString();`,
 					"decrypt":     `"";`,
 					"jsonhandler": "`username=${jsonData.username}&password=${jsonData.password}`;",
@@ -178,14 +178,14 @@ func (s *VulinServer) registerCryptoJS() {
 					"\n Key: " + string(keyPlain) +
 					"\n OriginData: " + backendCalcOrigin
 				if signFinished {
-					blocks = append(blocks, block("签名验证成功", msg))
+					blocks = append(blocks, block("Signature verification is successful.", msg))
 				} else {
-					blocks = append(blocks, block("签名验证失败", msg))
+					blocks = append(blocks, block("Signature verification failed", msg))
 				}
 				if isLoginedFromRaw(params) && signFinished {
-					blocks = append(blocks, block("用户名密码验证成功", "恭喜您，登录成功！"))
+					blocks = append(blocks, block("Username and password verification successful", "Congratulations, your login is successful!"))
 				} else {
-					blocks = append(blocks, block("用户名密码验证失败", "origin data: "+backendCalcOrigin))
+					blocks = append(blocks, block("Username and password verification failed", "origin data: "+backendCalcOrigin))
 				}
 
 				DefaultRender(BlockContent(blocks...), writer, request)
@@ -193,27 +193,27 @@ func (s *VulinServer) registerCryptoJS() {
 		},
 		{
 			Path:  "/sign/rsa/hmacsha256",
-			Title: "前端验证签名（验签）表单：先 HMAC-SHA256 再 RSA",
+			Title: "Front-end verification signature (signature verification) form: HMAC-SHA256 first and then RSA",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				unsafeTemplateRender(writer, request, cryptoJSlibTemplateHtml, map[string]any{
 					"url":     `/crypto/sign/rsa/hmacsha256/verify`,
 					`extrakv`: "username: jsonData.username, password: jsonData.password,",
-					"title":   "先 HMAC-SHA256 再 RSA",
+					"title":   "First HMAC-SHA256 and then RSA",
 					"initcode": `
 document.getElementById('submit').disabled = true;
-document.getElementById('submit').innerText = '需等待公钥获取';
+document.getElementById('submit').innerText = 'Need to wait for the public key to be obtained.';
 let pubkey;
 setTimeout(function(){
 	fetch('/crypto/js/rsa/public/key').then(async function(rsp) {
 		pubkey = await rsp.text()
 		document.getElementById('submit').disabled = false;
-		document.getElementById('submit').innerText = '提交表单数据';
+		document.getElementById('submit').innerText = 'Submit form data';
 		console.info(pubkey)
 	})
 },300)`,
 					"datafield":   "signature",
 					"key":         `CryptoJS.enc.Utf8.parse("1234123412341234")`,
-					"info":        "签名验证（又叫验签或签名）是验证请求参数是否被篡改的一种常见安全手段，验证签名方法主流的有两种，一种是 KEY+哈希算法，例如 HMAC-MD5 / HMAC-SHA256 等，另一种是使用非对称加密加密 HMAC 的签名信息，本案例就是这种方法的典型案例。生成签名的规则为：username=*&password=*。在提交和验证的时候需要分别对提交数据进行处理，签名才可以使用和验证，这种情况相对来说很复杂",
+					"info":        "Signature verification (also called signature verification or signature) ) is a common security method to verify whether request parameters have been tampered with. There are two mainstream methods for verifying signatures. One is KEY+hash algorithm, such as HMAC-MD5 / HMAC-SHA256, etc. The other is to use asymmetric encryption to encrypt the HMAC signature information. This case is a typical case of this method. The rules for generating signatures are: username=*&password=*. During submission and verification, the submitted data needs to be processed separately before the signature can be used and verified. This situation is relatively complicated.",
 					"encrypt":     `KEYUTIL.getKey(pubkey).encrypt(CryptoJS.HmacSHA256(word, key.toString(CryptoJS.enc.Utf8)).toString());`,
 					"decrypt":     `"";`,
 					"jsonhandler": "`username=${jsonData.username}&password=${jsonData.password}`;",
@@ -258,14 +258,14 @@ setTimeout(function(){
 					"\n Key: " + string(keyPlain) +
 					"\n OriginData: " + backendCalcOrigin
 				if signFinished {
-					blocks = append(blocks, block("签名验证成功", msg))
+					blocks = append(blocks, block("Signature verification is successful.", msg))
 				} else {
-					blocks = append(blocks, block("签名验证失败", msg))
+					blocks = append(blocks, block("Signature verification failed", msg))
 				}
 				if isLoginedFromRaw(params) && signFinished {
-					blocks = append(blocks, block("用户名密码验证成功", "恭喜您，登录成功！"))
+					blocks = append(blocks, block("Username and password verification successful", "Congratulations, your login is successful!"))
 				} else {
-					blocks = append(blocks, block("用户名密码验证失败", "origin data: "+backendCalcOrigin))
+					blocks = append(blocks, block("Username and password verification failed", "origin data: "+backendCalcOrigin))
 				}
 
 				DefaultRender(BlockContent(blocks...), writer, request)
@@ -273,15 +273,15 @@ setTimeout(function(){
 		},
 		{
 			Path:  "/js/lib/aes/cbc",
-			Title: "CryptoJS.AES(CBC) 前端加密登陆表单",
+			Title: "CryptoJS.AES (CBC) Front-end encrypted login form",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				unsafeTemplateRender(writer, request, cryptoJSlibTemplateHtml, map[string]any{
 					"url":      `/crypto/js/lib/aes/cbc/handler`,
 					"initcode": "var iv = CryptoJS.lib.WordArray.random(128/8);",
 					`extrakv`:  "iv: iv.toString(),",
-					"title":    "AES-CBC(4.0.0 默认) 加密",
+					"title":    "AES-CBC (4.0.0 default) encryption",
 					"key":      `CryptoJS.enc.Utf8.parse("1234123412341234")`,
-					"info":     "默认使用 CryptoJS.AES(CBC 需要 IV).encrypt/decrypt，默认 PKCS7Padding，密钥长度不足16字节，以 NULL 补充，超过16字节，截断\n 注意：这种加密方式每一次密文可能都不一样",
+					"info":     "CryptoJS.AES (CBC requires IV).encrypt is used by default/decrypt, default PKCS7Padding, key length If it is less than 16 bytes, add it with NULL. If it exceeds 16 bytes, it will be truncated.\n Note: This encryption method may have different ciphertext every time.",
 					"encrypt":  `CryptoJS.AES.encrypt(word, key, {iv: iv}).toString();`,
 					"decrypt":  `CryptoJS.AES.decrypt(word, key, {iv: iv}).toString();`,
 				})
@@ -320,11 +320,11 @@ setTimeout(function(){
 					return
 				}
 				var blocks []string
-				blocks = append(blocks, block("解密前端内容成功", string(dec)))
+				blocks = append(blocks, block("decryption front end Content successful", string(dec)))
 				if isLoginedFromRaw(dec) {
-					blocks = append(blocks, block("用户名密码验证成功", "恭喜您，登录成功！"))
+					blocks = append(blocks, block("Username and password verification successful", "Congratulations, your login is successful!"))
 				} else {
-					blocks = append(blocks, block("用户名密码验证失败", "origin data: "+string(dataBase64D)))
+					blocks = append(blocks, block("Username and password verification failed", "origin data: "+string(dataBase64D)))
 				}
 
 				DefaultRender(BlockContent(blocks...), writer, request)
@@ -332,15 +332,15 @@ setTimeout(function(){
 		},
 		{
 			Path:  "/js/lib/aes/ecb",
-			Title: "CryptoJS.AES(ECB) 前端加密登陆表单",
+			Title: "CryptoJS.AES(ECB) front-end encrypted login form",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				unsafeTemplateRender(writer, request, cryptoJSlibTemplateHtml, map[string]any{
 					"url":      `/crypto/js/lib/aes/ecb/handler`,
 					"initcode": "// ignore:  var iv = CryptoJS.lib.WordArray.random(128/8);",
 					`extrakv`:  "// iv: iv.toString(),",
-					"title":    "AES(ECB PKCS7) 加密",
+					"title":    "AES(ECB PKCS7) encryption",
 					"key":      `CryptoJS.enc.Utf8.parse("1234123412341234")`,
-					"info":     "CryptoJS.AES(ECB).encrypt/decrypt，默认 PKCS7Padding，密钥长度不足16字节，以 NULL 补充，超过16字节，截断",
+					"info":     "CryptoJS.AES(ECB).encrypt/decrypt, default PKCS7Padding, the key length is less than 16 bytes, supplemented with NULL, if it exceeds 16 bytes, truncated",
 					"encrypt":  `CryptoJS.AES.encrypt(word, key, {mode: CryptoJS.mode.ECB}).toString();`,
 					"decrypt":  `CryptoJS.AES.decrypt(word, key, {mode: CryptoJS.mode.ECB}).toString();`,
 				})
@@ -373,11 +373,11 @@ setTimeout(function(){
 					return
 				}
 				var blocks []string
-				blocks = append(blocks, block("解密前端内容成功", string(dec)))
+				blocks = append(blocks, block("decryption front end Content successful", string(dec)))
 				if isLoginedFromRaw(dec) {
-					blocks = append(blocks, block("用户名密码验证成功", "恭喜您，登录成功！"))
+					blocks = append(blocks, block("Username and password verification successful", "Congratulations, your login is successful!"))
 				} else {
-					blocks = append(blocks, block("用户名密码验证失败", "origin data: "+string(dataBase64D)))
+					blocks = append(blocks, block("Username and password verification failed", "origin data: "+string(dataBase64D)))
 				}
 
 				DefaultRender(BlockContent(blocks...), writer, request)
@@ -385,7 +385,7 @@ setTimeout(function(){
 		},
 		{
 			Path:  "/js/basic",
-			Title: "AES-ECB 加密表单（附密码）",
+			Title: "AES-ECB encryption form (with password)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var params = make(map[string]interface{})
 
@@ -449,11 +449,11 @@ setTimeout(function(){
 					username := utils.MapGetString(params, "username")
 					password := utils.MapGetString(params, "password")
 					var blocks []string
-					blocks = append(blocks, block("解密前端内容成功", string(origin)))
+					blocks = append(blocks, block("decryption front end Content successful", string(origin)))
 					if isLogined(username, password) {
-						blocks = append(blocks, block("用户名密码验证成功", "恭喜您，登录成功！"))
+						blocks = append(blocks, block("Username and password verification successful", "Congratulations, your login is successful!"))
 					} else {
-						blocks = append(blocks, block("用户名密码验证失败", "origin data: "+string(origin)))
+						blocks = append(blocks, block("Username and password verification failed", "origin data: "+string(origin)))
 					}
 					DefaultRender(BlockContent(blocks...), writer, request)
 					//renderLoginSuccess(writer, username, password, []byte(
@@ -472,7 +472,7 @@ setTimeout(function(){
 		},
 		{
 			Path:  "/js/rsa",
-			Title: "RSA：加密表单，附密钥",
+			Title: "RSA: Encrypted form, attached key",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var params = make(map[string]interface{})
 
@@ -540,11 +540,11 @@ setTimeout(function(){
 					}
 
 					var blocks []string
-					blocks = append(blocks, block("解密前端内容成功", string(origin)))
+					blocks = append(blocks, block("decryption front end Content successful", string(origin)))
 					if isLogined(username, password) {
-						blocks = append(blocks, block("用户名密码验证成功", "恭喜您，登录成功！"))
+						blocks = append(blocks, block("Username and password verification successful", "Congratulations, your login is successful!"))
 					} else {
-						blocks = append(blocks, block("用户名密码验证失败", "origin data: "+string(origin)))
+						blocks = append(blocks, block("Username and password verification failed", "origin data: "+string(origin)))
 					}
 					DefaultRender(BlockContent(blocks...), writer, request)
 					return
@@ -556,7 +556,7 @@ setTimeout(function(){
 		},
 		{
 			Path:  "/js/rsa/fromserver",
-			Title: "RSA：加密表单服务器传输密钥",
+			Title: "RSA: Encrypt forms server transport key",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var params = make(map[string]interface{})
 
@@ -625,11 +625,11 @@ setTimeout(function(){
 					username := utils.MapGetString(params, "username")
 					password := utils.MapGetString(params, "password")
 					var blocks []string
-					blocks = append(blocks, block("解密前端内容成功", string(origin)))
+					blocks = append(blocks, block("decryption front end Content successful", string(origin)))
 					if isLogined(username, password) {
-						blocks = append(blocks, block("用户名密码验证成功", "恭喜您，登录成功！"))
+						blocks = append(blocks, block("Username and password verification successful", "Congratulations, your login is successful!"))
 					} else {
-						blocks = append(blocks, block("用户名密码验证失败", "origin data: "+string(origin)))
+						blocks = append(blocks, block("Username and password verification failed", "origin data: "+string(origin)))
 					}
 					DefaultRender(BlockContent(blocks...), writer, request)
 					return
@@ -641,7 +641,7 @@ setTimeout(function(){
 		},
 		{
 			Path:  "/js/rsa/fromserver/response",
-			Title: "RSA：加密表单服务器传输密钥+响应加密",
+			Title: "RSA: Encrypt forms server transport key + response encryption",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var params = make(map[string]interface{})
 
@@ -744,7 +744,7 @@ setTimeout(function(){
 		},
 		{
 			Path:  "/js/rsa/fromserver/response/aes-gcm",
-			Title: "前端RSA加密AES密钥，服务器传输",
+			Title: "Frontend RSA encryption AES key, server transport",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var params = make(map[string]interface{})
 
@@ -903,7 +903,7 @@ setTimeout(function(){
 	}
 
 	testHandler := func(writer http.ResponseWriter, request *http.Request) {
-		DefaultRender("<h1>本测试页面会测试针对 /static/js/cryptojs_4.0.0/*.js 文件的导入</h1>\n"+`
+		DefaultRender("<h1>This test page will test the front-end verification signature (verification) form for /static/js/cryptojs_4.0.0/*.js file import</h1>\n"+`
 
 <p id='error'>CryptoJS Status</p>	
 <p id='404'></p>	
@@ -932,7 +932,7 @@ handle404 = function(event) {
 <script src="/static/js/cryptojs_4.0.0/enc-utf8.min.js" onerror="handle404(event)"></script>
 <script src="/static/js/cryptojs_4.0.0/enc-hex.min.js" onerror="handle404(event)"></script>
 
-可以观察 Console 
+You can observe the Console 
 `, writer, request)
 	}
 	cryptoGroup.HandleFunc("/_test/", testHandler)

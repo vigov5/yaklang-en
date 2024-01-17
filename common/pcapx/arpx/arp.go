@@ -89,7 +89,7 @@ func arpDial(ctx context.Context, ifaceName string, addrs string) (map[string]ne
 		ddl = time.Now().Add(5 * time.Second)
 	}
 
-	// 获取 iface，针对这个 iface 创建一个 arpx 客户端
+	// obtain iface, create an arpx client for this iface
 	iface, err := net.InterfaceByName(ifaceName)
 	if err != nil {
 		return nil, err
@@ -101,7 +101,7 @@ func arpDial(ctx context.Context, ifaceName string, addrs string) (map[string]ne
 	defer client.Close()
 	_ = client.SetDeadline(ddl)
 
-	// 并发获取 arpx 包
+	// Concurrently obtain the arpx package
 	results := new(sync.Map)
 	wg := new(sync.WaitGroup)
 	for _, target := range utils.ParseStringToHosts(addrs) {

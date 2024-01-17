@@ -58,7 +58,7 @@ func TestMUSTPASS_UrlJoin(t *testing.T) {
 		"https://example.com/index.php": {"https://baidu.com/root", "https://example.com/index.php"},
 		"http://example.com/index.php":  {"https://baidu.com/root", "http://example.com/index.php"},
 
-		// 这两个不知道应不应该在这么做，但是先这样吧
+		// I don’t know if these two should be doing this, but let’s do this for now.
 		"./././././.././a/b/./index.php":  {"https://baidu.com/root", "https://baidu.com/a/b/./index.php"},
 		"./././././.././a/b/../index.php": {"https://baidu.com/root", "https://baidu.com/a/b/../index.php"},
 	}

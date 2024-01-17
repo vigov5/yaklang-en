@@ -104,19 +104,19 @@ type HTTPFlow struct {
 	IPAddress          string
 	RemoteAddr         string
 	IPInteger          int
-	Tags               string // 用来打标！
+	Tags               string // Used for marking!
 
-	// Websocket 相关字段
+	// Websocket related fields
 	IsWebsocket bool
-	// 用来计算 websocket hash, 每次连接都不一样，一般来说，内部对象 req 指针足够了
+	// is used to calculate websocket hash, which is different for each connection. Generally speaking, the internal object req pointer is enough.
 	WebsocketHash string
 
 	RuntimeId  string
 	FromPlugin string
 
 	// friendly for gorm build instance, not for store
-	// 这两个字段不参与数据库存储，但是在序列化的时候，会被覆盖
-	// 主要用来标记用户的 Request 和 Response 是否超大
+	// These two fields do not participate in database storage, but will be overwritten during serialization.
+	// is mainly used to mark whether the users Request and Response are too large.
 	IsRequestOversize  bool `gorm:"-"`
 	IsResponseOversize bool `gorm:"-"`
 
@@ -142,7 +142,7 @@ func (f *HTTPFlow) FitHTTPRequest(req *http.Request) {
 	}
 }
 
-// 颜色与 Tag API
+// Color and Tag API
 func (f *HTTPFlow) AddTag(appendTags ...string) {
 	existed := utils.PrettifyListFromStringSplited(f.Tags, "|")
 	existedCount := len(existed)
@@ -322,7 +322,7 @@ func (f *HTTPFlow) toGRPCModel(full bool) (*ypb.HTTPFlow, error) {
 		TooLargeResponseBodyFile:   f.TooLargeResponseBodyFile,
 		TooLargeResponseHeaderFile: f.TooLargeResponseHeaderFile,
 	}
-	// 设置 title
+	// Set title
 	var (
 		unquotedResponse string
 		unquotedRequest  string
@@ -404,7 +404,7 @@ func (f *HTTPFlow) toGRPCModel(full bool) (*ypb.HTTPFlow, error) {
 					}
 
 					if full {
-						// 详情模式，这个很耗时。
+						// details mode is sorted by ID. This is very time-consuming.
 						fReq = FuzzParamsToGRPCFuzzableParam(r, flow.IsHTTPS)
 					}
 					fReq.ParamName = utils.EscapeInvalidUTF8Byte([]byte(fReq.ParamName))
@@ -443,7 +443,7 @@ func (f *HTTPFlow) toGRPCModel(full bool) (*ypb.HTTPFlow, error) {
 		}
 	}
 
-	// 这里用来标记一下，UTF8 支持情况，要根据情况提供给用户合理 body 建议处理方案
+	// is used here to mark UTF8 support, which should be provided according to the situation Give users reasonable body recommendations
 	if requireRequest {
 		flow.InvalidForUTF8Request = !utf8.ValidString(unquotedRequest)
 		if flow.InvalidForUTF8Request {
@@ -459,7 +459,7 @@ func (f *HTTPFlow) toGRPCModel(full bool) (*ypb.HTTPFlow, error) {
 		}
 	}
 
-	// 提取数据
+	// Extract data
 	if requireResponse {
 		domains, rootDomains := domainextractor.ExtractDomainsEx(string(flow.Response))
 		var jsonObjects []string
@@ -829,13 +829,13 @@ func FilterHTTPFlow(db *gorm.DB, params *ypb.QueryHTTPFlowRequest) *gorm.DB {
 	}
 
 	db = bizhelper.ExactQueryStringArrayOr(db, "source_type", utils.PrettifyListFromStringSplited(params.SourceType, ","))
-	// 过滤 Methods
+	// Filtering Methods
 	if ms := utils.StringArrayFilterEmpty(utils.PrettifyListFromStringSplited(params.GetMethods(), ",")); ms != nil {
 		db = bizhelper.ExactQueryStringArrayOr(db, "method", ms)
 	}
-	// 搜索 URL
+	// Search URL
 	db = bizhelper.FuzzQueryLike(db, "url", params.GetSearchURL())
-	// status code 这里可以支持范围搜索
+	// status code can support range search.
 	db = bizhelper.QueryBySpecificPorts(db, "status_code", params.GetStatusCode())
 	if params.GetHaveBody() {
 		db = db.Where("body_length > 0")
@@ -844,7 +844,7 @@ func FilterHTTPFlow(db *gorm.DB, params *ypb.QueryHTTPFlowRequest) *gorm.DB {
 	db = bizhelper.ExactQueryString(db, "runtime_id", params.GetRuntimeId())
 	db = bizhelper.ExactQueryString(db, "from_plugin", params.GetFromPlugin())
 
-	// 搜索是否有对应的参数
+	// Search whether there are corresponding parameters
 	if params.GetHaveCommonParams() {
 		db = db.Where("((get_params_total > 0) OR (post_params_total > 0)) OR (cookie_params_total > 0)")
 	}
@@ -863,7 +863,7 @@ func FilterHTTPFlow(db *gorm.DB, params *ypb.QueryHTTPFlowRequest) *gorm.DB {
 		db = bizhelper.FuzzSearchWithStringArrayOrAf(db, []string{"tags"}, params.GetColor(), false)
 	}
 
-	// 搜索 Content-Type
+	// Search Content-Type
 	db = bizhelper.FuzzQueryStringArrayOrLike(db, "content_type",
 		utils.StringArrayFilterEmpty(utils.PrettifyListFromStringSplited(params.GetSearchContentType(), ",")))
 
@@ -962,15 +962,15 @@ func QuickSearchMITMHTTPFlowCount(token string) int {
 	return count
 }
 
-// BuildHTTPFlowQuery 构建带有过滤条件的查询
+// BuildHTTPFlowQuery builds a query with filter conditions
 func BuildHTTPFlowQuery(db *gorm.DB, params *ypb.QueryHTTPFlowRequest) *gorm.DB {
-	// 应用所有过滤条件
+	// Apply all filter conditions
 	if params == nil {
 		params = &ypb.QueryHTTPFlowRequest{}
 	}
 
 	if !params.GetFull() {
-		// 只查询部分字段，主要是为了处理大的 response 和 request 的情况，同时告诉用户
+		// only queries some fields, mainly to handle large response and request situations, and at the same time tell the user
 		// max request size is 200K -> 200 * 1024 -> 204800
 		// max response size is 500K -> 500 * 1024 -> 512000
 		db = db.Select(`id,created_at,updated_at,hidden_index, -- basic gorm fields
@@ -1009,7 +1009,7 @@ too_large_response_header_file, too_large_response_body_file
 
 	p := params.Pagination
 	if p.OrderBy == "" {
-		p.OrderBy = "id" // 如果 没有设置 orderby 则以ID排序
+		p.OrderBy = "id" // If orderby is not set,
 	}
 
 	if params.GetAfterUpdatedAt() > 0 {

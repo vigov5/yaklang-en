@@ -36,7 +36,7 @@ var snmp_v2Auth = &DefaultServiceAuthInfo{
 			MaxOids:            60,
 		}
 
-		// 尝试连接连接失败不再爆破
+		// Failed attempts to connect will no longer explode.
 		err := snmpConfig.Connect()
 		if err != nil {
 			result.Finished = true

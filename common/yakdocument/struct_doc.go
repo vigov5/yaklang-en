@@ -190,7 +190,7 @@ func (s *StructDocForYamlMarshal) Merge(e *StructDocForYamlMarshal) {
 	for _, out := range s.Fields {
 		for _, sub := range e.Fields {
 			if out.Hash() == sub.Hash() {
-				// 是同一个字段
+				// is the same field
 				out.Description = sub.Description
 				out.ParamAlias = sub.ParamAlias
 				out.TypeAlias = sub.TypeAlias
@@ -203,13 +203,13 @@ func (s *StructDocForYamlMarshal) Merge(e *StructDocForYamlMarshal) {
 			if out.StructName+out.Name == sub.StructName+sub.Name {
 			}
 			if out.Hash() == sub.Hash() {
-				// 是同一个字段
+				// is the same field
 				out.Description = sub.Description
 
 				for _, r1 := range out.Returns {
 					for _, sr1 := range sub.Returns {
 						if r1.Hash() == sr1.Hash() {
-							// 是同一个字段
+							// is the same field
 							r1.Description = sr1.Description
 							r1.ParamAlias = sr1.ParamAlias
 							r1.TypeAlias = sr1.TypeAlias
@@ -220,7 +220,7 @@ func (s *StructDocForYamlMarshal) Merge(e *StructDocForYamlMarshal) {
 				for _, r1 := range out.Params {
 					for _, sr1 := range sub.Params {
 						if r1.Hash() == sr1.Hash() {
-							// 是同一个字段
+							// is the same field
 							r1.Description = sr1.Description
 							r1.ParamAlias = sr1.ParamAlias
 							r1.TypeAlias = sr1.TypeAlias
@@ -414,16 +414,16 @@ var yaklibMarkdownStructDoc = fmt.Sprintf(`# {{ .Name }}`)
 var yaklibMarkdownAPIDoc = fmt.Sprintf(`# {{ .Name }}
 
 {{ if eq (len .Functions ) 0 }} {{ else }}
-|成员函数|函数描述/介绍|
+|member function|function description/introduction|
 |:------|:--------|
 {{ range .Functions }} | [{{ .Name }}](#{{ .Fragment }}) | {{ .Description }} |
 {{end}}
 {{ end }}
 
 
-{{ if eq (len .Variables) 0 }} {{ else }}## 变量定义
+{{ if eq (len .Variables) 0 }} {{ else }}## variable definition
 
-|变量调用名|变量类型|变量解释/帮助信息|
+|Variable call name|variable type|Variable explanation/help information|
 |:-----------|:---------- |:-----------|
 {{ range .Variables}}|%v{{ .Name }}%v|%v{{ .TypeStr }}%v| {{.Description}}|
 {{end}}
@@ -431,24 +431,24 @@ var yaklibMarkdownAPIDoc = fmt.Sprintf(`# {{ .Name }}
 
 
 {{ if eq (len .Functions ) 0 }} {{ else }}
-## 函数定义
+## Function definition
 {{ range .Functions }}
 ### {{ .Name }}
 
 {{ .Description }}
 
-#### 详细描述
+#### Detailed description of
 
 {{ .LongDescription | html }}
 
-#### 定义：
+#### Definition:
 
 %v{{ .DefinitionStr }}%v
 
 {{ if eq (len .Params) 0 }} {{else}}
-#### 参数
+## ## Parameter
 
-|参数名|参数类型|参数解释|
+|parameter name|Parameter type|Parameter explanation|
 |:-----------|:---------- |:-----------|
 {{ range .Params }}| {{ .NameVerbose }} | %v{{ .TypeVerbose }}%v |  {{ .Description }} |
 {{ end }}
@@ -456,9 +456,9 @@ var yaklibMarkdownAPIDoc = fmt.Sprintf(`# {{ .Name }}
 {{end}}
 
 {{ if eq (len .Returns) 0 }} {{else}}
-#### 返回值
+#### Return value
 
-|返回值(顺序)|返回值类型|返回值解释|
+|return value (sequence)|Return value type|return value explanation|
 |:-----------|:---------- |:-----------|
 {{ range .Returns }}| {{ .NameVerbose }} | %v{{ .TypeVerbose }}%v |  {{ .Description }} |
 {{ end }}{{ end }}

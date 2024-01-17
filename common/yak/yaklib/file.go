@@ -25,7 +25,7 @@ type _yakFile struct {
 	rw   *bufio.ReadWriter
 }
 
-// Save 将字符串或字节切片或字符串切片写入到文件中，如果文件不存在则创建，如果文件存在则覆盖，返回错误
+// Save Write string or byte slice or string slice to the file, if the file does not exist Create, overwrite if the file exists, return an error
 // Example:
 // ```
 // file.Save("/tmp/test.txt", "hello yak")
@@ -58,8 +58,8 @@ func _saveFile(fileName string, i interface{}) error {
 	return nil
 }
 
-// SaveJson 将字符串或字节切片或字符串切片写入到文件中，如果文件不存在则创建，如果文件存在则覆盖，返回错误
-// 与 Save 不同的是，如果传入的参数是其他类型，会尝试将其序列化为 json 字符再写入到文件中
+// SaveJson Write string or byte slice or string slice to the file, if the file does not exist Create, overwrite if file exists, return error
+// Different from Save Yes, if the incoming parameter is of other types, it will try to serialize it into json characters and then write it to the file.
 // Example:
 // ```
 // file.SaveJson("/tmp/test.txt", "hello yak")
@@ -180,10 +180,10 @@ func (y *_yakFile) ReadLines() []string {
 	return lines
 }
 
-// IsLink 判断文件是否是一个符号链接
+// IsLink determines whether the file is a symbolic link.
 // Example:
 // ```
-// 假设 /usr/bin/bash 是一个符号链接，指向 /bin/bash
+// Assume /usr/bin/bash is a symbolic link pointing to /bin/bash
 // file.IsLink("/usr/bin/bash") // true
 // file.IsLink("/bin/bash") // false
 // ```
@@ -194,7 +194,7 @@ func _fileIsLink(file string) bool {
 	return true
 }
 
-// TempFile 创建一个临时文件，返回一个文件结构体引用与错误
+// TempFile Create a temporary file and return a file structure reference and error
 // Example:
 // ```
 // f, err = file.TempFile()
@@ -214,7 +214,7 @@ func _tempFile(dirPart ...string) (*_yakFile, error) {
 	return &_yakFile{file: f}, nil
 }
 
-// TempFileName 创建一个临时文件，返回一个文件名与错误
+// TempFileName Create a temporary file, return a file name and Error
 // Example:
 // ```
 // name, err = file.TempFileName()
@@ -231,7 +231,7 @@ func _tempFileName() (string, error) {
 	return f.Name(), nil
 }
 
-// Mkdir 创建一个目录，返回错误
+// Mkdir Creates a directory, returns error
 // Example:
 // ```
 // err = file.Mkdir("/tmp/test")
@@ -240,59 +240,59 @@ func _mkdir(name string) error {
 	return os.Mkdir(name, os.ModePerm)
 }
 
-// MkdirAll 创建一个递归创建一个目录，返回错误
+// MkdirAll Creates a recursive creation of a directory and returns Error
 // Example:
 // ```
-// // 假设存在 /tmp 目录，不存在 /tmp/test 目录
+// // . Assume that /tmp directory, does not exist /tmp/test directory
 // err = file.MkdirAll("/tmp/test/test2")
 // ```
 func _mkdirAll(name string) error {
 	return os.MkdirAll(name, os.ModePerm)
 }
 
-// Rename 重命名一个文件或文件夹，返回错误，这个函数也会移动文件或文件夹
-// ! 在 windows 下，无法将文件移动到不同的磁盘
+// Rename Rename a file or folder, return an error, this function will also move the file or folder
+// ! Under Windows, the file cannot be moved to a different disk
 // Example:
 // ```
-// // 假设存在 /tmp/test.txt 文件
+// // . Assume that /tmp/test.txt file
 // err = file.Rename("/tmp/test.txt", "/tmp/test2.txt")
 // ```
 func _rename(oldpath, newpath string) error {
 	return os.Rename(oldpath, newpath)
 }
 
-// Mv 重命名一个文件或文件夹，返回错误，这个函数也会移动文件或文件夹，它是 Rename 的别名
-// ! 在 windows 下，无法将文件移动到不同的磁盘
+// Mv renames a file or folder, returns an error, this The function also moves files or folders. It is an alias of Rename.
+// ! Under Windows, the file cannot be moved to a different disk
 // Example:
 // ```
-// // 假设存在 /tmp/test.txt 文件
+// // . Assume that /tmp/test.txt file
 // err = file.Rename("/tmp/test.txt", "/tmp/test2.txt")
 // ```
 func _mv(oldpath, newpath string) error {
 	return os.Rename(oldpath, newpath)
 }
 
-// Remove 删除路径及其包含的所有子路径
+// Remove Delete the path and all sub-paths it contains
 // Example:
 // ```
-// // 假设存在 /tmp/test/test.txt 文件和 /tmp/test/test2.txt 文件
+// // . Assume that /tmp/test/test.txt file and /tmp/test/test2.txt file
 // err = file.Remove("/tmp/test")
 // ```
 func _remove(path string) error {
 	return os.RemoveAll(path)
 }
 
-// Rm 删除路径及其包含的所有子路径，它是 Remove 的别名
+// Rm Delete the path and all subpaths it contains, it is an alias of Remove
 // Example:
 // ```
-// // 假设存在 /tmp/test/test.txt 文件和 /tmp/test/test2.txt 文件
+// // . Assume that /tmp/test/test.txt file and /tmp/test/test2.txt file
 // err = file.Remove("/tmp/test")
 // ```
 func _rm(path string) error {
 	return os.RemoveAll(path)
 }
 
-// Create 创建一个文件，返回一个文件结构体引用与错误
+// Create creates a file and returns a file structure reference and error
 // Example:
 // ```
 // f, err = file.Create("/tmp/test.txt")
@@ -305,7 +305,7 @@ func _create(name string) (*_yakFile, error) {
 	return &_yakFile{file: f}, nil
 }
 
-// ReadLines 尝试读取一个文件中的所有行，返回一个字符串切片，会去除BOM头和空行
+// ReadLines Try to read all the lines in a file, return a string slice, will remove the BOM header and empty lines
 // Example:
 // ```
 // lines = file.ReadLines("/tmp/test.txt")
@@ -319,7 +319,7 @@ func _fileReadLines(i interface{}) []string {
 	return utils.ParseStringToLines(string(c))
 }
 
-// ReadLinesWithCallback 尝试读取一个文件中的所有行，每读取一行，便会调用回调函数，返回错误
+// ReadLinesWithCallback attempts to read all lines in a file. Each time a line is read, the callback function is called, returning an error
 // Example:
 // ```
 // err = file.ReadLinesWithCallback("/tmp/test.txt", func(line) { println(line) })
@@ -342,7 +342,7 @@ func _fileReadLinesWithCallback(i interface{}, callback func(string)) error {
 	return nil
 }
 
-// GetDirPath 返回路径中除最后一个元素之后的路径，这通常是原本路径的目录
+// GetDirPath returns the path after the last element in the path, which is usually the directory of the original path
 // Example:
 // ```
 // file.GetDirPath("/usr/bin/bash") // "/usr/bin/"
@@ -359,7 +359,7 @@ func _fileGetDirPath(path string) string {
 	}
 }
 
-// Split 以操作系统的默认路径分隔符分割路径，返回目录和文件名
+// Split Split the path with the default path separator of the operating system, return the directory and File name
 // Example:
 // ```
 // file.Split("/usr/bin/bash") // "/usr/bin", "bash"
@@ -368,7 +368,7 @@ func _filePathSplit(path string) (string, string) {
 	return filepath.Split(path)
 }
 
-// IsExisted 判断文件或目录是否存在
+// IsExisted Determine whether the file or directory exists
 // Example:
 // ```
 // file.IsExisted("/usr/bin/bash")
@@ -378,10 +378,10 @@ func _fileIsExisted(path string) bool {
 	return ret
 }
 
-// IsFile 判断路径是否存在且是一个文件
+// IsFile Determines whether the path exists and is a file
 // Example:
 // ```
-// // 假设存在 /usr/bin/bash 文件
+// // . Assume that /usr/bin/bash file
 // file.IsFile("/usr/bin/bash") // true
 // file.IsFile("/usr/bin") // false
 // ```
@@ -389,10 +389,10 @@ func _fileIsFile(path string) bool {
 	return utils.IsFile(path)
 }
 
-// IsDir 判断路径是否存在且是一个目录
+// IsDir Determine whether the path exists and is a directory
 // Example:
 // ```
-// // 假设存在 /usr/bin/bash 文件
+// // . Assume that /usr/bin/bash file
 // file.IsDir("/usr/bin") // true
 // file.IsDir("/usr/bin/bash") // false
 // ```
@@ -400,7 +400,7 @@ func _fileIsDir(path string) bool {
 	return utils.IsDir(path)
 }
 
-// IsAbs 判断路径是否是绝对路径
+// IsAbs Determine whether the path is an absolute path
 // Example:
 // ```
 // file.IsAbs("/usr/bin/bash") // true
@@ -410,7 +410,7 @@ func _fileIsAbs(path string) bool {
 	return filepath.IsAbs(path)
 }
 
-// Join 将任意数量的路径以默认路径分隔符链接在一起
+// Join Links any number of paths together with the default path separator
 // Example:
 // ```
 // file.Join("/usr", "bin", "bash") // "/usr/bin/bash"
@@ -419,7 +419,7 @@ func _fileJoin(path ...string) string {
 	return filepath.Join(path...)
 }
 
-// ReadAll 从 Reader 读取直到出现错误或 EOF，然后返回字节切片与错误
+// ReadAll Read from Reader until an error or EOF occurs, then return a byte slice with error
 // Example:
 // ```
 // f, err = file.Open("/tmp/test.txt")
@@ -429,7 +429,7 @@ func _fileReadAll(r io.Reader) ([]byte, error) {
 	return io.ReadAll(r)
 }
 
-// ReadFile 读取一个文件的所有内容，返回字节切片与错误
+// ReadFile Reads all the contents of a file and returns byte slices and errors
 // Example:
 // ```
 // content, err = file.ReadFile("/tmp/test.txt")
@@ -447,7 +447,7 @@ func _lsDirAll(i string) []*utils.FileInfo {
 	return raw
 }
 
-// Cp 拷贝文件或目录，返回错误
+// Cp Copy files or directories, return error
 // Example:
 // ```
 // file.Cp("/tmp/test.txt", "/tmp/test2.txt")
@@ -457,7 +457,7 @@ func _fileCopy(src, dst string) error {
 	return utils.CopyDirectory(src, dst)
 }
 
-// Ls 列出一个目录下的所有文件和目录，返回一个文件信息切片
+// Ls lists all files and directories in a directory, returns a file information slice
 // Example:
 // ```
 // for f in file.Ls("/tmp") {
@@ -473,7 +473,7 @@ func _ls(i string) []*utils.FileInfo {
 	return raw
 }
 
-// Dir 列出一个目录下的所有文件和目录，返回一个文件信息切片，它是 Ls 的别名
+// Dir Lists all files and directories in a directory and returns a file information slice, which is Ls Alias 
 // Example:
 // ```
 // for f in file.Ls("/tmp") {
@@ -489,7 +489,7 @@ func _dir(i string) []*utils.FileInfo {
 	return raw
 }
 
-// Open 打开一个文件，返回一个文件结构体引用与错误
+// Open Open a file, return a file structure reference and error
 // Example:
 // ```
 // f, err = file.Open("/tmp/test.txt")
@@ -503,7 +503,7 @@ func _fileOpen(name string) (*_yakFile, error) {
 	return &_yakFile{file: file, rw: bufio.NewReadWriter(bufio.NewReader(file), bufio.NewWriter(file))}, nil
 }
 
-// OpenFile 打开一个文件，使用 file.O_CREATE ... 和权限控制，返回一个文件结构体引用与错误
+// OpenFile Open a file, use file.O_CREATE... and permission control, return a file structure reference with error
 // Example:
 // ```
 // f = file.OpenFile("/tmp/test.txt", file.O_CREATE|file.O_RDWR, 0o777)~; defer f.Close()
@@ -516,7 +516,7 @@ func _fileOpenWithPerm(name string, flags int, mode os.FileMode) (*_yakFile, err
 	return &_yakFile{file: file, rw: bufio.NewReadWriter(bufio.NewReader(file), bufio.NewWriter(file))}, nil
 }
 
-// Stat 返回一个文件的信息和错误
+// Stat returns a file information and error
 // Example:
 // ```
 // info, err = file.Stat("/tmp/test.txt")
@@ -526,7 +526,7 @@ func _fileStat(name string) (os.FileInfo, error) {
 	return os.Stat(name)
 }
 
-// Lstat 返回一个文件的信息和错误，如果文件是一个符号链接，返回的是符号链接的信息
+// Lstat returns the information and error of a file. If the file is a symbolic link, the information of the symbolic link is returned.
 // Example:
 // ```
 // info, err = file.Lstat("/tmp/test.txt")
@@ -536,7 +536,7 @@ func _fileLstat(name string) (os.FileInfo, error) {
 	return os.Lstat(name)
 }
 
-// Cat 模拟 unix 命令 cat，打印文件内容到标准输出
+// Cat simulates the unix command cat, prints the file content to the standard output
 // Example:
 // ```
 // file.Cat("/tmp/test.txt")
@@ -547,7 +547,7 @@ func _cat(i string) {
 	fmt.Print(string(raw))
 }
 
-// TailF 模拟 unix 命令 tail -f，执行这个函数会一直阻塞，打印文件内容到标准输出，如果文件有变化，会自动打印新的内容
+// TailF simulates the unix command tail -f. Executing this function will always block and print the file content to the standard Output, if the file changes, the new content will be printed automatically
 // Example:
 // ```
 // file.TailF("/tmp/test.txt")
@@ -575,10 +575,10 @@ func _tailf(i string, line func(i string)) {
 	}
 }
 
-// Abs 返回一个路径的绝对路径
+// Abs Returns a path Absolute path
 // Example:
 // ```
-// // 假设当前目录是 /tmp
+// // Assume current directory is /tmp
 // file.Abs("./test.txt") // /tmp/test.txt
 // ```
 func _fileAbs(i string) string {
@@ -590,7 +590,7 @@ func _fileAbs(i string) string {
 	return raw
 }
 
-// ReadFileInfoInDirectory 读取一个目录下的所有文件信息，返回一个文件信息切片和错误
+// ReadFileInfoInDirectory Reads all file information in a directory and returns a file information slice and error.
 // Example:
 // ```
 // for f in file.ReadFileInfoInDirectory("/tmp")~ {
@@ -601,7 +601,7 @@ func _readFileInfoInDirectory(path string) ([]*utils.FileInfo, error) {
 	return utils.ReadFilesRecursively(path)
 }
 
-// ReadDirInfoInDirectory 读取一个目录下的所有目录信息，返回一个文件信息切片和错误
+// ReadDirInfoInDirectory Read all directory information in a directory, return a file information slice and error
 // Example:
 // ```
 // for d in file.ReadDirInfoInDirectory("/tmp")~ {
@@ -611,11 +611,11 @@ func _readDirInfoInDirectory(path string) ([]*utils.FileInfo, error) {
 	return utils.ReadDirsRecursively(path)
 }
 
-// NewMultiFileLineReader 创建一个多文件读取器，返回一个多文件读取器结构体引用和错误
+// NewMultiFileLineReader Creates a multi-file reader, returns a multi-file reader structure reference and error
 // Example:
 // ```
-// // 假设存在 /tmp/test.txt 文件，内容为 123
-// // 假设存在 /tmp/test2.txt 文件，内容为 456
+// // . Assume that /tmp/test.txt file, content For 123
+// // . Assume that /tmp/test2.txt file, content is 456
 // m, err = file.NewMultiFileLineReader("/tmp/test.txt", "/tmp/test2.txt")
 // for m.Next() {
 // println(m.Text())
@@ -625,7 +625,7 @@ func _newMultiFileLineReader(files ...string) (*mfreader.MultiFileLineReader, er
 	return mfreader.NewMultiFileLineReader(files...)
 }
 
-// Walk 遍历一个目录下的所有文件和目录，返回错误
+// Walk Traverse all files and directories in a directory , returns an error
 // Example:
 // ```
 // file.Walk("/tmp", func(info) {println(info.Name); return true})~
@@ -634,7 +634,7 @@ func _walk(uPath string, i func(info *utils.FileInfo) bool) error {
 	return utils.ReadDirsRecursivelyCallback(uPath, i)
 }
 
-// GetExt 获取文件的扩展名
+// GetExt Get the extension of the file
 // Example:
 // ```
 // file.GetExt("/tmp/test.txt") // ".txt"
@@ -643,7 +643,7 @@ func _ext(s string) string {
 	return filepath.Ext(s)
 }
 
-// GetBase 获取文件的基本名
+// GetBase Get the base name of the file
 // Example:
 // ```
 // file.GetBase("/tmp/test.txt") // "test.txt"
@@ -652,7 +652,7 @@ func _getBase(s string) string {
 	return filepath.Base(s)
 }
 
-// Clean 清理路径中的多余的分隔符和 . 和 ..
+// Clean Clean excess delimiters and . and .. in the path
 // Example:
 // ```
 // file.Clean("/tmp/../tmp/test.txt") // "/tmp/test.txt"
@@ -686,7 +686,7 @@ var FileExport = map[string]interface{}{
 	"O_TRUNC":  os.O_TRUNC,
 	"O_WRONLY": os.O_WRONLY,
 
-	// 文件打开
+	// File open
 	"ReadAll":      _fileReadAll,
 	"ReadFile":     _fileReadFile,
 	"TempFile":     _tempFile,
@@ -697,7 +697,7 @@ var FileExport = map[string]interface{}{
 	"Remove":       _remove,
 	"Create":       _create,
 
-	// 打开文件操作
+	// Open file operation
 	"Open":     _fileOpen,
 	"OpenFile": _fileOpenWithPerm,
 	"Stat":     _fileStat,
@@ -705,8 +705,8 @@ var FileExport = map[string]interface{}{
 	"Save":     _saveFile,
 	"SaveJson": _saveJson,
 
-	// 模仿 Linux 命令的一些函数
-	// 自定义的好用 API
+	// Imitates some functions of Linux commands
+	// Custom easy-to-use API
 	"Cat":   _cat,
 	"TailF": _tailf,
 	"Mv":    _mv,

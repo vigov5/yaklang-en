@@ -411,7 +411,7 @@ func DebugMockUDPFromScan(du time.Duration, responses map[string][][]byte) (stri
 func convertToBytes(s string) []byte {
 	var result []byte
 	for _, r := range s {
-		if r > 127 || r < 32 || (r >= 0x7F && r <= 0xA0) { // ASCII 范围之外的字符
+		if r > 127 || r < 32 || (r >= 0x7F && r <= 0xA0) { // Characters outside the ASCII range
 			result = append(result, byte(r))
 		} else {
 			result = append(result, byte(r))

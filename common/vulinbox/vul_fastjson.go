@@ -24,7 +24,7 @@ type JsonParser func(data string) (map[string]any, error)
 var DnsRecord = sync.Map{}
 
 func generateFastjsonParser(version string) JsonParser {
-	if version == "intranet" { // 内网版本，不能成功解析 payload 中的 dnslog 且解析超时
+	if version == "intranet" { // Intranet version, the dnslog in the payload cannot be successfully parsed and the parsing timeout
 		return func(data string) (map[string]any, error) {
 			return fastjsonParser(data, "qqqqqqqqqq.qqqqqqqqqq.qqqqqqqqqq.qqqqqqqqqq")
 		}
@@ -34,14 +34,14 @@ func generateFastjsonParser(version string) JsonParser {
 	}
 }
 
-// 这里模拟fastjson的解析过程
+// Here simulates the parsing process of fastjson
 func fastjsonParser(data string, forceDnslog ...string) (map[string]any, error) {
 	// redos
 	if strings.Contains(data, "regex") {
 		time.Sleep(5 * time.Second)
 	}
 	var dnslog string
-	// 查找dnslog
+	// Search dnslog
 	re, err := regexp.Compile(`(\w+\.)+((dnslog\.cn)|(ceye\.io)|(vcap\.me)|(vcap\.io)|(xip\.io)|(burpcollaborator\.net)|(dgrh3\.cn))`)
 	if err != nil {
 		return nil, err
@@ -128,7 +128,7 @@ func mockJacksonController(req *http.Request, data string) string {
 		}
 	}
 
-	// 模拟Jackson的报错
+	// Simulate Jacksons error
 	if len(js) > 2 {
 		unrecognizedStr := ""
 		allowFieldsStr := ""
@@ -152,10 +152,10 @@ func mockJacksonController(req *http.Request, data string) string {
 }
 func (s *VulinServer) registerFastjson() {
 	r := s.router
-	var fastjsonGroup = r.PathPrefix("/fastjson").Name("Fastjson 案例").Subrouter()
+	var fastjsonGroup = r.PathPrefix("/fastjson").Name("Fastjson case").Subrouter()
 	var vuls = []*VulInfo{
 		{
-			Title:        "GET 传参案例案例",
+			Title:        "GET parameter passing case",
 			Path:         "/json-in-query",
 			DefaultQuery: `auth={"user":"admin","password":"password"}`,
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
@@ -177,7 +177,7 @@ func (s *VulinServer) registerFastjson() {
 					console.log(data);
                 },
                 error:function (XMLHttpRequest, textStatus, errorThrown) {      
-                    alert("请求出错");
+                    alert("Request error");
                 },
             })
         }`,
@@ -186,7 +186,7 @@ func (s *VulinServer) registerFastjson() {
 					}
 					auth := request.URL.Query().Get("auth")
 					if auth == "" {
-						writer.Write([]byte("auth 参数不能为空"))
+						writer.Write([]byte("auth parameter cannot be empty"))
 						return
 					}
 					response := mockController(generateFastjsonParser("1.2.43"), request, auth)
@@ -197,7 +197,7 @@ func (s *VulinServer) registerFastjson() {
 			},
 		},
 		{
-			Title: "POST Form传参案例案例",
+			Title: "POST Form parameter passing case",
 			Path:  "/json-in-form",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == http.MethodPost {
@@ -221,7 +221,7 @@ func (s *VulinServer) registerFastjson() {
 					console.log(data);
                 },
                 error:function (XMLHttpRequest, textStatus, errorThrown) {      
-                    alert("请求出错");
+                    alert("Request error");
                 },
             })
         }`,
@@ -231,7 +231,7 @@ func (s *VulinServer) registerFastjson() {
 			},
 		},
 		{
-			Title: "POST Body传参案例案例",
+			Title: "POST Body parameter passing case",
 			Path:  "/json-in-body",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == http.MethodPost {
@@ -261,7 +261,7 @@ func (s *VulinServer) registerFastjson() {
 					console.log(data);
                 },
                 error:function (XMLHttpRequest, textStatus, errorThrown) {      
-                    alert("请求出错");
+                    alert("Request error");
                 },
             })
         }`,
@@ -271,13 +271,13 @@ func (s *VulinServer) registerFastjson() {
 			},
 		},
 		{
-			Title: "Cookie 传参案例案例",
+			Title: "Cookie Parameter passing case case",
 			Path:  "/json-in-cookie",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == http.MethodGet {
 					action := request.URL.Query().Get("action")
 					if action == "" {
-						writer.Header().Set("Set-Cookie", `auth=`+codec.EncodeBase64Url(`{"id":"-1"}`)) // Fuzz Coookie暂时没有做只能解码，不能编码
+						writer.Header().Set("Set-Cookie", `auth=`+codec.EncodeBase64Url(`{"id":"-1"}`)) // Fuzz Coookie is temporarily unavailable and can only decode, not encode
 						writer.Write([]byte(utils2.Format(string(fastjson_loginPage), map[string]string{
 							"script": `function load(){
             name=$("#username").val();
@@ -293,7 +293,7 @@ func (s *VulinServer) registerFastjson() {
 					console.log(data);
                 },
                 error:function (XMLHttpRequest, textStatus, errorThrown) {      
-                    alert("请求出错");
+                    alert("Request error");
                 },
             })
         }`,
@@ -302,7 +302,7 @@ func (s *VulinServer) registerFastjson() {
 					}
 					cookie, err := request.Cookie("auth")
 					if err != nil {
-						writer.Write([]byte("auth 参数不能为空"))
+						writer.Write([]byte("auth parameter cannot be empty"))
 						return
 					}
 					response := mockController(generateFastjsonParser("1.2.43"), request, cookie.Value)
@@ -313,7 +313,7 @@ func (s *VulinServer) registerFastjson() {
 			},
 		},
 		{
-			Title: "Authorization 传参案例案例",
+			Title: "Authorization parameter passing case",
 			Path:  "/json-in-authorization",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == http.MethodGet {
@@ -336,7 +336,7 @@ func (s *VulinServer) registerFastjson() {
 					console.log(data);
                 },
                 error:function (XMLHttpRequest, textStatus, errorThrown) {      
-                    alert("请求出错");
+                    alert("Request error");
                 },
             })
         }`,
@@ -345,7 +345,7 @@ func (s *VulinServer) registerFastjson() {
 					}
 					auth := request.Header.Get("Authorization")
 					if len(auth) < 6 {
-						writer.Write([]byte("auth 参数不能为空"))
+						writer.Write([]byte("auth parameter cannot be empty"))
 						return
 					}
 					response := mockController(generateFastjsonParser("1.2.43"), request, auth[6:])
@@ -356,7 +356,7 @@ func (s *VulinServer) registerFastjson() {
 			},
 		},
 		{
-			Title:        "GET 传参Jackson后端案例",
+			Title:        "GET parameter passing Jackson backend case",
 			Path:         "/jackson-in-query",
 			DefaultQuery: `auth={"user":"admin","password":"password"}`,
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
@@ -378,7 +378,7 @@ func (s *VulinServer) registerFastjson() {
 					console.log(data);
                 },
                 error:function (XMLHttpRequest, textStatus, errorThrown) {      
-                    alert("请求出错");
+                    alert("Request error");
                 },
             })
         }`,
@@ -387,7 +387,7 @@ func (s *VulinServer) registerFastjson() {
 					}
 					auth := request.URL.Query().Get("auth")
 					if auth == "" {
-						writer.Write([]byte("auth 参数不能为空"))
+						writer.Write([]byte("auth parameter cannot be empty"))
 						return
 					}
 					response := mockJacksonController(request, auth)
@@ -398,7 +398,7 @@ func (s *VulinServer) registerFastjson() {
 			},
 		},
 		{
-			Title: "GET 传参且应用部署在内网的案例",
+			Title: "GET Parameter passing case and application deployed on the intranet",
 			Path:  "/get-in-query-intranet",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == http.MethodGet {
@@ -419,7 +419,7 @@ func (s *VulinServer) registerFastjson() {
 					console.log(data);
                 },
                 error:function (XMLHttpRequest, textStatus, errorThrown) {      
-                    alert("请求出错");
+                    alert("Request error");
                 },
             })
         }`,
@@ -428,7 +428,7 @@ func (s *VulinServer) registerFastjson() {
 					}
 					auth := request.URL.Query().Get("auth")
 					if auth == "" {
-						writer.Write([]byte("auth 参数不能为空"))
+						writer.Write([]byte("auth parameter cannot be empty"))
 						return
 					}
 					response := mockController(generateFastjsonParser("intranet"), request, auth)

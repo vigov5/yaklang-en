@@ -15,7 +15,7 @@ go func {
     try {
         if nucleiPluginNames.Length() > 0 {
             for result in nucleiPluginNames {
-                yakit.Info("加载漏洞检测模版: %v", result)
+                yakit.Info("Load vulnerability detection template: %v", result)
             }
             for pocVul in nuclei.Scan(target, nuclei.templates(nucleiPluginNames...), nuclei.debug(true),
                                       poc.https(str.IsTLSServer(target)~))~ {
@@ -44,7 +44,7 @@ go func {
         caller.SetDividedContext(true)
 
         nonNucleiPluginNames.Map(i => {
-            yakit.Info("开始加载插件:[%v]", i)
+            yakit.Info("Start loading plug-in: [%v]", i)
             caller.LoadPlugin(i)
         })
         for result in str.ParseStringToUrls(target) {

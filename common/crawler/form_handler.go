@@ -41,7 +41,7 @@ func tolowerStrip(s string) string {
 
 func HandleElementForm(dom *goquery.Selection, baseURL *url.URL, guessParams ...func(user, pass string, extra map[string][]string)) (method, requestURL, contentType string, body *bytes.Buffer, err error) {
 	action := dom.AttrOr("action", baseURL.Path)
-	// 移除 # 以及 # 后面的内容
+	// Remove # and the content following #
 	if sharpIndex := strings.Index(action, "#"); sharpIndex >= 0 {
 		action = action[:sharpIndex]
 	}
@@ -84,7 +84,7 @@ func HandleElementForm(dom *goquery.Selection, baseURL *url.URL, guessParams ...
 }
 
 func HandleMultipartFormData(selects *goquery.Selection) (body *bytes.Buffer, contentType string, err error) {
-	// 分析表单中的 input
+	// Analyze the input in the form
 	body = bytes.NewBufferString("")
 	mw := multipart.NewWriter(body)
 
@@ -180,7 +180,7 @@ func HandleMultipartFormData(selects *goquery.Selection) (body *bytes.Buffer, co
 }
 
 func HandleFormUrlEncoded(method string, actionAbsURL string, selects *goquery.Selection, guessParams ...func(username, password string, extra map[string][]string)) (requestURL string, body *bytes.Buffer, contentType string, err error) {
-	// 分析表单中的 input
+	// Analyze the input in the form
 	var data = map[string][]string{}
 	var maybeUsername, maybePassword string
 	for _, inputNode := range selects.Nodes {
@@ -269,7 +269,7 @@ func HandleFormUrlEncoded(method string, actionAbsURL string, selects *goquery.S
 		data[formKey] = formValue
 	}
 
-	// 空表单不作处理
+	// Empty forms are not processed
 	if len(data) <= 0 {
 		return "", nil, "", errors.Errorf("form not inputs")
 	}

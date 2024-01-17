@@ -53,7 +53,7 @@ func CoreMitmPlugTest(pluginName string, vulServer VulServerInfo, vulInfo VulInf
 	})
 	codeBytes := GetCorePluginData(pluginName)
 	if codeBytes == nil {
-		t.Errorf("无法从bindata获取%v", pluginName)
+		t.Errorf("Unable to get %v from bindata", pluginName)
 		return false
 	}
 

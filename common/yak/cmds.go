@@ -27,9 +27,9 @@ import (
 )
 
 const (
-	catNuclei  = "Nuclei 原生集成 / Nuclei Integration"
-	catScanner = "快速扫描 / Scanner"
-	catFuzz    = "调试工具 / Utils"
+	catNuclei  = "Nuclei native integration / Nuclei Integration"
+	catScanner = "Quick scan / Scanner"
+	catFuzz    = "Debugging tool / Utils"
 )
 
 var Subcommands = []cli.Command{
@@ -52,7 +52,7 @@ var Subcommands = []cli.Command{
 	},
 	// 	{
 	// 		Name:     "update-nuclei-poc",
-	// 		Usage:    "更新 nulcei-templates 到本地 / update nuclei-template. (github.com/projectdiscovery/nuclei-templates)",
+	// 		Usage:    "Update nulcei-templates to the local / update nuclei-template. (github.com/projectdiscovery/nuclei-templates)",
 	// 		Category: catNuclei,
 	// 		Action: func(c *cli.Context) error {
 	// 			engine := NewScriptEngine(1)
@@ -69,7 +69,7 @@ var Subcommands = []cli.Command{
 	// 		},
 	// 	},
 	{
-		Name: "update-nuclei-database", Usage: "把本地的 nuclei-templates 更新到数据库 (yakit plugin database)",
+		Name: "update-nuclei-database", Usage: "Update local nuclei-templates to the database (yakit plugin database)",
 		Category: catNuclei,
 		Action: func(c *cli.Context) error {
 			var err error
@@ -84,7 +84,7 @@ die(nuclei.UpdateDatabase())`, "main")
 		},
 	},
 	{
-		Name: "remove-nuclei-database", Usage: "移除本地的 nuclei-templates 数据库",
+		Name: "remove-nuclei-database", Usage: "Remove the local nuclei-templates database",
 		Category: catNuclei,
 		Action: func(c *cli.Context) error {
 			err := tools.RemovePoCDatabase()
@@ -96,7 +96,7 @@ die(nuclei.UpdateDatabase())`, "main")
 	},
 	{
 		Name:     "synscan",
-		Usage:    "【快】SYN 扫描端口",
+		Usage:    "[Fast] SYN scan port",
 		Category: catScanner,
 		Flags: []cli.Flag{
 			cli.StringFlag{
@@ -108,49 +108,49 @@ die(nuclei.UpdateDatabase())`, "main")
 			},
 			cli.IntFlag{
 				Name:  "wait,waiting",
-				Usage: "在 SYN 包发送完毕之后等待多长时间进行收尾（Seconds）",
+				Usage: "How long to wait for finishing after the SYN packet is sent (Seconds)",
 				Value: 5,
 			},
 
-			// 指纹识别相关配置
+			// fingerprint recognition related configuration
 			cli.BoolFlag{
 				Name:  "fingerprint,fp,x",
-				Usage: "开启指纹扫描",
+				Usage: "Enable fingerprint scanning",
 			},
 			cli.IntFlag{
 				Name:  "request-timeout",
-				Usage: "单个请求的超时时间（Seconds）",
+				Usage: "Timeout for a single request (Seconds)",
 				Value: 10,
 			},
 			cli.StringFlag{
 				Name:  "rule-path,rule,r",
-				Usage: "手动加载规则文件/文件夹",
+				Usage: "Manually load rule file/Folder",
 			},
 			cli.BoolFlag{
 				Name:  "only-rule",
-				Usage: "只加载这个文件夹中的 Web 指纹",
+				Usage: "Only load web fingerprints in this folder",
 			},
 			cli.StringFlag{
 				Name:  "fp-json,fpo",
-				Usage: "详细结果输出 json 到文件",
+				Usage: "Detailed results output json to file",
 			},
 
-			// 输出实时的开放端口信息
+			// output real-time Open port information
 			cli.StringFlag{
 				Name:  "output",
-				Usage: "输出端口开放的信息到文件",
+				Usage: "output port open information to file",
 			},
 
 			cli.StringFlag{
 				Name:  "output-line-prefix",
 				Value: "",
-				Usage: "输出 OUTPUT 每一行的前缀，例如：https:// http://",
+				Usage: "Output the prefix of each line of OUTPUT, for example: https:// http://",
 			},
 
 			cli.IntFlag{
 				Name:  "fingerprint-concurrent,fc",
 				Value: 60,
-				Usage: "设置指纹扫描的并发量(同时进行多少个指纹扫描模块)",
+				Usage: "Set the concurrency of fingerprint scanning (how many fingerprint scanning modules are performed at the same time)",
 			},
 		},
 		Action: func(c *cli.Context) {
@@ -189,7 +189,7 @@ die(nuclei.UpdateDatabase())`, "main")
 
 			log.Infof("default config: \n    iface:%v src:%v gateway:%v", synScanConfig.Iface.Name, synScanConfig.SourceIP, synScanConfig.GatewayIP)
 
-			// 解析指纹配置
+			// Analyze fingerprint configuration
 			// web rule
 			webRules, _ := fp.GetDefaultWebFingerprintRules()
 			userRule := webfingerprint.FileOrDirToWebRules(c.String("rule-path"))
@@ -201,22 +201,22 @@ die(nuclei.UpdateDatabase())`, "main")
 			}
 
 			fingerprintMatchConfigOptions := []fp.ConfigOption{
-				// 主动探测模式 - 主动发送符合条件的包
+				// active detection mode - proactively sending qualified packets
 				fp.WithActiveMode(true),
 
-				// 每一个指纹探测请求的超时时间
+				// Timeout for each fingerprint detection request
 				fp.WithProbeTimeout(time.Second * time.Duration(c.Int("request-timeout"))),
 
-				// web 指纹火力全开
+				// web fingerprint full firepower
 				fp.WithWebFingerprintUseAllRules(true),
 
-				// web 指纹
+				// web fingerprints
 				fp.WithWebFingerprintRule(webRules),
 
-				// 打开 Web 指纹识别
+				// Open Web fingerprint recognition
 				fp.WithForceEnableWebFingerprint(true),
 
-				// 开启 TCP 扫描
+				// enable TCP scan
 				fp.WithTransportProtos(fp.TCP),
 			}
 			fpConfig := fp.NewConfig(fingerprintMatchConfigOptions...)
@@ -229,8 +229,8 @@ die(nuclei.UpdateDatabase())`, "main")
 				return
 			}
 
-			// 指纹扫描开关
-			// 指纹扫描单独进行扫描
+			// fingerprint scan switch
+			// Scan fingerprint scanning separately
 			scanCenterConfig.DisableFingerprintMatch = true
 
 			log.Info("start create hyper scan center...")
@@ -248,7 +248,7 @@ die(nuclei.UpdateDatabase())`, "main")
 			var openPortCount int
 			var openResult []string
 
-			//// 分发任务与回调函数
+			//// distribution task and callback function
 			//err = scanCenter.RegisterMatcherResultHandler("cmd", func(matcherResult *fp.MatchResult, err error) {
 			//	fpLock.Lock()
 			//	defer fpLock.Unlock()
@@ -370,52 +370,52 @@ die(nuclei.UpdateDatabase())`, "main")
 	},
 	{
 		Name:     "scan-service",
-		Usage:    "【精准】指纹扫描",
+		Usage:    "[Accurate] Fingerprint scan",
 		Category: catScanner,
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "hosts,target,t",
-				Usage: "输入扫描主机，以逗号分隔例如：(192.168.1.1/24,192.168.1.1-23,10.1.1.2)",
+				Usage: "input scanning host, separated by commas, for example: (192.168.1.1/24,192.168.1.1-23,10.1.1.2)",
 			},
 			cli.StringFlag{
 				Name:  "port,tcp-port,p",
-				Usage: "输入想要扫描的端口，支持单个端口和范围，例如（80,443,21-25,8080-8082）",
+				Usage: "input wants to scan Port, supports single port and range, for example (80, 443, 21-25, 8080-8082)",
 				Value: "22,80,443,3389,3306,8080-8082,9000-9002,7000-7002",
 			},
 			cli.StringFlag{
 				Name:  "udp-port",
-				Usage: "想要扫描的 UDP 端口，支持单个端口和范围",
+				Usage: "UDP port that you want to scan, supports single port and range",
 			},
 			cli.StringFlag{
 				Name:  "rule-path,rule,r",
-				Usage: "手动加载规则文件/文件夹",
+				Usage: "Manually load rule file/Folder",
 			},
 			cli.BoolFlag{
 				Name:  "only-rule",
-				Usage: "只加载这个文件夹中的 Web 指纹",
+				Usage: "Only load web fingerprints in this folder",
 			},
 			cli.IntFlag{
 				Name:  "concurrent,thread,c",
-				Usage: "并发速度，同时有多少个扫描过程进行？",
+				Usage: "concurrency speed, how many scanning processes are performed at the same time?",
 				Value: 60,
 			},
 			//cli.IntFlag{
 			//	Name:  "timeout",
-			//	Usage: "超时时间(Seconds)",
+			//	Usage: "timeout (Seconds)",
 			//	Value: 3600,
 			//},
 			cli.BoolFlag{
 				Name:  "web",
-				Usage: "主动开启 web 扫描模式",
+				Usage: "proactively turning on web scanning mode",
 			},
 			cli.IntFlag{
 				Name:  "request-timeout",
-				Usage: "单个请求的超时时间（Seconds）",
+				Usage: "Timeout for a single request (Seconds)",
 				Value: 10,
 			},
 			cli.StringFlag{
 				Name:  "json,o",
-				Usage: "详细结果输出 json 到文件",
+				Usage: "Detailed results output json to file",
 			},
 		},
 		Action: func(c *cli.Context) error {
@@ -434,16 +434,16 @@ die(nuclei.UpdateDatabase())`, "main")
 			options = append(
 				options,
 
-				// 主动探测模式 - 主动发送符合条件的包
+				// active detection mode - proactively sending qualified packets
 				fp.WithActiveMode(true),
 
-				// 每一个指纹探测请求的超时时间
+				// Timeout for each fingerprint detection request
 				fp.WithProbeTimeout(time.Second*time.Duration(c.Int("request-timeout"))),
 
-				// web 指纹火力全开
+				// web fingerprint full firepower
 				fp.WithWebFingerprintUseAllRules(true),
 
-				// web 指纹
+				// web fingerprints
 				fp.WithWebFingerprintRule(webRules),
 			)
 			options = append(
@@ -460,7 +460,7 @@ die(nuclei.UpdateDatabase())`, "main")
 			// udp/tcp
 			portSwg := utils.NewSizedWaitGroup(c.Int("concurrent"))
 
-			// 结果处理的同步锁
+			// result processing Synchronization lock
 			resultLock := new(sync.Mutex)
 
 			var res []*fp.MatchResult
@@ -522,7 +522,7 @@ die(nuclei.UpdateDatabase())`, "main")
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "t,target",
-				Usage: "想要测试的 Fuzz 字符串",
+				Usage: "Fuzz string you want to test",
 			},
 		},
 		Action: func(c *cli.Context) {
@@ -537,7 +537,7 @@ die(nuclei.UpdateDatabase())`, "main")
 		Flags: []cli.Flag{
 			cli.IntFlag{
 				Name:  "timeout",
-				Usage: "连接超时时间",
+				Usage: "Connection timeout",
 				Value: 30,
 			},
 		},
@@ -563,18 +563,18 @@ die(nuclei.UpdateDatabase())`, "main")
 			if rsp != nil && rsp.Body != nil {
 				raw, _ := ioutil.ReadAll(rsp.Body)
 				if len(utils.ParseStringToLines(string(raw))) <= 3 {
-					log.Infof("当前 yak 核心引擎最新版本为 / current latest yak core engine version：%v", string(raw))
+					log.Infof("Current yak core engine is the latest The version is / current latest yak core engine version：%v", string(raw))
 				}
 			}
 
 			log.Infof("start to download yak: %v", binary)
 			rsp, err = client.Get(binary)
 			if err != nil {
-				log.Errorf("下载 yak 引擎失败：download yak failed: %v", err)
+				log.Errorf("Download yak engine failed: download yak failed: %v", err)
 				return err
 			}
 
-			// 设置本地缓存
+			// settings Local cache
 			fd, err := ioutil.TempFile("", "yak-")
 			if err != nil {
 				log.Errorf("create temp file failed: %v", err)
@@ -593,7 +593,7 @@ die(nuclei.UpdateDatabase())`, "main")
 				log.Errorf("download failed... %v", err.Error())
 				return err
 			}
-			log.Infof("yak 核心引擎下载成功... / yak engine downloaded")
+			log.Infof("yak core engine downloaded successfully... / yak engine downloaded")
 
 			err = os.Chmod(tempFile, os.ModePerm)
 			if err != nil {
@@ -610,7 +610,7 @@ die(nuclei.UpdateDatabase())`, "main")
 			log.Infof("backup yak old engine to %s", oldPath)
 
 			log.Infof("origin binary: %s", destination)
-			// 备份旧的
+			// Back up the old
 			if err := os.Rename(destPath, oldPath); err != nil {
 				return utils.Errorf("backup old yak-engine failed: %s, retry re-Install with \n"+
 					"    `bash <(curl -sS -L http://oss.yaklang.io/install-latest-yak.sh)`\n\n", err)

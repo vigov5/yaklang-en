@@ -125,7 +125,7 @@ func SetPathNameExcludes(s ...string) PathGuardTargetOption {
 }
 
 func (p *PathGuardTarget) shouldContinueByPath(path string) bool {
-	// 如果设置了 include， 则只检查 include 里面的
+	// If include is set, only the contents in the include will be checked.
 	if p.includedRegexps != nil {
 		shouldContinue := false
 		for _, include := range p.includedRegexps {
@@ -201,7 +201,7 @@ func (p *PathGuardTarget) do() {
 		}
 	}
 
-	// 监控文件内容了
+	// monitors the file content in the monitored file directory when the cache is first started.
 	if len(infos) > 0 && p.isFirst.IsSet() {
 		defer p.isFirst.UnSet()
 	}
@@ -210,7 +210,7 @@ func (p *PathGuardTarget) do() {
 
 		data, ok := p.cache.Load(FileInfoToHash(info))
 		if !ok {
-			// 如果不允许创建新文件了，就不做缓存，直接删除新建的文件
+			// If the creation of new files is not allowed, caching will not be done and the newly created files will be deleted directly.
 			if !p.isFirst.IsSet() && p.disallowNewFile.IsSet() {
 				log.Infof("disallow to create new file: %v auto deleted", info.Path)
 				err := os.RemoveAll(info.Path)
@@ -220,8 +220,8 @@ func (p *PathGuardTarget) do() {
 				continue
 			}
 
-			// 如果允许创建新文件
-			//    如果有新文件就直接汇报
+			// If new files are allowed to be created,
+			//    If there are new files, directly Report
 			p.cache.Store(FileInfoToHash(info), info)
 			if (!p.isFirst.IsSet()) && p.callback != nil {
 				p.callback(nil, info)
@@ -239,7 +239,7 @@ func (p *PathGuardTarget) do() {
 			p.cache.Store(FileInfoToHash(info), info)
 		}
 
-		// 第一次执行，就不要执行 callback 了，不然监控的文件太多会炸掉
+		// Do not execute the callback for the first time, otherwise too many monitored files will blow up the
 		if !p.isFirst.IsSet() {
 			if p.callback != nil {
 				p.callback(oldData, newData)
@@ -252,10 +252,10 @@ func (p *PathGuardTarget) do() {
 		}
 	}
 
-	// 缓存第一次启动时候的监控文件目录上
+	// cache. The
 	if p.recordOrigin {
 		p.recordOriginOnce.Do(func() {
-			// 监控文件内容了
+			// monitors the file content in the monitored file directory when the cache is first started.
 			for _, info := range infos {
 				if info.IsDir() {
 					continue

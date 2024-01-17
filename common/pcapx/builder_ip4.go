@@ -108,7 +108,7 @@ type IPv4 struct {
 	Padding    []byte
 }
 
-一般来说，不需要操作的字段有：IHL / Length
+Generally speaking, the fields that do not require operation are: IHL / Length
 */
 
 func WithIPv4_TOS(i any) IPv4Option {

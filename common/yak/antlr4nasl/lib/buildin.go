@@ -21,7 +21,7 @@ type ExitSignal struct {
 var NaslBuildInNativeMethod = map[string]interface{}{
 	"get_array_elem": func(icaller interface{}, index interface{}) interface{} {
 		switch caller := icaller.(type) {
-		case *vm.NaslArray: // array类型
+		case *vm.NaslArray: // array type
 			if caller == nil {
 				panic("iterableValue.Value is nil")
 			}
@@ -43,7 +43,7 @@ var NaslBuildInNativeMethod = map[string]interface{}{
 				}
 			}
 			panic("arg must be int or string")
-		case string, []byte: // data类型
+		case string, []byte: // data type
 			data := utils.InterfaceToBytes(caller)
 			if index == nil {
 				panic("index is nil")
@@ -99,16 +99,16 @@ var NaslBuildInNativeMethod = map[string]interface{}{
 	"__split": func(s string, sep string, keep bool) []string {
 		return strings.Split(s, sep)
 	},
-	"reEqual": func(s1, s2 interface{}) bool { // 内置=~运算符号
+	"reEqual": func(s1, s2 interface{}) bool { // Built-in =~ operator symbol
 		return utils.MatchAllOfRegexp(utils.InterfaceToString(s1), utils.InterfaceToString(s2))
 	},
-	"strIn": func(s1, s2 string) bool { // 内置><运算符号
+	"strIn": func(s1, s2 string) bool { // Built-in><operator symbol
 		return strings.Contains(s1, s2)
 	},
-	"RightShiftLogical": func(s1, s2 int64) uint64 { // 内置>>>运算符号
+	"RightShiftLogical": func(s1, s2 int64) uint64 { // Built-in>>>operator symbol
 		return uint64(s1) >> s2
 	},
-	"BitNot": func(a int64) int64 { // 内置>>>运算符号
+	"BitNot": func(a int64) int64 { // Built-in>>>operator symbol
 		return ^a
 	},
 	"__NewIterator": NewIterator, // ForEach

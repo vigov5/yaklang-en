@@ -240,7 +240,7 @@ func VideoCoverBase64(fileName string) (imgBase64 string, err error) {
 	}
 	imgData := buffer.Bytes()
 
-	// 将图像字节数组转换为 Base64 编码的字符串
+	// Convert image byte array to Base64 encoded string
 	base64Image := base64.StdEncoding.EncodeToString(imgData)
 	return base64Image, nil
 }

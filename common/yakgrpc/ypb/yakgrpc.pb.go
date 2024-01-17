@@ -426,35 +426,35 @@ type ExecBatchYakScriptRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 目标会被自动拆分
+	// targets will be automatically split.
 	Target     string `protobuf:"bytes,1,opt,name=Target,proto3" json:"Target,omitempty"`
 	TargetFile string `protobuf:"bytes,11,opt,name=TargetFile,proto3" json:"TargetFile,omitempty"`
-	// 额外参数可以被添加
+	// Additional parameters can be added
 	ExtraParams []*ExecParamItem `protobuf:"bytes,7,rep,name=ExtraParams,proto3" json:"ExtraParams,omitempty"`
-	// 筛选与限制
+	// Filter and limit
 	Keyword               string   `protobuf:"bytes,2,opt,name=Keyword,proto3" json:"Keyword,omitempty"`
 	ExcludedYakScript     []string `protobuf:"bytes,22,rep,name=ExcludedYakScript,proto3" json:"ExcludedYakScript,omitempty"`
 	DisableNucleiWorkflow bool     `protobuf:"varint,23,opt,name=DisableNucleiWorkflow,proto3" json:"DisableNucleiWorkflow,omitempty"`
 	Limit                 int64    `protobuf:"varint,3,opt,name=Limit,proto3" json:"Limit,omitempty"`
-	// 默认总用时
+	// Default total time
 	TotalTimeoutSeconds int64 `protobuf:"varint,4,opt,name=TotalTimeoutSeconds,proto3" json:"TotalTimeoutSeconds,omitempty"`
-	// 模块类型，默认为 nuclei
+	// module type , the default is nuclei
 	Type string `protobuf:"bytes,5,opt,name=Type,proto3" json:"Type,omitempty"`
-	// 并发（进程）
+	// Concurrency (process)
 	Concurrent int64 `protobuf:"varint,6,opt,name=Concurrent,proto3" json:"Concurrent,omitempty"`
-	// 精确使用脚本名称
-	// 要注意，这个 Scripts 和 PluginFilter 是冲突的
+	// Execute the script
+	// Please note that this Scripts conflicts with PluginFilter.
 	ScriptNames []string `protobuf:"bytes,8,rep,name=ScriptNames,proto3" json:"ScriptNames,omitempty"`
 	// Tags with exclude / include
 	PluginFilter       *QueryYakScriptRequest `protobuf:"bytes,12,opt,name=PluginFilter,proto3" json:"PluginFilter,omitempty"`
 	EnablePluginFilter bool                   `protobuf:"varint,13,opt,name=EnablePluginFilter,proto3" json:"EnablePluginFilter,omitempty"`
-	// 设置一个代理
+	// Set a proxy
 	Proxy string `protobuf:"bytes,14,opt,name=Proxy,proto3" json:"Proxy,omitempty"`
-	// 每个进程的任务数量
+	// Number of tasks per process
 	ProgressTaskCount int64 `protobuf:"varint,15,opt,name=ProgressTaskCount,proto3" json:"ProgressTaskCount,omitempty"`
-	// 基础进度 - 这个默认是 0.1 一般别用，只在 Recover 的时候可能才会有用处
+	// - this default is 0.1. Generally do not use it, it may only be useful when recovering.
 	BaseProgress float64 `protobuf:"fixed64,16,opt,name=BaseProgress,proto3" json:"BaseProgress,omitempty"`
-	// 这个很关键，不然会报错
+	// . This is very important, otherwise an error will be reported
 	FromRecover          bool   `protobuf:"varint,17,opt,name=FromRecover,proto3" json:"FromRecover,omitempty"`
 	YakScriptOnlineGroup string `protobuf:"bytes,18,opt,name=YakScriptOnlineGroup,proto3" json:"YakScriptOnlineGroup,omitempty"`
 	TaskName             string `protobuf:"bytes,19,opt,name=TaskName,proto3" json:"TaskName,omitempty"`
@@ -635,24 +635,24 @@ type ExecBatchYakScriptResult struct {
 	Ok          bool   `protobuf:"varint,4,opt,name=Ok,proto3" json:"Ok,omitempty"`
 	Reason      string `protobuf:"bytes,5,opt,name=Reason,proto3" json:"Reason,omitempty"`
 	Exploitable bool   `protobuf:"varint,6,opt,name=Exploitable,proto3" json:"Exploitable,omitempty"`
-	// 脚本的详细信息
+	// script.
 	PoC    *YakScript  `protobuf:"bytes,7,opt,name=PoC,proto3" json:"PoC,omitempty"`
 	Result *ExecResult `protobuf:"bytes,8,opt,name=Result,proto3" json:"Result,omitempty"`
-	// 如果是整体进度信息，则在这儿展示
-	// 处理这几个消息的时候，其他都不应该生效
+	// If it is the overall progress information, display
+	// When processing these messages, nothing else should take effect
 	ProgressMessage bool    `protobuf:"varint,9,opt,name=ProgressMessage,proto3" json:"ProgressMessage,omitempty"`
 	ProgressPercent float64 `protobuf:"fixed64,10,opt,name=ProgressPercent,proto3" json:"ProgressPercent,omitempty"`
 	ProgressTotal   int64   `protobuf:"varint,11,opt,name=ProgressTotal,proto3" json:"ProgressTotal,omitempty"`
 	ProgressCount   int64   `protobuf:"varint,12,opt,name=ProgressCount,proto3" json:"ProgressCount,omitempty"`
-	// 正在执行中的进程数
+	// Number of processes being executed
 	ProgressRunning int64 `protobuf:"varint,17,opt,name=ProgressRunning,proto3" json:"ProgressRunning,omitempty"`
-	// 正在执行中的扫描任务数量
+	// Number of scanning tasks being executed.
 	ScanTaskExecutingCount int64 `protobuf:"varint,18,opt,name=ScanTaskExecutingCount,proto3" json:"ScanTaskExecutingCount,omitempty"`
-	// 任务相关内容
+	// Task related content
 	Target     string           `protobuf:"bytes,13,opt,name=Target,proto3" json:"Target,omitempty"`
 	ExtraParam []*ExecParamItem `protobuf:"bytes,14,rep,name=ExtraParam,proto3" json:"ExtraParam,omitempty"`
 	TaskId     string           `protobuf:"bytes,15,opt,name=TaskId,proto3" json:"TaskId,omitempty"`
-	// 当前时间
+	// Current time
 	Timestamp int64 `protobuf:"varint,16,opt,name=Timestamp,proto3" json:"Timestamp,omitempty"`
 }
 
@@ -1509,7 +1509,7 @@ type HybridScanResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 计算整体任务进度等信息
+	// Calculate overall task progress and other information
 	TotalTargets    int64 `protobuf:"varint,1,opt,name=TotalTargets,proto3" json:"TotalTargets,omitempty"`
 	TotalPlugins    int64 `protobuf:"varint,2,opt,name=TotalPlugins,proto3" json:"TotalPlugins,omitempty"`
 	TotalTasks      int64 `protobuf:"varint,3,opt,name=TotalTasks,proto3" json:"TotalTasks,omitempty"`
@@ -1517,11 +1517,11 @@ type HybridScanResponse struct {
 	FinishedTargets int64 `protobuf:"varint,5,opt,name=FinishedTargets,proto3" json:"FinishedTargets,omitempty"`
 	ActiveTasks     int64 `protobuf:"varint,6,opt,name=ActiveTasks,proto3" json:"ActiveTasks,omitempty"`
 	ActiveTargets   int64 `protobuf:"varint,7,opt,name=ActiveTargets,proto3" json:"ActiveTargets,omitempty"`
-	// 混合扫描任务ID，一般用来恢复任务或者暂停任务
+	// Mixed scanning task ID, generally used to resume the task or pause the task
 	HybridScanTaskId  string      `protobuf:"bytes,8,opt,name=HybridScanTaskId,proto3" json:"HybridScanTaskId,omitempty"`
 	CurrentPluginName string      `protobuf:"bytes,9,opt,name=CurrentPluginName,proto3" json:"CurrentPluginName,omitempty"`
 	ExecResult        *ExecResult `protobuf:"bytes,10,opt,name=ExecResult,proto3" json:"ExecResult,omitempty"`
-	// 这字段表示的是，正在执行的任务可以展示出来
+	// This field indicates that the task being executed can be displayed.
 	UpdateActiveTask *HybridScanUpdateActiveTaskTable `protobuf:"bytes,11,opt,name=UpdateActiveTask,proto3" json:"UpdateActiveTask,omitempty"`
 }
 
@@ -1639,8 +1639,8 @@ type HybridScanUpdateActiveTaskTable struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// create: 这个任务正在执行，推入栈中
-	// remove: 这个任务执行完毕，弹出栈
+	// create: This task is being executed, push
+	// remove: this After the task is executed, the stack
 	Operator    string `protobuf:"bytes,1,opt,name=Operator,proto3" json:"Operator,omitempty"`
 	Index       string `protobuf:"bytes,2,opt,name=Index,proto3" json:"Index,omitempty"`
 	IsHttps     bool   `protobuf:"varint,3,opt,name=IsHttps,proto3" json:"IsHttps,omitempty"`
@@ -1723,7 +1723,7 @@ func (x *HybridScanUpdateActiveTaskTable) GetPluginName() string {
 	return ""
 }
 
-// 输入目标，可以通过 input/file + template 构建可能带认证或其他内容的模版
+// Input Target, you can input/file + template to build a template
 type HybridScanInputTarget struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1787,7 +1787,7 @@ func (x *HybridScanInputTarget) GetHTTPRequestTemplate() *HTTPRequestBuilderPara
 	return nil
 }
 
-// 输入插件：幂等的，相同的参数，结果是一致的，这样通过记录索引就能恢复进度
+// input plug-in: idempotent, the same parameters, the results are consistent, so the progress can be restored by recording the index
 type HybridScanPluginConfig struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1848,21 +1848,21 @@ type HybridScanRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 控制帧字段
+	// control frame field
 	Control bool `protobuf:"varint,9,opt,name=Control,proto3" json:"Control,omitempty"`
-	// new: 新任务
-	// resume: 恢复任务
-	// pause: 暂停任务
-	// stop: 停止任务
+	// new: New task
+	// resume: Resume task
+	// pause: Pause the task
+	// stop: Stop the task
 	HybridScanMode string `protobuf:"bytes,8,opt,name=HybridScanMode,proto3" json:"HybridScanMode,omitempty"`
 	ResumeTaskId   string `protobuf:"bytes,1,opt,name=ResumeTaskId,proto3" json:"ResumeTaskId,omitempty"`
-	// 其他参数
+	// Other parameters
 	Concurrent          int64   `protobuf:"varint,2,opt,name=Concurrent,proto3" json:"Concurrent,omitempty"`
 	TotalTimeoutSecond  float32 `protobuf:"fixed32,3,opt,name=TotalTimeoutSecond,proto3" json:"TotalTimeoutSecond,omitempty"`
 	Proxy               string  `protobuf:"bytes,4,opt,name=Proxy,proto3" json:"Proxy,omitempty"`
 	SingleTimeoutSecond float32 `protobuf:"fixed32,5,opt,name=SingleTimeoutSecond,proto3" json:"SingleTimeoutSecond,omitempty"`
-	Detach              bool    `protobuf:"varint,10,opt,name=Detach,proto3" json:"Detach,omitempty"` // 背后执行，就算进程结束了，也会执行，不太关心 context
-	// 新任务
+	Detach              bool    `protobuf:"varint,10,opt,name=Detach,proto3" json:"Detach,omitempty"` // is executed behind the scenes. Even if the process ends, it will be executed. It does not care about the context.
+	// new task
 	Plugin  *HybridScanPluginConfig `protobuf:"bytes,6,opt,name=Plugin,proto3" json:"Plugin,omitempty"`
 	Targets *HybridScanInputTarget  `protobuf:"bytes,7,opt,name=Targets,proto3" json:"Targets,omitempty"`
 }
@@ -3359,7 +3359,7 @@ type RequestYakURLParams struct {
 	// HEAD: means check
 	Method   string  `protobuf:"bytes,1,opt,name=Method,proto3" json:"Method,omitempty"`
 	Url      *YakURL `protobuf:"bytes,2,opt,name=Url,proto3" json:"Url,omitempty"`
-	Body     []byte  `protobuf:"bytes,3,opt,name=Body,proto3" json:"Body,omitempty"` // 用于存储文件的内容
+	Body     []byte  `protobuf:"bytes,3,opt,name=Body,proto3" json:"Body,omitempty"` // is used to store files. Content
 	Page     int64   `protobuf:"varint,4,opt,name=Page,proto3" json:"Page,omitempty"`
 	PageSize int64   `protobuf:"varint,5,opt,name=PageSize,proto3" json:"PageSize,omitempty"`
 }
@@ -3808,7 +3808,7 @@ type PacketPrettifyHelperResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 处理后的 Packet
+	// Processed Packet
 	Packet       []byte `protobuf:"bytes,1,opt,name=Packet,proto3" json:"Packet,omitempty"`
 	ContentType  string `protobuf:"bytes,2,opt,name=ContentType,proto3" json:"ContentType,omitempty"`
 	IsImage      bool   `protobuf:"varint,3,opt,name=IsImage,proto3" json:"IsImage,omitempty"`
@@ -4129,7 +4129,7 @@ type GlobalNetworkConfig struct {
 	EnableSystemProxyFromEnv bool     `protobuf:"varint,10,opt,name=EnableSystemProxyFromEnv,proto3" json:"EnableSystemProxyFromEnv,omitempty"`
 	// default skip save HTTPFlow
 	SkipSaveHTTPFlow bool `protobuf:"varint,11,opt,name=SkipSaveHTTPFlow,proto3" json:"SkipSaveHTTPFlow,omitempty"`
-	// 第三方APIKey获取
+	// Obtain third-party APIKey
 	AppConfigs []*ThirdPartyApplicationConfig `protobuf:"bytes,12,rep,name=AppConfigs,proto3" json:"AppConfigs,omitempty"`
 	// http auth info
 	AuthInfos []*AuthInfo `protobuf:"bytes,13,rep,name=AuthInfos,proto3" json:"AuthInfos,omitempty"`
@@ -4439,13 +4439,13 @@ type DiagnoseNetworkRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	NetworkTimeout float64 `protobuf:"fixed64,1,opt,name=NetworkTimeout,proto3" json:"NetworkTimeout,omitempty"`
-	// 想要连接或扫描的目标是否都可达？
-	// 网络是否可达？网管是什么
-	// 如果是一个主机的话，他的 TCP 是否开放？
-	// 如果包含域名的话，他的解析结果是什么？不存在？还是本地解析？
-	// 多个服务器解析到同一个 IP？
+	// Are all the targets you want to connect or scan reachable?
+	// Is the network reachable? What is the network management?
+	// If it is a host, is its TCP open?
+	// contains a domain name, what is its resolution result? does not exist? Or local analysis?
+	// Multiple servers resolve to the same IP?
 	ConnectTarget string `protobuf:"bytes,2,opt,name=ConnectTarget,proto3" json:"ConnectTarget,omitempty"`
-	// 代理是否配置正确？
+	// agent configured correctly?
 	Proxy             string   `protobuf:"bytes,3,opt,name=Proxy,proto3" json:"Proxy,omitempty"`
 	ProxyAuthUsername string   `protobuf:"bytes,4,opt,name=ProxyAuthUsername,proto3" json:"ProxyAuthUsername,omitempty"`
 	ProxyAuthPassword string   `protobuf:"bytes,5,opt,name=ProxyAuthPassword,proto3" json:"ProxyAuthPassword,omitempty"`
@@ -4753,7 +4753,7 @@ type SmokingEvaluatePluginRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Requests []*HTTPRequestBuilderParams `protobuf:"bytes,1,rep,name=Requests,proto3" json:"Requests,omitempty"`
-	// 只支持插件名评估
+	// only supports plug-in name evaluation.
 	PluginName string `protobuf:"bytes,2,opt,name=PluginName,proto3" json:"PluginName,omitempty"`
 	Code       string `protobuf:"bytes,3,opt,name=Code,proto3" json:"Code,omitempty"`
 	PluginType string `protobuf:"bytes,4,opt,name=PluginType,proto3" json:"PluginType,omitempty"`
@@ -5090,13 +5090,13 @@ type StartVulinboxRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 默认应该是 127.0.0.1
+	// Remaining time
 	Host string `protobuf:"bytes,1,opt,name=Host,proto3" json:"Host,omitempty"`
-	// 默认应该是 8787
+	// The default should be 8787
 	Port string `protobuf:"bytes,2,opt,name=Port,proto3" json:"Port,omitempty"`
-	// 不启用 HTTPS
+	// Do not enable HTTPS
 	NoHttps bool `protobuf:"varint,3,opt,name=NoHttps,proto3" json:"NoHttps,omitempty"`
-	// 安全模式：不启用命令执行靶场
+	// safe mode: do not enable command execution range
 	SafeMode bool `protobuf:"varint,4,opt,name=SafeMode,proto3" json:"SafeMode,omitempty"`
 }
 
@@ -5422,12 +5422,12 @@ type HTTPRequestBuilderParams struct {
 	RawHTTPRequest   []byte `protobuf:"bytes,3,opt,name=RawHTTPRequest,proto3" json:"RawHTTPRequest,omitempty"`
 	// fields
 	Method string `protobuf:"bytes,4,opt,name=Method,proto3" json:"Method,omitempty"`
-	// path 增强型
+	// path Enhanced
 	Path      []string  `protobuf:"bytes,6,rep,name=Path,proto3" json:"Path,omitempty"`
 	GetParams []*KVPair `protobuf:"bytes,9,rep,name=GetParams,proto3" json:"GetParams,omitempty"`
 	Headers   []*KVPair `protobuf:"bytes,7,rep,name=Headers,proto3" json:"Headers,omitempty"`
 	Cookie    []*KVPair `protobuf:"bytes,8,rep,name=Cookie,proto3" json:"Cookie,omitempty"`
-	// body 增强
+	// body enhancement.
 	Body                []byte    `protobuf:"bytes,10,opt,name=Body,proto3" json:"Body,omitempty"`
 	PostParams          []*KVPair `protobuf:"bytes,11,rep,name=PostParams,proto3" json:"PostParams,omitempty"`
 	MultipartParams     []*KVPair `protobuf:"bytes,12,rep,name=MultipartParams,proto3" json:"MultipartParams,omitempty"`
@@ -7290,13 +7290,13 @@ type ExecuteChaosMakerRuleRequest struct {
 
 	Groups                          []*ChaosMakerRuleGroup `protobuf:"bytes,1,rep,name=Groups,proto3" json:"Groups,omitempty"`
 	ExtraOverrideDestinationAddress []string               `protobuf:"bytes,2,rep,name=ExtraOverrideDestinationAddress,proto3" json:"ExtraOverrideDestinationAddress,omitempty"`
-	// 随机延迟
+	// If the random delay
 	Concurrent             int64 `protobuf:"varint,3,opt,name=Concurrent,proto3" json:"Concurrent,omitempty"`
 	TrafficDelayMinSeconds int32 `protobuf:"varint,4,opt,name=TrafficDelayMinSeconds,proto3" json:"TrafficDelayMinSeconds,omitempty"`
 	TrafficDelayMaxSeconds int32 `protobuf:"varint,5,opt,name=TrafficDelayMaxSeconds,proto3" json:"TrafficDelayMaxSeconds,omitempty"`
-	// 额外重复，如果为 -1 认为是永久重复
+	// Additional repetitions, if it is -1, it is considered a permanent repetition
 	ExtraRepeat int64 `protobuf:"varint,6,opt,name=ExtraRepeat,proto3" json:"ExtraRepeat,omitempty"`
-	// 每组流量之间重复的次数
+	// Number of repetitions between each group of traffic
 	GroupGapSeconds int64 `protobuf:"varint,7,opt,name=GroupGapSeconds,proto3" json:"GroupGapSeconds,omitempty"`
 }
 
@@ -8286,9 +8286,9 @@ type ProjectIOProgress struct {
 	unknownFields protoimpl.UnknownFields
 
 	TargetPath string `protobuf:"bytes,1,opt,name=TargetPath,proto3" json:"TargetPath,omitempty"`
-	// 如果未完成，这个是百分比 0-1.0
+	// If not completed, this is the percentage 0-1.0
 	Percent float64 `protobuf:"fixed64,2,opt,name=Percent,proto3" json:"Percent,omitempty"`
-	// 展示的提示语，可能是中断原因或者错误原因之类的
+	// , which may be the cause of interruption or error.
 	Verbose string `protobuf:"bytes,4,opt,name=Verbose,proto3" json:"Verbose,omitempty"`
 }
 
@@ -8843,7 +8843,7 @@ type ProjectDescription struct {
 	Description  string `protobuf:"bytes,2,opt,name=Description,proto3" json:"Description,omitempty"`
 	Id           int64  `protobuf:"varint,3,opt,name=Id,proto3" json:"Id,omitempty"`
 	DatabasePath string `protobuf:"bytes,4,opt,name=DatabasePath,proto3" json:"DatabasePath,omitempty"`
-	// 创建时间
+	// Creation time
 	CreatedAt       int64  `protobuf:"varint,5,opt,name=CreatedAt,proto3" json:"CreatedAt,omitempty"`
 	FolderId        int64  `protobuf:"varint,6,opt,name=FolderId,proto3" json:"FolderId,omitempty"`
 	ChildFolderId   int64  `protobuf:"varint,7,opt,name=ChildFolderId,proto3" json:"ChildFolderId,omitempty"`
@@ -9461,10 +9461,10 @@ type RegisterFacadesHTTPRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 这个优先级比较高，如果有这个的话，他的响应应该像是
+	// has a higher priority. If there is this, its response should be like
 	// /_yakit/history/<id>
 	HTTPFlowID int64 `protobuf:"varint,1,opt,name=HTTPFlowID,proto3" json:"HTTPFlowID,omitempty"`
-	// 散装 HTTPFlow
+	// Bulk HTTPFlow
 	HTTPResponse []byte `protobuf:"bytes,2,opt,name=HTTPResponse,proto3" json:"HTTPResponse,omitempty"`
 	Url          string `protobuf:"bytes,3,opt,name=Url,proto3" json:"Url,omitempty"`
 }
@@ -10000,16 +10000,16 @@ type ExtractDataRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Data []byte `protobuf:"bytes,1,opt,name=Data,proto3" json:"Data,omitempty"`
-	// regexp mode -> regexp between 模式
+	// regexp mode -> regexp between mode
 	Mode string `protobuf:"bytes,2,opt,name=Mode,proto3" json:"Mode,omitempty"`
-	// 根据前后缀提取
+	// Extract
 	PrefixRegexp string `protobuf:"bytes,3,opt,name=PrefixRegexp,proto3" json:"PrefixRegexp,omitempty"`
 	SuffixRegexp string `protobuf:"bytes,4,opt,name=SuffixRegexp,proto3" json:"SuffixRegexp,omitempty"`
-	// 根据一个正则提取
+	// Extract
 	MatchRegexp string `protobuf:"bytes,5,opt,name=MatchRegexp,proto3" json:"MatchRegexp,omitempty"`
-	// Token 用来标注这个数据是谁的，一般可以用来处理提取的数据
+	// Token is used to mark who the data belongs to, and can generally be used to process the extracted data.
 	Token string `protobuf:"bytes,6,opt,name=Token,proto3" json:"Token,omitempty"`
-	// 如果不再有数据了，设置这个 flag
+	// If there is no more data, set this flag
 	End bool `protobuf:"varint,7,opt,name=End,proto3" json:"End,omitempty"`
 }
 
@@ -10099,11 +10099,11 @@ type GenerateExtractRuleRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 要提取规则的样例数据
+	// Sample data to extract rules
 	Data []byte `protobuf:"bytes,1,opt,name=Data,proto3" json:"Data,omitempty"`
-	// 选择的文本
+	// Selected text
 	Selected []byte `protobuf:"bytes,2,opt,name=Selected,proto3" json:"Selected,omitempty"`
-	// 选择前后缀的偏移量
+	// Select the offset of the prefix and suffix
 	OffsetSize int64 `protobuf:"varint,3,opt,name=OffsetSize,proto3" json:"OffsetSize,omitempty"`
 }
 
@@ -10275,10 +10275,10 @@ type QueryHTTPFuzzerResponseByTaskIdRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 用来索引对应的请求
+	// Used to index the corresponding request
 	TaskId           int64  `protobuf:"varint,1,opt,name=TaskId,proto3" json:"TaskId,omitempty"`
 	FuzzRequestToken string `protobuf:"bytes,2,opt,name=FuzzRequestToken,proto3" json:"FuzzRequestToken,omitempty"`
-	// 上一个请求的时间戳
+	// The timestamp of the previous request
 	LastResponseTimestamp int64   `protobuf:"varint,3,opt,name=LastResponseTimestamp,proto3" json:"LastResponseTimestamp,omitempty"`
 	Pagination            *Paging `protobuf:"bytes,4,opt,name=Pagination,proto3" json:"Pagination,omitempty"`
 }
@@ -10523,10 +10523,10 @@ type ClientWebsocketRequest struct {
 
 	IsTLS          bool   `protobuf:"varint,1,opt,name=IsTLS,proto3" json:"IsTLS,omitempty"`
 	UpgradeRequest []byte `protobuf:"bytes,2,opt,name=UpgradeRequest,proto3" json:"UpgradeRequest,omitempty"`
-	// 要发送到服务器的请求
+	// Request to be sent to the server
 	ToServer []byte   `protobuf:"bytes,3,opt,name=ToServer,proto3" json:"ToServer,omitempty"`
 	Encode   []string `protobuf:"bytes,4,rep,name=Encode,proto3" json:"Encode,omitempty"`
-	// 是否允许 fuzz 标签渲染，然后发送
+	// whether to allow fuzz tag rendering, and then send
 	AllowToFuzz         bool   `protobuf:"varint,5,opt,name=AllowToFuzz,proto3" json:"AllowToFuzz,omitempty"`
 	TotalTimeoutSeconds int64  `protobuf:"varint,6,opt,name=TotalTimeoutSeconds,proto3" json:"TotalTimeoutSeconds,omitempty"`
 	Proxy               string `protobuf:"bytes,7,opt,name=Proxy,proto3" json:"Proxy,omitempty"`
@@ -10618,15 +10618,15 @@ type ClientWebsocketResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 切换协议是否成功
+	// switches the protocol successfully.
 	SwitchProtocolSucceeded bool `protobuf:"varint,2,opt,name=SwitchProtocolSucceeded,proto3" json:"SwitchProtocolSucceeded,omitempty"`
-	// 是 Websocket 数据帧吗？
+	// Is it a Websocket dataframe?
 	IsDataFrame bool `protobuf:"varint,1,opt,name=IsDataFrame,proto3" json:"IsDataFrame,omitempty"`
-	// 服务器端返回还是？
+	// server returns still?
 	FromServer bool `protobuf:"varint,4,opt,name=FromServer,proto3" json:"FromServer,omitempty"`
-	// 编码是啥样的？
+	// encoding like?
 	GuessEncode []string `protobuf:"bytes,5,rep,name=GuessEncode,proto3" json:"GuessEncode,omitempty"`
-	// 其他状态，以及出现问题的原因
+	// Other states and the cause of the problem
 	StatusVerbose string `protobuf:"bytes,6,opt,name=StatusVerbose,proto3" json:"StatusVerbose,omitempty"`
 	ReasonVerbose string `protobuf:"bytes,7,opt,name=ReasonVerbose,proto3" json:"ReasonVerbose,omitempty"`
 	// DataLength
@@ -10636,10 +10636,10 @@ type ClientWebsocketResponse struct {
 	IsProtobuf     bool   `protobuf:"varint,11,opt,name=IsProtobuf,proto3" json:"IsProtobuf,omitempty"`
 	DataFrameIndex int64  `protobuf:"varint,12,opt,name=DataFrameIndex,proto3" json:"DataFrameIndex,omitempty"`
 	WebsocketHash  string `protobuf:"bytes,13,opt,name=WebsocketHash,proto3" json:"WebsocketHash,omitempty"`
-	// 设置大小
+	// Set size
 	DataSizeVerbose string `protobuf:"bytes,14,opt,name=DataSizeVerbose,proto3" json:"DataSizeVerbose,omitempty"`
 	DataVerbose     string `protobuf:"bytes,15,opt,name=DataVerbose,proto3" json:"DataVerbose,omitempty"`
-	// 升级
+	// Upgrade
 	IsUpgradeResponse bool   `protobuf:"varint,16,opt,name=IsUpgradeResponse,proto3" json:"IsUpgradeResponse,omitempty"`
 	UpgradeResponse   []byte `protobuf:"bytes,17,opt,name=UpgradeResponse,proto3" json:"UpgradeResponse,omitempty"`
 }
@@ -10840,22 +10840,22 @@ type ExecPacketScanRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 选择 HTTPFlow 进行扫描
+	// Select HTTPFlow to scan
 	HTTPFlow    []int64 `protobuf:"varint,1,rep,packed,name=HTTPFlow,proto3" json:"HTTPFlow,omitempty"`
 	HTTPRequest []byte  `protobuf:"bytes,2,opt,name=HTTPRequest,proto3" json:"HTTPRequest,omitempty"`
 	HTTPS       bool    `protobuf:"varint,3,opt,name=HTTPS,proto3" json:"HTTPS,omitempty"`
-	// 允许数据包的 Fuzz 打开
+	// Allow Fuzz of data packets Turn on
 	AllowFuzzTag bool `protobuf:"varint,5,opt,name=AllowFuzzTag,proto3" json:"AllowFuzzTag,omitempty"`
-	// 扫描进程总超时
+	// Scan process total timeout
 	TotalTimeoutSeconds int64 `protobuf:"varint,6,opt,name=TotalTimeoutSeconds,proto3" json:"TotalTimeoutSeconds,omitempty"`
-	// 默认发包的 Timeout
+	// the default timeout of the contract
 	Timeout int64 `protobuf:"varint,7,opt,name=Timeout,proto3" json:"Timeout,omitempty"`
-	// 并发
+	// Concurrency
 	PluginConcurrent int64 `protobuf:"varint,8,opt,name=PluginConcurrent,proto3" json:"PluginConcurrent,omitempty"`
 	PacketConcurrent int64 `protobuf:"varint,9,opt,name=PacketConcurrent,proto3" json:"PacketConcurrent,omitempty"`
-	// 插件列表
+	// Plug-in list
 	PluginList []string `protobuf:"bytes,10,rep,name=PluginList,proto3" json:"PluginList,omitempty"`
-	// 设置代理
+	// Execution time point
 	Proxy string `protobuf:"bytes,11,opt,name=Proxy,proto3" json:"Proxy,omitempty"`
 }
 
@@ -11108,7 +11108,7 @@ type YaklangLanguageSuggestionRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	InspectType   string `protobuf:"bytes,1,opt,name=InspectType,proto3" json:"InspectType,omitempty"` // completion(补全) / hover(提示) / signature(签名)
+	InspectType   string `protobuf:"bytes,1,opt,name=InspectType,proto3" json:"InspectType,omitempty"` // completion / hover (prompt) / signature (signature) What is the
 	YakScriptType string `protobuf:"bytes,2,opt,name=YakScriptType,proto3" json:"YakScriptType,omitempty"`
 	YakScriptCode string `protobuf:"bytes,3,opt,name=YakScriptCode,proto3" json:"YakScriptCode,omitempty"`
 	Range         *Range `protobuf:"bytes,4,opt,name=Range,proto3" json:"Range,omitempty"`
@@ -11887,15 +11887,15 @@ type SavePayloadProgress struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Progress            float64 `protobuf:"fixed64,1,opt,name=Progress,proto3" json:"Progress,omitempty"`                     // 进度
+	Progress            float64 `protobuf:"fixed64,1,opt,name=Progress,proto3" json:"Progress,omitempty"`                     // Progress
 	HandledBytes        int64   `protobuf:"varint,2,opt,name=HandledBytes,proto3" json:"HandledBytes,omitempty"`              // old
 	HandledBytesVerbose string  `protobuf:"bytes,3,opt,name=HandledBytesVerbose,proto3" json:"HandledBytesVerbose,omitempty"` // old
 	TotalBytes          int64   `protobuf:"varint,4,opt,name=TotalBytes,proto3" json:"TotalBytes,omitempty"`                  // old
 	TotalBytesVerbose   string  `protobuf:"bytes,5,opt,name=TotalBytesVerbose,proto3" json:"TotalBytesVerbose,omitempty"`     // old
 	CostDuration        float64 `protobuf:"fixed64,6,opt,name=CostDuration,proto3" json:"CostDuration,omitempty"`             // old
-	CostDurationVerbose string  `protobuf:"bytes,7,opt,name=CostDurationVerbose,proto3" json:"CostDurationVerbose,omitempty"` // 耗时
-	Speed               string  `protobuf:"bytes,8,opt,name=Speed,proto3" json:"Speed,omitempty"`                             // 速度
-	RestDurationVerbose string  `protobuf:"bytes,9,opt,name=RestDurationVerbose,proto3" json:"RestDurationVerbose,omitempty"` // 剩余时间
+	CostDurationVerbose string  `protobuf:"bytes,7,opt,name=CostDurationVerbose,proto3" json:"CostDurationVerbose,omitempty"` // Time consuming
+	Speed               string  `protobuf:"bytes,8,opt,name=Speed,proto3" json:"Speed,omitempty"`                             // Speed 
+	RestDurationVerbose string  `protobuf:"bytes,9,opt,name=RestDurationVerbose,proto3" json:"RestDurationVerbose,omitempty"` // Remaining time
 	Message             string  `protobuf:"bytes,10,opt,name=Message,proto3" json:"Message,omitempty"`
 }
 
@@ -12148,7 +12148,7 @@ type DownloadOnlinePluginProgress struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 进度
+	// Progress
 	Progress float64 `protobuf:"fixed64,1,opt,name=Progress,proto3" json:"Progress,omitempty"`
 	Log      string  `protobuf:"bytes,2,opt,name=Log,proto3" json:"Log,omitempty"`
 }
@@ -14624,7 +14624,7 @@ type ExtractDataToFileRequest struct {
 	DirName         string                      `protobuf:"bytes,3,opt,name=DirName,proto3" json:"DirName,omitempty"`
 	Data            map[string]*ExtractableData `protobuf:"bytes,4,rep,name=Data,proto3" json:"Data,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	FileNamePattern string                      `protobuf:"bytes,5,opt,name=FileNamePattern,proto3" json:"FileNamePattern,omitempty"`
-	// 当没有数据的时候，执行这个即可
+	// When there is no data, execute This is it
 	Finished bool `protobuf:"varint,6,opt,name=Finished,proto3" json:"Finished,omitempty"`
 }
 
@@ -14912,7 +14912,7 @@ type ExecYakitPluginsByYakScriptFilterRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Filter *QueryYakScriptRequest `protobuf:"bytes,1,opt,name=Filter,proto3" json:"Filter,omitempty"`
-	// 这个 Target 很复杂，URL / IP / CIDR / Host / Host:port
+	// This Target is very complex, URL / IP / CIDR / Host / Host:port
 	Target      string           `protobuf:"bytes,2,opt,name=Target,proto3" json:"Target,omitempty"`
 	Ports       string           `protobuf:"bytes,3,opt,name=Ports,proto3" json:"Ports,omitempty"`
 	TargetFile  string           `protobuf:"bytes,5,opt,name=TargetFile,proto3" json:"TargetFile,omitempty"`
@@ -16039,7 +16039,7 @@ type RiskTableStats struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 最近一次更新的漏洞信息
+	// the latest updated vulnerability Message
 	LatestCreatedAtTimestamp int64   `protobuf:"varint,1,opt,name=LatestCreatedAtTimestamp,proto3" json:"LatestCreatedAtTimestamp,omitempty"`
 	RiskTypeStats            *Fields `protobuf:"bytes,2,opt,name=RiskTypeStats,proto3" json:"RiskTypeStats,omitempty"`
 	RiskLevelStats           *Fields `protobuf:"bytes,3,opt,name=RiskLevelStats,proto3" json:"RiskLevelStats,omitempty"`
@@ -16161,7 +16161,7 @@ type FieldName struct {
 	Name    string `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
 	Verbose string `protobuf:"bytes,2,opt,name=Verbose,proto3" json:"Verbose,omitempty"`
 	Total   int32  `protobuf:"varint,3,opt,name=Total,proto3" json:"Total,omitempty"`
-	// 比上一次的增量/变化量
+	// of port multiplexing is an increment from the previous one/variation
 	Delta int32 `protobuf:"varint,4,opt,name=Delta,proto3" json:"Delta,omitempty"`
 }
 
@@ -16272,7 +16272,7 @@ func (x *Fields) GetValues() []*FieldName {
 	return nil
 }
 
-// 获取Gadget的Options
+// Get Gadget Options
 type YsoOption struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -16383,7 +16383,7 @@ func (x *YsoOptionsWithVerbose) GetOptions() []*YsoOption {
 	return nil
 }
 
-// 已弃用
+// Deprecated
 type YsoOptions struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -16431,7 +16431,7 @@ func (x *YsoOptions) GetNames() []string {
 	return nil
 }
 
-// 类生成器的参数
+// class generator
 type YsoClassGeneraterOptionsWithVerbose struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -16566,7 +16566,7 @@ func (x *YsoClassOptionsResponseWithVerbose) GetOptions() []*YsoClassGeneraterOp
 	return nil
 }
 
-// 已弃用
+// Deprecated
 type YsoClassGeneraterOptions struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -16630,7 +16630,7 @@ func (x *YsoClassGeneraterOptions) GetType() string {
 	return ""
 }
 
-// 已弃用
+// Deprecated
 type YsoClassOptionsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -16678,7 +16678,7 @@ func (x *YsoClassOptionsResponse) GetOptions() []*YsoClassGeneraterOptions {
 	return nil
 }
 
-// 生成代码和字节码
+// Generate code and bytecode
 type YsoOptionsRequerstWithVerbose struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -16742,7 +16742,7 @@ func (x *YsoOptionsRequerstWithVerbose) GetOptions() []*YsoClassGeneraterOptions
 	return nil
 }
 
-// 已弃用
+// Deprecated
 type YsoOptionsRequerst struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -17790,9 +17790,9 @@ type ExecuteBatchPacketYakScriptParams struct {
 	IsHttps    bool     `protobuf:"varint,2,opt,name=IsHttps,proto3" json:"IsHttps,omitempty"`
 	Request    []byte   `protobuf:"bytes,3,opt,name=Request,proto3" json:"Request,omitempty"`
 	Response   []byte   `protobuf:"bytes,4,opt,name=Response,proto3" json:"Response,omitempty"`
-	// 并发
+	// Concurrency
 	Concurrent int32 `protobuf:"varint,5,opt,name=Concurrent,proto3" json:"Concurrent,omitempty"`
-	// 设置单个超时时间
+	// Set a single timeout
 	PerTaskTimeout float64 `protobuf:"fixed64,6,opt,name=PerTaskTimeout,proto3" json:"PerTaskTimeout,omitempty"`
 }
 
@@ -19284,10 +19284,10 @@ type Risk struct {
 	CreatedAt       int64  `protobuf:"varint,16,opt,name=CreatedAt,proto3" json:"CreatedAt,omitempty"`
 	UpdatedAt       int64  `protobuf:"varint,17,opt,name=UpdatedAt,proto3" json:"UpdatedAt,omitempty"`
 	Severity        string `protobuf:"bytes,19,opt,name=Severity,proto3" json:"Severity,omitempty"`
-	// 数据包提取出来！
+	// Packets extracted!
 	Request  []byte `protobuf:"bytes,20,opt,name=Request,proto3" json:"Request,omitempty"`
 	Response []byte `protobuf:"bytes,21,opt,name=Response,proto3" json:"Response,omitempty"`
-	// 这个一般用于生成报告追踪报告中产生的漏洞
+	// This is generally used to generate reports to track vulnerabilities generated in reports
 	RuntimeId   string `protobuf:"bytes,22,opt,name=RuntimeId,proto3" json:"RuntimeId,omitempty"`
 	CVE         string `protobuf:"bytes,23,opt,name=CVE,proto3" json:"CVE,omitempty"`
 	Description string `protobuf:"bytes,24,opt,name=Description,proto3" json:"Description,omitempty"`
@@ -20223,23 +20223,23 @@ type StartFacadesParams struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 端口复用的
+	// The
 	LocalFacadeHost string `protobuf:"bytes,41,opt,name=LocalFacadeHost,proto3" json:"LocalFacadeHost,omitempty"`
 	LocalFacadePort int32  `protobuf:"varint,42,opt,name=LocalFacadePort,proto3" json:"LocalFacadePort,omitempty"`
 	// bool EnableRMIServer = 1;
 	// int32 RMILocalPort = 2;
 	EnableDNSLogServer bool  `protobuf:"varint,3,opt,name=EnableDNSLogServer,proto3" json:"EnableDNSLogServer,omitempty"`
 	DNSLogLocalPort    int32 `protobuf:"varint,4,opt,name=DNSLogLocalPort,proto3" json:"DNSLogLocalPort,omitempty"`
-	// 连接远程端口参数
+	// Connect remote port parameters
 	ConnectParam *GetTunnelServerExternalIPParams `protobuf:"bytes,5,opt,name=ConnectParam,proto3" json:"ConnectParam,omitempty"`
-	// 远端端口开放情况
+	// remote port opening status
 	//
 	//	int32 RMIRemotePort = 6;
 	FacadeRemotePort int32 `protobuf:"varint,16,opt,name=FacadeRemotePort,proto3" json:"FacadeRemotePort,omitempty"`
 	DNSLogRemotePort int32 `protobuf:"varint,7,opt,name=DNSLogRemotePort,proto3" json:"DNSLogRemotePort,omitempty"`
-	// 外部域名
+	// External domain name
 	ExternalDomain string `protobuf:"bytes,8,opt,name=ExternalDomain,proto3" json:"ExternalDomain,omitempty"`
-	// 验证端口是否转发成功
+	// Verify whether the port is forwarded successfully
 	Verify bool `protobuf:"varint,9,opt,name=Verify,proto3" json:"Verify,omitempty"`
 }
 
@@ -20393,7 +20393,7 @@ func (x *ApplyClassToFacadesParamsWithVerbose) GetToken() string {
 	return ""
 }
 
-// 已弃用
+// Deprecated
 type ApplyClassToFacadesParams struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -20454,7 +20454,7 @@ type StartFacadesWithYsoParams struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 端口复用的
+	// The
 	IsRemote            bool                             `protobuf:"varint,1,opt,name=IsRemote,proto3" json:"IsRemote,omitempty"`
 	ReversePort         int32                            `protobuf:"varint,2,opt,name=ReversePort,proto3" json:"ReversePort,omitempty"`
 	ReverseHost         string                           `protobuf:"bytes,4,opt,name=ReverseHost,proto3" json:"ReverseHost,omitempty"`
@@ -20592,7 +20592,7 @@ type StartBruteParams struct {
 	Type       string `protobuf:"bytes,1,opt,name=Type,proto3" json:"Type,omitempty"`
 	Targets    string `protobuf:"bytes,2,opt,name=Targets,proto3" json:"Targets,omitempty"`
 	TargetFile string `protobuf:"bytes,3,opt,name=TargetFile,proto3" json:"TargetFile,omitempty"`
-	// 设置如果用户输入了，就代替默认字典
+	// Set if user input, replace the default dictionary
 	ReplaceDefaultUsernameDict bool     `protobuf:"varint,28,opt,name=ReplaceDefaultUsernameDict,proto3" json:"ReplaceDefaultUsernameDict,omitempty"`
 	ReplaceDefaultPasswordDict bool     `protobuf:"varint,29,opt,name=ReplaceDefaultPasswordDict,proto3" json:"ReplaceDefaultPasswordDict,omitempty"`
 	Usernames                  []string `protobuf:"bytes,4,rep,name=Usernames,proto3" json:"Usernames,omitempty"`
@@ -20601,10 +20601,10 @@ type StartBruteParams struct {
 	PasswordFile               string   `protobuf:"bytes,25,opt,name=PasswordFile,proto3" json:"PasswordFile,omitempty"`
 	Prefix                     []string `protobuf:"bytes,6,rep,name=Prefix,proto3" json:"Prefix,omitempty"`
 	Timeout                    float32  `protobuf:"fixed32,7,opt,name=Timeout,proto3" json:"Timeout,omitempty"`
-	// 每个目标之间的并发
+	// Concurrency between each target
 	Concurrent int64 `protobuf:"varint,8,opt,name=Concurrent,proto3" json:"Concurrent,omitempty"`
 	Retry      int64 `protobuf:"varint,9,opt,name=Retry,proto3" json:"Retry,omitempty"`
-	// 目标任务内并发
+	// Concurrency within the target task
 	TargetTaskConcurrent int64  `protobuf:"varint,10,opt,name=TargetTaskConcurrent,proto3" json:"TargetTaskConcurrent,omitempty"`
 	OkToStop             bool   `protobuf:"varint,11,opt,name=OkToStop,proto3" json:"OkToStop,omitempty"`
 	DelayMin             int64  `protobuf:"varint,12,opt,name=DelayMin,proto3" json:"DelayMin,omitempty"`
@@ -22082,7 +22082,7 @@ type StartBasicCrawlerRequest struct {
 	AllowUrlRegexp      string `protobuf:"bytes,12,opt,name=AllowUrlRegexp,proto3" json:"AllowUrlRegexp,omitempty"`
 	ForbiddenUrlRegexp  string `protobuf:"bytes,13,opt,name=ForbiddenUrlRegexp,proto3" json:"ForbiddenUrlRegexp,omitempty"`
 	UserAgent           string `protobuf:"bytes,14,opt,name=UserAgent,proto3" json:"UserAgent,omitempty"`
-	// 基础认证
+	// basic authentication is implemented through execReq.
 	BasicAuth         string `protobuf:"bytes,15,opt,name=BasicAuth,proto3" json:"BasicAuth,omitempty"`
 	BasicAuthUsername string `protobuf:"bytes,16,opt,name=BasicAuthUsername,proto3" json:"BasicAuthUsername,omitempty"`
 	BasicAuthPassword string `protobuf:"bytes,17,opt,name=BasicAuthPassword,proto3" json:"BasicAuthPassword,omitempty"`
@@ -22970,7 +22970,7 @@ func (x *MenuItem) GetYakScriptName() string {
 	return ""
 }
 
-// 这里的小写不要改动，兼容前端已有的格式
+// Do not change the lowercase here, it is compatible with the existing format of the front end
 type BatchExecutionPluginFilter struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -24454,40 +24454,40 @@ type PortScanRequest struct {
 	Mode       string   `protobuf:"bytes,3,opt,name=Mode,proto3" json:"Mode,omitempty"`
 	Proto      []string `protobuf:"bytes,4,rep,name=Proto,proto3" json:"Proto,omitempty"`
 	Concurrent int64    `protobuf:"varint,5,opt,name=Concurrent,proto3" json:"Concurrent,omitempty"`
-	// 主动发包模式
+	// proactively send packets. In mode
 	Active bool `protobuf:"varint,6,opt,name=Active,proto3" json:"Active,omitempty"`
 	// service / web / all
 	FingerprintMode string `protobuf:"bytes,7,opt,name=FingerprintMode,proto3" json:"FingerprintMode,omitempty"`
-	// 保存数据库
+	// Save database
 	SaveToDB bool `protobuf:"varint,8,opt,name=SaveToDB,proto3" json:"SaveToDB,omitempty"`
-	// 保存已经关闭的端口
+	// Save the closed port
 	SaveClosedPorts bool `protobuf:"varint,9,opt,name=SaveClosedPorts,proto3" json:"SaveClosedPorts,omitempty"`
-	// 上传扫描目标为文件
+	// according to a regular rule and upload the scanning target as a file
 	TargetsFile string `protobuf:"bytes,10,opt,name=TargetsFile,proto3" json:"TargetsFile,omitempty"`
-	// 设置上传的文件
+	// Set the uploaded file
 	ScriptNames []string `protobuf:"bytes,11,rep,name=ScriptNames,proto3" json:"ScriptNames,omitempty"`
 	// TCPProxy
 	Proxy []string `protobuf:"bytes,12,rep,name=Proxy,proto3" json:"Proxy,omitempty"`
-	// 设置单次探测超时时间
+	// Set a single detection timeout
 	ProbeTimeout float64 `protobuf:"fixed64,13,opt,name=ProbeTimeout,proto3" json:"ProbeTimeout,omitempty"`
-	// ProbeMax 设置指纹探测条数
+	// ProbeMax Set the number of fingerprint detections
 	ProbeMax int32 `protobuf:"varint,14,opt,name=ProbeMax,proto3" json:"ProbeMax,omitempty"`
-	// 启用 C 段扫描
+	// Enable C segment scanning
 	EnableCClassScan bool `protobuf:"varint,15,opt,name=EnableCClassScan,proto3" json:"EnableCClassScan,omitempty"`
 	// HostAlive Scan
 	SkippedHostAliveScan bool    `protobuf:"varint,16,opt,name=SkippedHostAliveScan,proto3" json:"SkippedHostAliveScan,omitempty"`
 	HostAliveTimeout     float64 `protobuf:"fixed64,17,opt,name=HostAliveTimeout,proto3" json:"HostAliveTimeout,omitempty"`
 	HostAliveConcurrent  int32   `protobuf:"varint,18,opt,name=HostAliveConcurrent,proto3" json:"HostAliveConcurrent,omitempty"`
 	HostAlivePorts       string  `protobuf:"bytes,19,opt,name=HostAlivePorts,proto3" json:"HostAlivePorts,omitempty"`
-	// 排除端口与主机
+	// Exclude port and host
 	ExcludeHosts string `protobuf:"bytes,20,opt,name=ExcludeHosts,proto3" json:"ExcludeHosts,omitempty"`
 	ExcludePorts string `protobuf:"bytes,21,opt,name=ExcludePorts,proto3" json:"ExcludePorts,omitempty"`
 	// EnableBasicCrawler
-	// 是否启用基础爬虫，以及基础爬虫最多几个请求？
+	// Is the basic crawler enabled, and how many requests can the basic crawler make at most?
 	EnableBasicCrawler     bool  `protobuf:"varint,22,opt,name=EnableBasicCrawler,proto3" json:"EnableBasicCrawler,omitempty"`
 	BasicCrawlerRequestMax int64 `protobuf:"varint,23,opt,name=BasicCrawlerRequestMax,proto3" json:"BasicCrawlerRequestMax,omitempty"`
 	// SYN Concurrent
-	// 简易设置 SYN 每秒并发
+	// Simple setting SYN Concurrency per second
 	SynConcurrent int64  `protobuf:"varint,24,opt,name=SynConcurrent,proto3" json:"SynConcurrent,omitempty"`
 	TaskName      string `protobuf:"bytes,25,opt,name=TaskName,proto3" json:"TaskName,omitempty"`
 	EnableBrute   bool   `protobuf:"varint,26,opt,name=EnableBrute,proto3" json:"EnableBrute,omitempty"`
@@ -24808,7 +24808,7 @@ type QueryPortsRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Pagination *Paging `protobuf:"bytes,1,opt,name=Pagination,proto3" json:"Pagination,omitempty"`
-	// 根据 Hosts Ports 查询
+	// Query
 	Hosts          string `protobuf:"bytes,2,opt,name=Hosts,proto3" json:"Hosts,omitempty"`
 	Ports          string `protobuf:"bytes,3,opt,name=Ports,proto3" json:"Ports,omitempty"`
 	Service        string `protobuf:"bytes,4,opt,name=Service,proto3" json:"Service,omitempty"`
@@ -25237,7 +25237,7 @@ func (*GetYakVMBuildInMethodCompletionRequest) Descriptor() ([]byte, []int) {
 	return file_yakgrpc_proto_rawDescGZIP(), []int{355}
 }
 
-// 这个定义我们争取和 monaco editor suggestion 基本一致
+// basically consistent with the monaco editor suggestion.
 type SuggestionDescription struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -25247,8 +25247,8 @@ type SuggestionDescription struct {
 	Description       string `protobuf:"bytes,2,opt,name=Description,proto3" json:"Description,omitempty"`
 	InsertText        string `protobuf:"bytes,3,opt,name=InsertText,proto3" json:"InsertText,omitempty"`
 	JustAppend        bool   `protobuf:"varint,4,opt,name=JustAppend,proto3" json:"JustAppend,omitempty"`
-	DefinitionVerbose string `protobuf:"bytes,5,opt,name=DefinitionVerbose,proto3" json:"DefinitionVerbose,omitempty"` // 展示定义的内容，如果没有的话，一般展示 InsertText 就行
-	Kind              string `protobuf:"bytes,6,opt,name=Kind,proto3" json:"Kind,omitempty"`                           // 补全类型, Method = 0, Function = 1, Constructor = 2, Field = 3, Variable = 4, Class = 5, Struct = 6, Interface = 7, Module = 8, Property = 9, Event = 10, Operator = 11, Unit = 12, Value = 13, Constant = 14, Enum = 15, EnumMember = 16, Keyword = 17, Text = 18, Color = 19, File = 20, Reference = 21, Customcolor = 22, Folder = 23, TypeParameter = 24, User = 25, Issue = 26, Snippet = 27
+	DefinitionVerbose string `protobuf:"bytes,5,opt,name=DefinitionVerbose,proto3" json:"DefinitionVerbose,omitempty"` // Display the defined content, If not, just display InsertText.
+	Kind              string `protobuf:"bytes,6,opt,name=Kind,proto3" json:"Kind,omitempty"`                           // Completion type, Method = 0, Function = 1, Constructor = 2, Field = 3, Variable = 4, Class = 5, Struct = 6, Interface = 7, Module = 8, Property = 9, Event = 10, Operator = 11, Unit = 12, Value = 13, Constant = 14, Enum = 15, EnumMember = 16, Keyword = 17, Text = 18, Color = 19, File = 20, Reference = 21, Customcolor = 22, Folder = 23, TypeParameter = 24, User = 25, Issue = 26, Snippet = 27
 }
 
 func (x *SuggestionDescription) Reset() {
@@ -25330,13 +25330,13 @@ type MethodSuggestion struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 产生这个方法提示的关键词是啥？
+	// What is the keyword that generates this method prompt?
 	ExactKeywords []string `protobuf:"bytes,1,rep,name=ExactKeywords,proto3" json:"ExactKeywords,omitempty"`
 	FuzzKeywords  []string `protobuf:"bytes,2,rep,name=FuzzKeywords,proto3" json:"FuzzKeywords,omitempty"`
 	Regexp        []string `protobuf:"bytes,3,rep,name=Regexp,proto3" json:"Regexp,omitempty"`
-	// 提示的内容是啥？
+	// prompt?
 	Suggestions []*SuggestionDescription `protobuf:"bytes,4,rep,name=Suggestions,proto3" json:"Suggestions,omitempty"`
-	// 这个代码提示方法组是啥？
+	// What is the method group of this code prompt?
 	Verbose string `protobuf:"bytes,5,opt,name=Verbose,proto3" json:"Verbose,omitempty"`
 }
 
@@ -26646,7 +26646,7 @@ type QueryYakScriptRequest struct {
 	ExcludeScriptNames       []string `protobuf:"bytes,9,rep,name=ExcludeScriptNames,proto3" json:"ExcludeScriptNames,omitempty"`
 	IncludedScriptNames      []string `protobuf:"bytes,10,rep,name=IncludedScriptNames,proto3" json:"IncludedScriptNames,omitempty"`
 	Tag                      []string `protobuf:"bytes,11,rep,name=Tag,proto3" json:"Tag,omitempty"`
-	NoResultReturn           bool     `protobuf:"varint,12,opt,name=NoResultReturn,proto3" json:"NoResultReturn,omitempty"` // 这是一很特殊的选项，如果开启了，total 将会为 0
+	NoResultReturn           bool     `protobuf:"varint,12,opt,name=NoResultReturn,proto3" json:"NoResultReturn,omitempty"` // This is a very special option. If it is turned on, total will be 0
 	UserId                   int64    `protobuf:"varint,13,opt,name=UserId,proto3" json:"UserId,omitempty"`
 	UserName                 string   `protobuf:"bytes,14,opt,name=UserName,proto3" json:"UserName,omitempty"`
 	IgnoreGeneralModuleOrder bool     `protobuf:"varint,15,opt,name=IgnoreGeneralModuleOrder,proto3" json:"IgnoreGeneralModuleOrder,omitempty"`
@@ -27011,7 +27011,7 @@ type YakScript struct {
 	RiskType             string                                 `protobuf:"bytes,32,opt,name=RiskType,proto3" json:"RiskType,omitempty"`
 	RiskDetail           *QueryYakScriptRiskDetailByCWEResponse `protobuf:"bytes,33,opt,name=RiskDetail,proto3" json:"RiskDetail,omitempty"`
 	RiskAnnotation       string                                 `protobuf:"bytes,34,opt,name=RiskAnnotation,proto3" json:"RiskAnnotation,omitempty"`
-	// 协作者
+	// Collaborator
 	CollaboratorInfo []*Collaborator `protobuf:"bytes,35,rep,name=CollaboratorInfo,proto3" json:"CollaboratorInfo,omitempty"`
 }
 
@@ -27622,7 +27622,7 @@ type SaveYakScriptToOnlineResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 进度
+	// Progress
 	Progress    float64 `protobuf:"fixed64,1,opt,name=Progress,proto3" json:"Progress,omitempty"`
 	Message     string  `protobuf:"bytes,2,opt,name=Message,proto3" json:"Message,omitempty"`
 	MessageType string  `protobuf:"bytes,3,opt,name=MessageType,proto3" json:"MessageType,omitempty"`
@@ -27993,7 +27993,7 @@ type ImportYakScriptResult struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 进度
+	// Progress
 	Progress    float64 `protobuf:"fixed64,1,opt,name=Progress,proto3" json:"Progress,omitempty"`
 	Message     string  `protobuf:"bytes,2,opt,name=Message,proto3" json:"Message,omitempty"`
 	MessageType string  `protobuf:"bytes,3,opt,name=MessageType,proto3" json:"MessageType,omitempty"`
@@ -28172,7 +28172,7 @@ type CodecRequest struct {
 	Auto       bool             `protobuf:"varint,3,opt,name=Auto,proto3" json:"Auto,omitempty"`
 	Params     []*ExecParamItem `protobuf:"bytes,4,rep,name=Params,proto3" json:"Params,omitempty"`
 	ScriptName string           `protobuf:"bytes,5,opt,name=ScriptName,proto3" json:"ScriptName,omitempty"`
-	// 如果 InputBytes 设置了，将会无条件覆盖 Text
+	// If InputBytes is set, it will unconditionally overwrite Text
 	InputBytes []byte `protobuf:"bytes,6,opt,name=InputBytes,proto3" json:"InputBytes,omitempty"`
 }
 
@@ -28566,29 +28566,29 @@ func (x *ExecHistoryRecordResponse) GetTotal() int64 {
 	return 0
 }
 
-// 执行的历史记录
+// Execution history
 type ExecHistoryRecord struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 脚本内容
+	// Script content
 	Script string `protobuf:"bytes,1,opt,name=Script,proto3" json:"Script,omitempty"`
-	// 脚本 ID（如果有的话）
+	// script ID (if any)
 	ScriptId string `protobuf:"bytes,2,opt,name=ScriptId,proto3" json:"ScriptId,omitempty"`
-	// 执行时间点
+	// execution time point
 	Timestamp int64 `protobuf:"varint,3,opt,name=Timestamp,proto3" json:"Timestamp,omitempty"`
-	// 执行间隔
+	// Execution interval
 	DurationMs int64 `protobuf:"varint,4,opt,name=DurationMs,proto3" json:"DurationMs,omitempty"`
-	// 执行参数（命令行参数部分）
+	// execution parameters (command line parameter part)
 	Params string `protobuf:"bytes,5,opt,name=Params,proto3" json:"Params,omitempty"`
-	// 执行成功还是失败
+	// Execution success or failure
 	Ok bool `protobuf:"varint,7,opt,name=Ok,proto3" json:"Ok,omitempty"`
-	// 失败原因是啥？
+	// packets? What is the reason for
 	Reason string `protobuf:"bytes,8,opt,name=Reason,proto3" json:"Reason,omitempty"`
 	// Uid
 	Id string `protobuf:"bytes,9,opt,name=Id,proto3" json:"Id,omitempty"`
-	// 展示界面内容
+	// Display interface content
 	Stdout        []byte `protobuf:"bytes,10,opt,name=Stdout,proto3" json:"Stdout,omitempty"`
 	Stderr        []byte `protobuf:"bytes,11,opt,name=Stderr,proto3" json:"Stderr,omitempty"`
 	RuntimeId     string `protobuf:"bytes,12,opt,name=RuntimeId,proto3" json:"RuntimeId,omitempty"`
@@ -28735,7 +28735,7 @@ func (x *ExecHistoryRecord) GetMessages() []byte {
 	return nil
 }
 
-// Fuzz 相关模型
+// Fuzz related model
 type StringFuzzerRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -29832,7 +29832,7 @@ type FuzzerRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Request                  string             `protobuf:"bytes,1,opt,name=Request,proto3" json:"Request,omitempty"`
-	RequestRaw               []byte             `protobuf:"bytes,16,opt,name=RequestRaw,proto3" json:"RequestRaw,omitempty"` // 这里是因为麻将块儿的问题，还是需要处理一下类型
+	RequestRaw               []byte             `protobuf:"bytes,16,opt,name=RequestRaw,proto3" json:"RequestRaw,omitempty"` // Here is Because of the problem of mahjong blocks, we still need to deal with the type
 	Params                   []*FuzzerParamItem `protobuf:"bytes,2,rep,name=Params,proto3" json:"Params,omitempty"`
 	Concurrent               int64              `protobuf:"varint,3,opt,name=Concurrent,proto3" json:"Concurrent,omitempty"`
 	IsHTTPS                  bool               `protobuf:"varint,4,opt,name=IsHTTPS,proto3" json:"IsHTTPS,omitempty"`
@@ -29842,67 +29842,67 @@ type FuzzerRequest struct {
 	FuzzTagSyncIndex         bool               `protobuf:"varint,51,opt,name=FuzzTagSyncIndex,proto3" json:"FuzzTagSyncIndex,omitempty"`
 	Proxy                    string             `protobuf:"bytes,6,opt,name=Proxy,proto3" json:"Proxy,omitempty"`
 	PerRequestTimeoutSeconds float64            `protobuf:"fixed64,7,opt,name=PerRequestTimeoutSeconds,proto3" json:"PerRequestTimeoutSeconds,omitempty"`
-	// 用于处理 Host 和 Header 中 Host 不一致的情况
+	// It is used to handle the inconsistency between Host and Header
 	ActualAddr string `protobuf:"bytes,8,opt,name=ActualAddr,proto3" json:"ActualAddr,omitempty"`
 	// redirect setting
 	NoFollowRedirect bool `protobuf:"varint,9,opt,name=NoFollowRedirect,proto3" json:"NoFollowRedirect,omitempty"`
-	// 这个弃用了，Meta 自动归类到 Redirect 里面
+	// This is deprecated, Meta is automatically classified into Redirect
 	NoFollowMetaRedirect bool    `protobuf:"varint,10,opt,name=NoFollowMetaRedirect,proto3" json:"NoFollowMetaRedirect,omitempty"`
 	FollowJSRedirect     bool    `protobuf:"varint,11,opt,name=FollowJSRedirect,proto3" json:"FollowJSRedirect,omitempty"`
 	RedirectTimes        float64 `protobuf:"fixed64,27,opt,name=RedirectTimes,proto3" json:"RedirectTimes,omitempty"`
-	// 如果从历史加载，就用这个！
+	// If loading from history, use this!
 	HistoryWebFuzzerId int32 `protobuf:"varint,12,opt,name=HistoryWebFuzzerId,proto3" json:"HistoryWebFuzzerId,omitempty"`
-	// 如果不想自动修复 Content-Length
+	// If you do not want to automatically repair Content-Length
 	NoFixContentLength bool `protobuf:"varint,13,opt,name=NoFixContentLength,proto3" json:"NoFixContentLength,omitempty"`
-	// 热加载代码
+	// hot load code
 	HotPatchCode string `protobuf:"bytes,14,opt,name=HotPatchCode,proto3" json:"HotPatchCode,omitempty"`
-	// 设置 Fuzzer
+	// Set Fuzzer
 	Filter *FuzzerResponseFilter `protobuf:"bytes,15,opt,name=Filter,proto3" json:"Filter,omitempty"`
-	// 随时 delay
+	// Delay at any time
 	DelayMinSeconds float64 `protobuf:"fixed64,17,opt,name=DelayMinSeconds,proto3" json:"DelayMinSeconds,omitempty"`
 	DelayMaxSeconds float64 `protobuf:"fixed64,18,opt,name=DelayMaxSeconds,proto3" json:"DelayMaxSeconds,omitempty"`
-	// 获取模版数据
+	// Get template data
 	HotPatchCodeWithParamGetter string `protobuf:"bytes,19,opt,name=HotPatchCodeWithParamGetter,proto3" json:"HotPatchCodeWithParamGetter,omitempty"`
 	// retry
-	MaxRetryTimes        int64   `protobuf:"varint,20,opt,name=MaxRetryTimes,proto3" json:"MaxRetryTimes,omitempty"`              // 最大重试次数
-	RetryInStatusCode    string  `protobuf:"bytes,21,opt,name=RetryInStatusCode,proto3" json:"RetryInStatusCode,omitempty"`       // 命中这些状态码的时候，重试
-	RetryNotInStatusCode string  `protobuf:"bytes,22,opt,name=RetryNotInStatusCode,proto3" json:"RetryNotInStatusCode,omitempty"` // 不是这些状态的时候，重试
-	RetryWaitSeconds     float64 `protobuf:"fixed64,25,opt,name=RetryWaitSeconds,proto3" json:"RetryWaitSeconds,omitempty"`       // 重试等待时间
-	RetryMaxWaitSeconds  float64 `protobuf:"fixed64,26,opt,name=RetryMaxWaitSeconds,proto3" json:"RetryMaxWaitSeconds,omitempty"` // 最大重试等待时间
+	MaxRetryTimes        int64   `protobuf:"varint,20,opt,name=MaxRetryTimes,proto3" json:"MaxRetryTimes,omitempty"`              // Maximum number of retries
+	RetryInStatusCode    string  `protobuf:"bytes,21,opt,name=RetryInStatusCode,proto3" json:"RetryInStatusCode,omitempty"`       // When these status codes are hit, retry
+	RetryNotInStatusCode string  `protobuf:"bytes,22,opt,name=RetryNotInStatusCode,proto3" json:"RetryNotInStatusCode,omitempty"` // When it is not in these states, retry
+	RetryWaitSeconds     float64 `protobuf:"fixed64,25,opt,name=RetryWaitSeconds,proto3" json:"RetryWaitSeconds,omitempty"`       // Basic status
+	RetryMaxWaitSeconds  float64 `protobuf:"fixed64,26,opt,name=RetryMaxWaitSeconds,proto3" json:"RetryMaxWaitSeconds,omitempty"` // Maximum retry waiting time
 	// Response Charset
-	// 默认或者不填为 UTF8
-	// 中国的话，用 gb18030
+	// Default or not filled in as UTF8
+	// In China, use gb18030
 	ResponseCharset string `protobuf:"bytes,23,opt,name=ResponseCharset,proto3" json:"ResponseCharset,omitempty"`
 	// Verbose
-	// 这个字段不需要用户做任何处理，也不需要客户端传递
-	// 这是服务端用来初始化的字段，用以构建快速搜索
+	// This field does not require any processing by the user, nor does the client need to pass
+	// This is the field used by the server to initialize to build a quick search
 	Verbose string `protobuf:"bytes,24,opt,name=Verbose,proto3" json:"Verbose,omitempty"`
 	// dns config
 	DNSServers []string  `protobuf:"bytes,28,rep,name=DNSServers,proto3" json:"DNSServers,omitempty"`
 	EtcHosts   []*KVPair `protobuf:"bytes,29,rep,name=EtcHosts,proto3" json:"EtcHosts,omitempty"`
-	// 不启用系统代理
+	// Not enabling the system proxy
 	NoSystemProxy bool `protobuf:"varint,30,opt,name=NoSystemProxy,proto3" json:"NoSystemProxy,omitempty"`
-	// 重复次数
+	// Number of repetitions
 	RepeatTimes int64 `protobuf:"varint,31,opt,name=RepeatTimes,proto3" json:"RepeatTimes,omitempty"`
 	// Extractor n Matchers
 	Extractors        []*HTTPResponseExtractor `protobuf:"bytes,32,rep,name=Extractors,proto3" json:"Extractors,omitempty"`
 	Matchers          []*HTTPResponseMatcher   `protobuf:"bytes,33,rep,name=Matchers,proto3" json:"Matchers,omitempty"`
 	MatchersCondition string                   `protobuf:"bytes,34,opt,name=MatchersCondition,proto3" json:"MatchersCondition,omitempty"`
 	HitColor          string                   `protobuf:"bytes,36,opt,name=HitColor,proto3" json:"HitColor,omitempty"`
-	// 如果发包的时候，需要指定一两个插件，那么可以通过他来操作，并把流量一起返回
+	// If you need to specify one or two plug-ins when sending a package, you can operate it through him and put the traffic Return
 	YamlPoCNames []string `protobuf:"bytes,37,rep,name=YamlPoCNames,proto3" json:"YamlPoCNames,omitempty"`
-	// 是否继承上一个 Workflow 的变量？（在 Sequence 中生效）
+	// inherit the variables of the previous Workflow? (Effective in Sequence)
 	InheritVariables     bool `protobuf:"varint,38,opt,name=InheritVariables,proto3" json:"InheritVariables,omitempty"`
 	ForceOnlyOneResponse bool `protobuf:"varint,39,opt,name=ForceOnlyOneResponse,proto3" json:"ForceOnlyOneResponse,omitempty"`
-	InheritCookies       bool `protobuf:"varint,40,opt,name=InheritCookies,proto3" json:"InheritCookies,omitempty"` // 上一个 Request 一般来说是单个请求，他的响应信息中 Cookie 也应该被妥善处理
+	InheritCookies       bool `protobuf:"varint,40,opt,name=InheritCookies,proto3" json:"InheritCookies,omitempty"` // The previous Request is generally a single request, and its response information Cookies should also be handled properly
 	// web fuzzer task id
-	// 需要配合前端的 Index
-	// 这两个 Index 如果有的话，后端在执行 HTTP Fuzzer Sequence 的时候，就可以只传递这两个了
-	// 如果没有的话，直接把整个 Request 传回去
+	// need to match the front-end Index.
+	// If these two Indexes exist, the backend can only pass these two when executing the HTTP Fuzzer Sequence
+	// If not , directly transmit the entire Request back to
 	FuzzerIndex    string `protobuf:"bytes,41,opt,name=FuzzerIndex,proto3" json:"FuzzerIndex,omitempty"`
 	FuzzerTabIndex string `protobuf:"bytes,42,opt,name=FuzzerTabIndex,proto3" json:"FuzzerTabIndex,omitempty"`
 	// BatchTarget
-	// 继承透传给 HTTPPOOL 的参数，可以使用批量目标来发送
+	// If
 	BatchTargetFile  bool   `protobuf:"varint,43,opt,name=BatchTargetFile,proto3" json:"BatchTargetFile,omitempty"`
 	BatchTarget      []byte `protobuf:"bytes,44,opt,name=BatchTarget,proto3" json:"BatchTarget,omitempty"`
 	AfterRequested   bool   `protobuf:"varint,45,opt,name=AfterRequested,proto3" json:"AfterRequested,omitempty"`
@@ -30381,10 +30381,10 @@ type FuzzerResponseFilter struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 设置 body 大小作为过滤依据
+	// Set the body size as Filter based on
 	MinBodySize int64 `protobuf:"varint,1,opt,name=MinBodySize,proto3" json:"MinBodySize,omitempty"`
 	MaxBodySize int64 `protobuf:"varint,2,opt,name=MaxBodySize,proto3" json:"MaxBodySize,omitempty"`
-	// 设置正则作为过滤依据，这个正则针对整个数据包生效
+	// Set the regular rule as the basis for filtering. This regular rule takes effect for the entire data packet
 	Regexps    []string `protobuf:"bytes,3,rep,name=Regexps,proto3" json:"Regexps,omitempty"`
 	Keywords   []string `protobuf:"bytes,4,rep,name=Keywords,proto3" json:"Keywords,omitempty"`
 	StatusCode []string `protobuf:"bytes,6,rep,name=StatusCode,proto3" json:"StatusCode,omitempty"`
@@ -30698,22 +30698,22 @@ type FuzzerResponse struct {
 	ContentType string        `protobuf:"bytes,4,opt,name=ContentType,proto3" json:"ContentType,omitempty"`
 	Headers     []*HTTPHeader `protobuf:"bytes,5,rep,name=Headers,proto3" json:"Headers,omitempty"`
 	ResponseRaw []byte        `protobuf:"bytes,6,opt,name=ResponseRaw,proto3" json:"ResponseRaw,omitempty"`
-	// response body 的长度
+	// Response body length
 	BodyLength int64 `protobuf:"varint,7,opt,name=BodyLength,proto3" json:"BodyLength,omitempty"`
-	// 这个请求大约花费了多长时间
+	// How long did this request take?
 	DurationMs          int64 `protobuf:"varint,8,opt,name=DurationMs,proto3" json:"DurationMs,omitempty"` // FirstByte Duration
 	DNSDurationMs       int64 `protobuf:"varint,40,opt,name=DNSDurationMs,proto3" json:"DNSDurationMs,omitempty"`
 	FirstByteDurationMs int64 `protobuf:"varint,41,opt,name=FirstByteDurationMs,proto3" json:"FirstByteDurationMs,omitempty"`
 	TotalDurationMs     int64 `protobuf:"varint,42,opt,name=TotalDurationMs,proto3" json:"TotalDurationMs,omitempty"`
-	// 给一个随机 ID
+	// to a random ID
 	UUID string `protobuf:"bytes,9,opt,name=UUID,proto3" json:"UUID,omitempty"`
-	// timestamp 请求
+	// timestamp request
 	Timestamp int64 `protobuf:"varint,10,opt,name=Timestamp,proto3" json:"Timestamp,omitempty"`
-	// RequestRaw 原始数据包
+	// RequestRaw Original packet
 	RequestRaw []byte `protobuf:"bytes,11,opt,name=RequestRaw,proto3" json:"RequestRaw,omitempty"`
-	// 猜测可能的编码
+	// Guess possible encoding
 	GuessResponseEncoding string `protobuf:"bytes,12,opt,name=GuessResponseEncoding,proto3" json:"GuessResponseEncoding,omitempty"`
-	// 基础状态
+	// Basic state
 	Ok     bool   `protobuf:"varint,31,opt,name=Ok,proto3" json:"Ok,omitempty"`
 	Reason string `protobuf:"bytes,32,opt,name=Reason,proto3" json:"Reason,omitempty"`
 	// IsHTTPS
@@ -30726,10 +30726,10 @@ type FuzzerResponse struct {
 	MatchedByFilter bool   `protobuf:"varint,37,opt,name=MatchedByFilter,proto3" json:"MatchedByFilter,omitempty"`
 	Url             string `protobuf:"bytes,38,opt,name=Url,proto3" json:"Url,omitempty"`
 	TaskId          int64  `protobuf:"varint,39,opt,name=TaskId,proto3" json:"TaskId,omitempty"`
-	// 使用哪个代理
+	// Which proxy to use
 	Proxy      string `protobuf:"bytes,43,opt,name=Proxy,proto3" json:"Proxy,omitempty"`
 	RemoteAddr string `protobuf:"bytes,44,opt,name=RemoteAddr,proto3" json:"RemoteAddr,omitempty"`
-	// 如果设置了
+	// If
 	ExtractedResults []*KVPair           `protobuf:"bytes,45,rep,name=ExtractedResults,proto3" json:"ExtractedResults,omitempty"`
 	MatchedByMatcher bool                `protobuf:"varint,46,opt,name=MatchedByMatcher,proto3" json:"MatchedByMatcher,omitempty"`
 	HitColor         string              `protobuf:"bytes,47,opt,name=HitColor,proto3" json:"HitColor,omitempty"`
@@ -31299,18 +31299,18 @@ type QueryHTTPFlowRequest struct {
 	HaveCommonParams  bool    `protobuf:"varint,6,opt,name=HaveCommonParams,proto3" json:"HaveCommonParams,omitempty"`
 	HaveBody          bool    `protobuf:"varint,7,opt,name=HaveBody,proto3" json:"HaveBody,omitempty"`
 	SearchContentType string  `protobuf:"bytes,9,opt,name=SearchContentType,proto3" json:"SearchContentType,omitempty"`
-	// 一般用于查询增量，查询所有更新前的内容
+	// is generally used to query increments and query all content before updates.
 	BeforeUpdatedAt int64  `protobuf:"varint,10,opt,name=BeforeUpdatedAt,proto3" json:"BeforeUpdatedAt,omitempty"`
 	AfterUpdatedAt  int64  `protobuf:"varint,11,opt,name=AfterUpdatedAt,proto3" json:"AfterUpdatedAt,omitempty"`
 	AfterId         int64  `protobuf:"varint,12,opt,name=AfterId,proto3" json:"AfterId,omitempty"`
 	BeforeId        int64  `protobuf:"varint,13,opt,name=BeforeId,proto3" json:"BeforeId,omitempty"`
 	Keyword         string `protobuf:"bytes,14,opt,name=Keyword,proto3" json:"Keyword,omitempty"`
 	OnlyWebsocket   bool   `protobuf:"varint,15,opt,name=OnlyWebsocket,proto3" json:"OnlyWebsocket,omitempty"`
-	// 查询包含在这个 URL 中的搜索结果
+	// Query the search results contained in this URL
 	IncludeInUrl []string `protobuf:"bytes,16,rep,name=IncludeInUrl,proto3" json:"IncludeInUrl,omitempty"`
-	// 不查询当前 URL 中的结果
+	// Do not query the results in the current URL
 	ExcludeInUrl []string `protobuf:"bytes,17,rep,name=ExcludeInUrl,proto3" json:"ExcludeInUrl,omitempty"`
-	// 仅查看当前 IP 对应的结果或不包含
+	// only checks the results corresponding to the current IP or does not include
 	IncludeInIP        []string `protobuf:"bytes,18,rep,name=IncludeInIP,proto3" json:"IncludeInIP,omitempty"`
 	ExcludeInIP        []string `protobuf:"bytes,19,rep,name=ExcludeInIP,proto3" json:"ExcludeInIP,omitempty"`
 	ExcludeId          []int64  `protobuf:"varint,20,rep,packed,name=ExcludeId,proto3" json:"ExcludeId,omitempty"`
@@ -31987,8 +31987,8 @@ type HTTPFlow struct {
 	Method             string           `protobuf:"bytes,10,opt,name=Method,proto3" json:"Method,omitempty"`
 	BodyLength         int64            `protobuf:"varint,11,opt,name=BodyLength,proto3" json:"BodyLength,omitempty"`
 	BodySizeVerbose    string           `protobuf:"bytes,19,opt,name=BodySizeVerbose,proto3" json:"BodySizeVerbose,omitempty"`
-	RequestLength      int64            `protobuf:"varint,31,opt,name=RequestLength,proto3" json:"RequestLength,omitempty"`          // 设置 Request Body 长度
-	RequestSizeVerbose string           `protobuf:"bytes,32,opt,name=RequestSizeVerbose,proto3" json:"RequestSizeVerbose,omitempty"` // 设置 Request
+	RequestLength      int64            `protobuf:"varint,31,opt,name=RequestLength,proto3" json:"RequestLength,omitempty"`          // Set Request Body length
+	RequestSizeVerbose string           `protobuf:"bytes,32,opt,name=RequestSizeVerbose,proto3" json:"RequestSizeVerbose,omitempty"` // Set Request
 	ContentType        string           `protobuf:"bytes,12,opt,name=ContentType,proto3" json:"ContentType,omitempty"`
 	StatusCode         int64            `protobuf:"varint,13,opt,name=StatusCode,proto3" json:"StatusCode,omitempty"`
 	GetParamsTotal     int64            `protobuf:"varint,14,opt,name=GetParamsTotal,proto3" json:"GetParamsTotal,omitempty"`
@@ -32006,17 +32006,17 @@ type HTTPFlow struct {
 	Tags               string           `protobuf:"bytes,27,opt,name=Tags,proto3" json:"Tags,omitempty"`
 	NoFixContentLength bool             `protobuf:"varint,28,opt,name=NoFixContentLength,proto3" json:"NoFixContentLength,omitempty"`
 	Id                 uint64           `protobuf:"varint,29,opt,name=Id,proto3" json:"Id,omitempty"`
-	// websocket 相关字段
+	// websocket related fields
 	IsWebsocket   bool   `protobuf:"varint,30,opt,name=IsWebsocket,proto3" json:"IsWebsocket,omitempty"`
 	WebsocketHash string `protobuf:"bytes,33,opt,name=WebsocketHash,proto3" json:"WebsocketHash,omitempty"`
-	// 一般这不是无损的情况，会涉及到用户 Copy Paste 直接 Body 的需求
+	// Generally this is not a lossless situation and will involve the user Copy Paste Direct Body requirement
 	InvalidForUTF8Request  bool   `protobuf:"varint,34,opt,name=InvalidForUTF8Request,proto3" json:"InvalidForUTF8Request,omitempty"`
 	InvalidForUTF8Response bool   `protobuf:"varint,35,opt,name=InvalidForUTF8Response,proto3" json:"InvalidForUTF8Response,omitempty"`
 	RawRequestBodyBase64   string `protobuf:"bytes,36,opt,name=RawRequestBodyBase64,proto3" json:"RawRequestBodyBase64,omitempty"`
 	RawResponseBodyBase64  string `protobuf:"bytes,37,opt,name=RawResponseBodyBase64,proto3" json:"RawResponseBodyBase64,omitempty"`
-	// 可以安全的传输到 Fuzzer 的 HTTPRequest
+	// can be safely transmitted to Fuzzers HTTPRequest
 	SafeHTTPRequest string `protobuf:"bytes,38,opt,name=SafeHTTPRequest,proto3" json:"SafeHTTPRequest,omitempty"`
-	// 在完全数据下，可加载 Domain 和 RootDomain 还有 Json
+	// Under complete data, Domain and RootDomain can be loaded, as well as Json
 	Domains                    []string `protobuf:"bytes,40,rep,name=Domains,proto3" json:"Domains,omitempty"`
 	RootDomains                []string `protobuf:"bytes,41,rep,name=RootDomains,proto3" json:"RootDomains,omitempty"`
 	JsonObjects                []string `protobuf:"bytes,42,rep,name=JsonObjects,proto3" json:"JsonObjects,omitempty"`
@@ -33201,7 +33201,7 @@ func (*SetMITMFilterResponse) Descriptor() ([]byte, []int) {
 	return file_yakgrpc_proto_rawDescGZIP(), []int{449}
 }
 
-// 中间人劫持的问题
+// Man-in-the-middle hijacking problem
 type MITMRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -33213,12 +33213,12 @@ type MITMRequest struct {
 	Host            string `protobuf:"bytes,2,opt,name=host,proto3" json:"host,omitempty"`
 	Port            uint32 `protobuf:"varint,3,opt,name=port,proto3" json:"port,omitempty"`
 	DownstreamProxy string `protobuf:"bytes,4,opt,name=downstreamProxy,proto3" json:"downstreamProxy,omitempty"`
-	// 用来保证不要串台
+	// . This is used to ensure that the
 	Id int64 `protobuf:"varint,5,opt,name=id,proto3" json:"id,omitempty"`
-	// 这个是响应劫持需要注意的字段。保证不串台
+	// This is a field that needs attention in response to hijacking. Guaranteed no skewering
 	ResponseId int64 `protobuf:"varint,16,opt,name=responseId,proto3" json:"responseId,omitempty"`
 	Recover    bool  `protobuf:"varint,6,opt,name=recover,proto3" json:"recover,omitempty"`
-	// 过滤器
+	// Filter
 	IncludeHostname      []string `protobuf:"bytes,7,rep,name=includeHostname,proto3" json:"includeHostname,omitempty"`
 	ExcludeHostname      []string `protobuf:"bytes,8,rep,name=excludeHostname,proto3" json:"excludeHostname,omitempty"`
 	ExcludeSuffix        []string `protobuf:"bytes,9,rep,name=excludeSuffix,proto3" json:"excludeSuffix,omitempty"`
@@ -33230,33 +33230,33 @@ type MITMRequest struct {
 	UpdateFilter         bool     `protobuf:"varint,12,opt,name=updateFilter,proto3" json:"updateFilter,omitempty"`
 	HijackResponse       bool     `protobuf:"varint,13,opt,name=hijackResponse,proto3" json:"hijackResponse,omitempty"`
 	CancelhijackResponse bool     `protobuf:"varint,54,opt,name=cancelhijackResponse,proto3" json:"cancelhijackResponse,omitempty"`
-	// 手动丢包
+	// Manual packet loss
 	Drop bool `protobuf:"varint,14,opt,name=drop,proto3" json:"drop,omitempty"`
-	// 原封不动放行
+	// Leave it unchanged
 	Forward bool `protobuf:"varint,15,opt,name=forward,proto3" json:"forward,omitempty"`
-	// mitm plugin 中间人插件，本质上是一段 Yak 代码
+	// mitm plugin Middleman plug-in, essentially a piece of Yak code
 	SetYakScript     bool             `protobuf:"varint,21,opt,name=setYakScript,proto3" json:"setYakScript,omitempty"`
 	YakScriptParams  []*ExecParamItem `protobuf:"bytes,22,rep,name=yakScriptParams,proto3" json:"yakScriptParams,omitempty"`
 	YakScriptID      int64            `protobuf:"varint,23,opt,name=yakScriptID,proto3" json:"yakScriptID,omitempty"`
 	YakScriptContent string           `protobuf:"bytes,25,opt,name=yakScriptContent,proto3" json:"yakScriptContent,omitempty"`
-	// 查看当前启用插件
+	// View the currently enabled plug-in
 	GetCurrentHook bool `protobuf:"varint,30,opt,name=getCurrentHook,proto3" json:"getCurrentHook,omitempty"`
-	// 移除插件
-	RemoveHook       bool              `protobuf:"varint,31,opt,name=removeHook,proto3" json:"removeHook,omitempty"` // 当这个为 true 的时候，将会
+	// Remove plugin
+	RemoveHook       bool              `protobuf:"varint,31,opt,name=removeHook,proto3" json:"removeHook,omitempty"` // When this is true, it will
 	RemoveHookParams *RemoveHookParams `protobuf:"bytes,32,opt,name=removeHookParams,proto3" json:"removeHookParams,omitempty"`
-	// 设置自动转发
+	// Set up automatic forwarding
 	SetAutoForward   bool `protobuf:"varint,33,opt,name=setAutoForward,proto3" json:"setAutoForward,omitempty"`
 	AutoForwardValue bool `protobuf:"varint,34,opt,name=autoForwardValue,proto3" json:"autoForwardValue,omitempty"`
-	// 设置清除上下文
+	// Set clear context
 	SetClearMITMPluginContext bool `protobuf:"varint,35,opt,name=setClearMITMPluginContext,proto3" json:"setClearMITMPluginContext,omitempty"`
-	// 设置启用插件模式，自动加载所有主插件。
-	// 如果不设置 initPluginNames 的话，启动所有默认插件
+	// Set to enable plug-in mode, automatically load all main plug-ins.
+	// If initPluginNames is not set, start all default plug-ins.
 	SetPluginMode   bool     `protobuf:"varint,36,opt,name=setPluginMode,proto3" json:"setPluginMode,omitempty"`
 	InitPluginNames []string `protobuf:"bytes,37,rep,name=initPluginNames,proto3" json:"initPluginNames,omitempty"`
-	// 设置内容替代器
+	// Set content replacer
 	SetContentReplacers bool                   `protobuf:"varint,38,opt,name=setContentReplacers,proto3" json:"setContentReplacers,omitempty"`
 	Replacers           []*MITMContentReplacer `protobuf:"bytes,39,rep,name=replacers,proto3" json:"replacers,omitempty"`
-	// 恢复 filter, 防止用户删除了全部的 filter
+	// Resume filter, prevent the user from deleting all filters
 	SetResetFilter bool `protobuf:"varint,41,opt,name=setResetFilter,proto3" json:"setResetFilter,omitempty"`
 	// enable h2
 	EnableHttp2  bool           `protobuf:"varint,42,opt,name=enableHttp2,proto3" json:"enableHttp2,omitempty"`
@@ -33265,7 +33265,7 @@ type MITMRequest struct {
 	EnableGMTLS     bool `protobuf:"varint,46,opt,name=enableGMTLS,proto3" json:"enableGMTLS,omitempty"`
 	OnlyEnableGMTLS bool `protobuf:"varint,47,opt,name=onlyEnableGMTLS,proto3" json:"onlyEnableGMTLS,omitempty"`
 	PreferGMTLS     bool `protobuf:"varint,48,opt,name=preferGMTLS,proto3" json:"preferGMTLS,omitempty"`
-	// 代理用户名和密码
+	// Agent username and password
 	EnableProxyAuth bool      `protobuf:"varint,51,opt,name=enableProxyAuth,proto3" json:"enableProxyAuth,omitempty"`
 	ProxyUsername   string    `protobuf:"bytes,49,opt,name=proxyUsername,proto3" json:"proxyUsername,omitempty"`
 	ProxyPassword   string    `protobuf:"bytes,50,opt,name=proxyPassword,proto3" json:"proxyPassword,omitempty"`
@@ -33273,7 +33273,7 @@ type MITMRequest struct {
 	Hosts           []*KVPair `protobuf:"bytes,53,rep,name=hosts,proto3" json:"hosts,omitempty"`
 	// max content-length
 	MaxContentLength int64 `protobuf:"varint,55,opt,name=maxContentLength,proto3" json:"maxContentLength,omitempty"`
-	// 提前为此次flow设置tags
+	// Set tags for this flow in advance
 	Tags []string `protobuf:"bytes,56,rep,name=Tags,proto3" json:"Tags,omitempty"`
 }
 
@@ -33730,18 +33730,18 @@ type MITMContentReplacer struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 如果是正则的话，就把匹配到的内容替换成对应结果
-	// 优先 Golang 原生规则
-	// 然后再是 Re2 规则
-	// 然后子字符串
+	// If it is regular, replace the matched content with the corresponding result
+	// Priority Golang native rules
+	// Then Re2 rule
+	// Then substring
 	Rule string `protobuf:"bytes,1,opt,name=Rule,proto3" json:"Rule,omitempty"`
-	// 这个功能意义在于，不要替代内容，仅标注颜色（敏感内容）
+	// The meaning of this function is not to replace the content, only mark the color (sensitive content)
 	NoReplace bool `protobuf:"varint,2,opt,name=NoReplace,proto3" json:"NoReplace,omitempty"`
-	// 这里保存对应结果
+	// Save the corresponding result here
 	Result string `protobuf:"bytes,3,opt,name=Result,proto3" json:"Result,omitempty"`
-	// 选择替换之后的颜色
+	// Select the color after replacement
 	Color string `protobuf:"bytes,4,opt,name=Color,proto3" json:"Color,omitempty"`
-	// 生效内容：默认对 body 生效
+	// Valid content: Valid for body by default
 	EnableForRequest  bool `protobuf:"varint,5,opt,name=EnableForRequest,proto3" json:"EnableForRequest,omitempty"`
 	EnableForResponse bool `protobuf:"varint,6,opt,name=EnableForResponse,proto3" json:"EnableForResponse,omitempty"`
 	EnableForHeader   bool `protobuf:"varint,9,opt,name=EnableForHeader,proto3" json:"EnableForHeader,omitempty"`
@@ -33749,20 +33749,20 @@ type MITMContentReplacer struct {
 	EnableForURI      bool `protobuf:"varint,15,opt,name=EnableForURI,proto3" json:"EnableForURI,omitempty"`
 	// Index
 	Index int32 `protobuf:"varint,7,opt,name=Index,proto3" json:"Index,omitempty"`
-	// 额外标签，用于标注 flow
+	// Additional tags for labeling flow
 	ExtraTag []string `protobuf:"bytes,8,rep,name=ExtraTag,proto3" json:"ExtraTag,omitempty"`
-	// 一键禁用启用全部
+	// Disable and enable all with one click
 	Disabled bool `protobuf:"varint,11,opt,name=Disabled,proto3" json:"Disabled,omitempty"`
-	// 展示名称，一般用于助记，不会有啥额外影响
+	// Display name, generally used for mnemonics, will not have any additional impact
 	VerboseName string `protobuf:"bytes,12,opt,name=VerboseName,proto3" json:"VerboseName,omitempty"`
-	// 为数据包新增 Header
+	// Add a header to the data packet
 	ExtraHeaders []*HTTPHeader        `protobuf:"bytes,13,rep,name=ExtraHeaders,proto3" json:"ExtraHeaders,omitempty"`
 	ExtraCookies []*HTTPCookieSetting `protobuf:"bytes,14,rep,name=ExtraCookies,proto3" json:"ExtraCookies,omitempty"`
 	// Action
-	// 额外重复一次这个数据包（替换后的数据）
-	// 只有替换数据
+	// Repeat this packet (replaced data) one more time
+	// only replaces the data
 	ExtraRepeat bool `protobuf:"varint,16,opt,name=ExtraRepeat,proto3" json:"ExtraRepeat,omitempty"`
-	// 匹配掉之后直接丢包
+	// is matched, the packet will be dropped directly.
 	Drop bool `protobuf:"varint,17,opt,name=Drop,proto3" json:"Drop,omitempty"`
 }
 
@@ -33986,12 +33986,12 @@ type MITMResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	Request []byte `protobuf:"bytes,1,opt,name=request,proto3" json:"request,omitempty"`
-	// 劫持的是 HTTPS 吗？
+	// Is HTTPS being hijacked?
 	IsHttps bool   `protobuf:"varint,3,opt,name=isHttps,proto3" json:"isHttps,omitempty"`
 	Url     string `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
-	// 和 Request 中的一一对应
+	// and one-to-one correspondence in Request
 	Id int64 `protobuf:"varint,5,opt,name=id,proto3" json:"id,omitempty"`
-	// 过滤器
+	// Filter
 	JustFilter          bool     `protobuf:"varint,16,opt,name=justFilter,proto3" json:"justFilter,omitempty"`
 	IncludeHostname     []string `protobuf:"bytes,17,rep,name=includeHostname,proto3" json:"includeHostname,omitempty"`
 	ExcludeHostname     []string `protobuf:"bytes,18,rep,name=excludeHostname,proto3" json:"excludeHostname,omitempty"`
@@ -34001,10 +34001,10 @@ type MITMResponse struct {
 	ExcludeContentTypes []string `protobuf:"bytes,113,rep,name=excludeContentTypes,proto3" json:"excludeContentTypes,omitempty"`
 	ExcludeUri          []string `protobuf:"bytes,114,rep,name=excludeUri,proto3" json:"excludeUri,omitempty"`
 	IncludeUri          []string `protobuf:"bytes,115,rep,name=includeUri,proto3" json:"includeUri,omitempty"`
-	// 替代过滤器的内容
+	// replaces the filter content.
 	JustContentReplacer bool                   `protobuf:"varint,120,opt,name=justContentReplacer,proto3" json:"justContentReplacer,omitempty"`
 	Replacers           []*MITMContentReplacer `protobuf:"bytes,121,rep,name=replacers,proto3" json:"replacers,omitempty"`
-	// 刷新表格: 如果这个是 True 的话，那么不应该发送回劫持器，应该只发送刷新表格的信息
+	// Refresh the form: If this is True, it should not be sent. Back to the hijacker, you should only send the information to refresh the table.
 	Refresh         bool      `protobuf:"varint,2,opt,name=refresh,proto3" json:"refresh,omitempty"`
 	HistoryHTTPFlow *HTTPFlow `protobuf:"bytes,22,opt,name=historyHTTPFlow,proto3" json:"historyHTTPFlow,omitempty"`
 	ForResponse     bool      `protobuf:"varint,23,opt,name=forResponse,proto3" json:"forResponse,omitempty"`
@@ -34016,13 +34016,13 @@ type MITMResponse struct {
 	GetCurrentHook bool              `protobuf:"varint,30,opt,name=getCurrentHook,proto3" json:"getCurrentHook,omitempty"`
 	Hooks          []*YakScriptHooks `protobuf:"bytes,31,rep,name=hooks,proto3" json:"hooks,omitempty"`
 	RemoteAddr     string            `protobuf:"bytes,32,opt,name=RemoteAddr,proto3" json:"RemoteAddr,omitempty"`
-	// 这里用来展示一些服务端通知，直接弹框就好
+	// This is used to display some server notifications, just pop up the box
 	HaveNotification    bool   `protobuf:"varint,34,opt,name=haveNotification,proto3" json:"haveNotification,omitempty"`
 	NotificationContent []byte `protobuf:"bytes,33,opt,name=notificationContent,proto3" json:"notificationContent,omitempty"`
-	// 这两个标志是用来设置 MITM 加载状态的，用于服务端控制用户端的 "加载中"
+	// . It is used to set the MITM loading status, and is used for the server to control the clients "Loading"
 	HaveLoadingSetter bool `protobuf:"varint,35,opt,name=haveLoadingSetter,proto3" json:"haveLoadingSetter,omitempty"`
 	LoadingFlag       bool `protobuf:"varint,36,opt,name=loadingFlag,proto3" json:"loadingFlag,omitempty"`
-	// Websocket 相关配置
+	// Websocket related configuration
 	IsWebsocket     bool     `protobuf:"varint,37,opt,name=isWebsocket,proto3" json:"isWebsocket,omitempty"`
 	WebsocketEncode []string `protobuf:"bytes,38,rep,name=websocketEncode,proto3" json:"websocketEncode,omitempty"`
 }
@@ -34394,7 +34394,7 @@ func (x *YakScriptHookItem) GetVerbose() string {
 	return ""
 }
 
-// 最基础的 ECHO
+// The most basic ECHO
 type EchoRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -34489,7 +34489,7 @@ func (x *EchoResposne) GetResult() string {
 	return ""
 }
 
-// 开启一个端口，对接 GRPC 服务器
+// Open a port to connect to the GRPC server
 type Input struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -34561,11 +34561,11 @@ type Output struct {
 	Raw        []byte `protobuf:"bytes,1,opt,name=raw,proto3" json:"raw,omitempty"`
 	RemoteAddr string `protobuf:"bytes,11,opt,name=remoteAddr,proto3" json:"remoteAddr,omitempty"`
 	LocalAddr  string `protobuf:"bytes,12,opt,name=localAddr,proto3" json:"localAddr,omitempty"`
-	// 如果 control 为 true 说明这是一个控制信息
+	// If control is true, it means this is a control message.
 	Control bool `protobuf:"varint,2,opt,name=control,proto3" json:"control,omitempty"`
-	// 服务端需要关闭
+	// , the server needs to close
 	Closed bool `protobuf:"varint,3,opt,name=closed,proto3" json:"closed,omitempty"`
-	// 服务端正在等待连接接入
+	// server is waiting for a connection to
 	Waiting bool `protobuf:"varint,4,opt,name=waiting,proto3" json:"waiting,omitempty"`
 }
 
@@ -34643,7 +34643,7 @@ func (x *Output) GetWaiting() bool {
 	return false
 }
 
-// 执行脚本
+// Execute the script
 type ExecParamItem struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -34708,7 +34708,7 @@ type ExecRequest struct {
 	Script      string           `protobuf:"bytes,2,opt,name=Script,proto3" json:"Script,omitempty"`
 	ScriptId    string           `protobuf:"bytes,3,opt,name=ScriptId,proto3" json:"ScriptId,omitempty"`
 	YakScriptId int64            `protobuf:"varint,5,opt,name=YakScriptId,proto3" json:"YakScriptId,omitempty"`
-	// 这个是为了满足 Runner 的情况，属于特殊情况
+	// This is to meet the situation of Runner, which is a special case
 	RunnerParamRaw  string `protobuf:"bytes,6,opt,name=RunnerParamRaw,proto3" json:"RunnerParamRaw,omitempty"`
 	NoDividedEngine bool   `protobuf:"varint,7,opt,name=NoDividedEngine,proto3" json:"NoDividedEngine,omitempty"`
 }
@@ -34797,7 +34797,7 @@ type ExecResult struct {
 	Raw        []byte `protobuf:"bytes,3,opt,name=Raw,proto3" json:"Raw,omitempty"`
 	IsMessage  bool   `protobuf:"varint,4,opt,name=IsMessage,proto3" json:"IsMessage,omitempty"`
 	Message    []byte `protobuf:"bytes,5,opt,name=Message,proto3" json:"Message,omitempty"`
-	// 如果是一个保存过的 ExecResult 他应该有数据库记录 ID
+	// If it is a saved ExecResult, it should have a database record ID.
 	Id        int64   `protobuf:"varint,6,opt,name=Id,proto3" json:"Id,omitempty"`
 	RuntimeID string  `protobuf:"bytes,7,opt,name=RuntimeID,proto3" json:"RuntimeID,omitempty"`
 	Progress  float32 `protobuf:"fixed32,8,opt,name=Progress,proto3" json:"Progress,omitempty"`

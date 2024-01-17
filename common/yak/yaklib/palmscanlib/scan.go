@@ -16,7 +16,7 @@ var (
 		"ConvertHTTPResponseToHTTPResponseInfo": webfingerprint.ExtractHTTPResponseInfoFromHTTPResponse,
 		"HTTPResponseToMatchResult":             scanHTTPResponseToMatchResult,
 
-		// 扫描子域名
+		// Scan subdomains
 		"ScanSubDomain":                         ScanSubDomainQuick,
 		"ScanSubDomainWithConfig":               scanSubDomain,
 		"WithSubDomainAllowToRecursive":         subdomain.WithAllowToRecursive,

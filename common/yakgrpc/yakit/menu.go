@@ -25,7 +25,7 @@ type MenuItem struct {
 }
 
 /*
-{"group":"12312","name":"aaa","query":{"type":"mitm,port-scan,nuclei","tags":"","include":["ElasticSearch 未授权访问","[wptouch-open-redirect]: WPTouch Switch Desktop 3.x Open Redirection","[wpmudev-pub-keys]: Wpmudev Dashboard Pub Key","[wpdm-cache-session]: Wpdm-Cache Session"],"exclude":[]}}
+{"group":"12312","name":"aaa","query":{"type":"mitm,port-scan,nuclei","tags":"","include":["ElasticSearch unauthorized access","[wptouch-open-redirect]: WPTouch Switch Desktop 3.x Open Redirection","[wpmudev-pub-keys]: Wpmudev Dashboard Pub Key","[wpdm-cache-session]: Wpdm-Cache Session"],"exclude":[]}}
 */
 type batchExecutionSchema struct {
 	Group string                     `json:"group"`

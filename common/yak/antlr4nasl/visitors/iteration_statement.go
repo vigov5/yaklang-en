@@ -51,7 +51,7 @@ func (c *Compiler) VisitForStatement(i *nasl.TraditionalForContext) {
 			break
 		}
 		code := ctrlStack.Pop().(*yakvm.Code)
-		// 1是break，2是continue
+		// 1 is break, 2 is continue
 		switch code.Unary {
 		case 1:
 			code.Unary = endP
@@ -85,7 +85,7 @@ func (c *Compiler) VisitWhileStatement(i *nasl.WhileContext) {
 			break
 		}
 		code := ctrlStack.Pop().(*yakvm.Code)
-		// 1是break，2是continue
+		// 1 is break, 2 is continue
 		switch code.Unary {
 		case 1:
 			code.Unary = endP
@@ -105,7 +105,7 @@ func (c *Compiler) VisitForEachStatement(i *nasl.ForEachContext) {
 	c.pushScope("foreach")
 	ctrlStack := vmstack.New()
 	c.TmpData.Push(ctrlStack)
-	//创建迭代器
+	//Create iterator
 	iteratorId := c.symbolTable.NewSymbolWithoutName()
 	code := c.pushOpcodeFlag(yakvm.OpPushLeftRef)
 	code.Unary = iteratorId
@@ -163,7 +163,7 @@ func (c *Compiler) VisitForEachStatement(i *nasl.ForEachContext) {
 			break
 		}
 		code := ctrlStack.Pop().(*yakvm.Code)
-		// 1是break，2是continue
+		// 1 is break, 2 is continue
 		switch code.Unary {
 		case 1:
 			code.Unary = endP
@@ -194,7 +194,7 @@ func (c *Compiler) VisitRepeatStatement(i *nasl.RepeatContext) {
 			break
 		}
 		code := ctrlStack.Pop().(*yakvm.Code)
-		// 1是break，2是continue
+		// 1 is break, 2 is continue
 		switch code.Unary {
 		case 1:
 			code.Unary = endP

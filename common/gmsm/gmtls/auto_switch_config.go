@@ -1,16 +1,16 @@
 package gmtls
 
-// NewBasicAutoSwitchConfig 返回一个实现了GMSSL/TLS自动切换的配置
+// NewBasicAutoSwitchConfig Returns a GMSSL/TLS automatic switching configuration
 //
-// sm2SigCert: SM2 签名密钥对、证书
-// sm2EncCert: SM2 加密密钥对、证书
-// stdCert: RSA/ECC 标准的密钥对、证书
+// sm2SigCert: SM2 signature key pair, certificate
+// sm2EncCert: SM2 encryption key pair, certificate
+// stdCert: RSA/ECC Standard key pairs and certificates
 //
-// return: 最基础的Config对象
+// return: the most basic Config object
 func NewBasicAutoSwitchConfig(sm2SigCert, sm2EncCert, stdCert *Certificate) (*Config, error) {
 	fncGetSignCertKeypair := func(info *ClientHelloInfo) (*Certificate, error) {
 		gmFlag := false
-		// 检查支持协议中是否包含GMSSL
+		// Check whether the supported protocol contains GMSSL
 		for _, v := range info.SupportedVersions {
 			if v == VersionGMSSL {
 				gmFlag = true

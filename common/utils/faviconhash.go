@@ -50,7 +50,7 @@ func CalcFaviconHash(urlRaw string) (string, error) {
 		Timeout:   timeout,
 		Transport: tr,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse /* 不进入重定向 */
+			return http.ErrUseLastResponse /* Do not enter redirect */
 		},
 	}
 	resp, err := client.Get(urlRaw)

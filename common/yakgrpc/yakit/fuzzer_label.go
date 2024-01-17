@@ -10,7 +10,7 @@ import (
 type WebFuzzerLabel struct {
 	gorm.Model
 	Label string `json:"label"`
-	// 模版数据唯一标识，用来兼容做对比
+	// The unique identifier of the template data, used for compatibility and comparison
 	DefaultDescription string `json:"default_description"`
 	Description        string `json:"description"`
 	Hash               string `gorm:"unique_index"`

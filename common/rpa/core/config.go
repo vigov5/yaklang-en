@@ -11,17 +11,17 @@ type Config struct {
 	//cookie
 	cookie []*proto.NetworkCookieParam
 
-	//设置 浏览器
+	//Set browser
 
-	//对页面加载特定js
+	//Load specific js for the page
 	evalJs map[string]string
 
-	// 设置header 比如BasicAuth
+	// Set header such as BasicAuth
 
 	// headers []*header
 	headers map[string]string
 
-	//自动填写表单
+	//Automatically fill in the form
 	//formFill []*form
 	formFill map[string]string
 	//

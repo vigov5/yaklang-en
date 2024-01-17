@@ -18,7 +18,7 @@ func init() {
 	gitClient.InstallProtocol("http", tr)
 }
 
-// SetProxy 是一个辅助函数，用于指定其他 Git 操作（例如Clone）的代理
+// SetProxy is an auxiliary function used to specify the proxy for other Git operations (such as Clone).
 // Example:
 // ```
 // git.SetProxy("http://127.0.0.1:1080")
@@ -29,7 +29,7 @@ func SetProxy(proxies ...string) {
 	gitClient.InstallProtocol("http", tr)
 }
 
-// Clone 用于克隆远程仓库并存储到本地路径中，它还可以接收零个到多个选项函数，用于影响克隆行为
+// Clone is used to clone the remote repository and store it in the local path. It can also receive zero to more option functions to affect the cloning behavior.
 // Example:
 // ```
 // git.Clone("https://github.com/yaklang/yaklang", "C:/Users/xxx/Desktop/yaklang", git.recursive(true), git.verify(false))

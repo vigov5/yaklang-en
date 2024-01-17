@@ -1,0 +1,93 @@
+templatePacket = "GET / HTTP/1.1\r\n" +
+"Host: REPLACEME_HOST\r\n" +
+"Content-Length: REPLACEME_PACKET_LENGTH\r\n" +
+"Transfer-Encoding: chunked\r\n\r\n" +
+x`1{{hexd(0d0a)}}a{{hexd(0d0a)}}0{{hexd(0d0a)}}{{hexd(0d0a)}}`[0]
+
+standardPacket = "GET / HTTP/1.1\r\nHost: REPLACEME_HOST\r\nTransfer-Encoding: chunked\r\n\r\n1\r\na\r\n0\r\n\r\n"
+
+vulInfo = `
+HTTP Pipeline is a technique where multiple HTTP requests are sent to the server without waiting for each response. This is done by putting the request into a queue or“Pipeline”It is implemented in , so that multiple requests can be processed at the same time.
+
+This plug-in tests the compatibility of the server (CDN) with malformed requests by simultaneously sending Content-Length and Transfer-Encoding: chunked containing the second request. The suspected behavior of
+
+1. If the server uses Content-Length as the first choice, it will understand the malformed request as only one HTTP request;
+2. If the server uses Transfer-Encoding as the first choice, it will split the request into two requests;
+
+If the split is successful, the user will see two response messages. At this time, a Pipeline occurs on the server. / Smuggle may not directly cause harm, but it can further troubleshoot and detect
+
+HTTP request smuggling (HTTP Request Smuggling, HRS for short) is an attack method that exploits HTTP protocol design flaws or server configuration errors. This attack method mainly involves sending specially crafted HTTP requests, causing the front-end and back-end servers to diverge in their parsing of HTTP request boundaries, thereby achieving the purpose of inserting malicious HTTP requests.
+
+This attack method may cause the following harms:
+
+bypasses security protections: Some firewalls and intrusion detection systems may not correctly identify smuggled HTTP requests, allowing attackers to bypass these protections.
+
+performs cache poisoning: attacker Request smuggling can be used to inject malicious content into the cache server, so that other users will be provided with malicious content when they visit.
+
+hijacks user sessions: An attacker can hijack a users session through request smuggling, obtain sensitive information, and even operate as the user.
+
+Denial of Service Attack: An attacker can perform a denial of service attack by sending a large number of smuggled requests, causing server resources to be exhausted.
+
+Protection against HTTP request smuggling attacks mainly relies on correctly configuring and updating HTTP servers, proxy servers, and load balancers to ensure that they can parse HTTP requests consistently. In addition, conducting regular security audits and using the latest security software can also help prevent such attacks. `
+
+solution = `
+1. Properly configure and update HTTP servers, proxy servers, and load balancers: This is the first step to prevent HTTP request smuggling attacks. Ensuring that these components parse HTTP requests consistently avoids disagreements over request boundary parsing, preventing attackers from inserting malicious requests.
+
+2. Disable or limit HTTP pipeline requests: Since HTTP pipeline requests can allow an attacker to send multiple requests at the same time, disabling or limiting HTTP pipeline requests is an effective means of defense. `
+
+buildSmugglePacket = (host, newPacket) => {
+    packetLen = len(newPacket)
+    packetLen += 11
+    result = templatePacket.Replace(`REPLACEME_HOST`, host).Replace(`REPLACEME_PACKET_LENGTH`, f`${packetLen}`)
+    return result + string(newPacket)
+}
+
+# mirrorNewWebsite Each new one appears Website, the first request for this website, will be called here!
+mirrorNewWebsite = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rsp /*[]byte*/, body /*[]byte*/) {
+    host := "Host:" in req ? poc.GetHTTPPacketHeader(req, "Host") : poc.GetHTTPPacketHeader(req, "host")
+    token404path = str.RandStr(48)
+    req = poc.ReplaceHTTPPacketPath(req, token404path)
+    payload = buildSmugglePacket(host, req)
+    println(payload)
+
+    originResponse, req = poc.HTTP(standardPacket.Replace("REPLACEME_HOST", host), poc.https(isHttps))~
+    standardStatusCode = poc.GetStatusCodeFromResponse(originResponse)
+    if standardStatusCode <= 0 {
+        standardStatusCode = 200
+    }
+
+    rsp, _ = poc.HTTPEx(payload, poc.https(isHttps), poc.noFixContentLength(true))~
+    if rsp.MultiResponse {
+        firstResponse = rsp.MultiResponseInstances[0]
+        if firstResponse.StatusCode == 400 {
+            // Bad Request is not right
+            return
+        }
+
+        firstPass = false
+        if firstResponse.StatusCode == standardStatusCode {
+            firstPass = true
+
+        }
+
+        if !firstPass {
+            return
+        }
+        secondResponse = rsp.MultiResponseInstances[1]
+        rawResp := http.dump(secondResponse)~
+        if secondResponse.StatusCode == 404 || str.MatchAnyOfSubString("404", "Not Found", "not found", "notfound", "does not exist", "missing"){
+            risk.NewRisk(
+                url,
+                risk.title(f"Maybe HTTP Request Smuggle/ErrPipeline Behavior Detected: ${host}"),
+                risk.titleVerbose(f"suspected HTTP request smuggling or misconfigured pipeline:${host}"),
+                risk.request(payload),
+                risk.response(rsp.RawPacket),
+                risk.severity("info"),
+                risk.type("http request smuggle/pipeline"),
+                risk.typeVerbose("HTTP request smuggling or malformed parsing"),
+                risk.description(vulInfo),
+                risk.solution(solution),
+            )
+        }
+    }
+}

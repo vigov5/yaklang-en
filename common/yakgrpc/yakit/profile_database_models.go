@@ -9,7 +9,7 @@ import (
 
 var initUserDataAndPluginOnce = new(sync.Once)
 
-// ProfileTables 这些表是独立与项目之外的，每一个用户的数据都不一样
+// ProfileTables, these tables are independent of the project, and each users data is different.
 var ProfileTables = []interface{}{
 	&YakScript{}, &Payload{}, &MenuItem{},
 	&GeneralStorage{}, &MarkdownDoc{},
@@ -29,7 +29,7 @@ func InitializeDefaultDatabaseSchema() {
 	}
 }
 
-// ProjectTables 这些表是和项目关联的，导出项目可以直接复制给用户
+// ProjectTables, these tables are associated with the project. The exported project can be copied directly to the user.
 var ProjectTables = []interface{}{
 	&WebsocketFlow{},
 	&HTTPFlow{}, &ExecHistory{},

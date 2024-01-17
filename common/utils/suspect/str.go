@@ -31,7 +31,7 @@ var (
 	maybeCaptchaKeyRegex  = regexp.MustCompile(`(?i)(captcha)|(vcode)|(v_code)|(yzm)|(yanzhengma)`)
 
 	maybeServerErrorPageKeyword = regexp.MustCompile(`(?i)(stack\s?trace)|(exception)|(error)|(panic)|(warning)|(notice)`)
-	// / 开头的或者 C:\ 开头的路径，一下也是，如果有绝对路径，需要匹配一下
+	// / or C:\ is the same. If there is an absolute path, you need to match
 	maybePythonStackTraceRegex = regexp.MustCompile(`File "((/[a-zA-Z])|([c-zC-Z]:\\))(.+?).py"(, line \d+,)? in`)
 	maybeJVMStackTraceRegex    = regexp.MustCompile(`(?s)Exception.+([aA]t )?(.+?)\((.+?.(java|kt):\d+)|(Native Method)\)`)
 	maybeJSStackTraceRegex     = regexp.MustCompile(`at (.+?)\(((/[a-zA-Z])|([c-zC-Z]:\\))(.+?).js:\d+:\d+\)`)
@@ -63,7 +63,7 @@ func GetSensitiveKeyList() []string {
 	return append(sensitiveJSONKeyList[:0:0], sensitiveJSONKeyList...)
 }
 
-// 根据 key 的名字猜测是否是用于重定向的参数
+// . Guess whether it is based on the name of the key. Detection key based on redirect parameter
 func BeUsedForRedirect(key string, value interface{}) bool {
 	return maybeRedirectRegex.MatchString(key) || IsURLPath(value) || IsFullURL(value)
 }
@@ -77,7 +77,7 @@ func IsGenericURLParam(key string, value interface{}) bool {
 }
 
 func IsSensitiveJSON(data []byte) bool {
-	// 检测 key: 'key': "key": \'key\': \"key\": 几种形式的key，如果是下面的关键词，就认为是敏感信息
+	// 检测 key: 'key': "key": \'key\': \"key\": Several forms of keys. If it is the following keyword, it is considered to be sensitive information. The path starting with
 	return sensitiveJSONKeyRegex.Match(data)
 }
 

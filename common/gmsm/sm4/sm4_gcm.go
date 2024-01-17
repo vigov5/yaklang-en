@@ -22,15 +22,15 @@ import (
 	"strconv"
 )
 
-// Sm4GCM SM4 GCM 加解密模式
+// Sm4GCM SM4 GCM Encryption and decryption mode
 // Paper: The Galois/Counter Mode of Operation (GCM) David A. Mcgrew，John Viega .2004.
-// key: 对称加密密钥
-// IV: IV向量
+// key: symmetric encryption Key
+// IV: IV vector
 // in:
-// A: 附加的可鉴别数据(ADD)
-// mode: true - 加密; false - 解密验证
+// A: Additional identifiable data (ADD)
+// mode: true - encrypted; false - decryption verification
 //
-// return: 密文C, 鉴别标签T, 错误
+// return: ciphertext C, authentication tag T, error
 func Sm4GCM(key []byte, IV, in, A []byte, mode bool) ([]byte, []byte, error) {
 	if len(key) != BlockSize {
 		return nil, nil, errors.New("SM4: invalid key size " + strconv.Itoa(len(key)))
@@ -44,9 +44,9 @@ func Sm4GCM(key []byte, IV, in, A []byte, mode bool) ([]byte, []byte, error) {
 	}
 }
 
-// GetH 对“0”分组的加密得到 GHASH泛杂凑函数的子密钥
-// key: 对称密钥
-// return: GHASH泛杂凑函数的子密钥
+// GetH for“0”Encryption of the group obtains the subkey of the GHASH universal hash function
+// key: symmetric key The random number used by
+// return: subkey of GHASH universal hash function
 func GetH(key []byte) (H []byte) {
 	c, err := NewCipher(key)
 	if err != nil {
@@ -148,7 +148,7 @@ func GHASH(H []byte, A []byte, C []byte) (X []byte) {
 
 	//i=1...m-1
 	for i := 1; i <= m-1; i++ {
-		copy(X[i*BlockSize:i*BlockSize+BlockSize], multiplication(addition(X[(i-1)*BlockSize:(i-1)*BlockSize+BlockSize], A[(i-1)*BlockSize:(i-1)*BlockSize+BlockSize]), H)) //A 1-->m-1 对于数组来说是 0-->m-2
+		copy(X[i*BlockSize:i*BlockSize+BlockSize], multiplication(addition(X[(i-1)*BlockSize:(i-1)*BlockSize+BlockSize], A[(i-1)*BlockSize:(i-1)*BlockSize+BlockSize]), H)) //A 1-->m-1 for array Say it is 0-->m-2
 	}
 
 	//i=m
@@ -190,11 +190,11 @@ func GHASH(H []byte, A []byte, C []byte) (X []byte) {
 	return X[(m+n+1)*BlockSize : (m+n+1)*BlockSize+BlockSize]
 }
 
-// GetY0 生成初始的计数器时钟J0
+// GetY0 generates initial counter clock J0
 //
-// H: GHASH自密钥
-// IV: IV向量
-// return: 初始的计数器时钟(J0)
+// H: GHASH self-key
+// IV: IV vector
+// return: initial counter clock (J0)
 func GetY0(H, IV []byte) []byte {
 	if len(IV)*8 == 96 {
 		zero31one1 := []byte{0x00, 0x00, 0x00, 0x01}
@@ -245,13 +245,13 @@ func MSB(len int, S []byte) (out []byte) {
 	return S[:len/8]
 }
 
-// GCMEncrypt 可鉴别加密函数 (GCM-AE(k))
-// K: 对称密钥
-// IV: IV向量
-// P: 明文
-// A: 附加的鉴别数据
+// GCMEncrypt Identifiable encryption function (GCM-AE(k))
+// K: Symmetric key
+// IV: IV vector
+// P: plaintext
+// A: Additional authentication data
 //
-// return: 密文, 鉴别标签
+// return: ciphertext, authentication label
 func GCMEncrypt(K, IV, P, A []byte) (C, T []byte) {
 	calculm_v := func(m, v int) (int, int) {
 		if m == 0 && v != 0 {
@@ -272,7 +272,7 @@ func GCMEncrypt(K, IV, P, A []byte) (C, T []byte) {
 	u := len(P) % BlockSize
 	n, u = calculm_v(n, u)
 
-	// a) 通过对“0”分组的加密得到 GHASH泛杂凑函数的子密钥
+	// a) by pair“0”Encryption of the group obtains the subkey of the GHASH universal hash function
 	H := GetH(K)
 
 	Y0 := GetY0(H, IV)

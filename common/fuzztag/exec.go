@@ -126,7 +126,7 @@ func ExecuteWithStringHandlerWithCallbackEx(
 		for index, d := range i {
 			if payloadVerbose != nil {
 				if v, ok := payloadVerbose[string(d)]; ok {
-					//如果在payloadVerbose 去到空，则把实际的输出值展示给用户
+					//If the payloadVerbose is empty, the actual output value is displayed to the user.
 					if info := strings.Join(v, ","); info == "" {
 						results[index] = string(d)
 						continue

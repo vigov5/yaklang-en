@@ -119,12 +119,12 @@ func (c *Compiler) VisitXExpression(i *nasl.XExpressionContext) {
 	c.visitHook(c, i)
 
 	/***
-	伪代码:
+	Pseudo code:
 	for(i=0;i<t;i++){
 		expression
 	}
 	*/
-	// 创建变量i=0
+	// Create variable i=0
 	iId := c.symbolTable.NewSymbolWithoutName()
 	code := c.pushOpcodeFlag(yakvm.OpPushLeftRef)
 	code.Unary = iId
@@ -132,7 +132,7 @@ func (c *Compiler) VisitXExpression(i *nasl.XExpressionContext) {
 	c.pushAssigin()
 	c.pushOpcodeFlag(yakvm.OpPop)
 
-	//创建变量t为循环次数
+	//Create variable t as the number of loops
 	tId := c.symbolTable.NewSymbolWithoutName()
 	code = c.pushOpcodeFlag(yakvm.OpPushLeftRef)
 	code.Unary = tId
@@ -140,7 +140,7 @@ func (c *Compiler) VisitXExpression(i *nasl.XExpressionContext) {
 	c.pushAssigin()
 	c.pushOpcodeFlag(yakvm.OpPop)
 
-	//判断i<t
+	//Judge i<t
 	startP := c.GetCodePostion()
 	code = c.pushOpcodeFlag(yakvm.OpPushRef)
 	code.Unary = iId
@@ -148,10 +148,10 @@ func (c *Compiler) VisitXExpression(i *nasl.XExpressionContext) {
 	code.Unary = tId
 	c.pushOpcodeFlag(yakvm.OpLt)
 
-	//if false 就结束循环
+	//If false, end the loop
 	jmpF := c.pushJmpIfFalse()
 	c.VisitSingleExpression(i.SingleExpression(0))
-	//i++ 并继续循环
+	//i++ and continue looping
 	code = c.pushOpcodeFlag(yakvm.OpPushLeftRef)
 	code.Unary = iId
 	c.pushOpcodeFlag(yakvm.OpPlusPlus)
@@ -320,7 +320,7 @@ func (c *Compiler) VisitBitShiftExpression(i *nasl.BitShiftExpressionContext) {
 	}
 	c.visitHook(c, i)
 
-	if i.RightShiftLogical() != nil { // 没有这个运算符
+	if i.RightShiftLogical() != nil { // There is no such operator
 		c.pushRef("RightShiftLogical")
 		c.VisitSingleExpression(i.SingleExpression(0))
 		c.VisitSingleExpression(i.SingleExpression(1))

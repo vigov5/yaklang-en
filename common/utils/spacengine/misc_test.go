@@ -29,7 +29,7 @@ func TestQuakeQuery(t *testing.T) {
 }
 
 func TestHunterQuery(t *testing.T) {
-	var res, err = HunterQuery("v1ll4n", "1d56544b74dfa1546*9d6056882802e", `web.title="北京"`, 1, 10, 10)
+	var res, err = HunterQuery("v1ll4n", "1d56544b74dfa1546*9d6056882802e", `web.title="Beijing"`, 1, 10, 10)
 	if err != nil {
 		panic(err)
 	}

@@ -446,7 +446,7 @@ func YakitMessageGenerator(i interface{}) ([]byte, error) {
 	return json.Marshal(msg)
 }
 
-// 设置基本图形
+// Set up basic graphics
 type YakitGraph struct {
 	// line / bar / pie
 	Type string             `json:"type"`

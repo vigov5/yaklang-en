@@ -20,7 +20,7 @@ type FacadeServer struct {
 	Host         string
 	Port         int
 	ExternalHost string
-	//反连地址
+	//reverse connection address
 	ReverseAddr string
 
 	rmiResourceAddrs           map[string]string
@@ -168,10 +168,10 @@ func (f *FacadeServer) triggerNotificationEx(t string, conn net.Conn, token stri
 	}
 
 	notif := NewNotification(t, remoteAddr, raw, token)
-	// 通过conn的地址计算hash（因为每次连接的conn都是独立的对象，所以可以用conn地址的hash区分不同连接）
-	// 通过这个hash去判断是否是同一个连接，如果是同一个连接，则在原通知基础上进行更新，否则新增通知
+	// Calculate the hash through the conn address (because the conn of each connection is an independent object, you can use the hash of the conn address to distinguish different connections)
+	// Through this hash To determine whether it is the same connection, if it is the same connection, update it based on the original notification, otherwise add a new notification
 	notif.ConnectHash = codec.Md5(fmt.Sprintf("%p", conn))
-	// 响应内容
+	// response content
 	notif.ResponseInfo = responseInfo
 	if len(f.handlers) <= 0 {
 		//spew.Dump(notif)
@@ -317,9 +317,9 @@ WRAPPER:
 				f.triggerNotificationEx("ldap_flag", conn, reqResource, nil, "<empty>")
 				return
 			}
-			e.AddAttribute("javaClassName", message.AttributeValue(reqResource)) //类名，可以任意
+			e.AddAttribute("javaClassName", message.AttributeValue(reqResource)) //Class name, it can be arbitrary
 			e.AddAttribute("javaCodeBase", message.AttributeValue(javaCodeBase)) // CodeBase
-			e.AddAttribute("javaFactory", message.AttributeValue(reqResource))   //Factory名，必须和http resource名一致
+			e.AddAttribute("javaFactory", message.AttributeValue(reqResource))   //Factory name, must be consistent with the http resource name
 			e.AddAttribute("objectClass", "javaNamingReference")                 //objectClass
 			//e.AddAttribute("javaClassName", "foo")
 			//e.AddAttribute("javaCodeBase", message.AttributeValue(addr))

@@ -28,8 +28,8 @@ Content-Length: 8259
 <meta name="theme-color" content="#389E98">
 <meta name="sogou_site_verification" content="4csCltRref" />
 <meta name="yandex-verification" content="ef01d9879c2e5054" />
-<meta name="description" content="爬虫测试页面。爬取图片，pdf文件，日期，标题，作者" />
-<meta name="keywords" content="[测试]" />
+<meta name="description" content="crawler test page. Crawling pictures, pdf files, dates, titles, authors" />
+<meta name="keywords" content="[Test]" />
 <link rel="stylesheet" href="/css/bootstrap.min.css" defer>
 <link rel="icon" type="image/png" href="/icons/favicon-32x32.png" sizes="32x32" />
 <link rel="icon" type="image/png" href="/icons/favicon-16x16.png" sizes="16x16" />
@@ -83,10 +83,10 @@ Content-Length: 8259
         });
 </script>
 
-<title>爬虫测试页面 - Calmops </title>
-<meta name="author" content="屈永强" />
-<meta property="og:title" content="爬虫测试页面" />
-<meta property="og:description" content="爬虫测试页面。爬取图片，pdf文件，日期，标题，作者" />
+<title>crawler test page - Calmops </title>
+<meta name="author" content="Qu Yongqiang" />
+<meta property="og:title" content="crawler test page" />
+<meta property="og:description" content="crawler test page. Crawling pictures, pdf files, dates, titles, authors" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://calmops.com/tools/test/" /><meta property="article:section" content="tools" />
 <meta property="article:published_time" content="2021-08-11T00:00:00+00:00" />
@@ -158,7 +158,7 @@ if (!doNotTrack) {
     <div class="main" role="main">
       
 <article class="">
-  <h1 class="article-title">爬虫测试页面</h1>
+  <h1 class="article-title">crawler test page</h1>
   <p class="article-subtitle"></p>
   <div class="article-date">
     2021-08-11
@@ -170,22 +170,22 @@ if (!doNotTrack) {
   
   <div class="share">
     <div id="qrcode" style="width:100px; height:100px;"></div>
-    <div class="qrcode-desc"><span>扫一扫获取本文链接，可在手机中查看或分享。</span></div>
+    <div class="qrcode-desc"><span>Scan to get the link to this article, which can be viewed or shared on your mobile phone.</span></div>
   </div>
   <div class="TOC">
     <nav id="TableOfContents"></nav>
   </div>
   <div class="article-content">
-    <p>来源：深圳特区报</p>
-<p>作者：深圳特区报</p>
-<p>出处：深圳特区报</p>
-<p>来自：深圳特区报</p>
+    <p>Source: Shenzhen Special Economic Zone Daily</p>
+<p>Author: Shenzhen Special Zone Daily</p>
+<p>Source: Shenzhen Special Zone News</p>
+<p>From: Shenzhen Special Zone News</p>
 <!-- raw HTML omitted -->
-<p>时间：2021-06-21 12:10</p>
-<p>日期：2021-06-21</p>
+<p>Time: 2021-06-21 12:10</p>
+<p>Date: 2021-06-21</p>
 <!-- raw HTML omitted -->
-<p>日期：2021年06月21日</p>
-<p>爬虫测试页面。爬取图片，pdf文件，日期，标题，作者</p>
+<p>Date: June 21, 2021</p>
+<p>crawler test page. Crawling pictures, pdf files, dates, titles, authors</p>
 <p><img src="/images/table-phone.png" alt="table-phone"></p>
 <p><img src="/images/mongodb/methodology.png" alt="table-phone"></p>
 <!-- raw HTML omitted -->
@@ -221,7 +221,7 @@ if (!doNotTrack) {
   </div>
   <footer class="footer">
       <div class="footer-links">
-            <div>©2022 Yongqiang Qu   me@yongqiang.live &nbsp; All Rights Reserved</div>
+            <div>©2022 Yongqiang Qu me@yongqiang.live &nbsp; All Rights Reserved</div>
       </div>
 </footer>
 

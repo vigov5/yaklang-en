@@ -13,7 +13,7 @@ func TestGRPCMUSTPASS_OPEN_REDIRECT(t *testing.T) {
 		panic(err)
 	}
 
-	pluginName := "开放 URL 重定向漏洞"
+	pluginName := "Open URL redirect vulnerability"
 
 	vul := VulInfo{
 		Path: []string{

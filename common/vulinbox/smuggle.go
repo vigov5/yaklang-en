@@ -20,7 +20,7 @@ func (s *VulinServer) registerPipelineNSmuggle() {
 	smugglePort := utils.GetRandomAvailableTCPPort()
 	pipelinePort := utils.GetRandomAvailableTCPPort()
 
-	pipelineNSmuggleSubroute := s.router.PathPrefix("/http/protocol").Name("HTTP CDN 与 Pipeline 安全").Subrouter()
+	pipelineNSmuggleSubroute := s.router.PathPrefix("/http/protocol").Name("HTTP CDN and Pipeline Security").Subrouter()
 	go func() {
 		err := Smuggle(context.Background(), smugglePort)
 		if err != nil && err != io.EOF {
@@ -38,7 +38,7 @@ func (s *VulinServer) registerPipelineNSmuggle() {
 			writer.WriteHeader(302)
 		},
 		Path:  `/smuggle`,
-		Title: "HTTP 请求走私案例：HTTP Smuggle",
+		Title: "HTTP request smuggling case: HTTP Smuggle",
 	})
 
 	go func() {
@@ -58,7 +58,7 @@ func (s *VulinServer) registerPipelineNSmuggle() {
 			writer.Header().Set("Location", "http://"+utils.HostPort("127.0.0.1", pipelinePort))
 			writer.WriteHeader(302)
 		},
-		Title: "HTTP Pipeline 正常案例（对照组，并不是漏洞）",
+		Title: "HTTP Pipeline normal case (control group, not a vulnerability)",
 	})
 }
 
@@ -89,11 +89,11 @@ Content-Type: text/html; charset=utf-8
 	ordinaryRequest = lowhttp.ReplaceHTTPPacketBody(
 		ordinaryRequest, UnsafeRender(
 			"HTTP/1.1 Pipeline", []byte(`
-在 HTTP/1.1 中，默认 Connection: keep-alive 被设置, <br>
-在这种情况下，如果客户端发送了多个请求，服务器会将这些请求串行化，<br>
-也就是说，只有前一个请求完成，才会进行下一个请求。<br>
+in HTTP/1.1, the default Connection: keep-alive is set, <br>
+In this case, if the client sends multiple requests, the server will serialize these requests.<br>
+that reads the Body according to Transfer-Encoding: chunked That is to say , the next request will be made only when the previous request is completed. The<br>
 <br>
-一般来说，这并不会导致安全问题
+Generally speaking, this does not cause security problems
 `)),
 		false,
 	)
@@ -164,14 +164,14 @@ Content-Type: text/html; charset=utf-8
 	ordinaryRequest = lowhttp.ReplaceHTTPPacketBody(
 		ordinaryRequest, UnsafeRender(
 			"HTTP/1.1 Smuggle", []byte(`
-在代理服务器反向代理真实服务器的业务场景下，<br>
-如果代理服务器没有正确处理 Transfer-Encoding: chunked 和 Content-Length: ... 的优先级 <br>
-那么，黑客可能会构造一个特殊的请求，这个请求在代理服务器和真实服务器中的解析结果不一致，<br>
-从而导致安全问题。<br>
+In the business scenario where the proxy server reversely proxies the real server,<br>
+if The proxy server does not correctly handle the priority of Transfer-Encoding: chunked and Content-Length: ... <br>
+Then the hacker may construct a special request that has inconsistent parsing results in the proxy server and the real server. ,<br>
+that reads the Body according to Content-Length, thus causing security problems.<br>
 <br>
-例如在本端口的服务器中：代理服务器会认为这是一个按照 Content-Length 读 Body 的 HTTP/1.1 的请求，<br>
-代理服务器将会读取到 Body 中的数据，并且拼接传递给真实服务器，<br>
-而真实服务器会认为这是一个按照 Transfer-Encoding: chunked 读 Body 的 HTTP/1.1 的请求，把请求进行错误的分割，同时读到了两个请求造成安全问题<br>
+For example, in the server of this port: the proxy server will think that this is an HTTP/1.1 request,<br>
+proxy server will read the data in the Body and splice it and pass it to the real server.<br>
+And the real server will think that this is an HTTP/1.1s request, the request is divided incorrectly, and two requests are read at the same time, causing security issues. In<br>
 <br>
 `)),
 		false,

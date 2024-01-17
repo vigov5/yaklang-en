@@ -165,14 +165,14 @@ var ruleRaw = `[
     },
     {
         "dev_class": "firewall",
-        "dev_model": "SANGFOR终端检测响应平台",
+        "dev_model": "SANGFOR terminal detection response platform",
         "dev_vendor": "sangfor",
         "flag": "linux_edr_installer",
         "is_dev": true
     },
     {
         "dev_class": "router",
-        "dev_model": "TopApp-LB 负载均衡系统",
+        "dev_model": "TopApp-LB Load balancing system",
         "dev_vendor": "topapp-lb",
         "flag": "TopApp-LB",
         "is_dev": true
@@ -2719,7 +2719,7 @@ var ruleRaw = `[
         "dev_class": "security_appliance",
         "dev_model": "topsec_security_appliance_system",
         "dev_vendor": "topsec",
-        "flag": "<title>天融信安全管理系统</title>",
+        "flag": "<title>days Rongxin security management system</title>",
         "is_dev": true
     },
     {
@@ -2775,7 +2775,7 @@ var ruleRaw = `[
         "dev_class": "firewall",
         "dev_model": "secworld_next_generation_speed_firewall",
         "dev_vendor": "Legendsec",
-        "flag": "网神下一代极速防火墙",
+        "flag": "Internet Gods next-generation ultra-fast firewall",
         "is_dev": true
     },
     {
@@ -2852,7 +2852,7 @@ var ruleRaw = `[
         "dev_class": "firewall",
         "dev_model": "",
         "dev_vendor": "netent",
-        "flag": "网康下一代防火墙",
+        "flag": "Netcom next-generation firewall",
         "is_dev": true
     },
     {
@@ -2873,7 +2873,7 @@ var ruleRaw = `[
         "dev_class": "security_appliance",
         "dev_model": "topflow",
         "dev_vendor": "topsec",
-        "flag": "天融信topflow",
+        "flag": "Tianrongxin topflow",
         "is_dev": true
     },
     {
@@ -2972,7 +2972,7 @@ var ruleRaw = `[
         "dev_class": "security_gateway",
         "dev_model": "mail_information_security_gateway",
         "dev_vendor": "spammark",
-        "flag": "spammark邮件信息安全网关",
+        "flag": "spammark email information security gateway",
         "is_dev": true
     },
     {
@@ -3621,9 +3621,9 @@ var ruleRaw = `[
     },
     {
         "dev_class": "access control",
-        "dev_model": "人脸实时报警系统|人脸检索管理系统",
+        "dev_model": "Face real-time alarm system|face retrieval management system",
         "dev_vendor": "hikvison",
-        "flag": "人脸实时报警系统|人脸检索管理系统",
+        "flag": "Face real-time alarm system|face retrieval management system",
         "is_dev": true
     },
     {
@@ -3637,7 +3637,7 @@ var ruleRaw = `[
         "dev_class": "access control",
         "dev_model": "",
         "dev_vendor": "zhengpu",
-        "flag": "realm= \"正普门禁系统\"",
+        "flag": "realm= \"Zhengpu access control system\"",
         "is_dev": true
     },
     {
@@ -3749,7 +3749,7 @@ var ruleRaw = `[
         "dev_class": "dvs",
         "dev_model": "",
         "dev_vendor": "xin shi yun",
-        "flag": "新视云编码机管理系统",
+        "flag": "Xinshi Cloud Coding Machine Management System",
         "is_dev": true
     },
     {
@@ -3813,7 +3813,7 @@ var ruleRaw = `[
         "dev_class": "tvrs",
         "dev_model": "",
         "dev_vendor": "hikvision",
-        "flag": "<title>电视墙",
+        "flag": "<title>TV wall",
         "is_dev": true
     },
     {
@@ -4527,7 +4527,7 @@ var ruleRaw = `[
         "app_class": "waf",
         "app_version": "",
         "app_name": "leadsec:leadsec",
-        "flag": "<title>网御waf",
+        "flag": "<title>Wangyu waf",
         "is_dev": false
     },
     {
@@ -5613,14 +5613,14 @@ var ruleRaw = `[
         "app_class": "oa",
         "app_version": "2015",
         "app_name": "tongda:tongda-oa",
-        "flag": "<title>Office Anywhere 2015版 网络智能办公系统",
+        "flag": "<title>Office Anywhere 2015 version of the network intelligent office system",
         "is_dev": false
     },
     {
         "app_class": "oa",
         "app_version": "2013",
         "app_name": "tongda:tongda-oa",
-        "flag": "<title>Office Anywhere 2013版 网络智能办公系统",
+        "flag": "<title>Office Anywhere 2013 version of the network intelligent office system",
         "is_dev": false
     },
       {
@@ -5628,7 +5628,7 @@ var ruleRaw = `[
           "depends": ["php:php","mysql:mysql"],
         "app_version": "",
         "app_name": "tongda:tongda-oa",
-        "flag": "<title>通达OA网络智能办公系统",
+        "flag": "<title>Tongda OA network intelligent office system",
         "is_dev": false
     },
       {
@@ -5870,7 +5870,7 @@ var ruleRaw = `[
         "app_class": "oa",
         "app_version": "\\d+\\.*\\d*\\.*\\d*SP\\d*",
         "app_name": "seeyon:seeyon",
-        "flag": "<title>.*管理软件 V\\d+\\.*\\d*\\.*\\d*SP\\d*",
+        "flag": "<title>.*management software V\\d+\\.*\\d*\\.*\\d*SP\\d*",
         "is_dev": false
     },
       {
@@ -5900,14 +5900,14 @@ var ruleRaw = `[
           "depends": ["apache:tomcat","mysql:mysql"],
         "app_version": "",
         "app_name": "weaver:e-bridge",
-        "flag": "<title>泛微云桥e-Bridge",
+        "flag": "<title>Panwei Cloud Bridge e-Bridge",
         "is_dev": false
     },
       {
        "app_class": "oa",
         "app_version": "",
         "app_name": "weaver:e-bridge",
-        "flag": "content=\"泛微云桥e-Bridge",
+        "flag": "content=\"Panwei Cloud Bridge e-Bridge",
         "is_dev": false
     },
       {
@@ -6002,7 +6002,7 @@ var ruleRaw = `[
         "app_class": "oams",
         "app_version": "",
         "app_name": "gitlab:gitlab",
-        "flag": "<title>登录 · GitLab",
+        "flag": "<title>Log in · GitLab",
         "is_dev": false
     },
       {
@@ -6455,7 +6455,7 @@ var ruleRaw = `[
         "app_class": "web_framework",
         "app_version": "",
         "app_name": "apache:shiro",
-        "flag": "<title>.*Shiro权限管理系统</title>",
+        "flag": "<title>.*Shiro authority management system</title>",
         "is_dev": false
     },
     {
@@ -7080,7 +7080,7 @@ func MatchAll(banner []byte) []*IoTDevMatchResult {
 58.223.2.19,222.177.15.68 554
  scan-service -t 77.137.231.151,81.173.96.126 -p 8080,8082
 +-------------------------+------------+
-|          端口           | 指纹（简） |
+|          Port           | Fingerprint (simplified) |
 +-------------------------+------------+
 | tcp://77.245.102.146:80 |            |
 | tcp://81.23.1.46:80     |            |
@@ -7089,7 +7089,7 @@ func MatchAll(banner []byte) []*IoTDevMatchResult {
 */
 
 /*
-LINKSYS /video.htm 未授权访问
+LINKSYS /video.htm Unauthorized access
 app="LINKSYS-Internet-Camera"
 
 http://195.60.132.24/

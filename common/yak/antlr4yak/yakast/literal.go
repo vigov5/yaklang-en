@@ -35,11 +35,11 @@ func (y *YakCompiler) VisitNumericLiteral(raw yak.INumericLiteralContext) interf
 		var intStr = strings.ToLower(originIntStr)
 		var resultInt64 int64
 		switch true {
-		case strings.HasPrefix(intStr, "0b"): // 二进制
+		case strings.HasPrefix(intStr, "0b"): // binary
 			resultInt64, err = strconv.ParseInt(intStr[2:], 2, 64)
-		case strings.HasPrefix(intStr, "0x"): // 十六进制
+		case strings.HasPrefix(intStr, "0x"): // hexadecimal
 			resultInt64, err = strconv.ParseInt(intStr[2:], 16, 64)
-		case strings.HasPrefix(intStr, "0o"): // 八进制
+		case strings.HasPrefix(intStr, "0o"): // Octal
 			resultInt64, err = strconv.ParseInt(intStr[2:], 8, 64)
 		case len(intStr) > 1 && intStr[0] == '0':
 			resultInt64, err = strconv.ParseInt(intStr[1:], 8, 64)
@@ -165,7 +165,7 @@ func (y *YakCompiler) VisitSliceLiteral(raw yak.ISliceLiteralContext) interface{
 	recoverRange := y.SetRange(i.BaseParserRuleContext)
 	defer recoverRange()
 
-	// [ ... ] 语法
+	// [ ... ] Syntax
 	if i.LBracket() != nil && i.RBracket() != nil {
 		y.writeString("[")
 		unary := y.VisitExpressionListMultiline(i.ExpressionListMultiline())
@@ -190,7 +190,7 @@ func (y *YakCompiler) VisitSliceTypedLiteral(raw yak.ISliceTypedLiteralContext) 
 	recoverRange := y.SetRange(i.BaseParserRuleContext)
 	defer recoverRange()
 
-	// 先创建一个类型
+	// First create a type
 	y.VisitSliceTypeLiteral(i.SliceTypeLiteral())
 	y.writeString("{")
 	y.pushTypedSlice(y.VisitExpressionListMultiline(i.ExpressionListMultiline()))
@@ -290,14 +290,14 @@ func (y *YakCompiler) VisitMapTypedLiteral(raw yak.IMapTypedLiteralContext) inte
 	recoverRange := y.SetRange(i.BaseParserRuleContext)
 	defer recoverRange()
 
-	// 先创建一个类型
+	// First create a type
 	y.VisitMapTypeLiteral(i.MapTypeLiteral())
 	y.writeString("{")
 	defer y.writeString("}")
 
 	pairs := i.MapPairs()
 	if pairs == nil {
-		// 转成opmake
+		// to opmake
 		y.pushMake(0)
 		return nil
 	}
@@ -343,7 +343,7 @@ func (y *YakCompiler) VisitTemplateStringLiteral(raw yak.ITemplateStringLiteralC
 	defer recoverRange()
 	y.writeString(raw.GetText())
 
-	// 在当前函数中禁用！
+	// is disabled in the current function! Convert
 	recoverFormatter := y.switchFormatBuffer()
 	defer recoverFormatter()
 

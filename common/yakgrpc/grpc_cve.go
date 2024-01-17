@@ -55,7 +55,7 @@ func (s *Server) GetCVE(ctx context.Context, req *ypb.GetCVERequest) (*ypb.CVEDe
 		log.Errorf("unmarshal references failed: %s", err)
 		return nil, err
 	}
-	// 获取每个URL字段并将其拼接为一个字符串
+	// Get each URL field and concatenate it into a string
 	var urls []string
 	if rdArr, ok := ref["reference_data"].([]interface{}); ok {
 		for _, rd := range rdArr {
@@ -152,15 +152,15 @@ func (s *Server) UpdateCVEDatabase(req *ypb.UpdateCVEDatabaseRequest, stream ypb
 		client := utils.NewDefaultHTTPClientWithProxy(req.GetProxy())
 		client.Timeout = 30 * time.Second
 
-		info(5, "差量更新最新数据：modified/recent nvd db")
+		info(5, "Differential update of the latest data: modified/recent nvd db")
 
 		if db := consts.GetGormCVEDatabase(); db == nil {
-			info(10, "差量更新数据失败：cve database is not found")
+			info(10, "differential update data failed: cve database is not found")
 			return nil
 		}
 
 		db := consts.GetGormCVEDatabase()
-		info(10, "开始下载最新(Recent)数据: Start to download latest CVE Data")
+		info(10, "Start to download latest (Recent) data: Start to download latest CVE Data")
 		recent, err := consts.TempFile("cve-recent-*.json.gz")
 		if err != nil {
 			return err
@@ -169,15 +169,15 @@ func (s *Server) UpdateCVEDatabase(req *ypb.UpdateCVEDatabaseRequest, stream ypb
 		os.Remove(recent.Name())
 
 		err = utils.DownloadFile(client, cvequeryops.LatestCveRecentDataFeed, recent.Name(), func(f float64) {
-			info((0.1+f*0.2)*100, "下载最新数据中: Downloading Latest CVE Data")
+			info((0.1+f*0.2)*100, "Downloading the latest data: Downloading Latest CVE Data")
 		})
 		if err != nil {
-			info(10, "下载最新数据失败: Downloading Latest CVE Data Failed: %s", err.Error())
+			info(10, "download Latest data failed: Downloading Latest CVE Data Failed: %s", err.Error())
 			return err
 		}
 
 		modifiedFailed := false
-		info(10, "开始下载最新(Modified)数据: Start to download latest CVE Data")
+		info(10, "Start downloading the latest (Modified) data: Start to download latest CVE Data")
 		modified, err := consts.TempFile("cve-modified-*.json.gz")
 		if err != nil {
 			return err
@@ -185,10 +185,10 @@ func (s *Server) UpdateCVEDatabase(req *ypb.UpdateCVEDatabaseRequest, stream ypb
 		modified.Close()
 		os.RemoveAll(modified.Name())
 		err = utils.DownloadFile(client, cvequeryops.LatestCveModifiedDataFeed, modified.Name(), func(f float64) {
-			info((0.3+f*0.2)*100, "下载最新数据中: Downloading Latest CVE Data")
+			info((0.3+f*0.2)*100, "Downloading the latest data: Downloading Latest CVE Data")
 		})
 		if err != nil {
-			info(10, "下载最新数据失败: Downloading Latest CVE Data Failed: %s", err.Error())
+			info(10, "download Latest data failed: Downloading Latest CVE Data Failed: %s", err.Error())
 			modifiedFailed = true
 		}
 
@@ -211,7 +211,7 @@ func (s *Server) UpdateCVEDatabase(req *ypb.UpdateCVEDatabaseRequest, stream ypb
 			var recentData cveresources.CVEYearFile
 			err = json.Unmarshal(raw, &recentData)
 			if err != nil {
-				info(10, "解压最新数据失败: Decompress Latest CVE Data Failed: %s", err.Error())
+				info(10, "Decompress the latest data failed: Decompress Latest CVE Data Failed: %s", err.Error())
 				return err
 			}
 			for _, i := range recentData.CVERecords {
@@ -223,7 +223,7 @@ func (s *Server) UpdateCVEDatabase(req *ypb.UpdateCVEDatabaseRequest, stream ypb
 				if cve != nil {
 					count++
 					if count%100 == 0 {
-						info(progress, "正在更新最新数据: Updating Latest CVE Data: %d", count)
+						info(progress, "is updating the latest data: Updating Latest CVE Data: %d", count)
 					}
 					err := cveresources.CreateOrUpdateCVE(db, cve.CVE, cve)
 					if err != nil {
@@ -232,12 +232,12 @@ func (s *Server) UpdateCVEDatabase(req *ypb.UpdateCVEDatabaseRequest, stream ypb
 				}
 			}
 		}
-		info(100, "更新最新数据: Total: %d", count)
+		info(100, "update Latest data: Total: %d", count)
 		return nil
 	}
 
 	if db := consts.GetGormCVEDatabase(); db != nil {
-		info(0, "开始清理旧的 CVE 数据库: Start to clean old CVE Database")
+		info(0, "Start to clean old CVE Database: Start to clean old CVE Database")
 		db.Close()
 	}
 
@@ -245,14 +245,14 @@ func (s *Server) UpdateCVEDatabase(req *ypb.UpdateCVEDatabaseRequest, stream ypb
 	os.RemoveAll(consts.GetCVEDatabasePath())
 	consts.SetGormCVEDatabase(nil)
 
-	info(0, "开始下载 CVE 数据库: Start to download CVE Database")
+	info(0, "Start to download CVE Database: Start to download CVE Database")
 	client := utils.NewDefaultHTTPClientWithProxy(req.GetProxy())
 	client.Timeout = 30 * time.Minute
 
-	info(0, "获取下载材料大小: Fetching Download Material Basic Info")
+	info(0, "Fetching Download Material Basic Info")
 	rsp, err := client.Head(targetUrl)
 	if err != nil {
-		// 提示勿动
+		// Tip Do not move
 		return utils.Errorf("client failed: %s", err)
 	}
 
@@ -260,7 +260,7 @@ func (s *Server) UpdateCVEDatabase(req *ypb.UpdateCVEDatabaseRequest, stream ypb
 	if err != nil {
 		return utils.Errorf("cannot fetch cl: %v", err)
 	}
-	info(0, "共需下载大小为：Download %v Total", utils.ByteSize(uint64(i)))
+	info(0, "Total required download size is: Download %v Total", utils.ByteSize(uint64(i)))
 
 	rsp, err = client.Get(targetUrl)
 	if err != nil {
@@ -290,20 +290,20 @@ func (s *Server) UpdateCVEDatabase(req *ypb.UpdateCVEDatabaseRequest, stream ypb
 	_, err = io.Copy(fp, io.TeeReader(rsp.Body, prog))
 	if err != nil {
 		fp.Close()
-		info(0, "下载文件失败: Download Failed: %s", err)
-		return utils.Errorf("下载文件失败: Download Failed: %s", err)
+		info(0, "Download file failed: Download Failed: %s", err)
+		return utils.Errorf("Download file failed: Download Failed: %s", err)
 	}
 	fp.Close()
-	info(100, "下载文件成功：Download Finished")
+	info(100, "Download file successfully: Download Finished")
 
-	info(100, "开始验证数据库加载：Start to verify database")
+	info(100, "Start to verify database loading: Start to verify database")
 	db := consts.GetGormCVEDatabase()
 	if db == nil {
-		info(0, "数据库加载失败! Failed to load database")
+		info(0, "database load failed! Failed to load database")
 		_, err := consts.InitializeCVEDatabase()
 		if err != nil {
-			info(0, "数据库加载失败（Reason）: %v", err)
-			return utils.Errorf("数据库加载失败（Reason）: %s", err)
+			info(0, "Database loading failed (Reason): %v", err)
+			return utils.Errorf("database load failed (Reason): %s", err)
 		}
 		return nil
 	}

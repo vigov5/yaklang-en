@@ -67,7 +67,7 @@ func WritePublicKeyToPem(key *sm2.PublicKey) ([]byte, error) {
 	return certPem, nil
 }
 
-// DHex是sm2私钥的真正关键数值
+// DHex is the real key value of the sm2 private key
 func ReadPrivateKeyFromHex(Dhex string) (*sm2.PrivateKey, error) {
 	c := sm2.P256Sm2()
 	d, err := hex.DecodeString(Dhex)

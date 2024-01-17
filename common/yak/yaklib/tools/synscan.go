@@ -32,7 +32,7 @@ type _yakPortScanConfig struct {
 	initFilterHosts string
 
 	rateLimitDelayMs  float64
-	rateLimitDelayGap int // 每隔多少数据包 delay 一次？
+	rateLimitDelayGap int // . How many packets are delayed every time?
 
 	excludeHosts *hostsparser.HostsParser
 	excludePorts *filter.StringFilter
@@ -86,7 +86,7 @@ func _scanOptRateLimit(ms int, count int) scanOpt {
 	}
 }
 
-// 设置 SYN 扫描的并发可以有效控制精准度
+// Setting the concurrency of SYN scanning can effectively control the accuracy.
 func _scanOptSYNConcurrent(count int) scanOpt {
 	return func(config *_yakPortScanConfig) {
 		if count <= 0 {
@@ -100,7 +100,7 @@ func _scanOptSYNConcurrent(count int) scanOpt {
 	}
 }
 
-// synscan 发出 SYN 包后等待多久？
+// How long to wait after synscan sends out the SYN packet?
 func _scanOptWaiting(sec float64) scanOpt {
 	return func(config *_yakPortScanConfig) {
 		config.waiting = utils.FloatSecondDuration(sec)
@@ -151,14 +151,14 @@ func _scanOptExcludeHosts(hosts string) scanOpt {
 	}
 }
 
-// 端口开放的结果保存到文件
+// The result of port opening is saved to a file.
 func _scanOptOpenPortResult(file string) scanOpt {
 	return func(config *_yakPortScanConfig) {
 		config.outputFile = file
 	}
 }
 
-// 端口开放结果保存文件加个前缀，比如 tcp:// https:// http:// 等
+// The result of port opening is saved in a file with a prefix, such as tcp:// https:// http:// etc.
 func _scanOptOpenPortResultPrefix(prefix string) scanOpt {
 	return func(config *_yakPortScanConfig) {
 		config.outputFilePrefix = prefix
@@ -177,21 +177,21 @@ func _scanOptOpenPortInitPortFilter(f string) scanOpt {
 	}
 }
 
-// 指纹结果保存文件
+// Save file of fingerprint results
 //func _scanOptFpResult(file string) scanOpt {
 //	return func(config *_yakPortScanConfig) {
 //		config.fingerprintResultFile = file
 //	}
 //}
 
-// 启动指纹扫描
+// Start fingerprint scanning
 //func _scanOptEnableFpScan() scanOpt {
 //	return func(config *_yakPortScanConfig) {
 //		config.enableFingerprint = true
 //	}
 //}
 
-// 指纹扫描-探测请求超时
+// Fingerprint scanning-detection request timeout
 //func _scanOptFingerprintRequestTimeout(i float64) scanOpt {
 //	return func(config *_yakPortScanConfig) {
 //		config.requestTimeout = utils.FloatSecondDuration(i)
@@ -359,7 +359,7 @@ func runScan(sampleTarget string, filteredTargetChan chan string, ports string, 
 		stringFilter.Insert(addr)
 
 		if !hostsFilter.Contains(addr) {
-			// 端口不在范围内,并且不在 host 、port exclude 中
+			// The port is not in the range, and is not in host or port exclude
 			if !portsFilter.Contains(port) || config.IsFiltered(ip.String(), port) {
 				return
 			}
@@ -439,7 +439,7 @@ func runScan(sampleTarget string, filteredTargetChan chan string, ports string, 
 	return nil
 }
 
-// getFilteredPorts 去重、去除udp端口
+// getFilteredPorts Deduplication, remove udp port
 func getFilteredPorts(ports string, config *_yakPortScanConfig) []int {
 	var filteredPorts []int
 
@@ -509,8 +509,8 @@ func _scanOptSubmitTaskCallback(i func(string)) scanOpt {
 	}
 }
 
-// 为了防止网卡过载，5个是上限
-//  1. waiting 实现
+// In order to prevent network card overload, 5 is the upper limit
+//  1. waiting to implement
 //  2. timeout
 var SynPortScanExports = map[string]interface{}{
 	"FixPermission": pcapfix.Fix,

@@ -77,7 +77,7 @@ func (p *SystemMatrix) String() (str string) {
 	return
 }
 
-// 获取主User
+// Get the main User
 func (p *SystemMatrix) GetMainUser() (mainUser string) {
 	if p.Users == nil {
 		return
@@ -89,7 +89,7 @@ func (p *SystemMatrix) GetMainUser() (mainUser string) {
 	return
 }
 
-// 所有用户tostring
+// All users tostring
 func (p *SystemMatrix) UserToString() (allUser string) {
 	jsonByte, err := json.MarshalIndent(&p.Users, "", "    ")
 	if err != nil {
@@ -99,7 +99,7 @@ func (p *SystemMatrix) UserToString() (allUser string) {
 	return
 }
 
-// 获取主mac
+// Get the main mac
 func (p *SystemMatrix) GetMainMacAndMainNetAddr() (mainMac, mainNetAddr string) {
 	if p.Network == nil {
 		return

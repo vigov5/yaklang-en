@@ -1,9 +1,9 @@
 package wsm
 
 type PacketCodecI interface {
-	// ClientRequestEncode 对请求包的 payload 进行编码
+	// ClientRequestEncode encodes the payload in the request package
 	ClientRequestEncode(raw []byte) ([]byte, error)
-	// ServerResponseDecode webshell server 获取请求包中的 payload
+	// ServerResponseDecode webshell server gets the payload in the request package
 	ServerResponseDecode(raw []byte) ([]byte, error)
 	SetPacketScriptContent(content string)
 }

@@ -15,13 +15,13 @@ yakit.AutoInitYakit()
 
 debug = cli.Have("debug")
 if debug {
-    yakit.StatusCard("调试模式", "True")
+    yakit.StatusCard("Debug mode", "True")
 }
 
 concurrent = cli.Int("concurrent")
 if concurrent <= 0 { concurrent = 10 }
 
-# 综合扫描
+# Comprehensive scan
 yakit.SetProgress(0.1)
 plugins = cli.YakitPlugin()
 if len(plugins) <= 0 {
@@ -71,13 +71,13 @@ if ports == "" {
 }
 targetFiles = cli.String("target-file")
 if targetFiles == "" {
-    yakit.StatusCard("扫描失败", "目标[FILE]")
+    yakit.StatusCard("Scan failure", "target [FILE]")
     return
 }
 targetRaw, _ = io.ReadFile(targetFiles)
 targetRaw = string(targetRaw)
 if targetRaw == "" { ## empty
-    yakit.StatusCard("扫描失败", "目标为空")
+    yakit.StatusCard("Scan failure", "The target is empty")
     return
 }
 
@@ -95,7 +95,7 @@ for _, line = range str.ParseStringToLines(targetRaw) {
 //     targets = ["127.0.0.1:8080"]
 // }
 
-// 限制并发
+// Limit concurrency
 swg = sync.NewSizedWaitGroup(concurrent)
 
 handleUrl = func(t) {
@@ -146,7 +146,7 @@ handlePorts = func(t) {
     }
 }
 
-// 设置计数器，用于反馈进度
+// Set the counter for feedback progress
 totalTask = len(urls) + len(targets)
 currentTask = 0
 counterLock = sync.NewLock()
@@ -159,7 +159,7 @@ currentFinished = func() {
     }
     yakit.SetProgress(0.2 + 0.8 * (float(currentTask) / float(totalTask)))
 }
-// 设置结果处理方案
+// Set the result processing plan
 handleTarget = func(t, isUrl) {
     hash = codec.Sha256(sprint(t, ports))
     if filter.Exist(hash) {
@@ -193,7 +193,7 @@ for _, target = range targets {
     handleTarget(target, false)
 }
 
-// 等待所有插件执行完毕
+// Wait for all plug-ins to be executed
 swg.Wait()
 manager.Wait()
 `
@@ -238,13 +238,13 @@ func (s *Server) ExecYakitPluginsByYakScriptFilter(req *ypb.ExecYakitPluginsByYa
 	stream.Send(yaklib.NewYakitLogExecResult("info", "log yakit plugin total: %v", count))
 	//defer os.RemoveAll(fp.Name())
 
-	// 设置插件文件夹
+	// Set the plug-in folder
 	var params []*ypb.ExecParamItem = req.GetExtraParams()
 	if fp.Name() != "" {
 		params = append(params, &ypb.ExecParamItem{Key: "--yakit-plugin-file", Value: fp.Name()})
 	}
 
-	// 处理扫描目标
+	// Process the scan target
 	targetfp, err := ioutil.TempFile(consts.GetDefaultYakitBaseTempDir(), "exec-plugins-by-filter-target-*.txt")
 	if err != nil {
 		return utils.Errorf("cannot create tempfile for targets: %s", err)

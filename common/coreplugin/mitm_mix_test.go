@@ -57,7 +57,7 @@ func TestGRPCMUSTPASS_MITM(t *testing.T) {
 		SetAutoForward:   true,
 		AutoForwardValue: true,
 		InitPluginNames: []string{
-			"基础 XSS 检测",
+			"Basic XSS detection",
 		},
 	})
 	if err != nil {
@@ -86,7 +86,7 @@ func TestGRPCMUSTPASS_MITM(t *testing.T) {
 			err = stream.Send(&ypb.MITMRequest{
 				SetPluginMode: true,
 				InitPluginNames: []string{
-					"基础 XSS 检测",
+					"Basic XSS detection",
 				},
 			})
 			if err != nil {
@@ -94,10 +94,10 @@ func TestGRPCMUSTPASS_MITM(t *testing.T) {
 			}
 		}
 
-		if !pluginStartLoading && started && strings.Contains(spew.Sdump(rsp), "Initializing MITM Plugin: 基础 XSS 检测") {
+		if !pluginStartLoading && started && strings.Contains(spew.Sdump(rsp), "Initializing MITM Plugin: Basic XSS detection") {
 			pluginStartLoading = true
 		}
-		if pluginStartLoading && strings.Contains(spew.Sdump(rsp), "初始化加载插件完成，加载成功【1】个") {
+		if pluginStartLoading && strings.Contains(spew.Sdump(rsp), "Initializing the plug-in loading is completed, loading successfully [1]") {
 			pluginLoaded = true
 			fmt.Println("==============================================")
 			go func() {
@@ -209,7 +209,7 @@ func TestDEBUG_MITM(t *testing.T) {
 		SetAutoForward:   true,
 		AutoForwardValue: true,
 		InitPluginNames: []string{
-			"基础 XSS 检测",
+			"Basic XSS detection",
 		},
 	})
 	if err != nil {
@@ -238,7 +238,7 @@ func TestDEBUG_MITM(t *testing.T) {
 			err = stream.Send(&ypb.MITMRequest{
 				SetPluginMode: true,
 				InitPluginNames: []string{
-					"基础 XSS 检测",
+					"Basic XSS detection",
 				},
 			})
 			if err != nil {
@@ -246,10 +246,10 @@ func TestDEBUG_MITM(t *testing.T) {
 			}
 		}
 
-		if !pluginStartLoading && started && strings.Contains(spew.Sdump(rsp), "Initializing MITM Plugin: 基础 XSS 检测") {
+		if !pluginStartLoading && started && strings.Contains(spew.Sdump(rsp), "Initializing MITM Plugin: Basic XSS detection") {
 			pluginStartLoading = true
 		}
-		if pluginStartLoading && strings.Contains(spew.Sdump(rsp), "初始化加载插件完成，加载成功【1】个") {
+		if pluginStartLoading && strings.Contains(spew.Sdump(rsp), "Initializing the plug-in loading is completed, loading successfully [1]") {
 			pluginLoaded = true
 			fmt.Println("==============================================")
 			go func() {

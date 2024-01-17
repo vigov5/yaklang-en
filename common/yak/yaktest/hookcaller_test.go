@@ -3,8 +3,8 @@ package yaktest
 import "testing"
 
 func TestHookCaller(t *testing.T) {
-	Run("测试加载插件", t, YakTestCase{
-		Name: "测试加载插件崩溃",
+	Run("Test loading plug-in", t, YakTestCase{
+		Name: "Test loading plug-in crashes",
 		Src: `
 m = hook.NewMixPluginCaller()[0]
 m.SetDividedContext(true)
@@ -31,10 +31,10 @@ if du >= 7 {
 	})
 }
 
-// 测试mixcaller调用nasl插件（未完成）
+// Test mixcaller calling nasl plug-in (not completed)
 func TestMixHookCaller(t *testing.T) {
-	Run("测试加载插件", t, YakTestCase{
-		Name: "测试加载插件崩溃",
+	Run("Test loading plug-in", t, YakTestCase{
+		Name: "Test loading plug-in crashes",
 		Src: `
 m = hook.NewMixPluginCaller()[0]
 m.SetDividedContext(true)

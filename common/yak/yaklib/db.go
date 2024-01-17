@@ -60,7 +60,7 @@ var DatabaseExports = map[string]interface{}{
 	"QueryIPCity":   QueryIP,
 	"QueryIPForIPS": QueryIPForISP,
 
-	// 写入资产
+	// Write assets
 	"SaveHTTPFlowFromRaw":            saveHTTPFlowFromRaw,
 	"SaveHTTPFlowFromRawWithType":    saveHTTPFlowFromRawWithType,
 	"SaveHTTPFlowFromNative":         saveCrawler,
@@ -70,7 +70,7 @@ var DatabaseExports = map[string]interface{}{
 	"SavePayload":                    savePayloads,
 	"SavePayloadByFile":              savePayloadByFile,
 
-	// 保存插件内容
+	// Save plug-in content
 	"YAKIT_PLUGIN_TYPE_NUCLEI":      YAKIT_PLUGIN_TYPE_NUCLEI,
 	"YAKIT_PLUGIN_TYPE_YAK":         YAKIT_PLUGIN_TYPE_YAK,
 	"YAKIT_PLUGIN_TYPE_MITM":        YAKIT_PLUGIN_TYPE_MITM,
@@ -116,7 +116,7 @@ var DatabaseExports = map[string]interface{}{
 
 	"GetYakitPluginByName": queryYakitPluginByName,
 
-	// 脚本中导入特定格式菜单栏
+	// Import specific format menu bar in script
 	"SaveYakitMenuItemByBatchExecuteConfig": saveYakitMenuItemByBatchExecuteConfig,
 	"DeleteYakitMenuItemAll":                deleteYakitMenuItemAll,
 
@@ -176,7 +176,7 @@ func queryYakitPluginByName(name string) (*yakit.YakScript, error) {
 func YakitNewAliveHost(target string, opts ...yakit.AliveHostParamsOpt) {
 	risk, _ := yakit.NewAliveHost(target, opts...)
 	if risk != nil {
-		//yakitStatusCard("存活主机", fmt.Sprint(addCounter()))
+		//yakitStatusCard("Survive host", fmt.Sprint(addCounter()))
 		yakitOutputHelper(risk)
 	}
 }

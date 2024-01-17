@@ -83,7 +83,7 @@ func (c *ConfigFile) read(reader io.Reader) (err error) {
 				valQuote string
 				value    string
 			)
-			//[SWH|+]:支持引号包围起来的字串
+			//[SWH|+]: supports strings surrounded by quotation marks
 			if line[0] == '"' {
 				if lineLengh >= 6 && line[0:3] == `"""` {
 					keyQuote = `"""`
@@ -105,7 +105,7 @@ func (c *ConfigFile) read(reader io.Reader) (err error) {
 					return ReadError{ERR_COULD_NOT_PARSE, line}
 				}
 				i = i + pos
-				key = line[qLen:pos] //保留引号内的两端的空格
+				key = line[qLen:pos] //Keep the spaces at both ends of the quotation marks
 			} else {
 				i = strings.IndexAny(line, "=:")
 				if i <= 0 {
@@ -121,7 +121,7 @@ func (c *ConfigFile) read(reader io.Reader) (err error) {
 				count++
 			}
 
-			//[SWH|+]:支持引号包围起来的字串
+			//[SWH|+]: supports strings surrounded by quotation marks
 			lineRight := strings.TrimSpace(line[i+1:])
 			lineRightLength := len(lineRight)
 			firstChar := ""

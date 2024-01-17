@@ -241,9 +241,9 @@ func (hs *clientHandshakeStateGM) doFullHandshake() error {
 				opts.Roots.AddCert(rootca)
 			}
 			for i, cert := range certs {
-				// GM SSL 证书链中不含根证书 第1张为签名证书、第2张为加密证书，其他的证书都认为是根证书
+				// GM SSL certificate chain does not contain the root certificate. The first one is the signing certificate and the second one is the encryption certificate. The other certificates are considered to be root certificates.
 				if i == 0 || i == 1 {
-					// 只验证 签名证书  和 加密证书
+					// Only the signing certificate and encryption certificate are verified.
 					c.verifiedChains, err = certs[i].Verify(opts)
 					if err != nil {
 						_ = c.sendAlert(alertBadCertificate)

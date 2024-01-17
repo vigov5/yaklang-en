@@ -42,7 +42,7 @@ func (y *YakCompiler) VisitInstanceCode(raw yak.IInstanceCodeContext) interface{
 		y.panicCompilerError(compileError, "cannot create yak function from compiler")
 	}
 
-	// 配置函数
+	// Configuration function
 	//y.pushScope(yakvm.GetCurrentTableCount())
 	y.pushValue(&yakvm.Value{
 		TypeVerbose: "anonymous-function",

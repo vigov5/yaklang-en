@@ -16,13 +16,13 @@ const defaultRenderPage = `<!doctype html>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 	<style>
 	.code-style {
-		width: 100%; /* 设置宽度 */
-		background-color: #f8f8f8; /* 设置背景颜色 */
-		border: 1px solid #ccc; /* 设置边框 */
-		padding: 10px; /* 设置内边距 */
-		font-family: "Courier New", monospace; /* 设置字体 */
-		white-space: pre-wrap; /* 保留空白和换行 */
-		overflow-x: auto; /* 如果内容超出宽度，显示滚动条 */
+		width: 100%; /* Set the width */
+		background-color: #f8f8f8; /* Set the background color */
+		border: 1px solid #ccc; /* Set the border */
+		padding: 10px; /* Set the padding */
+		font-family: "Courier New", monospace; /* Set the font */
+		white-space: pre-wrap; /* Preserve white space and line wrapping */
+		overflow-x: auto; /* If the content exceeds the width, display the scroll bar */
 	}
 	</style>
 

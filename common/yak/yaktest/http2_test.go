@@ -49,19 +49,19 @@ import (
 //
 //
 //
-//	// 一般来说要写三个设置
-//	// 第一个写用户 preface，新建链接必备
+//	// generally requires writing three settings.
+//	// is the first to write the user preface, which is necessary for new links.
 //	bw.Write([]byte(http2.ClientPreface))
 //	frame.WriteSettings([]http2.Setting{
 //		{ID: http2.SettingEnablePush, Val: 0},
-//		{ID: http2.SettingInitialWindowSize, Val: 65535}, // 这是默认值
+//		{ID: http2.SettingInitialWindowSize, Val: 65535}, // is the default value.
 //		{ID: http2.SettingMaxConcurrentStreams, Val: 100},
 //		//{ID: http2.SettingMaxHeaderListSize, Val: 1000},
 //	}...)
 //	frame.WriteWindowUpdate(0, transportDefaultConnFlow)
 //	bw.Flush()
 //
-//	// 写请求包的头
+//	// Write the header of the request package.
 //	var hbuf bytes.Buffer
 //	henc := hpack.NewEncoder(&hbuf)
 //
@@ -271,14 +271,14 @@ func TestMisc_PocHTTP2(t *testing.T) {
 
 	//	cases := []YakTestCase{
 	//		{
-	//			Name: "测试数据库",
+	//			Name: "test database",
 	//			Src: fmt.Sprintf(`
 	//rsp, req, err = poc.HTTP("GET / HTTP/2.0\r\nHost: 127.0.0.1:8882\r\nUser-Agent: testAgent\r\n", poc.https(true)); println(string(rsp))
 	//`),
 	//		},
 	//	}
 	//
-	//	Run("测试数据库链接", t, cases...)
+	//	Run("Test database link", t, cases...)
 }
 
 func TestMisc_PocHTTP2_POC(t *testing.T) {
@@ -287,7 +287,7 @@ func TestMisc_PocHTTP2_POC(t *testing.T) {
 
 	cases := []YakTestCase{
 		{
-			Name: "测试数据库",
+			Name: "test database",
 			Src: fmt.Sprintf(`
 env.Set("HTTP_PROXY", "")
 rsp, req, err = poc.HTTP("GET / HTTP/2.0\r\nHost: 127.0.0.1:8882\r\nUser-Agent: testAgent\r\n", poc.https(true)); println(string(rsp))
@@ -295,5 +295,5 @@ rsp, req, err = poc.HTTP("GET / HTTP/2.0\r\nHost: 127.0.0.1:8882\r\nUser-Agent: 
 		},
 	}
 
-	Run("测试数据库链接", t, cases...)
+	Run("Test database link", t, cases...)
 }

@@ -1,6 +1,6 @@
 package larkrobot
 
-// PostTagType 标签
+// PostTagType tag
 type PostTagType string
 
 const (
@@ -14,17 +14,17 @@ const (
 	ImgPostTagType PostTagType = "img"
 )
 
-// PostTag 标签
+// PostTag label
 type PostTag interface {
 	// ToPostTagMessage  for JSON serialization
 	ToPostTagMessage() map[string]interface{}
 }
 
-// TextTag 文本标签
+// TextTag Text tag
 type TextTag struct {
-	// Text 文本内容
+	// Text text content
 	Text string
-	// UnEscape 表示是不是 unescape 解码，默认为 false ，不用可以不填
+	// UnEscape indicates whether to use unescape decoding. The default is false. If not used, you can leave it blank.
 	UnEscape bool
 }
 
@@ -49,11 +49,11 @@ func (tag *TextTag) ToPostTagMessage() map[string]interface{} {
 	return msg
 }
 
-// ATag a链接标签
+// ATag a link tag
 type ATag struct {
-	// Text 	文本内容
+	// Text text content
 	Text string
-	// Href 默认的链接地址
+	// Href default link address
 	Href string
 }
 
@@ -73,11 +73,11 @@ func (tag *ATag) ToPostTagMessage() map[string]interface{} {
 	return msg
 }
 
-// AtTag at标签
+// AtTag at label
 type AtTag struct {
-	// UserId open_id，union_id或user_id
+	// UserId open_id, union_id or user_id
 	UserId string
-	// UserName 用户姓名
+	// UserName user name
 	UserName string
 }
 
@@ -85,7 +85,7 @@ type AtTag struct {
 func NewAtAllAtTag() *AtTag {
 	return &AtTag{
 		UserId:   "all",
-		UserName: "所有人",
+		UserName: "Everyone",
 	}
 }
 
@@ -155,11 +155,11 @@ func (tag *PostTags) ToMessageMap() []map[string]interface{} {
 	return postTags
 }
 
-// PostItems 富文本 段落
+// PostItems rich text paragraph
 type PostItems struct {
-	// Title 标题
+	// Title title
 	Title string
-	// Content  段落
+	// Content Paragraph
 	Content []*PostTags
 }
 
@@ -221,15 +221,15 @@ type CardInternal interface {
 	ToMessage() map[string]interface{}
 }
 
-// CardConfig 卡片属性
+// CardConfig Card attribute
 type CardConfig struct {
-	// EnableForward 是否允许卡片被转发,默认 true
+	// EnableForward Whether to allow the card to be forwarded, the default is true
 	EnableForward bool
-	// UpdateMulti 是否为共享卡片,默认为false
+	// UpdateMulti Whether it is a shared card, the default is false
 	UpdateMulti bool
-	// WideScreenMode 是否根据屏幕宽度动态调整消息卡片宽度,默认值为true
+	// WideScreenMode Whether to dynamically adjust the message card width according to the screen width, the default value is true
 	//
-	// 2021/03/22之后，此字段废弃，所有卡片均升级为自适应屏幕宽度的宽版卡片
+	// 2021/03/After 22, this field is abandoned, and all cards are upgraded to wide cards that adapt to the screen width.
 	WideScreenMode bool
 }
 
@@ -268,16 +268,16 @@ func (config *CardConfig) ToMessage() map[string]interface{} {
 	}
 }
 
-// CardTitle 标题
+// CardTitle title
 type CardTitle struct {
-	// Content 内容
+	// Content Content
 	Content string
-	// I18n i18n替换content
+	// I18n i18n replace content
 	//
 	//  "i18n": {
-	//      "zh_cn": "中文文本",
+	//      "zh_cn": "Chinese text",
 	//      "en_us": "English text",
-	//      "ja_jp": "日本語文案"
+	//      "ja_jp": "Japanese copywriting"
 	//     }
 	I18n map[string]string
 }
@@ -333,7 +333,7 @@ const (
 	Grey CardHeaderTemplate = "grey"
 )
 
-// CardHeader 卡片标题
+// CardHeader card title
 type CardHeader struct {
 	Title    *CardTitle
 	Template CardHeaderTemplate
@@ -359,22 +359,22 @@ func (header *CardHeader) ToMessage() map[string]interface{} {
 	}
 }
 
-// CardContent 卡片内容
+// CardContent card content
 type CardContent interface {
 	CardInternal
-	// GetContentTag 卡片内容 tag标签
+	// GetContentTag card content tag label
 	GetContentTag() string
 }
 
-// CardElement 内容模块
+// CardElement Content module
 type CardElement struct {
-	// Text 单个文本展示，和fields至少要有一个
+	// Text A single text display, and fields must have at least one
 	Text *CardText
-	// Fields 多个文本展示，和text至少要有一个
+	// Fields Multiple text displays, and text must have at least one
 	Fields []*CardField
-	// Extra 附加的元素展示在文本内容右侧
+	// Extra Additional elements are displayed on the right side of the text content
 	//
-	// 可附加的元素包括image、button、selectMenu、overflow、datePicker
+	// The elements that can be attached include image, button, selectMenu, overflow, datePicker
 	Extra CardInternal
 }
 
@@ -417,13 +417,13 @@ func (card *CardElement) ToMessage() map[string]interface{} {
 	return msg
 }
 
-// CardMarkdown Markdown模块
+// CardMarkdown Markdown module
 type CardMarkdown struct {
-	// Content 	使用已支持的markdown语法构造markdown内容
+	// Content Use the supported markdown syntax to construct markdown content
 	Content string
-	// Href 差异化跳转
+	// Href Differentiation Jump
 	Href *UrlElement
-	// UrlVal 绑定变量
+	// UrlVal Bind variable
 	UrlVal string
 }
 
@@ -455,7 +455,7 @@ func (card *CardMarkdown) ToMessageMap() map[string]interface{} {
 	return msg
 }
 
-// CardHr 分割线模块
+// CardHr Split line module
 type CardHr struct {
 }
 
@@ -476,27 +476,27 @@ func (hr *CardHr) ToMessage() map[string]interface{} {
 type CardImgMode string
 
 const (
-	// FitHorizontal 平铺模式，宽度撑满卡片完整展示上传的图片。 该属性会覆盖
+	// FitHorizontal tiling mode, the width fills the card to fully display the uploaded image. This attribute will override
 	FitHorizontal CardImgMode = "fit_horizontal"
-	// CropCenter  居中裁剪模式，对长图会限高，并居中裁剪后展示
+	// CropCenter Centered cropping mode, which will limit the height of long images and display them after centering the crop
 	CropCenter CardImgMode = "crop_center"
 )
 
-// CardImg 图片模块
+// CardImg Image module
 type CardImg struct {
-	// ImgKey 图片资源
+	// ImgKey Image resource
 	ImgKey string
-	// Alt 	hover图片时弹出的Tips文案,content取值为空时则不展示
+	// Tips copy that pops up when Alt hovers the image. When the content value is empty, it will not be displayed.
 	Alt *CardText
-	// Title 图片标题
+	// Title Image title
 	Title *CardText
-	// CustomWidth 自定义图片的最大展示宽度
+	// CustomWidth Maximum display width of custom pictures
 	CustomWidth int
-	// CompactWidth 	是否展示为紧凑型的图片 默认为false
+	// CompactWidth Whether to display compact images, the default is false
 	CompactWidth bool
-	// Mode 图片显示模式 默认 crop_center
+	// Mode picture display mode default crop_center
 	Mode CardImgMode
-	// Preview 点击后是否放大图片，缺省为true
+	// Preview Whether to enlarge the picture after clicking, the default is true
 	Preview bool
 }
 
@@ -560,11 +560,11 @@ func (img *CardImg) ToMessage() map[string]interface{} {
 	return msg
 }
 
-// CardNote 备注模块,用于展示次要信息
+// CardNote note module, Used to display secondary information
 //
-// 使用备注模块来展示用于辅助说明或备注的次要信息，支持小尺寸的图片和文本
+// uses the remark module to display secondary information for auxiliary explanations or remarks, and supports small-sized images and text.
 type CardNote struct {
-	// Elements 备注信息 text对象或image元素
+	// Elements Remark information text object or image element
 	Elements []CardInternal
 }
 
@@ -594,11 +594,11 @@ func (note *CardNote) ToMessage() map[string]interface{} {
 	return msg
 }
 
-// CardField 用于内容模块的field字段
+// CardField Field field used for the content module
 type CardField struct {
-	// Short 是否并排布局
+	// Short Whether to lay out side by side
 	Short bool
-	// Text 	国际化文本内容
+	// Text internationalized text Content
 	Text *CardText
 }
 
@@ -616,23 +616,23 @@ func (field *CardField) ToMessage() map[string]interface{} {
 	}
 }
 
-// CardTextTag 卡片内容-可内嵌的非交互元素-text-tag属性
+// CardTextTag Card content - embeddable non-interactive element - text-tag attribute
 type CardTextTag string
 
 const (
-	// Text 文本
+	// Text Text
 	Text CardTextTag = "plain_text"
 	// Md markdown
 	Md CardTextTag = "lark_md"
 )
 
-// CardText 卡片内容-可内嵌的非交互元素-text
+// CardText card content - non-interactive element that can be embedded - text
 type CardText struct {
-	// Tag 元素标签
+	// Tag Element tag
 	Tag CardTextTag
-	// Content 	文本内容
+	// Content Text content
 	Content string
-	// Lines 内容显示行数
+	// Lines content display line number
 	Lines int
 }
 
@@ -658,14 +658,14 @@ func (text *CardText) ToMessage() map[string]interface{} {
 	}
 }
 
-// CardImage 作为图片元素被使用
-// 可用于内容块的extra字段和备注块的elements字段。
+// CardImage is used as an image element
+// Can be used for the extra field of the content block and the elements field of the memo block.
 type CardImage struct {
-	// ImageKey 图片资源
+	// ImageKey image resource
 	ImageKey string
-	// Alt 图片hover说明
+	// Alt Picture hover description
 	Alt *CardText
-	// Preview 点击后是否放大图片，缺省为true
+	// Preview Whether to enlarge the picture after clicking, the default is true
 	Preview bool
 }
 
@@ -696,23 +696,23 @@ func (image *CardImage) ToMessage() map[string]interface{} {
 	}
 }
 
-// LayoutAction 交互元素布局
+// LayoutAction interactive element layout
 type LayoutAction string
 
 const (
-	// Bisected 二等分布局，每行两列交互元素
+	// Bisected 2 Equally distributed layout, two columns per row interactive elements
 	Bisected LayoutAction = "bisected"
-	// Trisection 三等分布局，每行三列交互元素
+	// Trisection Three-level distribution layout, three columns per row of interactive elements
 	Trisection LayoutAction = "trisection"
-	// Flow 流式布局元素会按自身大小横向排列并在空间不够的时候折行
+	// Flow Flow layout elements will be arranged horizontally according to their own size and folded when there is not enough space
 	Flow LayoutAction = "flow"
 )
 
-// CardAction 交互模块
+// CardAction Interactive module
 type CardAction struct {
-	// Actions 交互元素
+	// Actions Interactive elements
 	Actions []ActionElement
-	//  Layout 交互元素布局
+	//  Layout Interactive element layout
 	Layout LayoutAction
 }
 
@@ -749,7 +749,7 @@ func (action *CardAction) ToMessage() map[string]interface{} {
 	return msg
 }
 
-// ActionElement 交互元素
+// ActionElement interactive element
 type ActionElement interface {
 	CardInternal
 	// GetActionTag ActionElement tag
@@ -760,31 +760,31 @@ type ActionElement interface {
 type DatePickerTag string
 
 const (
-	// DatePicker 日期
+	// DatePicker Date
 	DatePicker DatePickerTag = "date_picker"
-	// PickerTime 时间
+	// PickerTime time
 	PickerTime DatePickerTag = "picker_time"
-	// PickerDatetime 日期+时间
+	// PickerDatetime Date + time
 	PickerDatetime DatePickerTag = "picker_datetime"
 )
 
-// DatePickerActionElement 提供时间选择的功能
+// DatePickerActionElement Provides time selection function
 //
-// 可用于内容块的extra字段和交互块的actions字段。
+// can be used The extra field of the content block and the actions field of the interactive block.
 type DatePickerActionElement struct {
 	// Tag tag
 	Tag DatePickerTag
-	// InitialDate 日期模式的初始值 格式"yyyy-MM-dd"
+	// InitialDate The initial value of the date mode Value format"yyyy-MM-dd"
 	InitialDate string
-	// InitialTime 时间模式的初始值 格式"HH:mm"
+	// InitialTime Initial value format of time mode"HH:mm"
 	InitialTime string
-	// InitialDatetime 日期时间模式的初始值 	格式"yyyy-MM-dd HH:mm"
+	// InitialDatetime Initial value of date and time mode Format"yyyy-MM-dd HH:mm"
 	InitialDatetime string
-	// Placeholder 占位符，无初始值时必填
+	// Placeholder placeholder, required when there is no initial value
 	Placeholder *CardText
-	// Value 用户选定后返回业务方的数据 JSON
+	// Value Returns the data JSON of the business side after the user selects it
 	Value map[string]interface{}
-	// Confirm 二次确认的弹框
+	// Confirm 2 The pop-up box for confirmation
 	Confirm *ConfirmElement
 }
 
@@ -855,15 +855,15 @@ func (datePicker *DatePickerActionElement) ToMessage() map[string]interface{} {
 	return msg
 }
 
-// OverflowActionElement 提供折叠的按钮型菜单
+// OverflowActionElement provides a foldable button menu
 //
-// overflow属于交互元素的一种，可用于内容块的extra字段和交互块的actions字段。
+// overflow is a kind of interactive element and can be used in the extra field of the content block and the actions field of the interactive block.
 type OverflowActionElement struct {
-	// Options 待选选项
+	// Options alternative options
 	Options []*OptionElement
-	// Value 用户选定后返回业务方的数据
+	// Value Returns the data of the business side after the user selects it
 	Value map[string]interface{}
-	// Confirm 二次确认的弹框
+	// Confirm 2 The pop-up box for confirmation
 	Confirm *ConfirmElement
 }
 
@@ -916,25 +916,25 @@ func (overflow *OverflowActionElement) ToMessage() map[string]interface{} {
 type SelectMenuTag string
 
 const (
-	// SelectStatic  SelectMenuActionElement select_static tag 选项模式
+	// SelectStatic SelectMenuActionElement select_static tag option mode
 	SelectStatic SelectMenuTag = "select_static"
-	// SelectPerson  SelectMenuActionElement select_person tag 选人模式
+	// SelectPerson SelectMenuActionElement select_person tag Person selection mode
 	SelectPerson SelectMenuTag = "select_person"
 )
 
-// SelectMenuActionElement 作为selectMenu元素被使用，提供选项菜单的功能
+// SelectMenuActionElement is used as the selectMenu element to provide the function of the option menu
 type SelectMenuActionElement struct {
 	// Tag tag
 	Tag SelectMenuTag
-	// Placeholder 占位符，无默认选项时必须有
+	// Placeholder placeholder,
 	Placeholder *CardText
-	// InitialOption 默认选项的value字段值。select_person模式下不支持此配置。
+	// InitialOption Default option value field value. This configuration is not supported in select_person mode.
 	InitialOption string
-	// Options 	待选选项
+	// Options To be selected Option
 	Options []*OptionElement
-	// Value 用户选定后返回业务方的数据 	key-value形式的json结构，且key为String类型
+	// Value. After the user selects the data, the json structure in the form of key-value is returned, and the key is String type.
 	Value map[string]interface{}
-	// Confirm 	二次确认的弹框
+	// Confirm pop-up box for secondary confirmation
 	Confirm *ConfirmElement
 }
 
@@ -1012,27 +1012,27 @@ func (selectMenu *SelectMenuActionElement) ToMessage() map[string]interface{} {
 type ButtonType string
 
 const (
-	// DefaultType  default 次要按钮
+	// DefaultType default Secondary button
 	DefaultType ButtonType = "default"
-	// PrimaryType  primary 主要按钮
+	// PrimaryType primary primary button
 	PrimaryType ButtonType = "primary"
-	// DangerType  danger 警示按钮
+	// DangerType danger warning button
 	DangerType ButtonType = "danger"
 )
 
-// ButtonActionElement 交互组件, 可用于内容块的extra字段和交互块的actions字段
+// ButtonActionElement Interactive component, which can be used for the extra field of the content block and the actions field of the interactive block
 type ButtonActionElement struct {
-	// Text 按钮中的文本
+	// Text Text in the button
 	Text *CardText
-	// Url 跳转链接，和 ButtonActionElement.MultiUrl 互斥
+	// Url Jump link, and ButtonActionElement.MultiUrl are mutually exclusive
 	Url string
-	//  MultiUrl 	多端跳转链接
+	//  MultiUrl multi-terminal jump link
 	MultiUrl *UrlElement
-	// ButtonType 配置按钮样式，默认为"default"
+	// ButtonType configures the button style. The default is"default"
 	ButtonType ButtonType
-	// Value 点击后返回业务方,	仅支持key-value形式的json结构，且key为String类型。
+	// Value After clicking Return to the business side, only supports json structure in the form of key-value, and the key is of String type.
 	Value map[string]interface{}
-	// Confirm 	二次确认的弹框
+	// Confirm pop-up box for secondary confirmation
 	Confirm *ConfirmElement
 }
 
@@ -1094,7 +1094,7 @@ func (button *ButtonActionElement) ToMessage() map[string]interface{} {
 	return msg
 }
 
-// CardLinkElement 指定卡片整体的点击跳转链接
+// CardLinkElement Specify the click jump link of the entire card
 type CardLinkElement struct {
 	*UrlElement
 }
@@ -1134,13 +1134,13 @@ func (element *CardLinkElement) ToMessage() map[string]interface{} {
 	}
 }
 
-// ConfirmElement  用于交互元素的二次确认
+// ConfirmElement Used for secondary confirmation of interactive elements
 //
-//	弹框默认提供确定和取消的按钮，无需开发者手动配置
+//	pop-up box provides OK and Cancel buttons by default, eliminating the need for developers to manually configure
 type ConfirmElement struct {
-	// Title 弹框标题 仅支持"plain_text"
+	// Title The pop-up box title only supports"plain_text"
 	Title *CardText
-	// Text 弹框内容  仅支持"plain_text"
+	// Text Pop-up box content only supports"plain_text"
 	Text *CardText
 }
 
@@ -1161,17 +1161,17 @@ func (element *ConfirmElement) ToMessage() map[string]interface{} {
 
 // OptionElement
 //
-// 作为selectMenu的选项对象
+// as the option object of selectMenu
 //
-// 作为overflow的选项对象
+// As an option object for overflow
 type OptionElement struct {
-	// Text 选项显示内容，非待选人员时必填
+	// Text option to display content, required when not a candidate
 	Text *CardText
-	// Value 选项选中后返回业务方的数据，与url或multi_url必填其中一个
+	// Value option returns the business sides data after being selected, one of which is required with url or multi_url
 	Value string
-	// Url *仅支持overflow，跳转指定链接，和multi_url字段互斥
+	// Url *only supports overflow, jump to specified links, and multi_url fields are mutually exclusive
 	Url string
-	// MultiUrl 	*仅支持overflow，跳转对应链接，和url字段互斥
+	// MultiUrl 	*Only supports overflow, jump corresponding link, and url field are mutually exclusive
 	MultiUrl *UrlElement
 }
 
@@ -1217,19 +1217,19 @@ func (element *OptionElement) ToMessage() map[string]interface{} {
 	return msg
 }
 
-// UrlElement url对象用作多端差异跳转链接
+// UrlElement url object is used as a multi-end differential jump link
 //
-// 可用于button的multi_url字段，支持按键点击的多端跳转。
+// can be used for the multi_url field of the button, supported Multi-terminal jump on key click.
 //
-// 可用于lark_md类型text对象的href字段，支持超链接点击的多端跳转。
+// can be used The href field of the lark_md type text object supports multi-end jumps on hyperlink clicks.
 type UrlElement struct {
-	// Url 	默认跳转链接
+	// Url Default jump link
 	Url string
-	// AndroidUrl 	安卓端跳转链接
+	// AndroidUrl Android side jump link
 	AndroidUrl string
-	// IosUrl 	ios端跳转链接
+	// IosUrl ios end jump Redirect link
 	IosUrl string
-	// PcUrl 	pc端跳转链接
+	// PcUrl PC-side jump link
 	PcUrl string
 }
 

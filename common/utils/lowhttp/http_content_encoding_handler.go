@@ -23,7 +23,7 @@ func ContentEncodingDecode(contentEncoding string, bodyRaw []byte) (finalResult 
 
 	switch true {
 	case utils.IContains(contentEncoding, "gzip"):
-		// 假设在这里已经把 chunked 解决了
+		// Assume that chunked has been solved here
 		if bytes.HasPrefix(bodyRaw, []byte{0x1f, 0x8b, 0x08}) {
 			ungzipedRaw, err := gzip.NewReader(bytes.NewBuffer(bodyRaw[:]))
 			if err != nil && err != io.EOF && err != io.ErrUnexpectedEOF {

@@ -129,12 +129,12 @@ func CurlToHTTPRequest(i string) ([]byte, error) {
 		headers.Set("Referer", referer)
 	}
 
-	// -A 或者 --user-agent 应该覆盖 -H 中设置的
+	// -A or --user-agent should override the
 	if userAgent != "" {
 		headers.Set("User-Agent", userAgent)
 	}
 
-	// 合并 -H 设置的 cookie，和 -b 设置的 cookie。
+	// set in -H to merge the cookies set with -H, and the cookies set with -b.
 	var cookieStrings []string
 	for _, cookie := range cookies.Cookies(fakeU) {
 		cookieStrings = append(cookieStrings, cookie.String())
@@ -320,7 +320,7 @@ func splitCookies(s string) []*http.Cookie {
 	cookies := make([]*http.Cookie, 0, len(kvPairs))
 
 	for _, kvPair := range kvPairs {
-		kvPair = strings.TrimSpace(kvPair) // 去除字符串的开头和结尾的空格
+		kvPair = strings.TrimSpace(kvPair) // removes leading and trailing spaces from a string
 		kv := strings.SplitN(kvPair, "=", 2)
 		if len(kv) == 2 {
 			cookies = append(cookies, &http.Cookie{

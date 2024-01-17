@@ -56,7 +56,7 @@ func NewServerWithLogCache(b bool) (*Server, error) {
 		//log.Warnf("cannot fetch database connection: %v", err)
 		//log.Infof("checking your [%v] 's fs.permission", yakitBase)
 		//
-		//// 不存在数据
+		//// does not exist data
 		//if utils.GetFirstExistedPath(yakitBase) != yakitBase {
 		//	return nil, utils.Errorf("yakit-projects non-existed.")
 		//}
@@ -66,11 +66,11 @@ func NewServerWithLogCache(b bool) (*Server, error) {
 		//	return nil, err
 		//}
 		//
-		//log.Info("数据库遭遇问题/ database met error")
+		//log.Info("database encounters problems/ database met error")
 		//log.Infof("dir: %v mode: %v", yakitBase, f.Mode().String())
-		//log.Infof("尝试/try 0755. (至少对当前用户需要rwx权限 / chmod 0755 %v)", yakitBase)
+		//log.Infof("Try/try 0755. (at least rwx permission is required for the current user) / chmod 0755 %v)", yakitBase)
 		//log.Infof(
-		//	"or... checking owner for %v (检查 *nix 系统下 %v 的 owner 是否为当前用户, 通过 chown -R [your-user] ~/yakit-projects)",
+		//	"or... checking owner for %v (check *Whether the owner of %v in nix system is the current user, pass chown - R [your-user] ~/yakit-projects)",
 		//	yakitBase, yakitBase,
 		//)
 		//
@@ -104,12 +104,12 @@ func (s *Server) initDatabase() error {
 	//	return err
 	//}
 	//howToFix := func() {
-	//	log.Infof("数据库无写权限，请检查 [%v]", s.defaultDatabaseFile)
+	//	log.Infof("database does not have write permissions, please check [%v]", s.defaultDatabaseFile)
 	//	if strings.Contains(strings.ToLower(fd.Mode().String()), "rw") {
-	//		log.Info("可能的问题：数据库文件/或数据库文件所属的目录 owner 不匹配")
+	//		log.Info("Possible problem: Database file/or the directory where the database file belongs owner does not match")
 	//		log.Info("perhaps: the owner for [database file / resource dir] error")
-	//		log.Info("解决方案(1)/try: chown -R [your-user-name] ~/yakit-projects")
-	//		log.Info("解决方案(2)/or try: rm -rf ~/yakit-projects")
+	//		log.Info("solution (1)/try: chown -R [your-user-name] ~/yakit-projects")
+	//		log.Info("Solution (2)/or try: rm -rf ~/yakit-projects")
 	//	}
 	//}
 	//
@@ -144,7 +144,7 @@ func (s *Server) initFacadeServer() error {
 		_, _ = yakit.NewRisk(
 			n.RemoteAddr,
 			yakit.WithRiskParam_Title(fmt.Sprintf("reverse [%v] connection from %s", n.Type, n.RemoteAddr)),
-			yakit.WithRiskParam_TitleVerbose(fmt.Sprintf(`接收到来自 [%v] 的反连[%v]`, n.RemoteAddr, n.Type)),
+			yakit.WithRiskParam_TitleVerbose(fmt.Sprintf(`received reverse connection [%v] from [%v]`, n.RemoteAddr, n.Type)),
 			yakit.WithRiskParam_RiskType(fmt.Sprintf(`reverse-%v`, n.Type)),
 			yakit.WithRiskParam_Details(n),
 			yakit.WithRiskParam_Token(n.Token),
@@ -181,10 +181,10 @@ func (s *Server) initFacadeServer() error {
 }
 
 func (s *Server) initBasicData() error {
-	// 初始化各种 payload
+	// initializes various payloads
 	var err error
 
-	// 检查版本，如果版本和当前版本不匹配，自动删除缓存
+	// to check the version. If the version does not match the current version, automatically delete the cache.
 	EngineVersionKey := "_YAKLANG_ENGINE_VERSION"
 	if yakit.GetKey(s.GetProfileDatabase(), EngineVersionKey) != consts.GetYakVersion() {
 		yakit.SetKey(s.GetProfileDatabase(), EngineVersionKey, consts.GetYakVersion())

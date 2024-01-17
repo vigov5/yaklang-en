@@ -26,8 +26,8 @@ func testScriptWithTimeout(duration time.Duration, t *testing.T, code string, ex
 
 }
 func TestScriptEngine(t *testing.T) {
-	testScriptWithTimeout(400*time.Millisecond, t, `time.sleep(0.5)`, "context deadline exceeded") // 测试超时
-	testScriptWithTimeout(700*time.Millisecond, t, `time.sleep(0.5)`, "")                          // 测试不超时
+	testScriptWithTimeout(400*time.Millisecond, t, `time.sleep(0.5)`, "context deadline exceeded") // Test times out
+	testScriptWithTimeout(700*time.Millisecond, t, `time.sleep(0.5)`, "")                          // Test does not time out
 }
 func TestImport(t *testing.T) {
 	var fp, err = os.CreateTemp(os.TempDir(), "import-test-*.txt")

@@ -8,7 +8,7 @@ import (
 	"github.com/yaklang/yaklang/common/utils"
 )
 
-// Pull 用于指定一个本地仓库，并从其远程仓库中获取代码并合并到本地仓库中，这种行为称之为拉取(pull)，它还可以接收零个到多个选项函数，用于影响拉取行为
+// Pull is used to specify a local repository, obtain code from its remote repository and merge it into the local repository. This behavior is called pull. It can also receive zero to multiple option functions for influencing pull behavior
 // Example:
 // ```
 // git.Pull("C:/Users/xxx/Desktop/yaklang", git.verify(false), git.remote("origin"))

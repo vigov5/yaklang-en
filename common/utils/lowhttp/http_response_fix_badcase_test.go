@@ -62,7 +62,7 @@ func TestSendHTTPRequestRaw_WIREDJS(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	if !strings.Contains(string(body), `安全员管理`) {
+	if !strings.Contains(string(body), `Security Officer Management`) {
 		panic(1)
 	}
 	_ = body

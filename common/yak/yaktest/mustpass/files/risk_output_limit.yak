@@ -1,8 +1,8 @@
 id = uuid()
 
 bigSize = str.Repeat("hello", 3*1024*1024/len("hello"))
-bigSize2 = str.Repeat("你好", 3*1024*1024/len("你好"))
-bigSize3 = str.Repeat("hello 你好", 3*1024*1024/len("hello 你好"))
+bigSize2 = str.Repeat("hello", 3*1024*1024/len("hello"))
+bigSize3 = str.Repeat("hello hello", 3*1024*1024/len("hello hello"))
 
 risk.NewRisk("www.example.com",
     risk.runtimeId(id),

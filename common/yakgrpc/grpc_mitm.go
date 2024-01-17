@@ -131,7 +131,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 	if err != nil {
 		return utils.Errorf("recv first req failed: %s", err)
 	}
-	feedbackToUser("接收到 MITM 启动参数 / receive mitm config request")
+	feedbackToUser("Receive Go to MITM startup parameters / receive mitm config request")
 	hostMapping := make(map[string]string)
 	var (
 		host            string = "127.0.0.1"
@@ -148,7 +148,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		hostMapping[pair.GetKey()] = pair.GetValue()
 	}
 	if !firstReq.GetEnableProxyAuth() {
-		// 如果用户名密码不启用，设置为空
+		// If the username and password are not enabled, set it to empty
 		proxyUsername = ""
 		proxyPassword = ""
 	}
@@ -158,34 +158,34 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		return utils.Errorf("proxy username cannot contains ':'")
 	}
 
-	// 容错处理一下代理
+	// Handle the proxy
 	downstreamProxy = strings.Trim(downstreamProxy, `":`)
 	if downstreamProxy == "0" {
 		downstreamProxy = ""
 	}
 	if downstreamProxy != "" {
-		feedbackToUser(fmt.Sprintf("启用下游代理为 / downstream proxy:[%v]", downstreamProxy))
+		feedbackToUser(fmt.Sprintf("Enable the downstream agent for / downstream proxy:[%v]", downstreamProxy))
 		proxyUrl, err := url.Parse(downstreamProxy)
 		if err != nil {
-			feedbackToUser(fmt.Sprintf("下游代理检测失败 / downstream proxy failed:[%v] %v", downstreamProxy, err))
+			feedbackToUser(fmt.Sprintf("Downstream proxy detection failed / downstream proxy failed:[%v] %v", downstreamProxy, err))
 			return utils.Errorf("cannot use proxy[%v]", err)
 		}
 		_, port, err := utils.ParseStringToHostPort(proxyUrl.Host)
 		if err != nil {
-			feedbackToUser(fmt.Sprintf("下游代理检测失败 / downstream proxy failed:[%v] %v", downstreamProxy, "parse host to host:port failed "+err.Error()))
+			feedbackToUser(fmt.Sprintf("Downstream proxy detection failed / downstream proxy failed:[%v] %v", downstreamProxy, "parse host to host:port failed "+err.Error()))
 			return utils.Errorf("parse proxy host failed: %s", proxyUrl.Host)
 		}
 		if port <= 0 {
-			feedbackToUser(fmt.Sprintf("下游代理检测失败 / downstream proxy failed:[%v] %v", downstreamProxy, "缺乏端口（Miss Port）"))
+			feedbackToUser(fmt.Sprintf("Downstream proxy detection failed / downstream proxy failed:[%v] %v", downstreamProxy, ". Miss Port."))
 			return utils.Errorf("proxy miss port. [%v]", proxyUrl.Host)
 		}
-		conn, err := netx.ProxyCheck(downstreamProxy, 5*time.Second) // 代理检查只做log记录，不在阻止MITM启动
+		conn, err := netx.ProxyCheck(downstreamProxy, 5*time.Second) // The agent check only logs, not Prevent MITM from starting
 		if err != nil {
-			errInfo := "代理不通（Proxy Cannot be connected）"
+			errInfo := "Proxy Cannot be connected"
 			if errors.Is(err, netx.ErrorProxyAuthFailed) {
-				errInfo = "认证失败（Proxy Auth Fail）"
+				errInfo = "authentication Failure (Proxy Auth Fail)"
 			}
-			feedbackToUser(fmt.Sprintf("下游代理检测失败 / downstream proxy failed:[%v] %v", downstreamProxy, errInfo))
+			feedbackToUser(fmt.Sprintf("Downstream proxy detection failed / downstream proxy failed:[%v] %v", downstreamProxy, errInfo))
 		}
 		if conn != nil {
 			conn.Close()
@@ -207,25 +207,25 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 
 	log.Infof("start to create mitm server instance for %v", addr)
 
-	// 创建一个劫持流用来控制流程
+	// Create a hijack flow to control the process
 	hijackingStream := make(chan int64, 1)
 	defer func() {
 		close(hijackingStream)
 	}()
 
-	feedbackToUser("初始化劫持流... / initializing hijacking stream")
+	feedbackToUser("Initialize the hijack flow... / initializing hijacking stream")
 
-	// 设置过滤器
+	// Set the filter
 	// 10M - 10 * 1000 * 1000
 	packetLimit := 8 * 10 * 1000 * 1000 // 80M
 
 	/*
-		设置过滤器
+		Set the filter
 	*/
 	filterManager := NewMITMFilterManager(s.GetProfileDatabase())
 
 	/*
-		设置内容替换模块，通过正则驱动
+		Set the content replacement module and drive
 	*/
 	replacer := NewMITMReplacer(func() []*ypb.MITMContentReplacer {
 		result := yakit.GetKey(s.GetProfileDatabase(), MITMReplacerKeyRecords)
@@ -266,9 +266,9 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		})
 	}
 
-	feedbackToUser("初始化过滤器... / initializing filters")
+	feedbackToUser("Initialize filter... / initializing filters")
 
-	// 开始准备劫持
+	// Start preparing to hijack
 	// var hijackedResponseByRequestPTRMap = new(sync.Map)
 
 	// callers := yak.NewYakToCallerManager()
@@ -290,7 +290,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		}
 		stream.Send(&ypb.MITMResponse{
 			HaveNotification:    true,
-			NotificationContent: []byte("MITM 插件去重缓存已重置"),
+			NotificationContent: []byte("MITM plug-in deduplication cache has been reset"),
 		})
 	}
 
@@ -302,7 +302,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		currentTask:    "",
 	}
 
-	waitNewHijackTask := func() { // 等待队列有可劫持任务
+	waitNewHijackTask := func() { // There are hijackable tasks in the waiting queue
 		controller.canDequeueCond.L.Lock()
 		defer controller.canDequeueCond.L.Unlock()
 		for !controller.canDequeue.IsSet() {
@@ -313,7 +313,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 	waitHijackFinish := func(currentStatus *taskStatus) {
 		currentStatus.statusChangeCond.L.Lock()
 		defer currentStatus.statusChangeCond.L.Unlock()
-		for currentStatus.status < 1 { // 完成或者放行
+		for currentStatus.status < 1 { // intact or release
 			currentStatus.statusChangeCond.Wait()
 		}
 	}
@@ -345,7 +345,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		}
 	}()
 
-	// 消息循环
+	// Message loop
 	messageChan := make(chan *ypb.MITMRequest, 10000)
 	go func() {
 		defer close(messageChan)
@@ -387,7 +387,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 				continue
 			}
 
-			// 自动加载所有 MITM 插件（基础插件）
+			// Automatically load all MITM plug-ins ( Basic plug-in)
 			if reqInstance.SetPluginMode {
 				clearPluginHTTPFlowCache()
 				if len(reqInstance.GetInitPluginNames()) > 0 {
@@ -395,12 +395,12 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 					if len(reqInstance.GetInitPluginNames()) > 200 && false {
 						plugins = reqInstance.GetInitPluginNames()[:200]
 						stream.Send(&ypb.MITMResponse{HaveNotification: true, NotificationContent: []byte(
-							"批量加载插件受限，最多一次性加载200个插件",
+							"batch loading of plug-ins is limited, up to 200 plug-ins can be loaded at one time",
 						)})
 					} else {
 						plugins = reqInstance.GetInitPluginNames()
 					}
-					var failedPlugins []string // 失败插件
+					var failedPlugins []string // Failed plug-in
 					var loadedPlugins []string
 					stream.Send(&ypb.MITMResponse{HaveLoadingSetter: true, LoadingFlag: true})
 					swg := utils.NewSizedWaitGroup(50)
@@ -445,20 +445,20 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 					duration := time.Now().Sub(startTime).Seconds()
 					stream.Send(&ypb.MITMResponse{HaveLoadingSetter: true, LoadingFlag: false})
 					stream.Send(&ypb.MITMResponse{HaveNotification: true, NotificationContent: []byte(fmt.Sprintf(
-						"初始化加载插件完成，加载成功【%v】个，失败【%v】个, 共耗时 %f 秒。", len(loadedPlugins), len(failedPlugins), duration,
+						"plug-ins is completed. [%v] were successfully loaded and [%v] failed. It took a total of %f seconds.", len(loadedPlugins), len(failedPlugins), duration,
 					))})
 				}
 				clearPluginHTTPFlowCache()
 				continue
 			}
 
-			// 清除 MITM 缓存
+			// Clear MITM cache
 			if reqInstance.SetClearMITMPluginContext {
 				clearPluginHTTPFlowCache()
 				continue
 			}
 
-			// 清除 hook (会执行 clear 来清除垃圾)
+			// Clear hook (clear will be executed to clear garbage)
 			if reqInstance.RemoveHook {
 				clearPluginHTTPFlowCache()
 				mitmPluginCaller.GetNativeCaller().Remove(reqInstance.GetRemoveHookParams())
@@ -469,18 +469,18 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 				continue
 			}
 
-			// 设置自动转发
+			// Set up automatic forwarding
 			if reqInstance.GetSetAutoForward() {
 				clearPluginHTTPFlowCache()
-				beforeAuto := autoForward.IsSet() // 存当前状态
+				beforeAuto := autoForward.IsSet() // Save the current state
 				log.Debugf("mitm-auto-forward: %v", reqInstance.GetAutoForwardValue())
 				autoForward.SetTo(reqInstance.GetAutoForwardValue())
-				if !beforeAuto && autoForward.IsSet() { // 当 f -> t 时发送信号
+				if !beforeAuto && autoForward.IsSet() { // . When f -> when t Send signal
 					autoForwardCh <- struct{}{}
 				}
 			}
 
-			// 设置中间人插件
+			// Set the middleman plug-in
 			if reqInstance.SetYakScript {
 				clearPluginHTTPFlowCache()
 				script, _ := yakit.GetYakScript(s.GetProfileDatabase(), reqInstance.GetYakScriptID())
@@ -492,7 +492,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 					if err != nil {
 						_ = stream.Send(&ypb.MITMResponse{
 							HaveNotification:    true,
-							NotificationContent: []byte(fmt.Sprintf("加载失败[%v]：%v", script.ScriptName, err)),
+							NotificationContent: []byte(fmt.Sprintf("Loading failed [%v]: %v", script.ScriptName, err)),
 						})
 						log.Error(err)
 					}
@@ -515,7 +515,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 				continue
 			}
 
-			// 获取当前已经启用的插件
+			// Get the currently enabled plug-in
 			if reqInstance.GetCurrentHook {
 				_ = stream.Send(&ypb.MITMResponse{
 					GetCurrentHook: true,
@@ -524,7 +524,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 				continue
 			}
 
-			// 更新过滤器
+			// Update filter
 			if reqInstance.UpdateFilter {
 				clearPluginHTTPFlowCache()
 				filterManager.IncludeSuffix = reqInstance.IncludeSuffix
@@ -558,10 +558,10 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		}
 	}()
 
-	feedbackToUser("创建 MITM 服务器 / creating mitm server")
+	feedbackToUser("Create MITM server / creating mitm server")
 
 	/*
-		设置数据包计数器
+		Set the packet counter
 	*/
 	offset := time.Now().UnixNano()
 	count := 0
@@ -577,19 +577,19 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		return fmt.Sprintf("%v_%v", offset, count)
 	}
 
-	// 缓存 Websocket ID (当前程序的指针，一般不太会有问题)
+	// Cache Websocket ID (currently The pointer of the program is generally not a problem)
 	/*
-		真正开始劫持的函数，以下内容分别针对
-		1. 劫持 Websocket 的请求和响应
-		2. 劫持普通 HTTP 的请求和响应
-		3. 镜像 HTTP 请求和响应
+		is the function that actually starts hijacking. The following contents are respectively for
+		1. Hijack Websocket request and response
+		2. Hijack ordinary HTTP requests and responses
+		3. Mirror HTTP request and response
 	*/
 	var wshashFrameIndexLock sync.Mutex
 	var mServer *crep.MITMServer
 	websocketHashCache := new(sync.Map)
 	wshashFrameIndex := make(map[string]int)
 	requireWsFrameIndexByWSHash := func(i string) int {
-		/*这个函数目前用在 Hijack 里面，不太需要加锁，因为 mitmLock 已经一般生效了*/
+		/*starts to hijack*/
 		wshashFrameIndexLock.Lock()
 		defer wshashFrameIndexLock.Unlock()
 		result, ok := wshashFrameIndex[i]
@@ -609,11 +609,11 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 			}
 		}()
 
-		/* 这儿比单纯劫持响应要简单的多了 */
+		/* This is much simpler than simply hijacking the response */
 		originRspRaw := raw[:]
 		finalResult = originRspRaw
 
-		// 保存到数据库
+		// Save to the database
 		wshash := utils.CalcSha1(fmt.Sprintf("%p", req), fmt.Sprintf("%p", rsp), ts)
 		err := yakit.SaveFromServerWebsocketFlow(s.GetProjectDatabase(), wshash, requireWsFrameIndexByWSHash(wshash), raw[:])
 		if err != nil {
@@ -621,7 +621,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		}
 
 		if autoForward.IsSet() {
-			// 自动转发的内容，按理说这儿应该接入内部规则
+			// Automatically forwarded content, logically it should be connected to internal rules
 			return originRspRaw
 		}
 
@@ -632,7 +632,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		//if !ok {
 		// return raw
 		//}
-		taskID := utils.CalcSha1(fmt.Sprintf("ws:%p[%s]", req, time.Now().String())) // ws特殊处理 由于一对多的模式 所以不需要请求劫持响应一一对应 响应和请求同级
+		taskID := utils.CalcSha1(fmt.Sprintf("ws:%p[%s]", req, time.Now().String())) // ws special processing is not possible due to the one-to-many mode. The request hijacking response needs to correspond one-to-one with the request sibling
 		controller.Register(taskID)
 		if controller.waitHijack(taskID) == autoFoward {
 			return raw
@@ -663,7 +663,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 				return raw
 			}
 
-			// 如果出现了问题，丢失上下文，可以通过 recover 来恢复
+			// if If a problem occurs and the context is lost, you can restore
 			if reqInstance.GetRecover() {
 				log.Infof("retry recover mitm session")
 				send(feedbackRspIns)
@@ -779,15 +779,15 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 			rsp = httpctx.GetHijackedResponseBytes(req)
 		}
 
-		// 自动转发与否
-		if autoForward.IsSet() { // 如果其请求是自动转发的，响应也不应该劫持
+		// Automatically forward or not
+		if autoForward.IsSet() { // If its request is automatically forwarded, the response should not hijack
 			httpctx.SetContextValueInfoFromRequest(req, httpctx.RESPONSE_CONTEXT_KEY_AutoFoward, true)
 			/*
-				自动过滤下，不是所有 response 都应该替换
-				应该替换的条件是不匹配过滤器的内容
+				automatically filters, not all responses should replace
+				should replace is the content that does not match the filter.
 			*/
 
-			// 处理响应规则
+			// Process the response rule
 			if replacer.haveHijackingRules() {
 				rules, rspHooked, dropped := replacer.hook(false, true, rsp)
 				if dropped {
@@ -805,7 +805,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 			return rsp
 		}
 
-		// 非自动转发的情况下处理替换器
+		// Process replacer in case of non-automatic forwarding
 		rules, rsp1, shouldBeDropped := replacer.hook(false, true, rsp)
 		if shouldBeDropped {
 			log.Warn("response should be dropped(VIA replacer.hook)")
@@ -830,7 +830,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		}
 
 		taskID := utils.CalcSha1(fmt.Sprintf("%p", req))
-		if taskID != controller.currentTask { //  只劫持当前请求对应的响应，避免超时请求导致的错误响应劫持
+		if taskID != controller.currentTask { //  only hijack the response corresponding to the current request, Avoid error response hijacking caused by timeout requests
 			log.Debugf("not want resp, auto forward")
 			return originRspRaw
 		}
@@ -862,7 +862,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 				return rsp
 			}
 
-			// 如果出现了问题，丢失上下文，可以通过 recover 来恢复
+			// if If a problem occurs and the context is lost, you can restore
 			if reqInstance.GetRecover() {
 				log.Infof("retry recover mitm session")
 				send(feedbackRspIns)
@@ -936,8 +936,8 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		wshash := utils.CalcSha1(fmt.Sprintf("%p", req), fmt.Sprintf("%p", rsp), ts)
 		_, ok := websocketHashCache.Load(wshash)
 		if !ok {
-			// 证明这是新的 wshash
-			// 在这儿可以给数据库增加一个记录了
+			// Prove this is a new wshash
+			// Here you can add a record to the database
 			websocketHashCache.Store(wshash, true)
 
 			flow, err := yakit.CreateHTTPFlowFromHTTPWithBodySaved(
@@ -961,13 +961,13 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		originReqRaw := raw[:]
 		finalResult = originReqRaw
 
-		// 保存每一个请求
+		// Save each request
 		err = yakit.SaveToServerWebsocketFlow(s.GetProjectDatabase(), wshash, requireWsFrameIndexByWSHash(wshash), raw[:])
 		if err != nil {
 			log.Warnf("save to websocket flow failed: %s", err)
 		}
 
-		// MITM 自动转发
+		// MITM Automatically forward
 		if autoForward.IsSet() {
 			return raw
 		}
@@ -980,9 +980,9 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		//	encode = append(encode, "protobuf")
 		//}
 
-		taskID := utils.CalcSha1(fmt.Sprintf("ws:%p[%s]", req, time.Now().String())) // ws特殊处理 由于一对多的模式 所以不需要请求劫持响应一一对应。
+		taskID := utils.CalcSha1(fmt.Sprintf("ws:%p[%s]", req, time.Now().String())) // ws special processing does not require one-to-one correspondence of request hijacking and response due to the one-to-many mode.
 		controller.Register(taskID)
-		if controller.waitHijack(taskID) == autoFoward { // 自动放行
+		if controller.waitHijack(taskID) == autoFoward { // Automatically release
 			return raw
 		}
 
@@ -1041,37 +1041,37 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 					send(feedbackOrigin)
 				}
 
-				// 如果 ID 对不上，返回来的是旧的，已经不需要处理的 ID，则重新接受等待新的
+				// . If the ID does not match, the old ID returned is the one that no longer needs to be processed, and the new
 				if reqInstance.GetId() < id {
 					log.Warnf("MITM %v recv old hijacked request[%v]", addr, reqInstance.GetId())
 					goto RECV
 				}
 
-				// 直接丢包
+				// Direct packet loss
 				if reqInstance.GetDrop() {
 					return nil
 				}
 
-				// 原封不动转发
+				// Forward
 				if reqInstance.GetForward() {
 					httpctx.SetContextValueInfoFromRequest(req, httpctx.RESPONSE_CONTEXT_KEY_ShouldBeHijackedFromRequest, false)
 					return originReqRaw
 				}
 
 				if reqInstance.GetHijackResponse() {
-					// 设置需要劫持resp
+					// sets the need to hijack resp.
 					httpctx.SetContextValueInfoFromRequest(req, httpctx.RESPONSE_CONTEXT_KEY_ShouldBeHijackedFromRequest, true)
 					log.Infof("the ws hash: %s's mitm ws response is waiting for hijack response", wshash)
-					continue // 需要重新回到recv
+					continue // Need to return to recv
 				}
 				if reqInstance.GetCancelhijackResponse() {
-					// 设置不需要劫持resp
+					// The setting does not require hijacking resp
 					httpctx.SetContextValueInfoFromRequest(req, httpctx.RESPONSE_CONTEXT_KEY_ShouldBeHijackedFromRequest, false)
 					log.Infof("the ws hash: %s's mitm ws response cancel hijack response", wshash)
 					continue
 				}
 
-				// 把修改后的请求放回去
+				// put the modified request back
 				requestModified := reqInstance.GetRequest()
 				return requestModified
 			}
@@ -1084,7 +1084,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 			return ret
 		})
 
-		// 保证始终只有一个 Goroutine 在处理请求
+		// Ensure that there is always only one Goroutine processing the request
 		defer func() {
 			if err := recover(); err != nil {
 				log.Warnf("Hijack warning: %v", err)
@@ -1126,7 +1126,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 			httpctx.SetRequestModified(originReqIns, "yakit.mitm.replacer")
 		}
 
-		/* 由 MITM Hooks 触发 */
+		/* Triggered by MITM Hooks */
 		var (
 			dropped  = utils.NewBool(false)
 			urlStr   = ""
@@ -1174,7 +1174,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 				dropped.Set()
 			}))
 
-		// 如果丢弃就直接丢！
+		// If discarded, just discard it!
 		if dropped.IsSet() {
 			httpctx.SetContextValueInfoFromRequest(originReqIns, httpctx.REQUEST_CONTEXT_KEY_IsDropped, true)
 			return nil
@@ -1184,31 +1184,31 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 			req = httpctx.GetHijackedRequestBytes(originReqIns)
 		}
 
-		// 过滤
+		// Filter
 		if !filterManager.IsPassed(method, hostname, urlStr, extName, isHttps) {
 			httpctx.SetContextValueInfoFromRequest(originReqIns, httpctx.REQUEST_CONTEXT_KEY_RequestIsFiltered, true)
 			return req
 		}
 
-		// MITM 手动劫持放行
+		// MITM Manual hijack and release
 		if autoForward.IsSet() {
 			httpctx.SetContextValueInfoFromRequest(originReqIns, httpctx.REQUEST_CONTEXT_KEY_AutoFoward, true)
 			return req
 		}
 
 		taskID := utils.CalcSha1(fmt.Sprintf("%p", originReqIns))
-		controller.Register(taskID)                      // 加入队列
-		if controller.waitHijack(taskID) == autoFoward { // 等待劫持
+		controller.Register(taskID)                      // . Add to the queue
+		if controller.waitHijack(taskID) == autoFoward { // Waiting to hijack
 			return req
 		}
 
 		defer func() {
-			if !httpctx.GetContextBoolInfoFromRequest(originReqIns, httpctx.RESPONSE_CONTEXT_KEY_ShouldBeHijackedFromRequest) { // 如果不需要劫持请求则可以直接设置此次hijack已完成
+			if !httpctx.GetContextBoolInfoFromRequest(originReqIns, httpctx.RESPONSE_CONTEXT_KEY_ShouldBeHijackedFromRequest) { // . If the hijack request is not required, you can set it directly. This hijack has been completed.
 				controller.finishHijack(taskID)
 			}
 		}()
 
-		// 开始劫持
+		// start hijacking
 		counter := time.Now().UnixNano()
 		select {
 		case hijackingStream <- counter:
@@ -1220,7 +1220,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		case <-stream.Context().Done():
 			return req
 		case id, ok := <-hijackingStream:
-			// channel 可以保证线程安全
+			// channel can ensure thread safety.
 			if !ok {
 				return req
 			}
@@ -1263,7 +1263,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 					return req
 				}
 
-				// 如果出现了问题，丢失上下文，可以通过 recover 来恢复
+				// if If a problem occurs and the context is lost, you can restore
 				if reqInstance.GetRecover() {
 					log.Infof("retry recover mitm session")
 					send(feedbackOrigin)
@@ -1276,7 +1276,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 				}
 
 				if reqInstance.GetHijackResponse() {
-					// 设置需要劫持resp
+					// sets the need to hijack resp.
 					httpctx.SetContextValueInfoFromRequest(originReqIns, httpctx.RESPONSE_CONTEXT_KEY_ShouldBeHijackedFromRequest, true)
 					hijackedPtr := fmt.Sprintf("%p", originReqIns)
 					log.Infof("the ptr: %v's mitm request is waiting for hijack response", hijackedPtr)
@@ -1288,18 +1288,18 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 					log.Infof("the ptr: %v's mitm request cancel hijack response", hijackedPtr)
 					continue
 				}
-				// 如果 ID 对不上，返回来的是旧的，已经不需要处理的 ID，则重新接受等待新的
+				// . If the ID does not match, the old ID returned is the one that no longer needs to be processed, and the new
 				if reqInstance.GetId() < id {
 					log.Warnf("MITM %v recv old hijacked request[%v]", addr, reqInstance.GetId())
 					goto RECV
 				}
 
-				// 直接丢包
+				// Direct packet loss
 				if reqInstance.GetDrop() {
 					log.Infof("MITM %v recv drop hijacked request[%v]", addr, reqInstance.GetId())
-					httpctx.SetContextValueInfoFromRequest(originReqIns, httpctx.RESPONSE_CONTEXT_KEY_ShouldBeHijackedFromRequest, false) // 设置无需劫持resp
+					httpctx.SetContextValueInfoFromRequest(originReqIns, httpctx.RESPONSE_CONTEXT_KEY_ShouldBeHijackedFromRequest, false) // . No need to hijack resp.
 					httpctx.SetContextValueInfoFromRequest(originReqIns, httpctx.REQUEST_CONTEXT_KEY_IsDropped, true)
-					// 保存到数据库
+					// Save to the database
 					log.Debugf("start to create httpflow from mitm[%v %v]", originReqIns.Method, truncate(originReqIns.URL.String()))
 					startCreateFlow := time.Now()
 					flow, err := yakit.CreateHTTPFlowFromHTTPWithNoRspSaved(isHttps, originReqIns, "mitm", originReqIns.URL.String(), remoteAddr)
@@ -1308,23 +1308,23 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 						return nil
 					}
 					log.Debugf("yakit.CreateHTTPFlowFromHTTPWithBodySaved for %v cost: %s", truncate(originReqIns.URL.String()), time.Now().Sub(startCreateFlow))
-					// Hidden Index 用来标注 MITM 劫持的顺序
+					// Hidden Index is used to mark the order of MITM hijacking
 					flow.HiddenIndex = getPacketIndex()
 					flow.Hash = flow.CalcHash()
-					flow.AddTagToFirst("[被丢弃]")
+					flow.AddTagToFirst("[Discarded]")
 					flow.Purple()
 
 					log.Debugf("mitmPluginCaller.HijackSaveHTTPFlow for %v cost: %s", truncate(originReqIns.URL.String()), time.Now().Sub(startCreateFlow))
 					startCreateFlow = time.Now()
 
-					// HOOK 存储过程
+					// HOOK stored procedure
 					flow.Hash = flow.CalcHash()
-					flow.StatusCode = 200 // 这里先设置成200
+					flow.StatusCode = 200 // Here, set it to 200
 					flow.Response = ""
 					// log.Infof("start to do sth with tag")
 					for i := 0; i < 3; i++ {
 						startCreateFlow = time.Now()
-						// 用户丢弃请求后，这个flow表现在http history中应该是不包含响应的
+						// user discards the request. , this flow should not contain the response in the http history.
 						err = yakit.InsertHTTPFlow(s.GetProjectDatabase(), flow)
 						log.Debugf("insert http flow %v cost: %s", truncate(originReqIns.URL.String()), time.Now().Sub(startCreateFlow))
 						if err != nil {
@@ -1337,14 +1337,14 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 					return nil
 				}
 
-				// 原封不动转发
+				// Forward
 				if reqInstance.GetForward() {
 					return originReqRaw
 				}
 
 				current := reqInstance.GetRequest()
 				if bytes.Contains(current, []byte{'{', '{'}) || bytes.Contains(current, []byte{'}', '}'}) {
-					// 在这可能包含 fuzztag
+					// . This may contain fuzztag
 					result := mutate.MutateQuick(current)
 					if len(result) > 0 {
 						current = []byte(result[0])
@@ -1362,7 +1362,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 	handleMirrorResponse := func(isHttps bool, reqUrl string, req *http.Request, rsp *http.Response, remoteAddr string) {
 		addCounter()
 
-		// 不符合劫持条件就不劫持
+		// does not hijack
 		isFilteredByResponse := httpctx.GetContextBoolInfoFromRequest(req, httpctx.RESPONSE_CONTEXT_KEY_ResponseIsFiltered)
 		isFilteredByRequest := httpctx.GetContextBoolInfoFromRequest(req, httpctx.REQUEST_CONTEXT_KEY_RequestIsFiltered)
 		isRequestModified := httpctx.GetRequestIsModified(req)
@@ -1405,18 +1405,18 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 			mitmPluginCaller.MirrorHTTPFlow(isHttps, reqUrl, plainRequest, plainResponse, body, shouldBeHijacked)
 		}()
 
-		// 劫持过滤
+		// Hijack filter
 		if isFiltered {
 			return
 		}
 
-		// 保存到数据库
+		// Save to the database
 		log.Debugf("start to create httpflow from mitm[%v %v]", req.Method, truncate(reqUrl))
 		startCreateFlow := time.Now()
 		var flow *yakit.HTTPFlow
 		if httpctx.GetContextBoolInfoFromRequest(req, httpctx.RESPONSE_CONTEXT_NOLOG) {
 			flow, err = yakit.CreateHTTPFlowFromHTTPWithNoRspSaved(isHttps, req, "mitm", reqUrl, remoteAddr)
-			flow.StatusCode = 200 // 先设置成200
+			flow.StatusCode = 200 // Set it to 200 first
 		} else {
 			flow, err = yakit.CreateHTTPFlowFromHTTPWithBodySaved(isHttps, req, rsp, "mitm", reqUrl, remoteAddr) // , !responseOverSize)
 		}
@@ -1429,23 +1429,23 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 
 		flow.FitHTTPRequest(req)
 
-		// Hidden Index 用来标注 MITM 劫持的顺序
+		// Hidden Index is used to mark the order of MITM hijacking
 		flow.HiddenIndex = getPacketIndex()
 		flow.Hash = flow.CalcHash()
 		if isViewed {
 			if isModified {
-				flow.AddTagToFirst("[手动修改]")
+				flow.AddTagToFirst("[Manual modification]")
 				flow.Red()
 			} else {
-				flow.AddTagToFirst("[手动劫持]")
+				flow.AddTagToFirst("[Manual hijack]")
 				flow.Orange()
 			}
 		}
 		if isResponseDropped {
-			flow.AddTagToFirst("[响应被丢弃]")
+			flow.AddTagToFirst("[Response discarded]")
 			flow.Purple()
 		}
-		// 额外添加用户手动设置的标签
+		// Add additional tags manually set by the user
 		tags := httpctx.GetFlowTags(req)
 		if len(tags) > 0 {
 			flow.AddTag(tags...)
@@ -1567,7 +1567,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 			log.Debugf("insert http flow %v cost: %s", truncate(reqUrl), time.Now().Sub(startCreateFlow))
 		}
 
-		// 存储KV，将flow ID作为key，bare request和bare response作为value
+		// Store KV, use flow ID as key, bare request and bare response as value
 		if httpctx.GetRequestIsModified(req) {
 			bareReq := httpctx.GetPlainRequestBytes(req)
 			if len(bareReq) == 0 {
@@ -1594,7 +1594,7 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 			}
 		}
 	}
-	// 核心 MITM 服务器
+	// Core MITM Server
 	var opts []crep.MITMConfig
 	for _, cert := range firstReq.GetCertificates() {
 		opts = append(opts, crep.MITM_MutualTLSClient(cert.CrtPem, cert.KeyPem, cert.GetCaCertificates()...))
@@ -1624,12 +1624,12 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		return err
 	}
 
-	// 发送第一个设置状态
+	// Send the first setting status
 	recoverSend()
-	// 发送第二个来设置 replacer
+	// sends the second one Set replacer
 	recoverSend()
 
-	feedbackToUser("MITM 服务器已启动 / starting mitm server")
+	feedbackToUser("MITM Server has started / starting mitm server")
 	log.Infof("start serve mitm server for %s", addr)
 	// err = mServer.Run(ctx)
 	err = mServer.Serve(ctx, utils.HostPort(host, port))
@@ -1682,7 +1682,7 @@ func (s *Server) ImportMITMReplacerRules(ctx context.Context, req *ypb.ImportMIT
 	}
 
 	if len(newRules) <= 0 {
-		return nil, utils.Error("规则解析失败(没有新规则导入): no new rules found")
+		return nil, utils.Error("Rule parsing failed (no new rules are imported): no new rules found")
 	}
 
 	if replace {
@@ -1789,29 +1789,29 @@ type taskStatus struct {
 func (h *hijackTaskController) Register(taskID string) {
 	h.enqueue(taskID)
 	if h.queueSize() == 1 {
-		h.canDequeueCond.L.Lock() // 第一个元素进入队列的时候，需要唤醒等待的线程
+		h.canDequeueCond.L.Lock() // When the first element enters the queue, you need to wake up the waiting thread
 		h.canDequeue.Set()
 		h.canDequeueCond.Broadcast()
 		h.canDequeueCond.L.Unlock()
 	}
 }
 
-func (h *hijackTaskController) waitHijack(taskID string) hijackStatusCode { // mitm 任务等待劫持 任务调用
+func (h *hijackTaskController) waitHijack(taskID string) hijackStatusCode { // mitm task waits for the hijacking task to call
 	thisStatus := h.getStatus(taskID)
-	if thisStatus == nil { // 如果没有查到状态则自动放行
+	if thisStatus == nil { // If no status is found, release it automatically
 		return autoFoward
 	}
 	thisStatus.statusChangeCond.L.Lock()
 	defer thisStatus.statusChangeCond.L.Unlock()
-	for thisStatus.status == waitHijack { // 状态不为等待即可放行
+	for thisStatus.status == waitHijack { // If the status is not waiting, you can release
 		thisStatus.statusChangeCond.Wait()
 	}
 	return thisStatus.status
 }
 
-func (h *hijackTaskController) finishHijack(taskID string) { // mitm 任务结束 任务调用
+func (h *hijackTaskController) finishHijack(taskID string) { // mitm End the task and call
 	thisStatus := h.getStatus(taskID)
-	if thisStatus == nil { // 如果没有查到状态则自动放行
+	if thisStatus == nil { // If no status is found, release it automatically
 		return
 	}
 	thisStatus.setStatus(finishHijack)
@@ -1856,7 +1856,7 @@ func (h *hijackTaskController) dequeue() string {
 	}
 	item := h.taskQueue[0]
 	h.taskQueue = h.taskQueue[1:]
-	if len(h.taskQueue) == 0 { // 队列空 则停止下次请求
+	if len(h.taskQueue) == 0 { // queue is empty Then stop the next request
 		h.canDequeue.UnSet()
 	}
 	return item

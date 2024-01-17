@@ -61,15 +61,15 @@ type envBuildin struct {
 }
 
 var processEnv = []*envBuildin{
-	{Key: "YAKIT_DINGTALK_WEBHOOK", Verbose: "设置钉钉机器人 Webhook，可用于接受漏洞等信息"},
-	{Key: "YAKIT_DINGTALK_SECRET", Verbose: "设置钉钉机器人 Webhook 的密码（SecretKey）"},
-	{Key: "YAKIT_WORKWX_WEBHOOK", Verbose: "设置企业微信机器人 Webhook，可用于接受漏洞等信息"},
-	{Key: "YAKIT_WORKWX_SECRET", Verbose: "设置企业微信机器人 Webhook 的密码（SecretKey）"},
-	{Key: "YAKIT_FEISHU_WEBHOOK", Verbose: "设置飞书 Bot Webhook 地址，可用于接受漏洞等信息"},
-	{Key: "YAKIT_FEISHU_SECRET", Verbose: "设置飞书 Bot Webhook 地址的密码（SecretKey）"},
-	{Key: "YAK_PROXY", Verbose: "设置 Yaklang 引擎的代理配置"},
-	{Key: consts.CONST_YAK_EXTRA_DNS_SERVERS, Verbose: "设置 Yaklang 引擎的额外 DNS 服务器（逗号分隔）"},
-	{Key: consts.CONST_YAK_OVERRIDE_DNS_SERVERS, Verbose: "是否使用用户配置 DNS 覆盖原有 DNS？（true/false）"},
+	{Key: "YAKIT_DINGTALK_WEBHOOK", Verbose: "Set up the DingTalk robot webhook, which can be used to receive information such as vulnerabilities"},
+	{Key: "YAKIT_DINGTALK_SECRET", Verbose: "Set up Ding Password (SecretKey) of Dingbot Webhook"},
+	{Key: "YAKIT_WORKWX_WEBHOOK", Verbose: "sets the Feishu Bot Webhook address, which can be used to receive information such as vulnerabilities."},
+	{Key: "YAKIT_WORKWX_SECRET", Verbose: "Set the password for the enterprise WeChat robot webhook (SecretKey)"},
+	{Key: "YAKIT_FEISHU_WEBHOOK", Verbose: "Set the Feishu Bot Webhook address, which can be used to receive vulnerability and other information"},
+	{Key: "YAKIT_FEISHU_SECRET", Verbose: "Set the password for Feishu Bot Webhook address (SecretKey)"},
+	{Key: "YAK_PROXY", Verbose: "Set up the proxy configuration of the Yaklang engine."},
+	{Key: consts.CONST_YAK_EXTRA_DNS_SERVERS, Verbose: "Set an additional DNS server for the Yaklang engine (comma separated)"},
+	{Key: consts.CONST_YAK_OVERRIDE_DNS_SERVERS, Verbose: "Do you want to use user-configured DNS to overwrite the original DNS? (true/false）"},
 }
 var onceInitProcessEnv = new(sync.Once)
 

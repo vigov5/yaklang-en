@@ -15,7 +15,7 @@ const startBruteScript = `yakit.AutoInitYakit()
 
 debug = false
 
-yakit.Info("开始检查执行参数")
+yakit.Info("Start checking execution parameters")
 
 targetFile := cli.String("target-file", cli.setRequired(true))
 userList := cli.String("user-list-file")
@@ -29,10 +29,10 @@ replaceDefaultUsernameDict := cli.Bool("replace-default-username-dict")
 replaceDefaultPasswordDict := cli.Bool("replace-default-password-dict")
 finishingThreshold = cli.Int("finishing-threshold", cli.setDefault(1))
 
-yakit.Info("检查爆破类型")
+yakit.Info("Check blasting Type")
 bruteTypes = cli.String("types")
 if bruteTypes == "" {
-    yakit.Error("没有指定爆破类型")
+    yakit.Error("No Explosion Type specified")
     if !debug {
         die("exit normal")
     }
@@ -49,11 +49,11 @@ if bruteTypes == "" {
 wg := sync.NewWaitGroup()
 defer wg.Wait()
 
-yakit.Info("扫描目标预处理")
-// 处理扫描目标
+yakit.Info("Scan target preprocessing")
+// Process the scan target
 raw, _ := file.ReadFile(targetFile)
 if len(raw) == 0 {
-    yakit.Error("BUG：读取目标文件失败！")
+    yakit.Error("BUG: Failed to read target file!")
     if !debug {
         return
     }
@@ -76,23 +76,23 @@ for _, t := range target {
 }
 target = targetRaw
 
-yakit.Info("用户自定义字典预处理")
-// 定义存储用户名与密码的字典
+yakit.Info("User-defined dictionary preprocessing")
+// Define the dictionary that stores usernames and passwords
 userdefinedUsernameList = make([]string)
 userdefinedPasswordList = make([]string)
 
-// 获取用户列表
+// Get the user list
 userRaw, _ := file.ReadFile(userList)
 if len(userRaw) <= 0 {
-    yakit.Error("用户文件字典获取失败")
+    yakit.Error("User file dictionary acquisition failed")
 }else{
     userdefinedUsernameList = str.ParseStringToLines(string(userRaw))
 }
 
-// 获取用户密码
+// Obtain user password
 passRaw, _ := file.ReadFile(passList)
 if len(passRaw) <= 0 {
-    yakit.Error("用户密码文件获取失败")
+    yakit.Error("User password file acquisition failed")
 }else{
     userdefinedPasswordList = str.ParseStringToLines(string(passRaw))
 }
@@ -100,7 +100,7 @@ if len(passRaw) <= 0 {
 opt = []
 
 if minDelay > 0 && maxDelay > 0 {
-    yakit.Info("单目标测试随机延迟：%v-%v/s", minDelay, maxDelay)
+    yakit.Info("Single target test random delay: %v-%v/s", minDelay, maxDelay)
     opt = append(opt, brute.minDelay(minDelay), brute.maxDelay(maxDelay))
 }
 
@@ -109,17 +109,17 @@ if finishingThreshold > 0 {
 }
 
 if concurrent > 0 {
-    yakit.Info("设置最多同时爆破目标：%v", concurrent)
+    yakit.Info("Set the maximum number of simultaneous blasting targets: %v", concurrent)
     opt = append(opt, brute.concurrentTarget(concurrent))
 }
 
 if taskConcurrent > 0 {
-    yakit.Info("设置单目标爆破并发：%v", taskConcurrent)
+    yakit.Info("Set single target blasting concurrency: %v", taskConcurrent)
     opt = append(opt, brute.concurrent(taskConcurrent))
 }
 
 
-tableName = "可用爆破结果表"
+tableName = "Available blasting result table"
 columnType = "TYPE"
 columnTarget = "TARGET"
 columnUsername = "USERNAME"
@@ -127,7 +127,7 @@ columnPassword = "PASSWORD"
 yakit.EnableTable(tableName, [columnType, columnTarget, columnUsername, columnPassword])
 
 scan = func(bruteType) {
-    yakit.Info("启用针对 %v 的爆破程序", bruteType)
+    yakit.Info("Enable Exploit Program for %v", bruteType)
     wg.Add(1)
     go func{
         defer wg.Done()
@@ -156,42 +156,42 @@ scan = func(bruteType) {
             opt...
         )
         if err != nil {
-            yakit.Error("构建弱口令与未授权扫描失败：%v", err)
+            yakit.Error("Failed to construct weak passwords and unauthorized scanning: %v", err)
             return
         }
 
         res, err := instance.Start(target...)
         if err != nil {
-            yakit.Error("输入目标失败：%v", err)
+            yakit.Error("Enter target failed: %v", err)
             return
         }
 
         for result := range res {
             tryCount++
-            yakit.StatusCard("总尝试次数: "+bruteType, tryCount, bruteType, "total")
+            yakit.StatusCard("Total attempts: "+bruteType, tryCount, bruteType, "total")
             result.Show()
 
             if result.Ok {
                 success++
-                yakit.StatusCard("成功次数: "+bruteType, success, bruteType, "success")
+                yakit.StatusCard("Number of successes: "+bruteType, success, bruteType, "success")
 				if result.Username == "" && result.Password == "" {
 					risk.NewRisk(
 						result.Target, risk.severity("high"), risk.type("weak-pass"),
-						risk.typeVerbose("未授权访问"),
-						risk.title(sprintf("未授权访问[%v]：%v", result.Type, result.Target)),
-						risk.titleVerbose(sprintf("未授权访问[%v]：%v", result.Type, result.Target)),
-						risk.description("由于配置不当或管理疏忽，某些服务、接口或应用存在未授权访问的风险。攻击者可以直接访问这些资源而不需要任何身份验证，这可能会导致敏感数据的泄露、系统的滥用或其他恶意行为。"),
-risk.solution(` + "`" + `1. 审核所有公开可访问的服务、接口和应用，确保它们都有适当的访问控制。
-2. 使用身份验证机制，如用户名/密码、API密钥或OAuth。
-3. 定期监控和审查访问日志，以检测任何可疑或未授权的活动。` + "`" + `),
+						risk.typeVerbose("Unauthorized access"),
+						risk.title(sprintf("Unauthorized access [%v]: %v", result.Type, result.Target)),
+						risk.titleVerbose(sprintf("Unauthorized access [%v]: %v", result.Type, result.Target)),
+						risk.description("Due to improper configuration or management negligence, there is a risk of unauthorized access to certain services, interfaces or applications. Attackers can directly access these resources without any authentication, which may lead to the disclosure of sensitive data, abuse of the system, or other malicious behavior."),
+risk.solution(` + "`" + `1. Audit all publicly accessible services, interfaces, and applications to ensure they have appropriate access controls.
+2. Use authentication mechanism, such as username/Password, API key or OAuth.
+3. Regularly monitor and review access logs to detect any suspicious or unauthorized activity. ` + "`" + `),
 						risk.details({"target": result.Target}),
 					)
 				} else {
 					risk.NewRisk(
 						result.Target, risk.severity("high"), risk.type("weak-pass"),
-						risk.typeVerbose("弱口令"),
+						risk.typeVerbose("Weak password"),
 						risk.title(sprintf("Weak Password[%v]：%v user(%v) pass(%v)", result.Type, result.Target, result.Username, result.Password)),
-						risk.titleVerbose(sprintf("弱口令[%v]：%v user(%v) pass(%v)", result.Type, result.Target, result.Username, result.Password)),
+						risk.titleVerbose(sprintf("weak password [%v]: %v user(%v) pass(%v)", result.Type, result.Target, result.Username, result.Password)),
 						risk.details({"username": result.Username, "password": result.Password, "target": result.Target}),
 					)
 				}
@@ -206,7 +206,7 @@ risk.solution(` + "`" + `1. 审核所有公开可访问的服务、接口和应�
                 }))
             } else {
                 failed++
-                yakit.StatusCard("失败次数: " + bruteType, failed, bruteType, "failed")
+                yakit.StatusCard("Number of failures: " + bruteType, failed, bruteType, "failed")
             }
         }
     }
@@ -235,7 +235,7 @@ func (s *Server) StartBrute(params *ypb.StartBruteParams, stream ypb.Yak_StartBr
 	defer os.RemoveAll(targetFile)
 	reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{Key: "target-file", Value: targetFile})
 
-	// 解析用户名
+	// resolves the user name.
 	userListFile, err := utils.DumpFileWithTextAndFiles(
 		strings.Join(params.Usernames, "\n"), "\n", params.UsernameFile,
 	)
@@ -245,7 +245,7 @@ func (s *Server) StartBrute(params *ypb.StartBruteParams, stream ypb.Yak_StartBr
 	defer os.RemoveAll(userListFile)
 	reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{Key: "user-list-file", Value: userListFile})
 
-	// 是否使用默认字典？
+	// use the default dictionary?
 	if params.GetReplaceDefaultPasswordDict() {
 		reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{Key: "replace-default-password-dict"})
 	}
@@ -254,7 +254,7 @@ func (s *Server) StartBrute(params *ypb.StartBruteParams, stream ypb.Yak_StartBr
 		reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{Key: "replace-default-username-dict"})
 	}
 
-	// 解析密码
+	// parses passwords.
 	passListFile, err := utils.DumpFileWithTextAndFiles(
 		strings.Join(params.Passwords, "\n"), "\n", params.PasswordFile,
 	)

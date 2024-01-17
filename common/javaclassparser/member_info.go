@@ -2,7 +2,7 @@ package javaclassparser
 
 /*
 *
-字段/方法
+field/Method
 */
 type MemberInfo struct {
 	Type               string
@@ -10,9 +10,9 @@ type MemberInfo struct {
 	AccessFlagsVerbose []string
 	NameIndex          uint16
 	NameIndexVerbose   string
-	//描述符
+	//descriptor
 	DescriptorIndex        uint16
 	DescriptorIndexVerbose string
-	//属性表
+	//attribute table
 	Attributes []AttributeInfo
 }

@@ -110,7 +110,7 @@ func (c *Storage) ToGPRCModel() *ypb.ChaosMakerRule {
 
 func (c *Storage) DecoratedByOpenAI(db *gorm.DB, opts ...openai.ConfigOption) {
 	/*
-		这是一个提炼攻击流量特征的任务，请提炼 %v 中的特征关键字（去除引用）？提取成 json array，以方便系统打标签和筛选，提供中文和英文的版本，放在 json 中，以 keywords 和 keywords_zh 作为字段，再描述一下这个特征（中文50字以内，去除‘检测’等字段意图），作为 description_zh 字段，同时补充他的 description（英文）
+		This is a task to refine attack traffic characteristics. Please refine the characteristic keywords in %v (remove references)? Extract it into a json array to facilitate system labeling and filtering, provide Chinese and English versions, put it in json, use keywords and keywords_zh as fields, and describe this feature (within 50 Chinese words, remove‘detection’and other fields intended), as the description_zh field, while supplementing his description (English)
 	*/
 	var clearData string
 	switch c.RuleType {
@@ -154,11 +154,11 @@ func (c *Storage) DecoratedByOpenAI(db *gorm.DB, opts ...openai.ConfigOption) {
 	}
 
 	if c.Keywords == "" || c.KeywordsZh == "" {
-		prompt := fmt.Sprintf(`这是一个提炼攻击流量特征的任务，
-请提炼 %v 中的特征关键字（去除引用），并提取成 json array，以方便系统打标签和筛选
-提供中文和英文的版本，放在 json 中，以 keywords 和 keywords_zh 作为字段
-再描述一下这个特征（中文50字左右）
-作为 description_zh 字段，同时补充他的 description（英文）`, clearData)
+		prompt := fmt.Sprintf(`This is a task to refine attack traffic characteristics.
+Please refine the characteristic keywords in %v (remove references) and extract them into json array to facilitate system labeling and filtering.
+provides Chinese and English versions, placed in json, with keywords and keywords_zh as fields
+and describe it again This feature (about 50 Chinese characters)
+as description_zh field , while supplementing his description (English)`, clearData)
 		log.Infof("start to question: %v", prompt)
 		result, err := client.Chat(prompt)
 		if err != nil {

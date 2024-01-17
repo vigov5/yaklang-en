@@ -38,7 +38,7 @@ func (y *YakCompiler) exitSwitchContext(end int) {
 
 	for _, c := range y.codes[start:] {
 		if c.Opcode == yakvm.OpBreak && c.Unary <= 0 {
-			// 设置 for 开始到结尾的所有语句的 Break Code 的跳转值
+			// Set The jump value of the Break Code of all statements from the beginning to the end of for
 			c.Unary = end
 		}
 	}
@@ -76,14 +76,14 @@ func (y *YakCompiler) _VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 		y.panicCompilerError(CreateSymbolError, symbolName)
 	}
 
-	// 将表达式的值放入符号中
+	// Put the value of the expression into the symbol
 	if e := i.Expression(); e != nil {
 		y.VisitExpression(i.Expression())
 		y.pushListWithLen(1)
-		// 设置左值，这个左值是一个新建的符号！
+		// Set the lvalue, this lvalue is a newly created symbol!
 		y.pushLeftRef(expressionResultID)
 		y.pushListWithLen(1)
-		// 为右值创建一个符号，这个符号为 rightExpressionSymbol
+		// Create a symbol for the rvalue, this symbol is rightExpressionSymbol
 		y.pushOperator(yakvm.OpAssign)
 		y.writeString(" {")
 	} else {
@@ -107,23 +107,23 @@ func (y *YakCompiler) _VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 		y.writeString("case ")
 
 		var jmpToStmt []*yakvm.Code
-		// 获取下个case的位置
+		// Get the position of the next case
 		caseIndex := y.GetNextCodeIndex()
 		nextCaseIndexs = append(nextCaseIndexs, caseIndex)
 
-		// if 判断
+		// if judge
 		iExprs := i.ExpressionList(index)
 		if iExprs != nil {
 			exprs := iExprs.(*yak.ExpressionListContext)
 			lenOfExprs := len(exprs.AllExpression())
-			// 如果只有一个表达式,则直接用eq判断
+			// If there is only one expression, directly use eq to judge
 			if lenOfExprs == 1 {
 				y.VisitExpression(exprs.AllExpression()[0])
 				if !switchExprIsEmpty {
 					y.pushRef(expressionResultID)
 					y.pushOperator(yakvm.OpEq)
 				}
-			} else { // 如果多个表达式,要短路处理
+			} else { // If there are multiple expressions, short-circuit processing
 				for i, e := range exprs.AllExpression() {
 					y.VisitExpression(e)
 					if !switchExprIsEmpty {
@@ -135,7 +135,7 @@ func (y *YakCompiler) _VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 						y.writeString(", ")
 					}
 				}
-				// 最后补一个false,用于下面的jmpToNextCase条件判断
+				// Finally add a false, which is used for the following jmpToNextCase condition judgment
 				y.pushBool(false)
 			}
 		}
@@ -143,19 +143,19 @@ func (y *YakCompiler) _VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 		y.writeNewLine()
 		y.incIndent()
 
-		// 如果不相等，跳转到下个case
+		// If not equal, jump to the next case
 		jmpToNextCase = append(jmpToNextCase, y.pushJmpIfFalse())
 
-		// 获取下个statementlist的位置
+		// Get the position of the next statementlist
 		stmtIndex := y.GetNextCodeIndex()
 		nextStmtIndexs = append(nextStmtIndexs, stmtIndex)
 
-		// 设置条件短路
+		// Set the condition to short-circuit
 		for _, jmp := range jmpToStmt {
 			jmp.Unary = stmtIndex
 		}
 
-		// 执行case中的语句,由于有fallthrough需要获取上下文,不能直接用VisitStatementList和VisitStatement
+		// Execute the statement in the case. Because there is a fallthrough, you need to obtain the context, so you cannot Use VisitStatementList and VisitStatement directly
 		recoverFormatBufferFunc := y.switchFormatBuffer()
 		iStmts := i.StatementList(index)
 		if iStmts != nil {
@@ -167,7 +167,7 @@ func (y *YakCompiler) _VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 					continue
 				}
 				stmt := istmt.(*yak.StatementContext)
-				// 忽略开头的empty
+				// Ignore the empty
 				if i == 0 && stmt.Empty() != nil {
 					continue
 				}
@@ -179,7 +179,7 @@ func (y *YakCompiler) _VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 						y.writeString("fallthrough")
 						y.writeEOS(stmt.Eos())
 						jmp := y.pushJmp()
-						// 暂时设置为index, 后面会设置为跳转到下一个statementlist的位置
+						// Temporarily set to index, it will be set to jump to the next later The position of a statementlist
 						jmp.Unary = index
 						jmpFallthrough = append(jmpFallthrough, jmp)
 						continue
@@ -200,12 +200,12 @@ func (y *YakCompiler) _VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 		y.decIndent()
 		y.writeNewLine()
 
-		// 跳转到switch结尾
+		// Jump to the end of switch
 		jmpToEnd = append(jmpToEnd, y.pushJmp())
 		recoverSymtbl()
 	}
 
-	// 访问default statementlist
+	// Access the default statementlist
 	if i.Default() != nil {
 		recoverSymtbl = y.SwitchSymbolTableInNewScope("default", uuid.NewV4().String())
 		y.writeString("default:")
@@ -224,7 +224,7 @@ func (y *YakCompiler) _VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 				continue
 			}
 			stmt := istmt.(*yak.StatementContext)
-			// 忽略开头的empty
+			// Ignore the empty
 			if i == 0 && stmt.Empty() != nil {
 				continue
 			}
@@ -245,17 +245,17 @@ func (y *YakCompiler) _VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 	}
 
 	endCodewithScopeEnd := y.GetNextCodeIndex()
-	// 如果没有default,则跳转到switch结尾
+	// at the beginning If there is no default, jump to the end of switch
 	if defaultCodeIndex == 0 {
 		defaultCodeIndex = endCodewithScopeEnd
 	}
 
 	endCode := y.GetNextCodeIndex()
 
-	// 设置fallthrough跳转到下个statementlist的位置
+	// Set fallthrough to jump to the position of the next statementlist
 
 	for _, jmp := range jmpFallthrough {
-		// 最后一个的fallthrough应该跳转到default
+		// The last fallthrough should jump to default
 		if jmp.Unary == lenOfAllCases-1 {
 			jmp.Unary = defaultCodeIndex
 		} else {
@@ -263,21 +263,21 @@ func (y *YakCompiler) _VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 		}
 	}
 
-	// 设置跳转到下个case的位置
+	// Sets the jump Go to the position of the next case
 	for index, jmp := range jmpToNextCase[:len(jmpToNextCase)-1] {
 		jmp.Unary = nextCaseIndexs[index+1]
 	}
 
-	// 设置最后一个case跳转到default
+	// Set the last case to jump to default
 	jmpToNextCase[len(jmpToNextCase)-1].Unary = defaultCodeIndex
 
-	// 设置跳转到switch结尾的位置
+	// Sets the jump to the position at the end of switch
 	for _, jmp := range jmpToEnd {
 		jmp.Unary = endCodewithScopeEnd
 	}
-	// 设置break跳转到switch结尾的位置,不需要处理内部的scopeEnd,因为break自带了scopeEnd
-	// 因为switch创建时，breakScope的层数从0开始，因此break只会退出switch-scope内部的scope， 最后仍然需要一个switch-scope的scopeEnd。
-	// endCode一定是最后的ScopeEnd
+	// Sets break to jump to the position at the end of switch. There is no need to process the internal scopeEnd, because break comes with scopeEnd
+	// Because when the switch is created, the level number of breakScope starts from 0, so break will only exit the scope inside the switch-scope. In the end, a scopeEnd of the switch-scope is still needed.
+	// endCode must be the last ScopeEnd
 	y.exitSwitchContext(endCode)
 
 	y.writeString("}")

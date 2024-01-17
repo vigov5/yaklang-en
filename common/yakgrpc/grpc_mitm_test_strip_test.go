@@ -105,9 +105,9 @@ User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 func TestReplaceString233(t *testing.T) {
 	replacer := NewMITMReplacer()
 	replacer.SetRules(&ypb.MITMContentReplacer{
-		Rule:             `百度`,
+		Rule: `Baidu`,
 		NoReplace:        false,
-		Result:           `谷歌`,
+		Result: `Google`,
 		Color:            "",
 		EnableForRequest: true,
 		EnableForHeader:  true,
@@ -127,13 +127,13 @@ Sec-Fetch-Mode: no-cors
 Sec-Fetch-Site: same-origin
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36
 
-{"product": "百度"}
+{"product": "Baidu"}
 
 `))
 	spew.Dump(matched)
 	spew.Dump(data)
 	println(string(data))
-	if !bytes.Contains(data, []byte(`谷歌`)) {
+	if !bytes.Contains(data, []byte(`Google`)) {
 		panic("rule failed")
 	}
 }

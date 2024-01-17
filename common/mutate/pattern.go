@@ -11,7 +11,7 @@ import (
 )
 
 /*
-设置 CODEC 回调函数
+Set CODEC callback function
 */
 var codecCaller func(name string, s interface{}) (string, error)
 

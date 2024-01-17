@@ -147,14 +147,14 @@ func (s *VulinServer) registerMockVulShiro() {
 		{
 			DefaultQuery: "",
 			Path:         "/shiro/cbc",
-			Title:        "Shiro CBC 默认KEY(<1.4.2)",
+			Title:        "Shiro CBC default KEY(<1.4.2)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				failNow := func(writer http.ResponseWriter, request *http.Request, err error) {
 					cookie := http.Cookie{
 						Name:     "rememberMe",
-						Value:    "deleteMe",                         // 设置 cookie 的值
-						Expires:  time.Now().Add(7 * 24 * time.Hour), // 设置过期时间
-						HttpOnly: false,                              // 仅限 HTTP 访问，不允许 JavaScript 访问
+						Value:    "deleteMe",                         // Set the cookie value
+						Expires:  time.Now().Add(7 * 24 * time.Hour), // Set the expiration time. If
+						HttpOnly: false,                              // Only HTTP access, JavaScript access is not allowed
 					}
 					http.SetCookie(writer, &cookie)
 					writer.WriteHeader(200)
@@ -168,7 +168,7 @@ func (s *VulinServer) registerMockVulShiro() {
 					return
 				}
 				rememberMe, err := request.Cookie("rememberMe")
-				if err != nil { // 请求没有cookie 那就设置一个
+				if err != nil { // request does not have a cookie, then set a
 					failNow(writer, request, err)
 					return
 				}
@@ -177,13 +177,13 @@ func (s *VulinServer) registerMockVulShiro() {
 				if len(cookieVal) > len(randKey) {
 					iv = cookieVal[:16]
 					cookieVal = cookieVal[16:]
-				} else { // 第一次探测请求
+				} else { // The first detection request
 					failNow(writer, request, err)
 					return
 				}
 
 				payload, err := codec.AESCBCDecrypt(randKey, cookieVal, iv)
-				if err != nil || payload == nil { // key不对返回deleteMe
+				if err != nil || payload == nil { // Incorrect key returns deleteMe
 					failNow(writer, request, err)
 					return
 				}
@@ -197,14 +197,14 @@ func (s *VulinServer) registerMockVulShiro() {
 		{
 			DefaultQuery: "",
 			Path:         "/shiro/gcm",
-			Title:        "Shiro GCM 默认KEY(>=1.4.2)",
+			Title:        "Shiro GCM default KEY(>=1.4.2)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				failNow := func(writer http.ResponseWriter, request *http.Request, err error) {
 					cookie := http.Cookie{
 						Name:     "rememberMe",
-						Value:    "deleteMe",                         // 设置 cookie 的值
-						Expires:  time.Now().Add(7 * 24 * time.Hour), // 设置过期时间
-						HttpOnly: false,                              // 仅限 HTTP 访问，不允许 JavaScript 访问
+						Value:    "deleteMe",                         // Set the cookie value
+						Expires:  time.Now().Add(7 * 24 * time.Hour), // Set the expiration time. If
+						HttpOnly: false,                              // Only HTTP access, JavaScript access is not allowed
 					}
 					http.SetCookie(writer, &cookie)
 					writer.WriteHeader(200)
@@ -218,14 +218,14 @@ func (s *VulinServer) registerMockVulShiro() {
 					return
 				}
 				rememberMe, err := request.Cookie("rememberMe")
-				if err != nil { // 请求没有cookie 那就设置一个
+				if err != nil { // request does not have a cookie, then set a
 					failNow(writer, request, err)
 					return
 				}
 				cookieVal, _ := codec.DecodeBase64(rememberMe.Value)
 
 				payload, err := codec.AESGCMDecrypt(randKey, cookieVal, nil)
-				if err != nil || payload == nil { // key不对返回deleteMe
+				if err != nil || payload == nil { // Incorrect key returns deleteMe
 					failNow(writer, request, err)
 					return
 				}

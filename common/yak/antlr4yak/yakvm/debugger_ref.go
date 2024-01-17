@@ -103,7 +103,7 @@ func (hs *breakPointHandlesMap) reset() {
 type Reference struct {
 	FrameHM      *frameHandlesMap
 	BreakPointHM *breakPointHandlesMap
-	VarHM        *handlesMap // 这里会存储Scope, yakvm.Value, 或者golang的value
+	VarHM        *handlesMap // Scope, yakvm.Value, or golangs value will be stored here.
 }
 
 func NewReference() *Reference {

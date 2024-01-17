@@ -41,7 +41,7 @@ func (p *Parameter) Serialize() []byte {
 	for key, value := range p.HashMap {
 		outputStream.Write([]byte(key))
 		outputStream.WriteByte(2)
-		// 根据这个判断 value 的长度
+		// . Based on this, determine the length of value and the drive letter of
 		outputStream.Write(intToBytes(len(value.([]byte))))
 		outputStream.Write(value.([]byte))
 	}
@@ -64,7 +64,7 @@ func intToBytes(n int) []byte {
 //}
 
 func IsWindowsPathByDriveLetter(path string) bool {
-	// 创建一个正则表达式，用于匹配类似于 "C:\" 的盘符
+	// Create a regular expression to match something similar to "C:\" The drive letter
 	re := regexp.MustCompile(`^[a-zA-Z]:\\`)
 	return re.MatchString(path)
 }
@@ -104,7 +104,7 @@ func SplitArgsEx(input string, maxParts int, removeAllEscapeSequences bool) []st
 	return fragments
 }
 
-// 删除指定下标的切片
+// deletes the slice at the specified index.
 func deleteIndex(r []rune, i int) []rune {
 	return append(r[:i], r[i+1:]...)
 }

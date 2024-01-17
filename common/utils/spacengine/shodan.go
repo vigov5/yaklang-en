@@ -20,21 +20,21 @@ func interfaceArrayToString(rets []interface{}) string {
 func ServiceProviderToChineseName(i string) string {
 	switch true {
 	case strings.Contains(i, "Tencent cloud computing"):
-		return "腾讯云"
+		return "Tencent Cloud"
 	case strings.Contains(i, "Amazon.com"):
-		return "亚马逊"
+		return "Amazon"
 	case strings.Contains(i, "Amazon"):
-		return "亚马逊"
+		return "Amazon"
 	case strings.Contains(i, "Alibaba"):
-		return "阿里巴巴"
+		return "Alibaba"
 	case strings.Contains(i, "Hangzhou Alibaba Advertising Co.,Ltd."):
-		return "阿里云"
+		return "Alibaba Cloud"
 	case strings.Contains(i, "China Telecom"):
-		return "中国电信"
+		return "China Telecom"
 	case strings.Contains(i, "Google Cloud"):
-		return "谷歌云"
+		return "Google Cloud"
 	case strings.Contains(i, "Microsoft Corporation"):
-		return "微软"
+		return "Microsoft"
 	default:
 		return i
 	}

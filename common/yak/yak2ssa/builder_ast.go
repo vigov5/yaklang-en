@@ -616,7 +616,7 @@ func (b *astbuilder) AssignList(stmt assignlist) []ssa.Value {
 			}
 			if c, ok := rvalues[0].(*ssa.Call); ok {
 				var length int
-				// 可以通过是否存在variable确定是函数调用是否存在左值
+				// can determine whether the function call has an lvalue by whether there is a variable.
 				c.SetName(uuid.NewString())
 				c.Unpack = true
 				if !ssa.IsObjectType(c.GetType()) {
@@ -898,7 +898,7 @@ func (b *astbuilder) buildExpression(stmt *yak.ExpressionContext) ssa.Value {
 	}
 
 	// identifier
-	if s := stmt.Identifier(); s != nil { // 解析变量
+	if s := stmt.Identifier(); s != nil { // parses the variable
 		text := s.GetText()
 		if text == "_" {
 			b.NewError(ssa.Warn, TAG, "cannot use _ as value")
@@ -992,10 +992,10 @@ func (b *astbuilder) buildExpression(stmt *yak.ExpressionContext) ssa.Value {
 		return b.EmitUnOp(opcode, x)
 	}
 
-	// 二元运算（位运算全面优先于数字运算，数字运算全面优先于高级逻辑运算）
+	// Binary Operations (bit operations take precedence over digital operations, and digital operations take precedence over advanced logical operations).
 	// | expression bitBinaryOperator ws* expression
 
-	// // 普通数学运算 done
+	// // . Ordinary mathematical operations done
 	// | expression multiplicativeBinaryOperator ws* expression
 	// | expression additiveBinaryOperator ws* expression
 	// | expression comparisonBinaryOperator ws* expression
@@ -1126,13 +1126,13 @@ func (b *astbuilder) buildExpression(stmt *yak.ExpressionContext) ssa.Value {
 				c = phi[a if.true; b if.false]
 	*/
 	handlerJumpExpression := func(cond func(string) ssa.Value, trueExpr, falseExpr func() ssa.Value) ssa.Value {
-		// 为了聚合产生Phi指令
+		// In order to generate Phi instructions through aggregation,
 		id := uuid.NewString()
-		// 只需要使用b.WriteValue设置value到此ID，并最后调用b.ReadValue可聚合产生Phi指令，完成语句预期行为
+		// only needs to use b.WriteValue to set the value to this ID, and finally call b.ReadValue to aggregate and generate Phi instructions to complete the expected behavior of the statement.
 		ifb := b.BuildIf()
 		ifb.BuildCondition(
 			func() ssa.Value {
-				// 在上层函数中决定是否设置id, 在三元运算符时不会将condition加入结果中
+				// determines whether to set the id in the upper-level function. When using the ternary operator, the condition will not be added to the result.
 				return cond(id)
 			})
 		ifb.BuildTrue(

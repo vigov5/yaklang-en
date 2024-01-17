@@ -19,10 +19,10 @@ type ScriptEngine struct {
 	Kbs                            *NaslKBs
 	naslLibsPath, dependenciesPath string
 	scriptFilter                   func(script *NaslScriptInfo) bool
-	scripts                        map[string]*NaslScriptInfo // 将会被执行的脚本
-	scriptCache                    map[string]*NaslScriptInfo // 用于缓存查询过的脚本
-	dependencyScripts              map[string]struct{}        // 标记被依赖的脚本，减少查找根脚本的负担
-	excludeScripts                 map[string]struct{}        // 排除一些脚本
+	scripts                        map[string]*NaslScriptInfo // . Script to be executed.
+	scriptCache                    map[string]*NaslScriptInfo // is used to cache the queried scripts.
+	dependencyScripts              map[string]struct{}        // from local files. Mark the dependent scripts to reduce the burden of finding the root script.
+	excludeScripts                 map[string]struct{}        // first. Exclude some scripts.
 	goroutineNum                   int
 	debug                          bool
 	engineHooks                    []func(engine *Engine)
@@ -109,10 +109,10 @@ func (engine *ScriptEngine) tryLoadScript(script any, cache map[string]*NaslScri
 			if engine.config.autoLoadDependencies {
 				dependencies := []string{}
 				for _, dependency := range script.Dependencies {
-					if dependency == "toolcheck.nasl" { // 不使用nasl内置的工具，所以跳过
+					if dependency == "toolcheck.nasl" { // does not use nasl. Built-in tools, so
 						continue
 					}
-					//if dependency == "snmp_default_communities.nasl" { // 太慢了，先跳过
+					//if dependency == "snmp_default_communities.nasl" { // is too slow. Skip
 					//	continue
 					//}
 					if _, ok := engine.scripts[dependency]; ok {
@@ -168,7 +168,7 @@ func (engine *ScriptEngine) tryLoadScript(script any, cache map[string]*NaslScri
 	switch ret := script.(type) {
 	case string:
 		fileName := ret
-		if path.IsAbs(fileName) { // 绝对路径则尝试从文件加载
+		if path.IsAbs(fileName) { // If the absolute path is used, try to load
 			if utils.IsDir(fileName) {
 				raw, err := utils.ReadFilesRecursively(fileName)
 				if err != nil {
@@ -187,7 +187,7 @@ func (engine *ScriptEngine) tryLoadScript(script any, cache map[string]*NaslScri
 			} else {
 				return nil, fmt.Errorf("Load script `%s` failed: file not exists", fileName)
 			}
-		} else { // 优先从本地文件加载
+		} else { // from the file. Prioritize loading
 			loadOk := false
 			if utils.IsFile(fileName) {
 				script, err := NewNaslScriptObjectFromFile(fileName)
@@ -335,7 +335,7 @@ func (e *ScriptEngine) ScanTarget(target string) error {
 	return e.Scan(host, fmt.Sprint(port))
 }
 func (e *ScriptEngine) GetRootScripts() map[string]*NaslScriptInfo {
-	//忽略了循环依赖
+	//. Ignore circular dependency
 	rootScripts := make(map[string]*NaslScriptInfo)
 	tmp := map[string]struct{}{}
 	for k, info := range e.scripts {
@@ -363,7 +363,7 @@ func (e *ScriptEngine) Scan(host string, ports string) error {
 		e.Kbs.SetKB("Host/dead", 0)
 		e.Kbs.SetKB("Host/State", "up")
 	} else {
-		//ping检测不存活 或排除打印机设备时会标注为dead
+		//will be marked as dead when ping detection is not alive or printer devices are excluded.
 		e.Kbs.SetKB("Host/dead", 1)
 		e.Kbs.SetKB("Host/State", "down")
 	}
@@ -399,11 +399,11 @@ func (e *ScriptEngine) Scan(host string, ports string) error {
 			}
 		}
 	}
-	// 缺少os finger_print、tcp_seq_index、ipidseq、Traceroute
+	// . Missing os finger_print, tcp_seq_index, ipidseq, Traceroute.
 	e.Kbs.SetKB("Host/port_infos", portInfos)
 	//swg := utils.NewSizedWaitGroup(e.goroutineNum)
 	//errorsMux := sync.Mutex{}
-	// 创建执行引擎
+	// is skipped. Create execution engine
 	newEngineByConfig := func() *Engine {
 		engine := NewWithKbs(e.Kbs)
 		engine.preferences = e.config.preference

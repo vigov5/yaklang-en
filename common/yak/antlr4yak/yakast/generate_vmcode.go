@@ -340,7 +340,7 @@ func (s *YakCompiler) GetCodeIndex() int {
 }
 
 func (s *YakCompiler) GetNextCodeIndex() int {
-	// 获取下一跳 OpCode 的索引
+	// Get the index of the next hop OpCode
 	return len(s.codes)
 }
 

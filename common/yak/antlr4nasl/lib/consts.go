@@ -253,19 +253,19 @@ var BuildInVars = map[string]interface{}{
 // "ACT_MIXED_ATTACK":       "ACT_MIXED_ATTACK",
 // "ACT_KILL_HOST":          "ACT_KILL_HOST",
 var ActToChinese = map[string]string{
-	"ACT_GATHER_INFO": "收集信息",
-	"ACT_ATTACK":      "测试",
+	"ACT_GATHER_INFO": "Collect information",
+	"ACT_ATTACK":      "Test",
 	"ACT_DENIAL":      "DOS", // dos
-	"ACT_SETTINGS":    "设置",
-	//"ACT_KILL":               "杀死",
-	"ACT_FLOOD":              "洪水",
-	"ACT_GATHER":             "收集",
-	"ACT_DESTRUCTIVE":        "破坏",
-	"ACT_MIXED":              "混合",
-	"ACT_SCANNER":            "扫描",
-	"ACT_END":                "结束",  // 整理一些kb的结果
-	"ACT_INIT":               "初始化", // 一些基于namp扫描结果分析的脚本
-	"ACT_DESTRUCTIVE_ATTACK": "破坏性攻击",
-	"ACT_MIXED_ATTACK":       "混合攻击",
-	"ACT_KILL_HOST":          "杀死主机",
+	"ACT_SETTINGS":    "Set",
+	//"ACT_KILL":               "Kill",
+	"ACT_FLOOD":              "Flood",
+	"ACT_GATHER":             "Collect",
+	"ACT_DESTRUCTIVE":        "Destroy",
+	"ACT_MIXED":              "Mix",
+	"ACT_SCANNER":            "Scan",
+	"ACT_END":                "End",  // Collate some kb of results
+	"ACT_INIT":               "Initialize", // Some scripts based on analysis of namp scan results
+	"ACT_DESTRUCTIVE_ATTACK": "Destructive attack",
+	"ACT_MIXED_ATTACK":       "Mix attack",
+	"ACT_KILL_HOST":          "Kill host",
 }

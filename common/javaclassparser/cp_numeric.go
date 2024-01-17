@@ -4,8 +4,8 @@ import "math"
 
 /*
 *
-常量池中integer
-四字节存储整数常量
+integer in the constant pool
+in the constant pool Four-byte storage integer constant
 
 	CONSTANT_INTEGER_INFO {
 		u1 tag;
@@ -14,7 +14,7 @@ import "math"
 */
 type ConstantIntegerInfo struct {
 	Type string
-	//实际上，比int小的boolean、byte、short、char也可以放在里面
+	//. In fact, boolean, byte, short, and char smaller than int can also be placed in
 	Value int32
 }
 
@@ -25,8 +25,8 @@ func (self *ConstantIntegerInfo) readInfo(cp *ClassParser) {
 
 /*
 *
-常量池中float
-四字节
+Float
+in the constant pool is four-byte
 
 	CONSTANT_FLOAT_INFO {
 		u1 tag;
@@ -45,8 +45,8 @@ func (self *ConstantFloatInfo) readInfo(cp *ClassParser) {
 
 /*
 *
-常量池中long
-特殊一些 八字节，分成高8字节和低8字节
+long
+. Some special eight bytes are divided into high 8 characters. Section and lower 8 bytes
 
 	CONSTANT_LONG_INFO {
 		u1 tag;
@@ -66,8 +66,8 @@ func (self *ConstantLongInfo) readInfo(cp *ClassParser) {
 
 /*
 *
-常量池中double
-同样特殊 八字节
+. Double
+in the constant pool is the same special eight-byte
 
 	CONSTANT_DOUBLE_INFO {
 		u1 tag;

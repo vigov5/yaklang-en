@@ -146,17 +146,17 @@ func (y *builder) VisitClassDeclaration(raw phpparser.IClassDeclarationContext) 
 
 	//// how to build a template?
 	//// y.ir is a SSA.Function
-	//template := y.ir.BuildObjectTemplate(objectTemplate)    // 注册一个对象模版（有构造和析构方法的对象）
-	//template.SetDecorationVerbose(...)                        // 记录一下修饰词
+	//template := y.ir.BuildObjectTemplate(objectTemplate)    // Register an object template (an object with construction and destruction methods)
+	//template.SetDecorationVerbose(...)                        // Record the modifiers
 	//for _, i := range mergedTemplate {
-	//	y.ir.FindObjectTemplate(i).MergeTo(template)        // 合并模版（inherit / trait / extend 都一样）
+	//	y.ir.FindObjectTemplate(i).MergeTo(template)        // merge template (inherit / trait / extend is the same)
 	//}
-	//template.BuildField(func() {                              // 编译字段
+	//template.BuildField(func() {                              // compiled field
 	//	for _, field := range i.AllClassStatement() {
 	//		y.VisitClassStatement(field)
 	//	}
 	//})
-	//template.Finish()                                         // 宣告完成
+	//template.Finish()                                         // declare completion
 
 	return nil
 }

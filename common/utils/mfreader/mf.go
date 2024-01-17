@@ -9,21 +9,21 @@ import (
 )
 
 type MultiFileLineReader struct {
-	// 文件名数组
+	// file name array
 	files []string
 
-	// 当前使用到第一个文件了？
+	// Is the first file currently used?
 	currentFileIndex int
 
-	// 这两个函数通过 nextline 自动设置
+	// . These two functions automatically set
 	currentFp   *os.File
 	currentLine string
-	// 最后一次读取的行的指针位置
+	// The pointer position of the last line read
 	currentPtr int64
 
-	// 文件名->指针位置
+	// file name ->pointer position.
 	fpPtrTable sync.Map
-	// 文件名->大小
+	// file name ->Size
 	fSizeTable sync.Map
 }
 
@@ -59,7 +59,7 @@ func (m *MultiFileLineReader) GetLastRecordPtr() int64 {
 	return 0
 }
 
-// SetRecoverPtr 设置扫描文件对应的指针位置
+// SetRecoverPtr Set the pointer position corresponding to the scanned file
 func (m *MultiFileLineReader) SetRecoverPtr(file string, ptr int64) error {
 	if _, err := os.Stat(file); os.IsNotExist(err) {
 		return utils.Errorf("file %s not exist", file)
@@ -102,7 +102,7 @@ func (m *MultiFileLineReader) nextLine() (string, error) {
 NEXTFILE:
 	switch true {
 	case m.currentFp == nil && m.currentFileIndex == 0:
-		// 第一次执行
+		// First execution
 		if len(m.files) <= 0 {
 			return "", utils.Error("empty files")
 		}
@@ -113,12 +113,12 @@ NEXTFILE:
 			goto NEXTFILE
 		}
 		m.currentFp = fp
-		// 当 currentFileIndex 为 0 时 应当也可以进行恢复扫描
-		m.restoreFilePointer() // 恢复文件指针位置
+		// should be restored from the last interrupted target. When currentFileIndex is 0, it should You can also perform recovery scan
+		m.restoreFilePointer() // Recovery file pointer position
 
 		goto NEXTFILE
 	case m.currentFp == nil && m.currentFileIndex > 0:
-		// 恢复场景
+		// Recovery scenario
 		if len(m.files) <= 0 {
 			return "", utils.Errorf("empty files")
 		}
@@ -134,7 +134,7 @@ NEXTFILE:
 		}
 		m.currentFp = fp
 
-		m.restoreFilePointer() // 恢复文件指针位置
+		m.restoreFilePointer() // Recovery file pointer position
 
 		goto NEXTFILE
 	case m.currentFp != nil:
@@ -148,14 +148,14 @@ NEXTFILE:
 		}
 
 		if n > 0 {
-			// 保存读取位置
+			// through nextline. Save the reading position.
 			m.fpPtrTable.Store(m.currentFp.Name(), m.currentPtr)
-			// 先读取然后再加,在恢复场景中，应当从上一次中断的目标开始恢复
-			// 比如
+			// reads first and then adds it. In the recovery scenario,
+			// For example,
 			//	1.1.1.1
 			//	1.1.1.2
 			//	1.1.1.3
-			//	本次中断在 1.1.1.2 下次恢复应当还是从 1.1.1.2 开始
+			//	. This time it was interrupted in 1.1.1.2. The next recovery should start from 1.1.1.2.
 			m.currentPtr += n
 			return string(lines), nil
 		} else {
@@ -170,7 +170,7 @@ NEXTFILE:
 	}
 }
 
-// 恢复文件指针位置
+// Recovery file pointer position
 func (m *MultiFileLineReader) restoreFilePointer() {
 	ptr, ok := m.fpPtrTable.Load(m.currentFp.Name())
 	if ok {

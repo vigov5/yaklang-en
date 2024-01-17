@@ -13,15 +13,15 @@ var MallGroup *mux.Router
 
 func (s *VulinServer) mallIndexRoute() {
 	var router = s.router
-	MallGroup = router.PathPrefix("/mall").Name("购物商城").Subrouter()
+	MallGroup = router.PathPrefix("/mall").Name("shopping mall").Subrouter()
 	orderRoutes := []*VulInfo{
 		{
 			DefaultQuery: "",
 			Path:         "/shop/index",
-			Title:        "购物商城场景	",
+			Title:        "shopping mall scene	",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == http.MethodGet {
-					// 返回登录页面
+					// Return to the login page
 					writer.Header().Set("Content-Type", "text/html")
 					writer.Write(mallIndexHtml)
 					return

@@ -14,7 +14,7 @@ func TestMisc_WS(t *testing.T) {
 
 	cases := []YakTestCase{
 		{
-			Name: "测试 poc.Websocket",
+			Name: "Test poc.Websocket",
 			Src: fmt.Sprintf(`
 rsp, req, err = poc.Websocket(%v, poc.timeout(10), poc.websocketFromServer(func(i, cancel){
     dump(i)
@@ -52,7 +52,7 @@ User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 func TestMisc_AutoType(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试 poc.Websocket",
+			Name: "Test poc.Websocket",
 			Src: fmt.Sprintf(`
 
 a = str.SplitAndTrim([]byte("  adfasdfad asdfasdfasdfasdf asdfasdf  "), " ")
@@ -67,7 +67,7 @@ dump(a)
 
 func TestWebsocket(t *testing.T) {
 	cases := []YakTestCase{
-		{Name: "测试 3syua", Src: `
+		{Name: "Test 3syua", Src: `
 
 `},
 	}

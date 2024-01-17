@@ -28,7 +28,7 @@ type Port struct {
 	Hash        string `json:"hash"`
 	TaskName    string `json:"task_name"`
 
-	// runtime id 运行时 ID
+	// runtime id runtime ID
 	RuntimeId string `json:"runtime_id"`
 }
 

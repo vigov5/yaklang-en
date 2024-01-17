@@ -22,10 +22,10 @@ func _visitNode(node *html.Node, depth int, siblingIndex int, handle func(i *htm
 	case html.CommentNode:
 		log.Debugf("found comment: %s", node.Data)
 	case html.DoctypeNode:
-		// 一般符合标准的 HTML 头包含 Doctype 定义
+		// generally conforms to the standard HTML header and contains the Doctype definition.
 		log.Debugf("skip doctype node: %s", node.Data)
 	case html.DocumentNode:
-		// Document 一般对应的是根文档
+		// Document generally corresponds to the root document.
 		log.Debugf("found docuemnt node: %s", node.Data)
 	case html.ElementNode:
 		var attrsVerbose []string

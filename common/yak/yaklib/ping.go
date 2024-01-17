@@ -133,7 +133,7 @@ func _pingScan(target string, opts ..._pingConfigOpt) chan *pingutil.PingResult 
 
 				result := _ping(targetHost, opts...)
 				//if utils.MatchAnyOfRegexp(result.Reason, "(?i)operation not permitted") {
-				//	// 权限不足
+				//	// Insufficient permissions
 				//	cancel()
 				//}
 				if config._onResult != nil {

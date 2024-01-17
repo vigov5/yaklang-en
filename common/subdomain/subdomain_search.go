@@ -80,11 +80,11 @@ func virustotalVisit(ctx context.Context, url string) (result []string, err erro
 
 var (
 	// todo:
-	// BufferOver  需要处理cloudflare
-	// ThreatCrowd  需要处理cloudflare
-	// http://www.sitedossier.com/parentdomain/baidu.com/2 需要解析页面处理分页
-	// http://www.dnsdb.org/ 需要获取token
-	// https://searchdns.netcraft.com/?restriction=site+ends+with&host=%s 需要解析页面，处理分页
+	// BufferOver needs to process cloudflare
+	// ThreatCrowd needs to process cloudflare
+	// http://www.sitedossier.com/parentdomain/baidu.com/2 needs to parse the page to process paging
+	// http://www.dnsdb.org/ needs to obtain token
+	// https://searchdns.netcraft.com/?restriction=site+ends+with&host=%s needs to parse the page and handle paging.
 
 	// https://api.hackertarget.com/hostsearch/?q=%s
 	HackerTarget SearchRequestBuilder = func(target string) (*http.Request, error) {
@@ -123,7 +123,7 @@ var (
 	}
 
 	// https://ctsearch.entrust.com/api/v1/certificates
-	// /u003d需要被特殊处理
+	// /u003d needs to be specially processed
 	Entrust SearchRequestBuilder = func(target string) (request *http.Request, e error) {
 		u, _ := url.Parse("https://ctsearch.entrust.com/api/v1/certificates")
 		u.RawQuery = url.Values{
@@ -202,7 +202,7 @@ var (
 					return
 				}
 
-				// 针对ctsearch.entrust.com做特殊处理处理
+				// performs special processing for ctsearch.entrust.com.
 				if req.Host == "ctsearch.entrust.com" {
 					raw = []byte(strings.ReplaceAll(string(raw), "\\u003d", "="))
 				}
@@ -261,7 +261,7 @@ func (s *SubdomainScanner) Search(ctx context.Context, target string) {
 				return
 			}
 
-			// 进行结果处理，检查是否能解析到 IP 上，如果不能的话，可能需要输出在别的地方
+			// for result processing and check whether it can be resolved to the IP. If not, it may need to be output elsewhere
 			for _, result := range results {
 				if ctx.Err() != nil {
 					return

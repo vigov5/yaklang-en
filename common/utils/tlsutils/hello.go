@@ -37,7 +37,7 @@ func (h *HandshakeClientHelloExt) IsSNI() (string, bool) {
 		return "", false
 	}
 
-	// SNI 这个很简单，一般来说只有一个（虽然他理论上能容纳多个）
+	// SNI is very simple. Generally speaking, there is only one (although it can theoretically accommodate multiple)
 	if len(h.RawData) > 5 {
 		return string(h.RawData[5:]), true
 	}

@@ -129,15 +129,15 @@ func LibDocsToCompletionJsonEx(all bool, libs ...LibDoc) ([]byte, error) {
 	structs := LibsToRelativeStructs(libs...)
 	for _, stct := range structs {
 		if !all {
-			// 黑名单过滤不想要的内容
+			// The blacklist filters out unwanted content.
 			if utils.MatchAnyOfGlob(stct.StructName, blackStructListGlob...) {
 				continue
 			}
 
-			// 判断是否要过滤一些不重要的数据？
+			// Determine whether you want to filter some unimportant data?
 			if stct.IsBuildInLib() {
 				//log.Infof("fetch struct: %v", stct.StructName)
-				// 如果是内置库的话，需要判断是不是符合白名单
+				// If it is a built-in library, you need to determine whether it complies with the whitelist.
 				if len(whiteStructListGlob) > 0 {
 					if !utils.MatchAnyOfGlob(stct.StructName, whiteStructListGlob...) {
 						continue

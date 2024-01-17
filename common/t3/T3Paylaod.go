@@ -130,7 +130,7 @@ func (t *T3Paylaod) Exec(cmd string) (_ string, err error) {
 	ch1 := int(byt[20]) << 8
 	ch2 := int(byt[21])
 
-	// slice 越界
+	// slice out of bounds
 	if len(byt) < 22+ch1+ch2 {
 		return "", utils2.Error("fetch invoke result error...")
 	}
@@ -171,7 +171,7 @@ func (t *T3Paylaod) SendPayload(payload []byte) error {
 	invokableId := "\xff\xff\xff\xff"
 	abbrevOffset := "\x00\x00\x00\x00"
 	//countLength := "\x01"
-	//capacityLength := "\xfe\x01\x00" //必须大于上面设置的AS值
+	//capacityLength := "\xfe\x01\x00" //Must be greater than the AS value set above
 	capacityLength := "\x10"
 	readObjectType := "\x00" //00 object deserial 01 ascii
 	data := cmd + qos + flags + responseId + invokableId + abbrevOffset

@@ -224,41 +224,41 @@ func (ds *DebugSession) onInitializeRequest(request *dap.InitializeRequest) {
 
 	response := &dap.InitializeResponse{}
 	response.Response = *newResponse(request.Request)
-	response.Body.SupportsEvaluateForHovers = true        // 鼠标悬停时是否支持求值
-	response.Body.SupportsConditionalBreakpoints = true   // 条件断点
-	response.Body.SupportsConfigurationDoneRequest = true // 是否支持检测配置是否完成的请求,如果支持,则客户端发送一个SupportsConfigurationDoneRequest请求,而适配器会在调试会话的配置已完成时返回configurationDone响应,告诉客户端可以开始执行调试操作（如运行、单步执行等）
-	response.Body.SupportsStepInTargetsRequest = true     // 支持步入
-	response.Body.SupportTerminateDebuggee = true         // 在调试器终止时是否支持终止调试进程
+	response.Body.SupportsEvaluateForHovers = true        // Whether it supports evaluation when the mouse is hovering
+	response.Body.SupportsConditionalBreakpoints = true   // Conditional breakpoints
+	response.Body.SupportsConfigurationDoneRequest = true // Whether to support the request to detect whether the configuration is completed, if supported, the client Send a SupportsConfigurationDoneRequest request, and the adapter will return a configurationDone response when the configuration of the debugging session is completed, telling the client that it can start performing debugging operations (such as running, single-stepping, etc.)
+	response.Body.SupportsStepInTargetsRequest = true     // Support stepping into
+	response.Body.SupportTerminateDebuggee = true         // Whether it supports terminating the debugging process when the debugger terminates
 
-	response.Body.SupportsSetVariable = true               // 支持调试器设置变量的新值
-	response.Body.SupportsSetExpression = true             // 是否支持设置表达式的新值
-	response.Body.SupportsHitConditionalBreakpoints = true // 在触发条件断点时到达断点但不满足条件的次数
+	response.Body.SupportsSetVariable = true               // Support debugger to set new values of variables
+	response.Body.SupportsSetExpression = true             // Whether to support setting new values of expressions Whether
+	response.Body.SupportsHitConditionalBreakpoints = true // . The number of times
 
-	response.Body.SupportsDisassembleRequest = false         // 是否支持反汇编请求(输出opcode)
-	response.Body.SupportsDataBreakpoints = false            // 某块内存(变量)被读写时触发的断点
-	response.Body.SupportsFunctionBreakpoints = false        // 函数断点(可以考虑支持)
-	response.Body.SupportsBreakpointLocationsRequest = false // 是否支持客户端向调试适配器查询特定源代码文件中可用的断点位置(可以考虑支持)
-	response.Body.SupportsLogPoints = false                  // 是否支持断点不暂停,而是在断点处输出信息(可以考虑支持)
+	response.Body.SupportsDisassembleRequest = false         // Whether to support disassembly request (output opcode)
+	response.Body.SupportsDataBreakpoints = false            // Breakpoint triggered when a certain memory (variable) is read or written
+	response.Body.SupportsFunctionBreakpoints = false        // Function breakpoint (can be considered to support)
+	response.Body.SupportsBreakpointLocationsRequest = false // whether to support the client Query the debug adapter for available breakpoint locations in specific source code files (can consider supporting)
+	response.Body.SupportsLogPoints = false                  // support breakpoints without pausing, but output information at the breakpoint (support may be considered). Does
 
-	response.Body.ExceptionBreakpointFilters = []dap.ExceptionBreakpointsFilter{} // 异常断点的过滤器
-	response.Body.SupportsStepBack = false                                        // 步退
-	response.Body.SupportsRestartFrame = false                                    // 支持调试器重启帧
-	response.Body.SupportsGotoTargetsRequest = false                              // 支持获取跳转信息，例如函数的定义，派生类实现
-	response.Body.SupportsCompletionsRequest = false                              // 支持补全
-	response.Body.CompletionTriggerCharacters = []string{}                        // 补全触发字符
-	response.Body.SupportsModulesRequest = false                                  // 模块级别的调试支持
-	response.Body.AdditionalModuleColumns = []dap.ColumnDescriptor{}              // 附加的模块信息
-	response.Body.SupportedChecksumAlgorithms = []dap.ChecksumAlgorithm{}         // 支持的校验算法,用于校验文件完整性
-	response.Body.SupportsRestartRequest = false                                  // 是否支持重启正在调试的请求,如果不支持则需要重新启动调试器
-	response.Body.SupportsExceptionOptions = false                                // 是否支持自定义异常行为
-	response.Body.SupportsValueFormattingOptions = false                          // 是否支持格式化堆栈跟踪请求,变量请求和执行请求
-	response.Body.SupportsExceptionInfoRequest = false                            // 是否支持输出异常信息请求
-	response.Body.SupportsDelayedStackTraceLoading = false                        // 是否支持延迟加载堆栈跟踪信息
-	response.Body.SupportsLoadedSourcesRequest = false                            // 是否支持获取已加载的源代码列表请求,获取有关已加载源代码的信息，例如文件路径、调试信息等
-	response.Body.SupportsTerminateThreadsRequest = false                         // 是否支持终止线程请求
-	response.Body.SupportsTerminateRequest = false                                // 是否支持终止调试进程请求
-	response.Body.SupportsReadMemoryRequest = false                               // 是否支持读取内存请求
-	response.Body.SupportsCancelRequest = false                                   // 是否支持取消请求,取消请求用于1. 表示客户端不再对先前发出的特定请求产生的结果感兴趣 2. 取消进度序列
+	response.Body.ExceptionBreakpointFilters = []dap.ExceptionBreakpointsFilter{} // Exception breakpoint filter
+	response.Body.SupportsStepBack = false                                        // . Step back
+	response.Body.SupportsRestartFrame = false                                    // Support debugger restart frame
+	response.Body.SupportsGotoTargetsRequest = false                              // Supports obtaining jump information, such as function definition, derived class implementation
+	response.Body.SupportsCompletionsRequest = false                              // Support completion
+	response.Body.CompletionTriggerCharacters = []string{}                        // . Complete the trigger character
+	response.Body.SupportsModulesRequest = false                                  // Module level debugging support
+	response.Body.AdditionalModuleColumns = []dap.ColumnDescriptor{}              // additional module information
+	response.Body.SupportedChecksumAlgorithms = []dap.ChecksumAlgorithm{}         // supported verification algorithm for verifying file integrity
+	response.Body.SupportsRestartRequest = false                                  // whether to support restarting the request being debugged, if not supported, you need to restart the debugger
+	response.Body.SupportsExceptionOptions = false                                // Whether it supports custom exception behavior
+	response.Body.SupportsValueFormattingOptions = false                          // Whether to support formatted stack trace request, variable request and execution request
+	response.Body.SupportsExceptionInfoRequest = false                            // whether to support output exception information request
+	response.Body.SupportsDelayedStackTraceLoading = false                        // support delayed loading of stacks? Tracking information
+	response.Body.SupportsLoadedSourcesRequest = false                            // reaches the breakpoint but does not meet the condition when the conditional breakpoint is triggered. Whether it supports the request to obtain the loaded source code list and obtain information about the loaded source code, such as file path, debugging information, etc.
+	response.Body.SupportsTerminateThreadsRequest = false                         // Whether it supports terminating thread requests
+	response.Body.SupportsTerminateRequest = false                                // supports terminating the debugging process request
+	response.Body.SupportsReadMemoryRequest = false                               // Whether to support read memory requests
+	response.Body.SupportsCancelRequest = false                                   // Whether to support cancellation requests, cancellation requests are used to 1. Indicate that the client is no longer interested in the results of a specific request previously issued 2. Cancel the progress sequence
 
 	// e := &dap.InitializedEvent{Event: *newEvent("initialized")}
 	// ds.send(e)
@@ -316,7 +316,7 @@ func (ds *DebugSession) onLaunchRequest(request *dap.LaunchRequest) {
 	ds.send(&dap.InitializedEvent{Event: *newEvent("initialized")})
 	ds.send(&dap.LaunchResponse{Response: *newResponse(request.Request)})
 
-	// 等待launch
+	// Wait for launch
 	ds.LaunchWg.Add(1)
 	go ds.RunProgramInDebugMode(request, !args.NoDebug, args.Program, args.Args)
 }
@@ -355,18 +355,18 @@ func (ds *DebugSession) onRestartRequest(request *dap.RestartRequest) {
 }
 
 func (ds *DebugSession) onSetBreakpointsRequest(request *dap.SetBreakpointsRequest) {
-	// 等待launch完成
+	// Waiting for launch to complete
 	ds.LaunchWg.Wait()
 
 	debugger := ds.debugger
-	// 等待init完成
+	// Wait for init to complete
 	debugger.WaitInit()
 
 	response := &dap.SetBreakpointsResponse{Response: *newResponse(request.Request), Body: dap.SetBreakpointsResponseBody{}}
 
 	path := request.Arguments.Source.Path
 
-	// todo: supportsLogPoints,处理arguments.Breakpoints.LogMessage
+	// todo : supportsLogPoints, handle arguments.Breakpoints.LogMessage
 
 	responseBreakPoints := make([]dap.Breakpoint, 0)
 	existLines := make([]int, len(request.Arguments.Breakpoints))
@@ -374,12 +374,12 @@ func (ds *DebugSession) onSetBreakpointsRequest(request *dap.SetBreakpointsReque
 	for i, b := range request.Arguments.Breakpoints {
 		line := b.Line
 		existLines[i] = line
-		// 如果已经存在节点,则修改其condition
+		// from the saved dap.Variable. If the node already exists, modify its condition
 		if bp, ok := ds.debugger.ExistBreakPoint(path, line); ok {
 			bp.Condition = b.Condition
 			bp.HitCondition = b.HitCondition
 		} else {
-			// 如果没有存在节点则创建并返回
+			// . If it does not exist. The node creates and returns
 			ref, err := ds.debugger.SetBreakPoint(path, line, b.Condition, b.HitCondition)
 			responseBreakPoints = append(responseBreakPoints,
 				dap.Breakpoint{
@@ -390,7 +390,7 @@ func (ds *DebugSession) onSetBreakpointsRequest(request *dap.SetBreakpointsReque
 				})
 		}
 	}
-	// 清除其他断点
+	// Clear other breakpoints
 	ds.debugger.ClearOtherBreakPoints(path, existLines)
 
 	response.Body.Breakpoints = responseBreakPoints
@@ -408,7 +408,7 @@ func (ds *DebugSession) onSetExceptionBreakpointsRequest(request *dap.SetExcepti
 }
 
 func (ds *DebugSession) onConfigurationDoneRequest(request *dap.ConfigurationDoneRequest) {
-	// 如果stopOnEntry,则在入口时回调
+	// If stopOnEntry, callback
 	if ds.launchConfig.StopOnEntry {
 		e := &dap.StoppedEvent{
 			Event: *newEvent("stopped"),
@@ -417,9 +417,9 @@ func (ds *DebugSession) onConfigurationDoneRequest(request *dap.ConfigurationDon
 		ds.send(e)
 
 	} else {
-		// 等待launch完成
+		// Waiting for launch to complete
 		ds.LaunchWg.Wait()
-		// 等待调试器初始化完成
+		// Waiting for the debugger Initialization completed
 		ds.debugger.WaitInit()
 
 		ds.debugger.Continue()
@@ -430,34 +430,34 @@ func (ds *DebugSession) onConfigurationDoneRequest(request *dap.ConfigurationDon
 }
 
 func (ds *DebugSession) onContinueRequest(request *dap.ContinueRequest) {
-	// 等待launch完成
+	// Waiting for launch to complete
 	ds.LaunchWg.Wait()
-	// 等待调试器初始化完成
+	// Waiting for the debugger Initialization completed
 	ds.debugger.WaitInit()
 
-	// ? 不支持单个线程继续运行,整个程序继续执行
-	// ? 不需要处理request.threadId
+	// ? Does not support a single thread to continue running, the entire program continues to execute
+	// ? There is no need to process request.threadId
 	ds.debugger.Continue()
 
 	ds.send(&dap.ContinueResponse{Response: *newResponse(request.Request), Body: dap.ContinueResponseBody{AllThreadsContinued: true}})
 }
 
 func (ds *DebugSession) onNextRequest(request *dap.NextRequest) {
-	// 等待程序启动
+	// . Wait for the program to start.
 	ds.WaitProgramStart()
 	ds.sendStepResponse(request.Arguments.ThreadId, &dap.NextResponse{Response: *newResponse(request.Request)})
 	ds.debugger.StepNext()
 }
 
 func (ds *DebugSession) onStepInRequest(request *dap.StepInRequest) {
-	// 等待程序启动
+	// . Wait for the program to start.
 	ds.WaitProgramStart()
 	ds.sendStepResponse(request.Arguments.ThreadId, &dap.StepInResponse{Response: *newResponse(request.Request)})
 	ds.debugger.StepIn()
 }
 
 func (ds *DebugSession) onStepOutRequest(request *dap.StepOutRequest) {
-	// 等待程序启动
+	// . Wait for the program to start.
 	ds.WaitProgramStart()
 
 	ds.sendStepResponse(request.Arguments.ThreadId, &dap.StepOutResponse{Response: *newResponse(request.Request)})
@@ -485,7 +485,7 @@ func (ds *DebugSession) onGotoRequest(request *dap.GotoRequest) {
 }
 
 func (ds *DebugSession) onPauseRequest(request *dap.PauseRequest) {
-	// 等待程序启动
+	// . Wait for the program to start.
 	ds.WaitProgramStart()
 	err := ds.debugger.Halt()
 	if err != nil {
@@ -496,7 +496,7 @@ func (ds *DebugSession) onPauseRequest(request *dap.PauseRequest) {
 }
 
 func (ds *DebugSession) onStackTraceRequest(request *dap.StackTraceRequest) {
-	// 等待程序启动
+	// . Wait for the program to start.
 	ds.WaitProgramStart()
 
 	var (
@@ -527,7 +527,7 @@ func (ds *DebugSession) onStackTraceRequest(request *dap.StackTraceRequest) {
 				stackTrace := frames[start+i]
 				source := *stackTrace.Source
 				stackFrames = append(stackFrames, dap.StackFrame{
-					Id:        stackTrace.ID, // stackTrace.ID 就是 frameId
+					Id:        stackTrace.ID, // stackTrace.ID is frameId
 					Name:      stackTrace.Name,
 					Source:    &dap.Source{Name: filepath.Base(source), Path: source},
 					Line:      stackTrace.Line,
@@ -563,7 +563,7 @@ func (ds *DebugSession) onStackTraceRequest(request *dap.StackTraceRequest) {
 }
 
 func (ds *DebugSession) onScopesRequest(request *dap.ScopesRequest) {
-	// 等待程序启动
+	// . Wait for the program to start.
 	ds.WaitProgramStart()
 
 	debugger := ds.debugger
@@ -577,16 +577,16 @@ func (ds *DebugSession) onScopesRequest(request *dap.ScopesRequest) {
 
 		return dap.Scope{
 			Name:               name,
-			VariablesReference: ref,              // 通过scope id来找到一组变量,用于VariablesRequest
-			Expensive:          scope.Len() > 50, // 如果变量数量大于50,则认为是expensive
+			VariablesReference: ref,              // Find a set of variables through scope id for VariablesRequest
+			Expensive:          scope.Len() > 50, // If the number of variables is greater than 50, it is considered expensive.
 		}
 	})
-	// 按照VariablesReference排序,这样保证旧的local scope在前面
+	// at entry Sort according to VariablesReference, so as to ensure that the old local scope is in front
 	sort.SliceStable(scopes, func(i, j int) bool {
 		return scopes[i].VariablesReference < scopes[j].VariablesReference
 	})
 
-	// 修改重复的local scope名字,同时添加到ref中
+	// Modify the duplicate local scope name and add it to the ref at the same time. Does
 	suffix := 0
 	for i, scope := range scopes {
 		if scope.Name == "Locals" {
@@ -600,7 +600,7 @@ func (ds *DebugSession) onScopesRequest(request *dap.ScopesRequest) {
 }
 
 func (ds *DebugSession) onVariablesRequest(request *dap.VariablesRequest) {
-	// 等待程序启动
+	// . Wait for the program to start.
 	ds.WaitProgramStart()
 
 	debugger := ds.debugger
@@ -694,7 +694,7 @@ func (ds *DebugSession) onSourceRequest(request *dap.SourceRequest) {
 }
 
 func (ds *DebugSession) onThreadsRequest(request *dap.ThreadsRequest) {
-	// 需要等待程序启动
+	// Need to wait for the program to start
 	ds.WaitProgramStart()
 
 	var threads []dap.Thread
@@ -719,17 +719,17 @@ func (ds *DebugSession) onTerminateThreadsRequest(request *dap.TerminateThreadsR
 }
 
 func (ds *DebugSession) onEvaluateRequest(request *dap.EvaluateRequest) {
-	// 等待程序启动
+	// . Wait for the program to start.
 	ds.WaitProgramStart()
 
-	// todo: 处理context类型
+	// todo : Processing context type
 	ctxt := request.Arguments.Context
 	showErrorToUser := ctxt != "watch" && ctxt != "repl" && ctxt != "hover"
 	expr := request.Arguments.Expression
 
 	response := &dap.EvaluateResponse{Response: *newResponse(request.Request)}
 
-	// 处理用户命令
+	// . Process the user command
 	if ctxt == "repl" && strings.HasPrefix(expr, "dbg ") {
 		cmd := strings.TrimPrefix(expr, "dbg ")
 		result, err := ds.dbgCommand(cmd)
@@ -771,12 +771,12 @@ func (ds *DebugSession) onCompletionsRequest(request *dap.CompletionsRequest) {
 }
 
 func (ds *DebugSession) onExceptionInfoRequest(request *dap.ExceptionInfoRequest) {
-	// 等待launch完成
+	// Waiting for launch to complete
 	ds.LaunchWg.Wait()
-	// 等待程序启动
+	// . Wait for the program to start.
 	ds.WaitProgramStart()
 
-	// todo: 处理goroutineID
+	// todo: Process goroutineID
 	goroutineID := request.Arguments.ThreadId
 
 	var body dap.ExceptionInfoResponseBody
@@ -904,7 +904,7 @@ func (ds *DebugSession) namedToDAPVariables(i interface{}, start int) []dap.Vari
 		literal = v.Literal
 		i = v.Value
 	case *yakvm.Scope:
-		// ? scope没有metadata
+		// ? Scope has no metadata.
 		return children
 	}
 
@@ -945,7 +945,7 @@ func (ds *DebugSession) namedToDAPVariables(i interface{}, start int) []dap.Vari
 				NamedVariables:     yakvm.GetNamedVariableCount(iValue),
 			}
 
-			// 保存到varibalesMap中
+			// Save to variablesMap
 			ds.variablesMap[ref] = vari
 
 			children[i] = vari
@@ -984,7 +984,7 @@ func (ds *DebugSession) childrenToDAPVariables(i interface{}, start int) []dap.V
 	case *yakvm.Scope:
 		valuesMap := v.GetAllNameAndValueInScopes()
 
-		// 排序保证顺序一致
+		// Sort to ensure consistent order
 		values := lo.MapToSlice(valuesMap, func(key string, value *yakvm.Value) *ScopeKV {
 			return &ScopeKV{key, value}
 		})
@@ -1015,7 +1015,7 @@ func (ds *DebugSession) childrenToDAPVariables(i interface{}, start int) []dap.V
 				NamedVariables:     named,
 			}
 
-			// 保存到varibalesMap中
+			// Save to variablesMap
 			ds.variablesMap[ref] = vari
 
 			children[index] = vari
@@ -1039,7 +1039,7 @@ func (ds *DebugSession) childrenToDAPVariables(i interface{}, start int) []dap.V
 				iKey := item.Interface()
 				return &MapKey{item, iKey, utils.AsDebugString(iKey)}
 			})
-			// 排序保证顺序一致
+			// Sort to ensure consistent order
 			sort.SliceStable(mapKeys, func(i, j int) bool {
 				return mapKeys[i].KeyStr < mapKeys[j].KeyStr
 			})
@@ -1080,7 +1080,7 @@ func (ds *DebugSession) childrenToDAPVariables(i interface{}, start int) []dap.V
 					NamedVariables:     yakvm.GetNamedVariableCount(iValue),
 				}
 
-				// 保存到varibalesMap中
+				// Save to variablesMap
 				ds.variablesMap[keyRef] = keyVar
 				ds.variablesMap[valueRef] = valueVar
 
@@ -1105,7 +1105,7 @@ func (ds *DebugSession) childrenToDAPVariables(i interface{}, start int) []dap.V
 					NamedVariables:     yakvm.GetNamedVariableCount(iValue),
 				}
 
-				// 保存到varibalesMap中
+				// Save to variablesMap
 				ds.variablesMap[ref] = vari
 
 				children[i] = vari
@@ -1117,7 +1117,7 @@ func (ds *DebugSession) childrenToDAPVariables(i interface{}, start int) []dap.V
 	return children
 }
 
-// 获取handleValue对应的ref,然后在从保存的dap.Variable中拿到变量名
+// to obtain the corresponding handleValue ref, and then get the variable name
 func (ds *DebugSession) GetEvaluateName(v interface{}) string {
 	ref := ds.GetConvertedVariableRef(v)
 	if v, ok := ds.variablesMap[ref]; ok {

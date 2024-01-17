@@ -14,14 +14,14 @@ import (
 
 // ref: https://portswigger.net/blog/json-hijacking-for-the-modern-web
 //
-// 判断逻辑
+// Judgment logic
 // 1. get method
-// 2. query 中有 callback, cb, jsonp 参数
+// 2. There are callback, cb, jsonp parameter
 // 3. (nosniff = true && content-type = js) || (nosniff = false && content-type maybe js)
-// 4. 不能是 {, <, [, " 开头
-// 5. 包含 ( 或者 =
-// 6. 重要！包含敏感数据，username, ip 等
-// 7. 该函数用于初筛（Check 函数), 具体漏洞确定在 jsonp package 内
+// 4. Cannot be {, <, [, " at the beginning
+// 5. Contains (or =
+// 6. Important! Contains sensitive data, username, ip, etc.
+// 7. This function Used for preliminary screening (Check function), the specific vulnerability is determined in the jsonp package
 func IsSensitiveJSONP(reqRaw []byte, rspRaw []byte) bool {
 	freq, _ := mutate.NewFuzzHTTPRequest(reqRaw)
 	if freq != nil {
@@ -63,11 +63,11 @@ func IsSensitiveJSONP(reqRaw []byte, rspRaw []byte) bool {
 	}
 
 	if !utils.StringHasPrefix(contentType, jsContentTypes) {
-		// nosniff 下其他的 content-type 不能执行
+		// other content-types under nosniff cannot be executed
 		if resp.Header.Get("X-Content-Type-Options") == "nosniff" {
 			return false
 		}
-		// 加入一些没有 nosniff 的时候常见的 content-type
+		// adds some content that is common when there is no nosniff- type
 		if contentType != "" && !utils.StringHasPrefix(contentType, maybeJSContentTypes) {
 			return false
 		}
@@ -85,7 +85,7 @@ func IsSensitiveJSONP(reqRaw []byte, rspRaw []byte) bool {
 	return IsSensitiveJSON(body)
 }
 
-// IsHTMLResponse 判断 response 是否为 html 格式
+// IsHTMLResponse determines whether the response is in html format
 // 1. response content-type
 // 2. check fist 500 bytes
 func IsHTMLResponse(resp *http.Response) bool {
@@ -144,7 +144,7 @@ func SearchChineseIDCards(data []byte) []string {
 	ret := make([]string, 0, 10)
 	m := maybeChinaIDCardNumberRegex.FindAllSubmatch(data, 10)
 	// https://github.com/afanti-com/utils-go/blob/master/idCardNo/idCardNo.go
-	// 确保是一个身份证号，避免误报
+	// in the query. Make sure it is an ID number to avoid false positives.
 	for _, item := range m {
 		if len(item) >= 1 {
 			number := item[0]

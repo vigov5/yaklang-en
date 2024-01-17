@@ -12,7 +12,7 @@ import (
 type ScreenRecorder struct {
 	gorm.Model
 
-	// 保存到本地的路径
+	// Save path to local
 	Filename  string
 	NoteInfo  string
 	Project   string
@@ -136,9 +136,9 @@ func BatchScreenRecorder(db *gorm.DB, ctx context.Context) chan *ScreenRecorder 
 
 func GetOneScreenRecorder(db *gorm.DB, req *ypb.GetOneScreenRecorderRequest) (*ScreenRecorder, error) {
 	db = db.Model(&ScreenRecorder{})
-	if req.Order == "desc" { // 上一条
+	if req.Order == "desc" { // Previous article
 		db = db.Where("id < ?", req.Id).Order("id desc").Limit(1)
-	} else { // 下一条
+	} else { // Next article
 		db = db.Where("id > ?", req.Id).Order("id asc").Limit(1)
 	}
 	var ret ScreenRecorder
@@ -151,9 +151,9 @@ func GetOneScreenRecorder(db *gorm.DB, req *ypb.GetOneScreenRecorderRequest) (*S
 
 func IsExitScreenRecorder(db *gorm.DB, id int64, order string) (*ScreenRecorder, error) {
 	db = db.Model(&ScreenRecorder{})
-	if order == "desc" { // 上一条
+	if order == "desc" { // Previous article
 		db = db.Where("id < ?", id).Order("id desc").Limit(1)
-	} else { // 下一条
+	} else { // Next article
 		db = db.Where("id > ?", id).Order("id asc").Limit(1)
 	}
 	var ret ScreenRecorder

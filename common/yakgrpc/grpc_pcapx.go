@@ -78,9 +78,9 @@ func (s *Server) GetPcapMetadata(ctx context.Context, req *ypb.PcapMetadataReque
 			{Key: "arp", Value: "ARP"},
 		},
 		AvailableLinkLayerTypes: []*ypb.KVPair{
-			{Key: "ethernet", Value: "以太网"},
+			{Key: "ethernet", Value: "Ethernet"},
 			{Key: "arp", Value: "ARP"},
-			{Key: "", Value: "本地"},
+			{Key: "", Value: "local"},
 		},
 		AvailableNetworkLayerTypes: []*ypb.KVPair{
 			{Key: "ipv4", Value: "IPv4"},

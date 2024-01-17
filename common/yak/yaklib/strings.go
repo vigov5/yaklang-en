@@ -17,17 +17,17 @@ import (
 	"github.com/yaklang/yaklang/common/utils/suspect"
 )
 
-// IndexAny 返回字符串s中chars任意字符首次出现的位置的索引，如果字符串中不存在chars，则返回-1
+// IndexAny Returns the index of the first occurrence of any character of chars in string s, if chars does not exist in the string , then return -1
 // Example:
 // ```
-// str.IndexAny("Hello world", "world") // 2，因为l在第三个字符中首次出现
+// str.IndexAny("Hello world", "world") // 2 because l occurs first in third character
 // str.IndexAny("Hello World", "Yak") // -1
 // ```
 func IndexAny(s string, chars string) int {
 	return strings.IndexAny(s, chars)
 }
 
-// StartsWith / HasPrefix 判断字符串s是否以prefix开头
+// StartsWith / HasPrefix determines whether string s begins with prefix
 // Example:
 // ```
 // str.StartsWith("Hello Yak", "Hello") // true
@@ -37,7 +37,7 @@ func StartsWith(s string, prefix string) bool {
 	return strings.HasPrefix(s, prefix)
 }
 
-// EndsWith / HasSuffix 判断字符串s是否以suffix结尾
+// EndsWith / HasSuffix. Determine whether the string s ends with suffix.
 // Example:
 // ```
 // str.EndsWith("Hello Yak", "Yak") // true
@@ -47,7 +47,7 @@ func EndsWith(s string, suffix string) bool {
 	return strings.HasSuffix(s, suffix)
 }
 
-// Title 返回字符串s的标题化版本，即所有单词的首字母都是大写的
+// Title returns the titled version of string s, that is, the first letters of all words are capitalized
 // Example:
 // ```
 // str.Title("hello yak") // Hello Yak
@@ -56,7 +56,7 @@ func Title(s string) string {
 	return strings.Title(s)
 }
 
-// Join 将i中的元素用d连接，如果传入的参数不是字符串，会自动将其转为字符串，再将其用d连接。如果连接失败，则会返回i的字符串形式。
+// Join connects the elements in i with d. If passed in The parameter is not a string, it will be automatically converted to a string, and then connected with d. If the connection fails, the string form of i will be returned.
 // Example:
 // ```
 // str.Join([]string{"hello", "yak"}, " ") // hello yak
@@ -74,7 +74,7 @@ func Join(i interface{}, d interface{}) (defaultResult string) {
 	return
 }
 
-// TrimLeft 返回将字符串s左侧所有包含cutset字符串中的字符都去掉的字符串
+// TrimLeft Returns a string that removes all characters in the cutset string on the left side of string s
 // Example:
 // ```
 // str.TrimLeft("Hello Yak", "H") // ello Yak
@@ -84,7 +84,7 @@ func TrimLeft(s string, cutset string) string {
 	return strings.TrimLeft(s, cutset)
 }
 
-// TrimPrefix 返回将字符串s前缀prefix去掉的字符串
+// that reads data from string s TrimPrefix Returns a string with the prefix removed from string s
 // Example:
 // ```
 // str.TrimPrefix("Hello Yak", "Hello") //  Yak
@@ -94,7 +94,7 @@ func TrimPrefix(s string, prefix string) string {
 	return strings.TrimPrefix(s, prefix)
 }
 
-// TrimRight 返回将字符串s右侧所有包含cutset字符串中的字符都去掉的字符串
+// TrimRight Returns a string that removes all characters in the cutset string on the right side of string s
 // Example:
 // ```
 // str.TrimRight("Hello Yak", "k") // Hello Ya
@@ -104,7 +104,7 @@ func TrimRight(s string, cutset string) string {
 	return strings.TrimRight(s, cutset)
 }
 
-// TrimSuffix 返回将字符串s后缀suffix去掉的字符串
+// TrimSuffix Returns the string
 // Example:
 // ```
 // str.TrimSuffix("Hello Yak", "ak") // Hello Y
@@ -114,7 +114,7 @@ func TrimSuffix(s string, suffix string) string {
 	return strings.TrimSuffix(s, suffix)
 }
 
-// Trim 返回将字符串s两侧所有包含cutset字符串中的字符都去掉的字符串
+// Trim returns a string that removes all characters in the cutset string on both sides of string s.
 // Example:
 // ```
 // str.Trim("Hello Yak", "Hk") // ello Ya
@@ -124,7 +124,7 @@ func Trim(s string, cutset string) string {
 	return strings.Trim(s, cutset)
 }
 
-// TrimSpace 返回将字符串s两侧所有的空白字符都去掉的字符串
+// TrimSpace Returns A string with all whitespace characters on both sides of the string s removed.
 // Example:
 // ```
 // str.TrimSpace(" \t\n Hello Yak \n\t\r\n") // Hello Yak
@@ -133,7 +133,7 @@ func TrimSpace(s string) string {
 	return strings.TrimSpace(s)
 }
 
-// Split 将字符串s按照sep分割成字符串切片
+// Split Splits string s into string slices according to sep
 // Example:
 // ```
 // str.Split("Hello Yak", " ") // [Hello", "Yak"]
@@ -142,7 +142,7 @@ func Split(s string, sep string) []string {
 	return strings.Split(s, sep)
 }
 
-// SplitAfter 将字符串s按照sep分割成字符串切片，但是每个元素都会保留sep
+// SplitAfter Split the string s into string slices according to sep, but each element will retain sep.
 // Example:
 // ```
 // str.SplitAfter("Hello-Yak", "-") // [Hello-", "Yak"]
@@ -151,7 +151,7 @@ func SplitAfter(s string, sep string) []string {
 	return strings.SplitAfter(s, sep)
 }
 
-// SplitAfterN 将字符串s按照sep分割成字符串切片，但是每个元素都会保留sep，最多分为n个元素
+// SplitAfterN Split the string s into string slices according to sep, but each element will retain sep, and can be divided into n elements at most
 // Example:
 // ```
 // str.SplitAfterN("Hello-Yak-and-World", "-", 2) // [Hello-", "Yak-and-World"]
@@ -160,7 +160,7 @@ func SplitAfterN(s string, sep string, n int) []string {
 	return strings.SplitAfterN(s, sep, n)
 }
 
-// SplitN 将字符串s按照sep分割成字符串切片，最多分为n个元素
+// SplitN Compares the string s according to sep. Split into string slices of up to n elements
 // Example:
 // ```
 // str.SplitN("Hello-Yak-and-World", "-", 2) // [Hello", "Yak-and-World"]
@@ -169,7 +169,7 @@ func SplitN(s string, sep string, n int) []string {
 	return strings.SplitN(s, sep, n)
 }
 
-// ToLower 返回字符串s的小写形式
+// ToLower Returns the lowercase form of string s
 // Example:
 // ```
 // str.ToLower("HELLO YAK") // hello yak
@@ -178,7 +178,7 @@ func ToLower(s string) string {
 	return strings.ToLower(s)
 }
 
-// ToUpper 返回字符串s的大写形式
+// ToUpper Returns the uppercase version of string s
 // Example:
 // ```
 // str.ToUpper("hello yak") // HELLO YAK
@@ -187,7 +187,7 @@ func ToUpper(s string) string {
 	return strings.ToUpper(s)
 }
 
-// Repeat 返回将字符串s重复count次的字符串
+// Repeat Returns a string that repeats string s count times
 // Example:
 // ```
 // str.Repeat("hello", 3) // hellohellohello
@@ -196,7 +196,7 @@ func Repeat(s string, count int) string {
 	return strings.Repeat(s, count)
 }
 
-// ToTitle 返回字符串s的标题化版本，其中所有Unicode字母都会被转换为其大写
+// ToTitle Returns the titled version of string s, where all Unicode letters are converted to their uppercase
 // Example:
 // ```
 // str.ToTitle("hello yak") // HELLO YAK
@@ -205,7 +205,7 @@ func ToTitle(s string) string {
 	return strings.ToTitle(s)
 }
 
-// Contains 判断字符串s是否包含substr
+// Contains Judgment string Whether s contains substr
 // Example:
 // ```
 // str.Contains("hello yakit", "yak") // true
@@ -214,7 +214,7 @@ func Contains(s string, substr string) bool {
 	return strings.Contains(s, substr)
 }
 
-// ReplaceAll 返回将字符串s中所有old字符串替换为new字符串的字符串
+// ReplaceAll Returns a string that replaces all old strings in string s with new strings
 // Example:
 // ```
 // str.ReplaceAll("hello yak", "yak", "yakit") // hello yakit
@@ -223,7 +223,7 @@ func ReplaceAll(s string, old string, new string) string {
 	return strings.ReplaceAll(s, old, new)
 }
 
-// Replace 返回将字符串s中前n个old字符串替换为new字符串的字符串
+// Replace returns the prefix of string s String that replaces n old strings with new strings
 // Example:
 // ```
 // str.Replace("hello yak", "l", "L", 1) // heLlo yak
@@ -232,7 +232,7 @@ func Replace(s string, old string, new string, n int) string {
 	return strings.Replace(s, old, new, n)
 }
 
-// NewReader 返回一个从字符串s读取数据的*Reader
+// NewReader Returns a*Reader
 // Example:
 // ```
 // r = str.NewReader("hello yak")
@@ -245,7 +245,7 @@ func NewReader(s string) *strings.Reader {
 	return strings.NewReader(s)
 }
 
-// Index 返回字符串s中substr第一次出现的位置的索引，如果字符串中不存在substr，则返回-1
+// if the conversion fails Index returns the index of the first occurrence of substr in string s. If substr does not exist in the string, it returns -1.
 // Example:
 // ```
 // str.Index("hello yak", "yak") // 6
@@ -255,7 +255,7 @@ func Index(s string, substr string) int {
 	return strings.Index(s, substr)
 }
 
-// Count 返回字符串s中substr出现的次数
+// Count returns the number of occurrences of substr in string s.
 // Example:
 // ```
 // str.Count("hello yak", "l") // 2
@@ -264,7 +264,7 @@ func Count(s string, substr string) int {
 	return strings.Count(s, substr)
 }
 
-// Compare 按照ascii码表顺序逐个比较字符串a和b中的每个字符，如果a==b，则返回0，如果a<b，则返回-1，如果a>b，则返回1
+// Compare Compares each character in the strings a and b one by one according to the order of the ascii code table. If a==b, returns 0. If a<b, then return -1, if a>b of replacement, 1 will be returned.
 // Example:
 // ```
 // str.Compare("hello yak", "hello yak") // 0
@@ -275,7 +275,7 @@ func Compare(a string, b string) int {
 	return strings.Compare(a, b)
 }
 
-// ContainsAny 判断字符串s是否包含chars中的任意字符
+// ContainsAny Determines whether the string s contains any character in chars
 // Example:
 // ```
 // str.ContainsAny("hello yak", "ly") // true
@@ -285,7 +285,7 @@ func ContainsAny(s string, chars string) bool {
 	return strings.ContainsAny(s, chars)
 }
 
-// EqualFold 判断字符串s和t是否相等，忽略大小写
+// EqualFold Determines whether strings s and t are equal, ignoring case
 // Example:
 // ```
 // str.EqualFold("hello Yak", "HELLO YAK") // true
@@ -295,7 +295,7 @@ func EqualFold(s string, t string) bool {
 	return strings.EqualFold(s, t)
 }
 
-// Fields 返回将字符串s按照空白字符（'\t', '\n', '\v', '\f', '\r', ' ', 0x85, 0xA0）分割的字符串切片
+// Fields. Returns a string slice that divides the string s according to whitespace characters ('\t', '\n', '\v', '\f', '\r', ' ', 0x85, 0xA0).
 // Example:
 // ```
 // str.Fields("hello world\nhello yak\tand\vyakit") // [hello", "world", "hello", "yak", "and", "yakit"]
@@ -304,7 +304,7 @@ func Fields(s string) []string {
 	return strings.Fields(s)
 }
 
-// IndexByte 返回字符串s中第一个等于c的字符的索引，如果字符串中不存在c，则返回-1
+// IndexByte Returns the index of the first character equal to c in string s. If c does not exist in the string, returns -1
 // Example:
 // ```
 // str.IndexByte("hello yak", 'y') // 6
@@ -314,7 +314,7 @@ func IndexByte(s string, c byte) int {
 	return strings.IndexByte(s, c)
 }
 
-// LastIndex 返回字符串s中substr最后一次出现的位置的索引，如果字符串中不存在substr，则返回-1
+// LastIndex Returns a string The index of the last occurrence of substr in s. If substr does not exist in the string, -1 is returned.
 // Example:
 // ```
 // str.LastIndex("hello yak", "l") // 3
@@ -324,7 +324,7 @@ func LastIndex(s string, substr string) int {
 	return strings.LastIndex(s, substr)
 }
 
-// LastIndexAny 返回字符串s中chars任意字符最后一次出现的位置的索引，如果字符串中不存在chars，则返回-1
+// LastIndexAny. Return characters. The index of the last occurrence of any character of chars in string s. If chars does not exist in the string, -1 is returned.
 // Example:
 // ```
 // str.LastIndexAny("hello yak", "ly") // 6
@@ -334,7 +334,7 @@ func LastIndexAny(s string, chars string) int {
 	return strings.LastIndexAny(s, chars)
 }
 
-// LastIndexByte 返回字符串s中最后一个等于c的字符的索引，如果字符串中不存在c，则返回-1
+// with the suffix suffix removed from the string s. LastIndexByte Returns the index of the last character equal to c in the string s. If the character If c does not exist in the string, then -1 is returned.
 // Example:
 // ```
 // str.LastIndexByte("hello yak", 'l') // 3
@@ -344,7 +344,7 @@ func LastIndexByte(s string, c byte) int {
 	return strings.LastIndexByte(s, c)
 }
 
-// ToValidUTF8 返回将字符串s中无效的UTF-8编码替换为replacement的字符串
+// ToValidUTF8 returns the invalid UTF-8 in string s. If the encoding is replaced with the string
 // Example:
 // ```
 //
@@ -354,7 +354,7 @@ func ToValidUTF8(s string, replacement string) string {
 	return strings.ToValidUTF8(s, replacement)
 }
 
-// ExtractJson 尝试提取字符串中的 JSON 并进行修复返回
+// ExtractJson Try to extract the JSON in the string and repair it Return
 // Example:
 // ```
 // str.ExtractJson("hello yak") // []
@@ -364,7 +364,7 @@ func extractValidJson(i interface{}) []string {
 	return jsonextractor.ExtractStandardJSON(utils.InterfaceToString(i))
 }
 
-// ExtractJsonWithRaw 尝试提取字符串中的 JSON 并返回，第一个返回值返回经过修复后的JSON字符串数组，第二个返回值返回原始JSON字符串数组(如果修复失败)
+// ExtractJsonWithRaw Try to extract the JSON in the string and return it, the first return value returns the repaired JSON string Array, the second return value returns the original JSON string array (if repair fails)
 // Example:
 // ```
 // str.ExtractJsonWithRaw("hello yak") // [], []
@@ -374,7 +374,7 @@ func extractJsonEx(i interface{}) ([]string, []string) {
 	return jsonextractor.ExtractJSONWithRaw(utils.InterfaceToString(i))
 }
 
-// ExtractDomain 尝试提取字符串中的域名并返回
+// ExtractDomain Try to extract the JSON in the string Domain name and returns
 // Example:
 // ```
 // str.ExtractDomain("hello yak") // []
@@ -384,7 +384,7 @@ func extractDomain(i interface{}) []string {
 	return domainextractor.ExtractDomains(utils.InterfaceToString(i))
 }
 
-// ExtractRootDomain 尝试提取字符串中的根域名并返回
+// ExtractRootDomain Try to extract the root domain name in the string and return
 // Example:
 // ```
 // str.ExtractRootDomain("hello yak") // []
@@ -394,7 +394,7 @@ func extractRootDomain(i interface{}) []string {
 	return domainextractor.ExtractRootDomains(utils.InterfaceToString(i))
 }
 
-// ExtractTitle 尝试将传入的字符串进行HTML解析并提取其中的标题(title标签)返回
+// ExtractTitle Try to parse the incoming string into HTML and extract the title (title tag). Return
 // Example:
 // ```
 // str.ExtractTitle("hello yak") // ""
@@ -404,7 +404,7 @@ func extractTitle(i interface{}) string {
 	return utils.ExtractTitleFromHTMLTitle(utils.InterfaceToString(i), "")
 }
 
-// PathJoin 将传入的文件路径进行拼接并返回
+// PathJoin concatenates the incoming file paths and returns
 // Example:
 // ```
 // str.PathJoin("/var", "www", "html") // in *unix: "/var/www/html"    in Windows: \var\www\html
@@ -413,7 +413,7 @@ func pathJoin(elem ...string) (newPath string) {
 	return filepath.Join(elem...)
 }
 
-// ToJsonIndentStr 将v转换为格式化的JSON字符串并返回，如果转换失败，则返回空字符串
+// ToJsonIndentStr Convert v to a formatted JSON string and return, or the empty string
 // Example:
 // ```
 // str.ToJsonIndentStr({"hello":"yak"}) // {"hello": "yak"}
@@ -427,7 +427,7 @@ func toJsonIndentStr(d interface{}) string {
 }
 
 var StringsExport = map[string]interface{}{
-	// 基础字符串工具
+	// Basic string tools
 	"IndexAny":       IndexAny,
 	"StartsWith":     StartsWith,
 	"EndsWith":       EndsWith,
@@ -468,7 +468,7 @@ var StringsExport = map[string]interface{}{
 	"ToUpperSpecial": strings.ToUpperSpecial,
 	"ToValidUTF8":    ToValidUTF8,
 
-	// 特有的
+	// The unique
 	"RandStr":                utils.RandStringBytes,
 	"Random":                 xhtml.RandomUpperAndLower,
 	"f":                      _sfmt,
@@ -480,7 +480,7 @@ var StringsExport = map[string]interface{}{
 	"IsStrongPassword":       utils.IsStrongPassword,
 	"ExtractStrContext":      utils.ExtractStrContextByKeyword,
 
-	// 支持 url、host:port 的解析成 Host Port
+	// Supports url and host:port Parsed into Host Port
 	"CalcSimilarity":                    utils.CalcSimilarity,
 	"CalcTextMaxSubStrStability":        utils.CalcTextSubStringStability,
 	"CalcSSDeepStability":               utils.CalcSSDeepStability,

@@ -10,7 +10,7 @@ import (
 var BruteForce = cli.Command{
 	Name:      "bruteforce",
 	ShortName: "brute",
-	Usage:     "模拟点击暴力密码破解",
+	Usage:     "Simulate click brute force password cracking",
 	Before:    nil,
 	After:     nil,
 

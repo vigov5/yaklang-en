@@ -354,7 +354,7 @@ func (g *GodzillaFileSystemAction) Do(params *ypb.RequestYakURLParams) (*ypb.Req
 		isWin := godzilla.IsWindowsPathByDriveLetter(path)
 		if strings.EqualFold(fileName, "cd") && len(commands) > 0 {
 			realCommand = strings.Replace(commands[1], "\\", "/", -1)
-			if isWin { // 假设 isWindows 是一个函数，用来判断是否是Windows系统
+			if isWin { // Assume isWindows is a function used to determine whether it is a Windows system
 				realCommand = fmt.Sprintf("cd /d \"%s\"&cd /d \"%s\"&&echo %s&&cd&&echo %s", path, realCommand, start, end)
 			} else {
 				realCommand = fmt.Sprintf("cd \"%s\";cd \"%s\"&&echo %s&&pwd&&echo %s", path, realCommand, start, end)

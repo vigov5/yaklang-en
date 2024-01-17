@@ -205,7 +205,7 @@ function encrypt($data){
 		return []byte(classBase64Str), nil
 	})
 	bx.EchoResultDecodeFormGo(func(rspBody []byte) ([]byte, error) {
-		// 字符串反转
+		// string reversed
 		de := utils.StringReverse(string(rspBody))
 
 		return []byte(de), nil
@@ -328,7 +328,7 @@ func TestNewGodzillaBase64Jsp_Plugin(t *testing.T) {
 	})
 	gs.EchoResultDecodeFormGo(func(rspBody []byte) ([]byte, error) {
 		decodedData := utils.StringReverse(string(rspBody))
-		log.Infof("自定义解密后: %s", decodedData)
+		log.Infof("After custom decryption: %s", decodedData)
 		return []byte(decodedData), nil
 	})
 
@@ -378,7 +378,7 @@ func TestNewGodzillaBase64Aspx(t *testing.T) {
 	})
 	gs.EchoResultDecodeFormGo(func(rspBody []byte) ([]byte, error) {
 		decodedData := utils.StringReverse(string(rspBody))
-		log.Infof("自定义解密后: %s", decodedData)
+		log.Infof("After custom decryption: %s", decodedData)
 		return []byte(decodedData), nil
 	})
 

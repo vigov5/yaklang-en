@@ -315,7 +315,7 @@ Host: www.baidu.com
 	params := req.GetCommonParams()
 	if len(params) != 4 {
 		dump(params)
-		test.FailNow("获取通用参数数量错误", len(params))
+		test.FailNow("Getting the wrong number of common parameters", len(params))
 	}
 
 	for _, p := range params {
@@ -348,7 +348,7 @@ Host: www.baidu.com
 	params := req.GetCommonParams()
 	if len(params) != 4 {
 		dump(params)
-		test.FailNow("获取通用参数数量错误", len(params))
+		test.FailNow("Getting the wrong number of common parameters", len(params))
 	}
 
 	for _, p := range params {
@@ -384,7 +384,7 @@ a=cXdl&b=enhjdg%3D%3D
 	params := req.GetCommonParams()
 	if len(params) != 8 {
 		dump(params)
-		test.FailNow("获取通用参数数量错误", len(params))
+		test.FailNow("Getting the wrong number of common parameters", len(params))
 	}
 
 	for _, p := range params {
@@ -422,7 +422,7 @@ Host: www.baidu.com
 	params := req.GetCommonParams()
 	if len(params) != 5 {
 		dump(params)
-		test.FailNow("获取通用参数数量错误", len(params))
+		test.FailNow("Getting the wrong number of common parameters", len(params))
 	}
 
 	for _, p := range params {
@@ -456,7 +456,7 @@ Cookie: testCookie=13;
 	params := req.GetCommonParams()
 	if len(params) != 5 {
 		dump(params)
-		test.FailNow("获取通用参数数量错误", len(params))
+		test.FailNow("Getting the wrong number of common parameters", len(params))
 	}
 
 	for _, p := range params {

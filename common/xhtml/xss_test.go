@@ -92,7 +92,7 @@ type Environment struct {
 //		//checkType := []string{}
 //		//environment_details := []Environment{}
 //
-//		//根据响应包，判断对哪些字符进行过滤检测
+//		//Based on the response packet, determine which characters to filter and detect
 //		html.Walker(resp1, func(node *html.Node) {
 //
 //			if utils.MatchAllOfGlob(node.Data, fmt.Sprintf("*%s*", randstr)) {
@@ -104,7 +104,7 @@ type Environment struct {
 //					return
 //				}
 //				if parentNodeTag == "script" {
-//					log.Info("script标签发现回显")
+//					log.Info("script tag discovery echo")
 //					ends = append(ends, "//")
 //					AddElement2Set(&checkDisableChar, "</scRipT/>")
 //					re, err := regexp.Compile(fmt.Sprintf("%s.*", randstr))
@@ -131,11 +131,11 @@ type Environment struct {
 //					}
 //
 //				} else if parentNodeTag == "comment" {
-//					log.Info("注释发现回显")
+//					log.Info("Comments are found and echo")
 //					html.AddElement2Set(&checkDisableChar, "-->")
 //
 //				} else {
-//					log.Info("文字标签发现回显")
+//					log.Info("Text labels are found and echoed")
 //					html.AddElement2Set(&checkDisableChar, "<")
 //					html.AddElement2Set(&checkDisableChar, ">")
 //				}
@@ -143,7 +143,7 @@ type Environment struct {
 //			} else if node.Type == html.ElementNode {
 //				for _, attr := range node.Attr {
 //					if utils.MatchAllOfGlob(attr.Val, fmt.Sprintf("*%s*", randstr)) {
-//						log.Infof("%s标签的%s属性发现回显", node.Data, attr.Key)
+//						log.Infof("%s attributes of %s tags are found and echoed", node.Data, attr.Key)
 //						html.AddElement2Set(&checkDisableChar, "\"")
 //						key := attr.Key
 //						if strings.HasPrefix(strings.ToLower(key), "On") {
@@ -196,7 +196,7 @@ type Environment struct {
 //						}
 //					}
 //				} else {
-//					log.Infof("字符%s被过滤为%s", ch, btStr)
+//					log.Infof("Character %s is filtered to %s", ch, btStr)
 //				}
 //
 //			}
@@ -353,7 +353,7 @@ func TestCompareHtml(t *testing.T) {
 //		println("new HTTPRequest error: %v", err)
 //		return
 //	}
-//	params := freq.GetCommonParams() // 包含post json、post form、get参数、cookie参数（会自动过滤PHPSESSID、_ga、_gid等参数）
+//	params := freq.GetCommonParams() // Contains post json, post form, get parameters, cookie parameters (PHPSESSID, _ga, _gid and other parameters will be automatically filtered)
 //	for _, param := range params {
 //		fmt.Printf("key: %s, value: %s, postion: %s\n", param.Name(), param.Value(), param.PositionVerbose())
 //		randStr := utils.RandStringBytes(5)
@@ -377,21 +377,21 @@ func TestCompareHtml(t *testing.T) {
 //
 //				}
 //				if matchNode.TagName == "script" {
-//					//例：<script>a = '<参数>';</script>
+//					//Example:<script>a = '<Parameter>';</script>
 //					//payload := fmt.Sprintf("';alert('Hello');'", matchNode.TagName)
 //					payload := ""
 //					payloads = append(payloads, payload)
 //				} else {
-//					//例：<div><参数></div>
+//					//Example:<div><Parameter></div>
 //					payload := fmt.Sprintf("</%s>Hello<%s>", matchNode.TagName, matchNode.TagName)
 //					payloads = append(payloads, payload)
 //				}
 //			} else if matchNode.IsAttr() {
-//				//例：<div id="<参数>"></div>
+//				//Example:<div id="<Parameter>"></div>
 //				payload := fmt.Sprintf("\"></%s>Hello<%s %s=\"%s", matchNode.TagName, matchNode.TagName, matchNode.Key, matchNode.Value)
 //				payloads = append(payloads, payload)
 //			} else if matchNode.IsCOMMENT() {
-//				//例：<!-- <参数> -->
+//				//Example:<!-- <Parameter> -->
 //				payload := fmt.Sprintf("-->Hello<!--")
 //				payloads = append(payloads, payload)
 //			}

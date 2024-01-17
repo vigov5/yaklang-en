@@ -204,7 +204,7 @@ func QueryYakScriptByNames(db *gorm.DB, req []string) []*ypb.DownloadOnlinePlugi
 
 /*
  * new online
- * 插件下载
+ * Plug-in download
  */
 
 func (s *Server) DownloadOnlinePluginBatch(ctx context.Context, req *ypb.DownloadOnlinePluginsRequest) (*ypb.Empty, error) {
@@ -304,12 +304,12 @@ func (s *Server) DownloadOnlinePluginByPluginName(ctx context.Context, req *ypb.
 
 func (s *Server) SaveYakScriptToOnline(req *ypb.SaveYakScriptToOnlineRequest, stream ypb.Yak_SaveYakScriptToOnlineServer) error {
 	if req.Token == "" {
-		return utils.Errorf("未登录,请登录")
+		return utils.Errorf("Not logged in, please log in")
 	}
 	db := consts.GetGormProfileDatabase()
 	if !req.GetAll() {
 		if len(req.ScriptNames) <= 0 {
-			return utils.Errorf("请选择上传插件")
+			return utils.Errorf("Please choose to upload the plug-in")
 		}
 		db = bizhelper.ExactQueryStringArrayOr(db, "script_name", req.GetScriptNames())
 	}
@@ -328,11 +328,11 @@ func (s *Server) SaveYakScriptToOnline(req *ypb.SaveYakScriptToOnlineRequest, st
 	})
 	defer func() {
 		if errorCount > 0 {
-			message += fmt.Sprintf("执行失败: %v 个", errorCount)
+			message += fmt.Sprintf("Execution failed: %v", errorCount)
 			messageType = "finalError"
 		}
 		if successCount > 0 {
-			message += fmt.Sprintf("执行成功: %v 个", successCount)
+			message += fmt.Sprintf("Successful execution: %v", successCount)
 		}
 		if message == "" {
 			message = "finished"
@@ -357,7 +357,7 @@ func (s *Server) SaveYakScriptToOnline(req *ypb.SaveYakScriptToOnlineRequest, st
 			errorCount++
 			stream.Send(&ypb.SaveYakScriptToOnlineResponse{
 				Progress:    progress,
-				Message:     fmt.Sprintf("save [%s] to online db failed: %s", result.ScriptName, "该插件名已被占用"),
+				Message:     fmt.Sprintf("save [%s] to online db failed: %s", result.ScriptName, "The plug-in name has been occupied"),
 				MessageType: "error",
 			})
 		}*/

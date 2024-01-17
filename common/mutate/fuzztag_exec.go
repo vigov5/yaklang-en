@@ -118,7 +118,7 @@ func FuzzTagExec(input interface{}, opts ...FuzzConfigOpt) (_ []string, err erro
 		if recoveredErr := recover(); recoveredErr != nil {
 			err = errors.Errorf("reocvered for rendering fuzztag: %s", recoveredErr)
 			if config.resultHandler != nil {
-				config.resultHandler(utils2.InterfaceToString(input), []string{}) // 做一个兜底，panic了也不会影响发包
+				config.resultHandler(utils2.InterfaceToString(input), []string{}) // Be a cover-up, even if panic happens, it won’t affect the distribution of packages.
 			}
 		}
 	}()

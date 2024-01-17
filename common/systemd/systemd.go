@@ -322,21 +322,21 @@ type SystemdServiceConfig struct {
 
 	Description   string
 	Documentation string
-	After         string // 在某个服务后启动
-	Before        string // 在某个服务前启动
-	Requires      string // 强依赖
-	BindsTo       string // 绑定到某个服务，强依赖：绑定服务停止，这个服务也停止
-	Wants         string // 弱依赖
+	After         string // Start after a certain service
+	Before        string // Start in front of a service
+	Requires      string // Strong dependency
+	BindsTo       string // Bind to a certain service, strong dependency: When the bound service stops, this service also stops
+	Wants         string // weak dependency
 	UnitExtraLine []string
 
-	// 默认为 simple
+	// Default is simple
 	/*
-		simple（默认）：ExecStart 指定的命令将立即启动，并认为服务已启动。
-		forking：ExecStart 指定的进程将自行分叉（fork），父进程退出后认为服务已启动。
-		oneshot：ExecStart 指定的进程将运行并完成，然后服务进入非活动状态。
-		dbus：服务启动后将等待 D-Bus 信号，确认服务已启动。
-		notify：服务启动后将通过 sd_notify 发送通知，确认服务已启动。
-		idle：类似于 simple，但仅在系统空闲时启动服务。
+		simple (default): The command specified by ExecStart will start immediately and consider the service to have been started.
+		forking: The process specified by ExecStart will fork itself, and the service will be considered to have been started after the parent process exits.
+		oneshot: ExecStart The specified process will run and complete, and then the service will become inactive.
+		dbus: After the service starts, it will wait for D-Bus Signal confirming that the service has started.
+		notify: After the service is started, a notification will be sent through sd_notify to confirm that the service has been started.
+		idle: similar to simple, but only starts the service when the system is idle.
 	*/
 	ServicesType     string // simple, forking, oneshot, dbus, notify, idle
 	User             string
@@ -356,7 +356,7 @@ type SystemdServiceConfig struct {
 	StandardOutput   string // inherit, null, tty, journal, syslog, kmsg, journal+console, syslog+console, kmsg+console, socket, fd, file
 	StandardError    string // inherit, null, tty, journal, syslog, kmsg, journal+console, syslog+console, kmsg+console, socket, fd, file
 	KillMode         string // control-group, process, mixed, none
-	KillSignal       string // 默认应该是 -9
+	KillSignal       string // The default should be -9
 	ServiceExtraLine []string
 
 	// Timer
@@ -371,7 +371,7 @@ type SystemdServiceConfig struct {
 	Persistent        string
 
 	// Install
-	InstallWantedBy string // 默认为 multi-user.target
+	InstallWantedBy string // Default is multi-user.target
 
 	// Extra
 	Raw string

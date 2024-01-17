@@ -88,7 +88,7 @@ func Bcel2bytes(becl string) ([]byte, error) {
 		return nil, utils.Error("Invalid becl header(\"$$BCEL$$\")!")
 	}
 	becl = becl[len(pre):]
-	//生成CHAR_MAP和MAP_CHAR
+	//Generate CHAR_MAP and MAP_CHAR
 	_, MAP_CHAR := GetMap()
 	//reader
 	rd := strings.NewReader(becl)

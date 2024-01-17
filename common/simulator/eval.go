@@ -7,7 +7,7 @@ const observer = `
 	const config = { attributes: true, childList: true, subtree: true, characterData: true };
 	window.added = "";
 	window.addednode = null;
-	// 当观察到变动时执行的回调函数
+	// Callback function executed when changes are observed
 	const callback = function(mutationsList, observer) {
 		// Use traditional 'for loops' for IE 11
 		for(let mutation of mutationsList) {
@@ -32,9 +32,9 @@ const observer = `
 			}
 		}
 	};
-	// 创建一个观察器实例并传入回调函数
+	// Create an observer instance and pass in the callback function
 	window.observer = new MutationObserver(callback);
-	// 以上述配置开始观察目标节点
+	// Start observing the target node with the above configuration
 	observer.observe(document, config);
 }
 `

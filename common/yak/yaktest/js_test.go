@@ -36,18 +36,18 @@ func TestMisc_JS(t *testing.T) {
     }`
 	cases := []YakTestCase{
 		{
-			Name: "测试 js",
+			Name: "test js",
 			Src:  `die(js.Run("1+1")[2])`,
 		},
 		{
-			Name: "测试闭包函数 js",
+			Name: "Test closure function js",
 			Src:  "vm, value, err = js.Run(`" + jsCode1 + "`); die(err); dump(value)",
 		},
 		{
-			Name: "测试函数定义执行 js",
+			Name: "Test function definition execution js",
 			Src:  "value, err = js.CallFunctionFromCode(`" + jsCode2 + "`, `test`); die(err); dump(value)",
 		},
 	}
 
-	Run("JS OTTO 可用性测试", t, cases...)
+	Run("JS OTTO usability test", t, cases...)
 }

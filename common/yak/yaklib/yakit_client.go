@@ -33,10 +33,10 @@ func YakitOutputToExecResult(i interface{}) *ypb.ExecResult {
 	return nil
 }
 
-// NewVirtualYakitClient 用于脚本执行结果在 grpc 调用时的消息传递
+// NewVirtualYakitClient is used for message transmission of script execution results when grpc is called.
 func NewVirtualYakitClient(h func(i *ypb.ExecResult) error) *YakitClient {
 	remoteClient := NewYakitClient("")
-	remoteClient.send = func(i interface{}) error { // 对于脚本传递的消息，需要封装成 ExecResult
+	remoteClient.send = func(i interface{}) error { // The message passed by the script needs to be encapsulated into ExecResult
 		result := YakitOutputToExecResult(i)
 		if result != nil {
 			return h(result)
@@ -121,7 +121,7 @@ func (c *YakitClient) SetYakLog(logger *YakLogger) {
 	c.yakLogger = logger
 }
 
-// 输入
+// Input
 func (c *YakitClient) YakitLog(level string, tmp string, items ...interface{}) error {
 	var data = tmp
 	if len(items) > 0 {
@@ -170,12 +170,12 @@ func (c *YakitClient) SendRaw(y *YakitLog) error {
 }
 
 func SetEngineClient(e *antlr4yak.Engine, client *YakitClient) {
-	//修改yakit库的客户端
+	//Modify the client of the yakit library
 	e.ImportSubLibs("yakit", GetExtYakitLibByClient(client))
 	e.ImportSubLibs("risk", map[string]interface{}{
 		"NewRisk": YakitNewRiskBuilder(client),
 	})
 
-	//修改全局默认客户端
+	//Modify the global default client
 	InitYakit(client)
 }

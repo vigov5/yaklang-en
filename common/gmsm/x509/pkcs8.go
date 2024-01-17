@@ -316,7 +316,7 @@ func MarshalSm2EcryptedPrivateKey(PrivKey *sm2.PrivateKey, pwd []byte) ([]byte, 
 	iv := make([]byte, 16)
 	rand.Reader.Read(salt)
 	rand.Reader.Read(iv)
-	key := pbkdf(pwd, salt, iter, 32, sha1.New) // 默认是SHA1
+	key := pbkdf(pwd, salt, iter, 32, sha1.New) // The default is SHA1
 	padding := aes.BlockSize - len(der)%aes.BlockSize
 	if padding > 0 {
 		n := len(der)

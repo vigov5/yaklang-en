@@ -25,12 +25,12 @@ func CompareNucleiYaml(yaml1, yaml2 string) error {
 	if temp1 == nil || temp2 == nil {
 		panic("create template failed")
 	}
-	// 比较签名
+	// compares signatures
 	if temp1.SignMainParams() != temp2.SignMainParams() {
 		return errors.New("sign main params not equal")
 	}
 
-	// 比较其它字段
+	// Compare other fields
 	yaml1Map := map[string]interface{}{}
 	err = yaml.Unmarshal([]byte(yaml1), yaml1Map)
 	if err != nil {
@@ -315,7 +315,7 @@ func TestGRPCMUSTPASS_HTTPFuzzer_CheckSignParam(t *testing.T) {
 
     {"key": "value"}
 `
-	//对 method, paths, headers, body、raw、matcher、extractor、payloads 签名检查
+	//Signature check on method, paths, headers, body, raw, matcher, extractor, payloads
 	testCase := []func(req *httptpl.YakRequestBulkConfig){
 		func(req *httptpl.YakRequestBulkConfig) {
 
@@ -456,10 +456,10 @@ http:
 			t.Fatal(err)
 		}
 		err = tmp.CheckTemplateRisks()
-		if testCase.expect && err != nil && strings.Contains(err.Error(), "签名错误") {
+		if testCase.expect && err != nil && strings.Contains(err.Error(), "Signature error") {
 			t.Fatal(fmt.Sprintf("expect no signature error, got: %s", err.Error()))
 		}
-		if !testCase.expect && (err == nil || !strings.Contains(err.Error(), "签名错误")) {
+		if !testCase.expect && (err == nil || !strings.Contains(err.Error(), "Signature error")) {
 			t.Fatal(fmt.Sprintf("expect signature error: not nil, got: %s", err.Error()))
 		}
 	}
@@ -473,7 +473,7 @@ func TestGRPCMUSTPASS_HTTPFuzzer_WebFuzzerSequenceConvertYaml(t *testing.T) {
 		content string
 		expect  string
 	}{
-		{ // 一个请求节点包含两个请求，预期解析为两个请求节点
+		{ // One request node contains two requests, expected to be parsed into two request nodes
 			content: `http:
   - raw:
       - |
@@ -529,7 +529,7 @@ func TestGRPCMUSTPASS_HTTPFuzzer_WebFuzzerSequenceConvertYaml(t *testing.T) {
         condition: and
 `,
 		},
-		{ // path请求，预期解析为raw请求，匹配器不变
+		{ // path request, expected to be parsed into a raw request, matching Invariant
 			content: `http:
   - method: GET
     path:
@@ -573,7 +573,7 @@ func TestGRPCMUSTPASS_HTTPFuzzer_WebFuzzerSequenceConvertYaml(t *testing.T) {
     - "200"
 `,
 		},
-		{ // 一些配置
+		{ // Some configurations
 			content: `http:
   - raw:
       - |
@@ -611,7 +611,7 @@ func TestGRPCMUSTPASS_HTTPFuzzer_WebFuzzerSequenceConvertYaml(t *testing.T) {
           - 'contains(body, "Bank Locker Management System")'
         condition: and`,
 		},
-		{ // 包含payload等其它配置，验证生成配置完整且有序
+		{ // contains other configurations such as payload, verify that the generated configuration is complete and orderly
 			content: `http:
   - raw:
       - |

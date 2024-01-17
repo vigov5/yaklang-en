@@ -18,7 +18,7 @@ func TestYaklangHybridFuzz(t *testing.T) {
 	initDB()
 
 	/*
-	   这个测试案例非常有意思，如果他过不了，意味着参数提取是有问题的，是不对的
+	   This test case is very interesting. If it cannot pass, it means that there is something wrong with the parameter extraction and it is wrong.
 	*/
 	cases := []*HybridTestCase{
 		{

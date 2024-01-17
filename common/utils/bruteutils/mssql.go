@@ -68,9 +68,9 @@ var mssqlAuth = &DefaultServiceAuthInfo{
 		if err != nil {
 			switch true {
 			// connect: connection refused
-			case strings.Contains(err.Error(), "i/o timeout"): // 超时
+			case strings.Contains(err.Error(), "i/o timeout"): // timeout
 				fallthrough
-			case strings.Contains(err.Error(), "invalid packet size"): // 不是mssql协议
+			case strings.Contains(err.Error(), "invalid packet size"): // Not mssql protocol
 				fallthrough
 			case strings.Contains(err.Error(), "connect: connection refused"):
 				result.Finished = true

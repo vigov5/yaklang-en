@@ -320,7 +320,7 @@ func (n *Node) Parse(reader *BitReader) error {
 	return nil
 }
 
-// NewEmptyNode 默认初始化一个空节点
+// NewEmptyNode initializes an empty node by default.
 func NewEmptyNode(name string, d any, cfg *Config, ctx *NodeContext) *Node {
 	node := &Node{
 		Cfg:    cfg,
@@ -387,7 +387,7 @@ func newNodeTree(parentCfg *Config, name string, data any, ctx *NodeContext) (*N
 		node := NewEmptyNode(name, data, cfg, ctx)
 		for _, item := range ret {
 			keyStr := utils.InterfaceToString(item.Key)
-			if len(keyStr) > 0 && unicode.IsLower(rune(keyStr[0])) { // 小写开头是 config字段
+			if len(keyStr) > 0 && unicode.IsLower(rune(keyStr[0])) { // starts with the config field in lowercase.
 				cfg.SetItem(keyStr, item.Value)
 				continue
 			}

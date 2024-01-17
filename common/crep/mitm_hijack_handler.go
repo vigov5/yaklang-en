@@ -98,8 +98,8 @@ func (m *MITMServer) hijackRequestHandler(rootCtx context.Context, wsModifier *W
 		log.Errorf("remove hop by hop header failed: %s", err)
 	}
 	if !httpctx.GetRequestViaCONNECT(req) {
-		// 不是通过 CONNECT 方法的代理，一般常见非 HTTPS 代理，这种情况下
-		// Dump 出来的数据包 URI 不包含 http://
+		// is not a proxy through the CONNECT method. Generally, non-HTTPS proxies are common. In this case,
+		// The data packet URI from the Dump does not contain http://
 		raw, err := utils.DumpHTTPRequest(req, true)
 		if err != nil {
 			log.Errorf("dump request failed: %s", err)
@@ -245,7 +245,7 @@ func (m *MITMServer) hijackResponseHandler(rsp *http.Response) error {
 		result := m.responseHijackHandler(isHttps, requestOrigin, rsp, responseBytes, httpctx.GetRemoteAddr(requestOrigin))
 		if result == nil {
 			dropped.Set()
-			rsp = proxyutil.NewResponseFromOldResponse(200, strings.NewReader("响应被用户丢弃"), requestOrigin, rsp)
+			rsp = proxyutil.NewResponseFromOldResponse(200, strings.NewReader("Response dropped by user"), requestOrigin, rsp)
 		} else {
 			responseBytes = make([]byte, len(result))
 			copy(responseBytes, result)
@@ -312,7 +312,7 @@ func handleBuildInMITMDefaultPageResponse(rsp *http.Response) error {
 		return nil
 	}
 	if rsp.Request.URL.Path == "/download-mitm-crt" {
-		// 返回mitm-server.crt内容
+		// returns the mitm-server.crt content.
 		body := defaultCA
 		rsp.Body = io.NopCloser(bytes.NewReader(body))
 		rsp.ContentLength = int64(len(body))

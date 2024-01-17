@@ -193,11 +193,11 @@ assert string(poc.Split(rsp)[1]) == token2
 	if err != nil {
 		t.Fatal(err)
 	}
-	// 检验原始请求
+	// Verify original request
 	if !strings.Contains(string(rpcResponse2.GetData()), "Token: aaaaa") {
 		t.Fatal("not found origin token")
 	}
-	// 检验最终请求
+	// Verify final request
 	data := finalRequest
 	if !strings.Contains(string(data), "Token: "+token1) {
 		t.Fatal("not found replaced token")
@@ -312,11 +312,11 @@ assert string(body) == token2, sprintf("get %s != %s", string(body), string(toke
 	if err != nil {
 		t.Fatal(err)
 	}
-	// 检验原始响应
+	// Verify original response
 	if !strings.Contains(string(rpcResponse2.GetData()), token1) {
 		t.Fatalf("not found origin token, raw response: %s", string(rpcResponse2.GetData()))
 	}
-	// 检验最终响应
+	// Verify final response
 	if !strings.Contains(string(finalResponse), token2) {
 		t.Fatalf("not found replaced token, final response: %s", string(finalResponse))
 	}

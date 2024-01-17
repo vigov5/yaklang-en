@@ -13,37 +13,37 @@ type Frame struct {
 	frameVerbose string
 	vm           *VirtualMachine
 	parent       *Frame
-	// 字节码内容
+	// bytecode content
 	codes []*Code
-	// 字节码指针
+	// bytecode pointer
 	codePointer int
 
-	// 运算符的 Opcode
+	// operators Opcode
 	BinaryOperatorTable map[OpcodeFlag]func(*Value, *Value) *Value
 	UnaryOperatorTable  map[OpcodeFlag]func(*Value) *Value
 
-	// yak函数, 内置函数，乃至变量聚集地
+	// yak function, built-in function, and even variable gathering place
 	GlobalVariables map[string]interface{}
 
-	//yak函数
+	//yak function
 	// YakGlobalFunctions map[string]*Function
-	// 运行栈
+	// run stack
 	stack *vmstack.Stack
-	// 计数器栈，一般用于 for range 的计数
+	// counter stack, generally used for counting for range
 	iteratorStack *vmstack.Stack
-	// 定义域栈
+	// domain stack
 	//scopeStack *vmstack.Stack
 	scope *Scope
 
 	lastStackValue *Value
 
-	// 当前执行的函数
+	// currently executed function
 	function *Function
 
-	// debug: 打开之后将会输出很多调试信息
+	// debug: After opening, a lot of debugging information will be output.
 	debug          bool
-	indebuggerEval bool // 在debugger中执行代码
-	ThreadID       int  // 当前线程的ID
+	indebuggerEval bool // Execute code in debugger
+	ThreadID       int  // ID of the current thread
 	// panic
 	//panics   []*VMPanic
 	tryStack *vmstack.Stack
@@ -52,7 +52,7 @@ type Frame struct {
 	// hijacks map[sha1(libName, memberName)]func(any)any
 	hijackMapMemberCallHandlers sync.Map
 	ctx                         context.Context
-	contextData                 map[string]interface{} // 用于引擎执行时函数栈之间的数据传递
+	contextData                 map[string]interface{} // used for data transfer between function stacks when the engine executes
 
 	coroutine *Coroutine
 }
@@ -177,7 +177,7 @@ func NewFrame(vm *VirtualMachine) *Frame {
 		return true
 	})
 
-	// debug, 将rootScope加入到debugger中
+	// debug, add rootScope to debugger
 	if vm.debugMode && vm.debugger != nil {
 		vm.debugger.AddScopeRef(vm.rootScope)
 	}

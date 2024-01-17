@@ -1,12 +1,12 @@
 package hids
 
 var Exports = map[string]interface{}{
-	// 基础设置
+	// Basic settings
 	"Init":                InitHealthManager,
 	"SetMonitorInterval":  SetMonitorIntervalFloat,
 	"ShowMonitorInterval": ShowMonitorInterval,
 
-	// CPU 指标
+	// CPU metrics
 	"CPUPercent":            CPUPercent,
 	"MemoryPercent":         MemoryPercent,
 	"CPUAverage":            CPUAverage,

@@ -34,7 +34,7 @@ type versionPart struct {
 	level int
 }
 
-// VersionGreater 使用版本比较算法比较版本 v1 与版本 v2，如果 v1 大于 v2 返回 true，否则返回 false
+// VersionGreater Use the version comparison algorithm to compare version v1 with version v2. If v1 is greater than v2, return true, otherwise return false
 // Example:
 // ```
 // str.VersionGreater("1.0.0", "0.9.9") // true
@@ -55,7 +55,7 @@ func VersionGreater(v1, v2 string) bool {
 
 }
 
-// VersionGreaterEqual 使用版本比较算法比较版本 v1 与版本 v2，如果 v1 大于等于 v2 返回 true，否则返回 false
+// VersionGreaterEqual Use the version comparison algorithm to compare version v1 with version v2. If v1 is greater than or equal to v2, return true, otherwise return false
 // Example:
 // ```
 // str.VersionGreaterEqual("1.0.0", "0.9.9") // true
@@ -75,7 +75,7 @@ func VersionGreaterEqual(v1, v2 string) bool {
 	}
 }
 
-// VersionEqual 使用版本比较算法比较版本 v1 与版本 v2，如果 v1 等于 v2 返回 true，否则返回 false
+// VersionEqual uses the version comparison algorithm to compare version v1 with version v2, if v1 is equal to v2, returns true, otherwise returns false
 // Example:
 // ```
 // str.VersionEqual("3.0", "3.0") // true
@@ -94,7 +94,7 @@ func VersionEqual(v1, v2 string) bool {
 	}
 }
 
-// VersionLessEqual 使用版本比较算法比较版本 v1 与版本 v2，如果 v1 小于等于 v2 返回 true，否则返回 false
+// VersionLessEqual Use the version comparison algorithm to compare version v1 with version v2. If v1 is less than or equal to v2 Return true, otherwise return false
 // Example:
 // ```
 // str.VersionLessEqual("0.9.9", "1.0.0") // true
@@ -115,7 +115,7 @@ func VersionLessEqual(v1, v2 string) bool {
 	}
 }
 
-// VersionLess 使用版本比较算法比较版本 v1 与版本 v2，如果 v1 小于 v2 返回 true，否则返回 false
+// VersionLess uses the version comparison algorithm to compare version v1 with version v2. If v1 is less than v2, return true, otherwise return false.
 // Example:
 // ```
 // str.VersionLess("0.9.9", "1.0.0") // true
@@ -135,11 +135,11 @@ func VersionLess(v1, v2 string) bool {
 	}
 }
 
-// VersionCompare 泛用形的版本比较,传入(p1,p2 string), p1>p2返回1,nil, p1<p2返回-1,nil, p1==p2返回0,nil, 比较失败返回 -2,err
+// VersionCompare Generic version comparison, pass in (p1, p2 string), p1>p2 returns 1, nil , p1<p2 Returns -1, nil, p1== p2 returns 0, nil, returns -2, err if the comparison fails
 func VersionCompare(v1, v2 string) (int, error) {
 	v1 = VersionClean(v1)
 	v2 = VersionClean(v2)
-	// 验证是否是复合标准的版本号,主要是要没有空格
+	// Verifies whether it is the version number of the composite standard, mainly there must be no spaces
 	flag1, err := versionCheck(v1)
 	if err != nil {
 		return -2, err
@@ -153,7 +153,7 @@ func VersionCompare(v1, v2 string) (int, error) {
 		return -2, errors.Errorf("version compare error : %v", "not format veriosn string")
 	}
 
-	//切割版本
+	//Cut version
 	v1Tokens, err := versionSplit([]byte(v1))
 	if err != nil {
 		return -2, err
@@ -284,28 +284,28 @@ func versionSplit(v []byte) ([]versionPart, error) {
 	return versionTokens, nil
 }
 
-// addNumber 添加纯数字的token
+// addNumber Add a purely numeric token
 func addNumber(versionTokens []versionPart, current int, value string) ([]versionPart, int) {
 	token := versionPart{Type: "number", value: value}
 	versionTokens = append(versionTokens, token)
 	return versionTokens, current + len(value)
 }
 
-// addSeparator 添加分割符的token
+// addSeparator adds a token of separator
 func addSeparator(versionTokens []versionPart, current int, value string) ([]versionPart, int) {
 	token := versionPart{Type: "separator", value: value}
 	versionTokens = append(versionTokens, token)
 	return versionTokens, current + len(value)
 }
 
-// addOrderLetter 添加有序字符的token
+// addOrderLetter adds ordered characters token
 func addOrderLetter(versionTokens []versionPart, current int, value string) ([]versionPart, int) {
 	token := versionPart{Type: "orderLetter", value: value}
 	versionTokens = append(versionTokens, token)
 	return versionTokens, current + 1
 }
 
-// addWords 添加有意义的字符串的token
+// addWords Add a meaningful string token
 func addWords(versionTokens []versionPart, current int, value string, level int) ([]versionPart, int) {
 	token := versionPart{
 		Type:  "words",

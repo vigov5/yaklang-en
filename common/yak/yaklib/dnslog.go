@@ -50,7 +50,7 @@ func NewCustomDNSLog(opts ..._dnslogConfigOpt) *CustomDNSLog {
 }
 
 func (c *CustomDNSLog) GetSubDomainAndToken() (string, string, error) {
-	// 就不给那么多次了吧
+	// I won’t give it so many times.
 	const maxAttempts = 5
 	var (
 		domain, token, mode string
@@ -135,9 +135,9 @@ func (c *CustomDNSLog) CheckDNSLogByToken() ([]*tpb.DNSLogEvent, error) {
 		yakit.NewRisk(
 			"dnslog://"+e.RemoteAddr,
 			yakit.WithRiskParam_Title(fmt.Sprintf(`DNSLOG[%v] - %v from: %v`, e.Type, e.Domain, e.RemoteAddr)),
-			yakit.WithRiskParam_TitleVerbose(fmt.Sprintf(`DNSLOG 触发 - %v 源：%v`, e.Domain, e.RemoteAddr)),
+			yakit.WithRiskParam_TitleVerbose(fmt.Sprintf(`DNSLOG trigger - %v source: %v`, e.Domain, e.RemoteAddr)),
 			yakit.WithRiskParam_Details(e.Raw),
-			yakit.WithRiskParam_Description("DNSLOG是一种回显机制，常用于在某些漏洞无法回显但可以发起DNS请求的情况下，利用此方式外带数据，以解决某些漏洞由于无回显而难以利用或检测的问题。 主要利用场景有SQL盲注、无回显的命令执行、无回显的SSRF、JAVA反序列化等。"),
+			yakit.WithRiskParam_Description("DNSLOG is an echo mechanism. It is often used when certain vulnerabilities cannot be echoed but DNS requests can be initiated. This method is used to bring out data to solve certain vulnerabilities due to no response. Problems that are apparently difficult to exploit or detect. The main usage scenarios include blind SQL injection, command execution without echo, SSRF without echo, JAVA deserialization, etc."),
 			yakit.WithRiskParam_RiskType(fmt.Sprintf("dns[%v]", e.Type)),
 			yakit.WithRiskParam_Payload(e.Domain), yakit.WithRiskParam_Token(e.Token),
 		)

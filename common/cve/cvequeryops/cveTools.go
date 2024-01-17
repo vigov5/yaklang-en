@@ -34,7 +34,7 @@ handle = func(result /* *fp.MatchResult */) {
             defer func{
                 err = recover()
                 if err != nil {
-                    yakit.Error("%s CVE 合规检查失败：%%v", err)
+                    yakit.Error("%s CVE compliance check failed: %%v", err)
                 }
             }
             
@@ -62,7 +62,7 @@ handle = func(result /* *fp.MatchResult */) {
                 risk.title(sprintf("%%v:%%v%%v", i.cve, i["titleEn"], targetOutput)),
                 risk.titleVerbose(sprintf("%%v:%%v%%v", i.cve, i["titleZh"], targetOutput)),
                 risk.type("cve-baseline"),
-                risk.typeVerbose("CVE基线检查"),
+                risk.typeVerbose("CVE baseline check"),
                 risk.parameter(result.Fingerprint.Banner),
                 risk.potential(true),
                 risk.level(i.severity),
@@ -114,15 +114,15 @@ func VersionRuleCompare(version, BoundaryVerison, Op){
 }
 `
 
-// MakeCtScript 生成合规插件脚本，要求输入产品名，数据库路径，服务名(扫描获取的服务名)，脚本输出路径
+// MakeCtScript generates a compliance plug-in script, requiring the input of product name, database path, service name (service name obtained by scanning), script output path
 //func MakeCtScript(product, dbName, serverName, scriptPath string) {
-//	//! 设置合规脚本目标产品
+//	//! Set compliance script target product
 //
 //	var addRuleStrs []string
 //	formatString := "addCVE(\"%s\", %s, \"%.2f\", \"%s\", \"%s\", %s)\n"
 //	CVEs, _ := Query(dbName, Product(product))
 //	for _, cve := range CVEs {
-//		//// todo 漏洞中文名暂时不用cnnvd，
+//		//// todo The Chinese name of the vulnerability does not use cnnvd for the time being.
 //		//cnnvd, _ := cve.CNNVD(dbName)
 //		var config cveresources.Configurations
 //		err := json.Unmarshal(cve.CPEConfigurations, &config)

@@ -56,7 +56,7 @@ func (c *Config) ToParams(input, output string) ([]string, error) {
 	// INPUT
 	params = append(params, "-i", input)
 
-	// 抽样 PTS
+	// Sampling PTS
 	if c.CoefficientPTSFloat > 0 {
 		params = append(params, "-vf", fmt.Sprintf("setpts=%0.2f*PTS", float64(c.CoefficientPTSFloat)))
 	} else {

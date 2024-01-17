@@ -30,8 +30,8 @@ func (p *PalmScriptEngineHelper) GetAllLibs() []string {
 func (p *PalmScriptEngineHelper) HelpInfo() string {
 	buffer := bytes.NewBuffer(nil)
 
-	// 内置用户函数
-	buffer.WriteString("### 内置用户函数定义\n")
+	// Built-in user function
+	buffer.WriteString("### Built-in user function definition\n")
 	var items []string
 	for _, i := range p.UserFunctions {
 		items = append(items, i.String())
@@ -44,7 +44,7 @@ func (p *PalmScriptEngineHelper) HelpInfo() string {
 	buffer.WriteString(fmt.Sprintf("\n%v\n", strings.Repeat("-", 48)))
 
 	t := tablewriter.NewWriter(buffer)
-	t.SetHeader([]string{"内置值", "值的类型", "值"})
+	t.SetHeader([]string{"Built-in value", "Value type", "Value"})
 	for name, item := range p.Instances {
 		if item.Value == nil {
 			t.Append([]string{name, item.Type, "-"})
@@ -57,7 +57,7 @@ func (p *PalmScriptEngineHelper) HelpInfo() string {
 	buffer.WriteString(fmt.Sprintf("\n%v\n", strings.Repeat("-", 48)))
 
 	t = tablewriter.NewWriter(buffer)
-	t.SetHeader([]string{"可用依赖库", "依赖库可用元素(值/函数)"})
+	t.SetHeader([]string{"Available dependent library", "Dependent library available elements (value/function)"})
 	for libName, libs := range p.Libs {
 		t.Append([]string{libName, fmt.Sprint(len(libs.ElementDocs))})
 	}
@@ -161,7 +161,7 @@ func funcTypeToPalmScriptLibFunc(libName, method string, methodType reflect.Type
 		MethodName: method,
 	}
 
-	// 遍历参数
+	// Traversal parameters
 	for i := range make([]int, methodType.NumIn()) {
 		paramType := methodType.In(i)
 		text := fmt.Sprintf("var_%v: %v", i+1, paramType.String())
@@ -179,7 +179,7 @@ func funcTypeToPalmScriptLibFunc(libName, method string, methodType reflect.Type
 		}
 	}
 
-	// 遍历返回值
+	// Traversal return value
 	for i := range make([]int, methodType.NumOut()) {
 		paramType := methodType.Out(i)
 		methodItem.Returns = append(

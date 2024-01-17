@@ -86,17 +86,17 @@ func (l *JavaScriptLexerBase) NextToken() antlr.Token {
 		l.lastToken = next
 	}
 
-	// 预读一位处理++
+	// to pre-read one bit to process ++
 	if next.GetTokenType() == JavaScriptLexerLineTerminator {
 		Next := l.BaseLexer.NextToken() // Get next next token
-		// 是++则加一个;
+		// If it is ++, add one;
 		if Next != nil && (Next.GetTokenType() == JavaScriptLexerPlusPlus || Next.GetTokenType() == JavaScriptLexerMinusMinus) {
 			semit := l.GetTokenFactory().Create(
 				l.GetTokenSourceCharStreamPair(), JavaScriptLexerSemiColon, ";", antlr.TokenDefaultChannel,
 				next.GetStart(), next.GetStop(),
 				next.GetLine(), next.GetColumn(),
 			)
-			// 存预读位
+			// to store the pre-read bit
 			l.handlePlusMinus = Next
 			next = semit
 			l.lastToken = next
@@ -105,7 +105,7 @@ func (l *JavaScriptLexerBase) NextToken() antlr.Token {
 		l.handlePlusMinus = Next
 	}
 
-	// 判断是否是},对其进行加;优化
+	// to determine whether it is}, add;Optimize
 	if next.GetTokenType() == JavaScriptLexerCloseBrace {
 		semit := l.GetTokenFactory().Create(
 			l.GetTokenSourceCharStreamPair(), JavaScriptLexerSemiColon, ";", next.GetChannel(),

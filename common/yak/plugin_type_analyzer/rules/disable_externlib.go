@@ -30,7 +30,7 @@ func ErrorDisableCLi() string {
 
 func DisableMitmExternLib(prog *ssaapi.Program) {
 	tag := "SSA-cli-disableMitmExternLib"
-	// 在MITM插件禁用 risk、poc、http、tcp、udp、fuzz.Exec、fuzz.ExecFirst
+	// Disable risk, poc, http, tcp, udp, fuzz.Exec, fuzz.ExecFirst in MITM plug-in
 	DisablePack := []string{
 		"risk",
 		"poc",

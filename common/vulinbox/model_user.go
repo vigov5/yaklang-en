@@ -12,41 +12,41 @@ type VulinUser struct {
 	Password string
 	Age      int
 
-	Role string // 添加角色字段
+	Role string // Add a role field
 
-	Remake string // 添加备注字段
+	Remake string // adds a note field
 
 }
 
-// 生成指定数量的随机用户数据
+// Generate a specified amount of random user data
 func generateRandomUsers(count int) []VulinUser {
-	// 定义可选的用户名和密码字符
+	// Define optional username and password characters
 	const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-	// 生成测试数据
+	// Generate test data
 	users := make([]VulinUser, count)
 	for i := 0; i < count; i++ {
-		// 生成随机的用户名和密码
+		// Generate a random username and password
 		username := generateRandomString(chars, 8)
 		password := generateRandomString(chars, 12)
 
-		// 生成随机的年龄（18-65岁之间）
+		// generates a random age (between 18-65 years old)
 		age := rand.Intn(48) + 18
 
-		// 创建用户实例并将其添加到用户列表中
+		// Create a user instance and assign it Add to the user list
 		users[i] = VulinUser{
 			Username: username,
 			Password: password,
 			Age:      age,
 			Role:     "user",
-			Remake:   "我是用户",
+			Remake:   "I am the user",
 		}
 	}
 
 	return users
 }
 
-// 生成指定长度的随机字符串
+// Generate a random string of specified length
 func generateRandomString(chars string, length int) string {
 	b := make([]byte, length)
 	for i := range b {

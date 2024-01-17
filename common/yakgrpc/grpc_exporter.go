@@ -46,7 +46,7 @@ func (s *Server) ExtractDataToFile(input ypb.Yak_ExtractDataToFileServer) error 
 		}
 		var data = result.GetData()
 		if data == nil || len(data) <= 0 {
-			// 排除空数据
+			// Exclude empty data
 			continue
 		}
 		for key := range data {
@@ -57,7 +57,7 @@ func (s *Server) ExtractDataToFile(input ypb.Yak_ExtractDataToFileServer) error 
 		}
 
 		if csvOutput {
-			// 处理 CSV 数据
+			// Process CSV data
 			values := make([]string, len(existedKeys))
 			for key, value := range data {
 				if value == nil || (value.GetStringValue() == "" && len(value.GetBytesValue()) <= 0) {
@@ -73,7 +73,7 @@ func (s *Server) ExtractDataToFile(input ypb.Yak_ExtractDataToFileServer) error 
 		}
 
 		if jsonOutput {
-			// 处理 JSON 数据
+			// Process JSON data
 			var jsonValue = make(map[string]string)
 			for key, value := range data {
 				bytes := value.GetBytesValue()

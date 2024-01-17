@@ -21,7 +21,7 @@ func (s *Server) ImportHTTPFuzzerTaskFromYaml(ctx context.Context, req *ypb.Impo
 	if content == "" {
 		return nil, errors.New("yaml content is empty")
 	}
-	// 转Template
+	// Convert Template
 	yakTemplate, err := httptpl.CreateYakTemplateFromNucleiTemplateRaw(content)
 	warningMsgStr := ""
 	if err := yakTemplate.CheckTemplateRisks(); err != nil {
@@ -32,7 +32,7 @@ func (s *Server) ImportHTTPFuzzerTaskFromYaml(ctx context.Context, req *ypb.Impo
 		return nil, utils.Errorf("cannot create yak template from yaml: %v", err)
 	}
 
-	// 转FuzzerRequest
+	// Convert FuzzerRequest
 	seqs := yakTemplate.GenerateRequestSequences("http://www.example.com")
 	for _, sequence := range seqs {
 		fuzzerReqs := []*ypb.FuzzerRequest{}
@@ -189,9 +189,9 @@ func (s *Server) ExportHTTPFuzzerTaskToYaml(ctx context.Context, req *ypb.Export
 		Reason: "",
 	}
 	templateType := req.GetTemplateType()
-	// 转换为YakTemplate
+	// Convert to YakTemplate
 	seq := req.GetRequests()
-	// Matcher转换
+	// Matcher convert
 	var HttpResponseMatchers2YakMatchers func(matchers []*ypb.HTTPResponseMatcher) []*httptpl.YakMatcher
 	HttpResponseMatchers2YakMatchers = func(matchers []*ypb.HTTPResponseMatcher) []*httptpl.YakMatcher {
 		return funk.Map(matchers, func(matcher *ypb.HTTPResponseMatcher) *httptpl.YakMatcher {
@@ -217,7 +217,7 @@ func (s *Server) ExportHTTPFuzzerTaskToYaml(ctx context.Context, req *ypb.Export
 			}
 		}).([]*httptpl.YakMatcher)
 	}
-	// 生成请求桶
+	// Generate request bucket
 	//requestBulks := []*httptpl.YakRequestBulkConfig{}
 	bulk := &httptpl.YakRequestBulkConfig{}
 	bulk.Matcher = &httptpl.YakMatcher{
@@ -334,7 +334,7 @@ func (s *Server) ExportHTTPFuzzerTaskToYaml(ctx context.Context, req *ypb.Export
 	//
 	template := &httptpl.YakTemplate{}
 	template.HTTPRequestSequences = []*httptpl.YakRequestBulkConfig{bulk}
-	// 补充info字段
+	// Supplement info field
 	randstr := utils.RandStringBytes(8)
 	template.Id = fmt.Sprintf("WebFuzzer-Template-%s", randstr)
 	template.Name = fmt.Sprintf("WebFuzzer Template %s", randstr)
@@ -351,7 +351,7 @@ func (s *Server) ExportHTTPFuzzerTaskToYaml(ctx context.Context, req *ypb.Export
 		}
 	}
 	template.Sign = template.SignMainParams()
-	// 转换为Yaml
+	// Convert to Yaml
 	yamlContent, err := MarshalYakTemplateToYaml(template)
 	if err != nil {
 		res.Ok = false
@@ -376,7 +376,7 @@ func MarshalYakTemplateToYaml(y *httptpl.YakTemplate) (string, error) {
 	reqSequencesArray := rootMap.NewSubArrayBuilder("http")
 	writeConfig := func(builder *YamlMapBuilder, config *httptpl.RequestConfig) {
 		builder.AddEmptyLine()
-		builder.AddComment("WebFuzzer请求配置")
+		builder.AddComment("WebFuzzer request configuration")
 		builder.Set("is-https", config.IsHTTPS)
 		builder.Set("is-gmtls", config.IsGmTLS)
 		builder.Set("host", config.Host)
@@ -406,10 +406,10 @@ func MarshalYakTemplateToYaml(y *httptpl.YakTemplate) (string, error) {
 		}
 	}
 	_ = writeConfig
-	//if len(y.HTTPRequestSequences) == 1 { // 当请求序列长度为1时，优先使用独立配置，无需写入全局配置
+	//if len(y.HTTPRequestSequences) == 1 { // When the request sequence length is 1, independent configuration is preferred, and there is no need to write global configuration
 	//	writeConfig(rootMap, &y.RequestConfig)
 	//}
-	// 生成Info
+	// Generate Info
 	infoMap.Set("name", y.Name)
 	infoMap.Set("author", y.Author)
 	infoMap.Set("severity", y.Severity)
@@ -420,7 +420,7 @@ func MarshalYakTemplateToYaml(y *httptpl.YakTemplate) (string, error) {
 	classification.Set("cve-id", y.CVE)
 	infoMap.Set("tags", strings.Join(y.Tags, ","))
 	yakitInfo := infoMap.NewSubMapBuilder("yakit-info")
-	//生成req sequences
+	//Generate req sequences
 	maxRequest := 0
 	//signElements := make([]string, 0)
 	//addSignElements := func(i ...any) {
@@ -445,7 +445,7 @@ func MarshalYakTemplateToYaml(y *httptpl.YakTemplate) (string, error) {
 			"max-redirects":       0,
 			"matchers-condition":  "or",
 		})
-		// 请求配置
+		// Request configuration
 		isPaths := len(sequence.Paths) > 0
 		var payloadsMap *YamlMapBuilder
 		if isPaths {
@@ -479,7 +479,7 @@ func MarshalYakTemplateToYaml(y *httptpl.YakTemplate) (string, error) {
 			sequenceItem.AddEmptyLine()
 			payloadsMap = sequenceItem.NewSubMapBuilder("payloads")
 		}
-		// 写入payloads
+		// Write payloads
 		if sequence.Payloads != nil && len(sequence.Payloads.GetRawPayloads()) > 0 {
 			sequenceItem.AddComment("attack: pitchfork")
 			for k, payload := range sequence.Payloads.GetRawPayloads() {
@@ -491,7 +491,7 @@ func MarshalYakTemplateToYaml(y *httptpl.YakTemplate) (string, error) {
 			}
 			sequenceItem.AddEmptyLine()
 		}
-		// 其它配置
+		// Others Configure
 		sequenceItem.Set("redirects", sequence.EnableRedirect)
 		sequenceItem.Set("max-redirects", sequence.MaxRedirects)
 
@@ -504,7 +504,7 @@ func MarshalYakTemplateToYaml(y *httptpl.YakTemplate) (string, error) {
 		//sequenceItem.Set("attack-mode", sequence.AttackMode)
 		//sequenceItem.Set("inherit-variables", sequence.InheritVariables)
 		//sequenceItem.Set("hot-patch-code", sequence.HotPatchCode)
-		// matcher生成
+		// matcher generate
 		if sequence.Matcher != nil {
 			matcher := sequence.Matcher
 			//addSignElements(matcher)
@@ -555,7 +555,7 @@ func MarshalYakTemplateToYaml(y *httptpl.YakTemplate) (string, error) {
 		}
 		sequenceItem.Set("attack", sequence.AttackMode)
 		//addSignElements(sequence.Extractor)
-		// extractor生成
+		// extractor generates
 		extratorsArray := sequenceItem.NewSubArrayBuilder("extractors")
 		for _, extractor := range sequence.Extractor {
 			extractorItem := NewYamlMapBuilder()
@@ -591,7 +591,7 @@ func MarshalYakTemplateToYaml(y *httptpl.YakTemplate) (string, error) {
 			extratorsArray.Add(extractorItem)
 		}
 
-		// WebFuzzer请求配置
+		// WebFuzzer request configuration
 		//writeConfig(sequenceItem, &sequence.RequestConfig)
 
 		reqSequencesArray.Add(sequenceItem)
@@ -599,7 +599,7 @@ func MarshalYakTemplateToYaml(y *httptpl.YakTemplate) (string, error) {
 	metadata.Set("max-request", maxRequest)
 	metadata.ForceSet("shodan-query", "")
 	metadata.Set("verified", true)
-	yakitInfo.Set("sign", y.Sign) // 对 method, paths, headers, body、raw、matcher、extractor、payloads 签名
+	yakitInfo.Set("sign", y.Sign) // signatures for methods, paths, headers, body, raw, matcher, extractor, and payloads
 
 	rootMap.AddEmptyLine()
 	rootMap.AddComment("Generated From WebFuzzer on " + time.Now().Format("2006-01-02 15:04:05"))

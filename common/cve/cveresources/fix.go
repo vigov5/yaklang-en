@@ -56,7 +56,7 @@ func FixProductName(ProductName string, db *gorm.DB) ([]string, error) {
 	wg := &sync.WaitGroup{}
 
 	go func(p []ProductsTable) {
-		//下发修复产品任务
+		//, issue repair product task
 		for _, product := range Products {
 			wg.Add(1)
 			go generalFix(wg, fixName, ProductName, product)
@@ -84,21 +84,21 @@ func FixProductName(ProductName string, db *gorm.DB) ([]string, error) {
 	}
 }
 
-// 可能有的情况 lib5 -> lib 剔除不必要的数字以及其他符号
-// lib-2.1.1 -> lib 版本和产品混合
+// , possible situations lib5 -> lib removes unnecessary numbers and other symbols
+// lib-2.1.1 -> , lib version and product mix,
 func generalFix(wg *sync.WaitGroup, fixName chan string, ProductName string, Product ProductsTable) {
 	/*
-		1.简写 iis
-		2.语义切割后模糊匹配(提取出纯字符的名字,尝试把)  lib
+		1. Abbreviation iis
+		2. Fuzzy matching after semantic cutting (extract pure character names, try to use) lib
 	*/
 
-	//提取单词的规则
+	//rules for word extraction
 	//ruleForFuzz, err := regexp.Compile(`[a-zA-Z]{3,}`)
 	//if err != nil {
 	//	log.Errorf("Regular pattern compile failed: %s", err)
 	//}
 
-	ruleForAbbr, err := regexp.Compile("^([a-zA-Z\\d]+[_|-])+[a-zA-Z\\d]+$") //简写的正则
+	ruleForAbbr, err := regexp.Compile("^([a-zA-Z\\d]+[_|-])+[a-zA-Z\\d]+$") //, abbreviated regular
 	if err != nil {
 		log.Errorf("Regular pattern compile failed: %s", err)
 	}
@@ -116,7 +116,7 @@ func generalFix(wg *sync.WaitGroup, fixName chan string, ProductName string, Pro
 	wg.Done()
 }
 
-// FuzzCheck 模糊检查
+// , FuzzCheck, fuzzy check
 func FuzzCheck(input []string, data []string) bool {
 	for _, part := range input {
 		for _, dataPart := range data {
@@ -128,7 +128,7 @@ func FuzzCheck(input []string, data []string) bool {
 	return false
 }
 
-// AbbrCheck 简写检查
+// AbbrCheck abbreviation check
 func AbbrCheck(name string, info ProductsTable, symbol string) bool {
 	productArray := strings.Split(info.Product, symbol)
 

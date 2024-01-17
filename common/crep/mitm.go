@@ -258,7 +258,7 @@ var (
 		"mitm",
 	}
 	//go:embed static/navtab.html
-	// 返回HTML页面内容
+	// Return HTML page content
 	htmlContent []byte
 	//go:embed static/*
 	staticFS embed.FS

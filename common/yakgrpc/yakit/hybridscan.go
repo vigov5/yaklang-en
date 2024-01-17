@@ -22,7 +22,7 @@ type HybridScanTask struct {
 	// done
 	Status              string
 	Reason              string // user cancel / finished / recover failed so on
-	SurvivalTaskIndexes string // 暂停的时候正在执行的任务
+	SurvivalTaskIndexes string // The task being executed when paused
 
 	// struct{ https bool; request bytes }[]
 	Targets string

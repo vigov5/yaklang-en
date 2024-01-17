@@ -44,7 +44,7 @@ func (y *YakCompiler) exitForContext(end int, continueIndex int) {
 
 	for _, c := range y.codes[start:] {
 		if c.Opcode == yakvm.OpBreak && c.Unary <= 0 {
-			// 设置 for 开始到结尾的所有语句的 Break Code 的跳转值
+			// Set The jump value of the Break Code of all statements from the beginning to the end of for
 			c.Unary = end
 			if y.peekForContext().forRangeMode {
 				c.Op2 = yakvm.NewIntValue(1) // for range mode
@@ -75,7 +75,7 @@ func (y *YakCompiler) VisitForStmt(raw yak.IForStmtContext) interface{} {
 	defer recoverRange()
 	y.writeString("for ")
 
-	// _ 记录一下开始的索引，一般是 continue 的时候
+	// _ Record the starting index, usually when continue,
 	startIndex := y.GetNextCodeIndex()
 	startIndex += 1 // skip new-scope instruction
 	y.enterForContext(startIndex)
@@ -102,9 +102,9 @@ func (y *YakCompiler) VisitForStmt(raw yak.IForStmtContext) interface{} {
 			conditionSymbol = y.currentSymtbl.NewSymbolWithoutName()
 			y.pushLeftRef(conditionSymbol)
 			y.VisitExpression(condIns.Expression())
-			// 为了后面可以根据条件判断是否执行第三条语句，我们需要把结果缓存到中间符号中
+			// for the following We can judge whether to execute the third statement based on the condition. We need to cache the result into the intermediate symbol
 			y.pushOperator(yakvm.OpFastAssign)
-			// 条件应该是 forEnd 不是 blockEnd
+			// The condition should be forEnd not blockEnd
 			toEnd := y.pushJmpIfFalse()
 			toEnds = append(toEnds, toEnd)
 		}
@@ -114,8 +114,8 @@ func (y *YakCompiler) VisitForStmt(raw yak.IForStmtContext) interface{} {
 			endThirdExpr = e
 		}
 	}
-	// for 执行体结束之后应该无条件跳转回开头，重新判断
-	// 但是三语句 for ;; 应该是 block 执行解释后执行第三条语句
+	// after the execution body ends, it should jump back unconditionally At the beginning, re-judge
+	// on the left. However, the third statement for ;; . It should be a block. After executing the explanation, execute the third statement
 	recoverFormatBufferFunc := y.switchFormatBuffer()
 	y.VisitBlock(i.Block())
 	buf := recoverFormatBufferFunc()
@@ -137,10 +137,10 @@ func (y *YakCompiler) VisitForStmt(raw yak.IForStmtContext) interface{} {
 	forEnd := y.GetNextCodeIndex()
 
 	f()
-	// 设置解析的 block 中没有设置过的 break
+	// of a slice that has not been set in the parsed block. break
 	y.exitForContext(forEnd+1, continueIndex)
 
-	// 设置条件自带的 toEnd 位置
+	// sets the toEnd position
 	for _, toEnd := range toEnds {
 		if toEnd != nil {
 			toEnd.Unary = forEnd
@@ -178,9 +178,9 @@ func (y *YakCompiler) VisitForRangeStmt(raw yak.IForRangeStmtContext) interface{
 	}
 
 	/*
-		for range: range 后表达式计算后符号化
+		for range: range After the expression is calculated,
 	*/
-	// ! 不应该为迭代的对象创建一个新的符号，这样会导致自修改出现问题，且在迭代后右值所指向的左值被修改，所有后续的自修改失效
+	// ! A new symbol should not be created for the iterated object. This will cause problems with self-modification, and the lvalue pointed to by the right value is modified after iteration, and all subsequent self-modifications will be invalid.
 	// expressionResultID := y.currentSymtbl.NewSymbolWithoutName()
 	// y.pushLeftRef(expressionResultID)
 	// enter for-range
@@ -189,26 +189,26 @@ func (y *YakCompiler) VisitForRangeStmt(raw yak.IForRangeStmtContext) interface{
 	// y.pushOperator(yakvm.OpFastAssign)
 	defer y.pushOpPop()
 
-	// OpEnterFR 会从栈上pop出来右值创建迭代器，这个值其实不必要被 pop 出，每次 Peek 足够了
+	// . OpEnterFR will pop the rvalue from the stack to create an iterator. This value does not need to be popped out. Peek each time is enough.
 	enterFR := y.pushEnterFR()
 
-	// _ 记录一下开始的索引，一般是 continue 的时候无条件跳转的
+	// _ Record the starting index, which is usually the
 	startIndex := y.GetNextCodeIndex()
 	y.enterForRangeContext(startIndex)
 
-	// 计算出 range 左值的数量
+	// Calculate the number of range lvalues 
 	n := 0
-	if l := i.LeftExpressionList(); l != nil { // 访问左值
+	if l := i.LeftExpressionList(); l != nil { // access lvalue
 		n = len(l.(*yak.LeftExpressionListContext).AllLeftExpression())
-		// 一般来说左值有两个，有一个和两个的情况赋值不一样，这个要看具体实现
-		// 但是在for-range下不能大于 2, 这是有问题的
+		// General For example, there are two lvalues. The assignment of one and two lvalues is different. This depends on the specific implementation of
+		// But under for-range it cannot be greater than 2, which is a problem
 		if n > 2 && i.Range() != nil {
 			y.panicCompilerError(compileError, "`for ... range` accept up to tow left expression value")
 		}
 	}
 
-	// peek ExpressionResultID 使用 RangeNext 或者 InNext 进行迭代计算
-	// 迭代计算之后，应该是一个 list，可以作为赋值的右值
+	// peek ExpressionResultID Use RangeNext or InNext to iteratively calculate
+	// is symbolized. After the iterative calculation, it should be a list, which can be used as the rvalue of the assignment
 	rightAtLeast := 1
 	if n > 1 {
 		rightAtLeast = n
@@ -218,10 +218,10 @@ func (y *YakCompiler) VisitForRangeStmt(raw yak.IForRangeStmtContext) interface{
 	if i.In() != nil {
 		nextCode = y.pushInNext(rightAtLeast)
 	} else {
-		nextCode = y.pushRangeNext(rightAtLeast) // 遍历前面的expression
+		nextCode = y.pushRangeNext(rightAtLeast) // . Traverse the previous expression
 	}
 
-	// 如果左值没有的话，应该保留一些值吗？当然，应该给 _ 赋值成当前循环的次数或者第一个值
+	// of a map, if there is no lvalue, should some values be retained? Of course, _ should be assigned the number of current loops or the first value
 	if n <= 0 {
 		y.pushLeftRef(defaultValueSymbol)
 		y.pushListWithLen(1)
@@ -231,7 +231,7 @@ func (y *YakCompiler) VisitForRangeStmt(raw yak.IForRangeStmtContext) interface{
 			y.panicCompilerError(compileError, "invalid left expression list")
 		}
 	}
-	y.pushOperator(yakvm.OpAssign) // 赋值给左边的变量
+	y.pushOperator(yakvm.OpAssign) // and assign it to the variable
 	if op, op2 := i.In(), i.Range(); op != nil || op2 != nil {
 		if op != nil {
 			y.writeStringWithWhitespace(op.GetText())
@@ -251,25 +251,25 @@ func (y *YakCompiler) VisitForRangeStmt(raw yak.IForRangeStmtContext) interface{
 	exitFR := y.GetNextCodeIndex()
 	// exit for-range
 
-	// 设置next code的跳转位置,用于关闭的管道
+	// to set the jump position of the next code. The pipe
 	nextCode.Op1 = yakvm.NewIntValue(exitFR)
 
 	forEnd := y.GetNextCodeIndex()
 
-	// 设置解析的 block 中没有设置过的 break
+	// of a slice that has not been set in the parsed block. break
 	y.exitForContext(forEnd+2, forEnd)
 
-	// 设置enterFR的跳转,如果为空则直接跳转
+	// sets the jump of enterFR. If it is empty, jump directly to
 	enterFR.Unary = forEnd + 1
 	y.pushExitFR(startIndex)
 
-	// for range 起始位置
-	// 循环次数通过 _ 变量赋值，退出条件为 range
-	// 不一样的是，for range 需要支持三种情况至少
-	//   1. 针对一个 slice 的 range
-	//   2. 针对一个 map 的 range
-	//   3. 针对一个整数的 range，这种情况 golang 没有
-	//  	预期为 for range 4 { println(1) } 将会打印 4 个 1\n，等价于 for range [0,1,2,3] {}...
+	// for range starting position
+	// . The number of loops is assigned through _ variables, and the exit condition is range
+	// The difference is that for range needs to support three conditions at least
+	//   1. Set the range
+	//   2. For the range
+	//   3. For an integer range, in this case golang does not have
+	//  	that comes with the condition. Expected to be for range 4 { println(1) } used to close will print 4 1\n, which is equivalent to for range [0,1, 2,3] {}...
 
 	return nil
 }
@@ -287,7 +287,7 @@ func (y *YakCompiler) VisitForThirdExpr(raw yak.IForThirdExprContext) interface{
 	defer recoverRange()
 
 	if ae := i.AssignExpression(); ae != nil {
-		// 复制表达式是平栈的，不需要额外 pop
+		// that jumps unconditionally when continue. The copied expression is a flat stack, and no additional pop is required.
 		y.VisitAssignExpression(ae)
 		return nil
 	}
@@ -316,7 +316,7 @@ func (y *YakCompiler) VisitForFirstExpr(raw yak.IForFirstExprContext) interface{
 	defer recoverRange()
 
 	if ae := i.AssignExpression(); ae != nil {
-		// 复制表达式是平栈的，不需要额外 pop
+		// that jumps unconditionally when continue. The copied expression is a flat stack, and no additional pop is required.
 		y.VisitAssignExpression(ae)
 		return nil
 	}

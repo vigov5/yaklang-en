@@ -21,7 +21,7 @@ func SetCommandPath(path string) ExecParamsConfig {
 	}
 }
 
-// SetNotEncrypt WebShell 返回的结果是否加密
+// SetNotEncrypt Whether the result returned by WebShell is encrypted
 func SetNotEncrypt() ExecParamsConfig {
 	return func(p *Params) {
 		p.ParamItem = append(p.ParamItem, &ParamItem{

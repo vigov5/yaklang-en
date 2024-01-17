@@ -106,7 +106,7 @@ func DomainToURLFilter(domain string) (*regexp.Regexp, error) {
 	var re string
 
 	if !strings.Contains(domain, "/") {
-		// 不包含路径匹配，那么通配符不应该包含路径和问号
+		// does not contain a path match, then the wildcard should not contain the path and question mark
 		if !strings.Contains(domain, "*") {
 			re = fmt.Sprintf(urlFilterTmp, regexp.QuoteMeta(domain))
 		} else {
@@ -124,7 +124,7 @@ func DomainToURLFilter(domain string) (*regexp.Regexp, error) {
 			domainRegex, pathRegex string
 		)
 
-		// 匹配域名部分
+		// Match the domain name part
 		if !strings.Contains(domain, "*") {
 			domainRegex = fmt.Sprintf(urlFilterTmp, regexp.QuoteMeta(domain))
 		} else {
@@ -132,7 +132,7 @@ func DomainToURLFilter(domain string) (*regexp.Regexp, error) {
 			domainRegex = strings.ReplaceAll(domainRegex, "WILDCARD", "[^/^?^#^&]*")
 		}
 
-		// 匹配路径部分
+		// Match the path part
 		if strings.Contains(path, "*") {
 			pathRegex = strings.ReplaceAll(path, "*", ".*")
 		}

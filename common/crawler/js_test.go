@@ -22,7 +22,7 @@ fetch('/misc/response/fetch/basic.action')
     return response.text();
   })
   .then(data => {
-    console.log(data); // 这里是你的页面内容
+    console.log(data); // Here is your page content
   })
   .catch(error => {
     console.error('There has been a problem with your fetch operation:', error);
@@ -30,31 +30,31 @@ fetch('/misc/response/fetch/basic.action')
 
 
 ;
-// 创建一个新的 XMLHttpRequest 对象
+// Create a new XMLHttpRequest object
 var xhr = new XMLHttpRequest;
 
-// 配置请求类型为 POST，以及目标 URL
+// Configure the request type as POST, and the target URL
 xhr.open('POST', 'deep.js', true);
 
-// 设置所需的 HTTP 请求头
+// Set required HTTP request headers
 xhr.setRequestHeader('HackedJS', 'AAA');
 
-// 设置请求完成后的回调函数
+// Set the callback function after the request is completed
 xhr.onreadystatechange = function() {
-  // 检查请求是否完成
+  // Check whether the request is completed
   if (xhr.readyState === XMLHttpRequest.DONE) {
-    // 检查请求是否成功
+    // Check whether the request is successful
     if (xhr.status === 200) {
-      // 请求成功，处理响应数据
+      // The request is successful, process the response data
       console.log(xhr.responseText);
     } else {
-      // 请求失败，打印状态码
+      // request fails, print status code
       console.error('Request failed with status:', xhr.status);
     }
   }
 };
 
-// 发送请求，可以在此处发送任何需要的数据
+// Send the request, you can send it here Any required data
 xhr.send();;
 `
 	HandleJS(false, []byte(`GET / HTTP/1.1

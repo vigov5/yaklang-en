@@ -58,7 +58,7 @@ case 1,1,23,3:
 case 21,3,5:
 }
 
-// for 语句
+// for statement
 for 1 { println(1)
 a+1
 asdfasd+1123}

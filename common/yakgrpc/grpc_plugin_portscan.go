@@ -28,31 +28,31 @@ res, err := servicescan.Scan(
     servicescan.databaseCache(true),
 )
 if err != nil {
-    yakit.Error("服务扫描失败：%v", err)
+    yakit.Error("Service scan failed: %v", err)
     die(err)
 }
 
 hookManager, err := hook.NewMixPluginCaller()
 
 if err != nil {
-    updateStatus("创建插件调用模块失败")
+    updateStatus("Failed to create plug-in calling module")
     die(err)
 }
 
 err = hookManager.LoadPlugin(name)
 if err != nil {
-    yakit.Error("加载 Yak 插件失败：%v", err)
+    yakit.Error("Failed to load Yak plug-in: %v", err)
     die("no plugin loaded")
 }
 
-yakit.Info("开始执行服务扫描插件：%v", name)
+yakit.Info("Start executing service scan plug-in: %v", name)
 for result = range res {
     if result.IsOpen() {
         yakit.Info("OPEN：%v: %s", str.HostPort(result.Target, result.Port), result.GetServiceName())
     } else {
         yakit.Info("CLOSED: %v", str.HostPort(result.Target, result.Port))
     }
-    yakit.Info("扫描完成：%v，准备执行插件: %v", str.HostPort(result.Target, result.Port), name)
+    yakit.Info("Scan completed: %v, ready to execute plug-in: %v", str.HostPort(result.Target, result.Port), name)
     hookManager.HandleServiceScanResult(result)
 }
 `

@@ -237,7 +237,7 @@ func (y *YakTemplate) Exec(config *Config, isHttps bool, reqOrigin []byte, opts 
 	return y.ExecWithUrl(urlIns.String(), config, opts...)
 }
 
-// handleRequestSequences 渲染、发包、匹配、提取
+// handleRequestSequences Rendering, sending, matching, and extraction
 func (y *YakTemplate) handleRequestSequences(config *Config, reqOrigin *YakRequestBulkConfig, reqSeqs []*requestRaw, payload map[string][]string, sender func(raw []byte, req *requestRaw) (*lowhttp.LowhttpResponse, error)) ([]*lowhttp.LowhttpResponse, bool, map[string]interface{}, int64) {
 
 	defer func() {
@@ -316,7 +316,7 @@ func (y *YakTemplate) handleRequestSequences(config *Config, reqOrigin *YakReque
 					}
 					matchResults = append(matchResults, matchResult)
 					if matchResult && reqOrigin.StopAtFirstMatch {
-						// 第一次匹配就退出
+						// Exit after the first match.
 						return responses, true, extracted, count
 					}
 				}

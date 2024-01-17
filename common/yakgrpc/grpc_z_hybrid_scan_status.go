@@ -11,12 +11,12 @@ import (
 )
 
 type HybridScanStatusManager struct {
-	// 任务的总量
+	// tasks when resuming tasks
 	TargetTotal    int64
 	PluginTotal    int64
 	TotalTaskCount int64
 
-	// 完成的任务
+	// Completed tasks
 	TargetFinished int64
 	TaskFinished   int64
 
@@ -27,10 +27,10 @@ type HybridScanStatusManager struct {
 
 	TaskId string
 
-	// Task 计数器，作为索引
+	// Task counter as an index
 	TaskCount int64
 
-	// 恢复任务的时候使用
+	// uses the total number of
 	minTaskCount int64
 }
 

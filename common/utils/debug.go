@@ -41,7 +41,7 @@ func asDebugString(i interface{}, raw bool, pointers map[uintptr]struct{}) (ret 
 	typ := refV.Type()
 	kind := typ.Kind()
 
-	// todo: 美化输出,主要使用省略号来省略过长的字符串
+	// todo: Beautify output, mainly use ellipses to omit overly long strings
 	_ = raw
 
 	if !refV.IsValid() {

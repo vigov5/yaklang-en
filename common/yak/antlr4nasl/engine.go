@@ -84,7 +84,7 @@ func NewWithKbs(kbs *NaslKBs) *Engine {
 		//panic("call build in method error: not found symbol id")
 	})
 	vm.SetVar("__OpCallCallBack__", func(name string) {
-		// 做一些函数调试的工作
+		// from the built-in file. Do some function debugging work.
 		if name == "http_recv_headers2" {
 			print()
 		}
@@ -202,14 +202,14 @@ func (e *Engine) RunScript(script *NaslScriptInfo) error {
 }
 
 func (e *Engine) EvalInclude(name string) error {
-	// 优先从本地文件中查找，否则从内置的文件中查找
+	// from the built-in file. First search from the local file. Otherwise, search for
 	var sourceBytes []byte
 	libPath := path.Join(e.naslLibsPath, name)
 	codes, err := os.ReadFile(libPath)
 	if err == nil {
 		sourceBytes = codes
 	}
-	//本地文件加载失败，从内置文件中加载
+	//Local file loading failed. Load
 	if sourceBytes == nil {
 		data, err := embed.Asset("data/nasl-incs/" + name)
 		if err != nil {

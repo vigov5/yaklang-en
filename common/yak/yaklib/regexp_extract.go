@@ -19,7 +19,7 @@ var (
 	RE_TTY       = regexp.MustCompile(`(?:/dev/(pts|tty([pq])?)(\w+)?/?(?:[0-9]+))`)
 )
 
-// ExtractIPv4 提取字符串中所有的 IPv4 地址
+// ExtractIPv4 Extract all IPv4 addresses in the string
 // Example:
 // ```
 // re.ExtractIPv4("hello your local ip is 127.0.0.1, your public ip is 1.1.1.1") // ["127.0.0.1", "1.1.1.1"]
@@ -32,7 +32,7 @@ func RegexpMatchIPv4(i interface{}) []string {
 	return res
 }
 
-// ExtractIPv6 提取字符串中所有的 IPv6 地址
+// ExtractIPv6 Extract all IPv6 addresses in the string
 // Example:
 // ```
 // re.ExtractIPv6("hello your local ipv6 ip is fe80::1, your public ipv6 ip is 2001:4860:4860::8888") // ["fe80::1", "2001:4860:4860::8888"]
@@ -45,7 +45,7 @@ func RegexpMatchIPv6(i interface{}) []string {
 	return res
 }
 
-// ExtractMac 提取字符串中所有的 MAC 地址
+// ExtractMac Extract all MAC addresses in the string
 // Example:
 // ```
 // re.ExtractMac("hello your mac is 00:00:00:00:00:00") // ["00:00:00:00:00:00"]
@@ -58,7 +58,7 @@ func RegexpMatchMac(i interface{}) []string {
 	return res
 }
 
-// ExtractIP 提取字符串中所有的 IP 地址
+// ExtractIP Extract all IP addresses in the string
 // Example:
 // ```
 // re.ExtractIP("hello your local ip is 127.0.0.1, your local ipv6 ip is fe80::1") // ["127.0.0.1", "fe80::1"]
@@ -75,7 +75,7 @@ func RegexpMatchIP(i interface{}) []string {
 	return res
 }
 
-// ExtractHostPort 提取字符串中所有的 Host:Port
+// ExtractHostPort Extract all Host:Port in the string
 // Example:
 // ```
 // re.ExtractHostPort("Open Host:Port\n127.0.0.1:80\n127.0.0.1:443") // ["127.0.0.1:80", "127.0.0.1:443"]
@@ -88,7 +88,7 @@ func RegexpMatchHostPort(i interface{}) []string {
 	return res
 }
 
-// ExtractPath 提取URL中的路径和查询字符串
+// ExtractPath Extract the path and query string in the URL
 // Example:
 // ```
 // re.ExtractPath("visit this website: yaklang.com/docs/api/re?name=anonymous") // ["/docs/api/re?name=anonymous"]
@@ -101,7 +101,7 @@ func RegexpMatchPathParam(i interface{}) []string {
 	return res
 }
 
-// ExtractEmail 提取字符串中所有的 Email 地址
+// ExtractEmail Extract all Email addresses in the string
 // Example:
 // ```
 // re.ExtractEmail("hello your email is anonymous@yaklang.io") // ["anonymous@yaklang.io"]
@@ -114,7 +114,7 @@ func RegexpMatchEmail(i interface{}) []string {
 	return res
 }
 
-// ExtractTTY 提取字符串中所有的Linux/Unix系统中的设备文件路径
+// ExtractTTY Extract all Linux in the string/Device file path in Unix system
 // Example:
 // ```
 // re.ExtractTTY("hello your tty is /dev/pts/1") // ["/dev/pts/1"]
@@ -127,7 +127,7 @@ func RegexpMatchTTY(i interface{}) []string {
 	return res
 }
 
-// ExtractURL 提取字符串中所有的 URL 地址
+// ExtractURL Extract all URL addresses in the string
 // Example:
 // ```
 // re.ExtractURL("Yak official website: https://yaklang.com and https://yaklang.io") // ["https://yaklang.com", "https://yaklang.io"]

@@ -69,7 +69,7 @@ type YakTemplate struct {
 	Variables      *YakVariables
 }
 
-// SignMainParams 对 method, paths, headers, body、raw、matcher、extractor、payloads 签名
+// SignMainParams pair method , paths, headers, body, raw, matcher, extractor, payloads signature
 func (y *YakTemplate) SignMainParams() string {
 	signData := []any{}
 	addData := func(data any) {
@@ -147,16 +147,16 @@ func (y *YakTemplate) CheckTemplateRisks() error {
 	}
 	if !hasMatcherOrExtractor {
 		//addErrorMsg("matcher and extractor are both empty, may be the script is invalid")
-		addErrorMsg("匹配器和数据提取器都未配置，当前可能脚本是无效的")
+		addErrorMsg("Neither the matcher nor the data extractor is configured, the current script may be invalid")
 	}
 	if y.Sign != "" {
 		if y.Sign != y.SignMainParams() {
 			//addErrorMsg("signature error, may be the script is invalid")
-			addErrorMsg("签名错误，当前可能脚本是无效的")
+			addErrorMsg("signature error, the current script may be invalid")
 		}
 	} else {
 		//addErrorMsg("lack of signature information, unable to verify script validity")
-		addErrorMsg("缺少签名信息，无法验证脚本有效性")
+		addErrorMsg("The signature information is missing and the validity of the script cannot be verified")
 	}
 	return errs
 }
@@ -176,7 +176,7 @@ type YakRequestBulkConfig struct {
 	NoFixContentLength bool
 	Payloads           *YakPayloads
 
-	// req-condition - 为 true 的时候，要等所有的请求发送完在执行 Matcher
+	// req-condition - When it is true, it is necessary to wait until all requests are sent before executing the Matcher
 	AfterRequested bool
 	Method         string
 	Paths          []string

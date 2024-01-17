@@ -7,7 +7,7 @@ import (
 var WebShellExports = map[string]interface{}{
 	"NewWebshell": NewWebShell,
 
-	// 设置 shell 信息
+	// Set shell information
 	"tools":       SetShellType,
 	"setProxy":    SetProxy,
 	"useBehinder": SetBeinderTool,
@@ -18,6 +18,6 @@ var WebShellExports = map[string]interface{}{
 	"secretKey":   SetSecretKey,
 	"passParams":  SetPass,
 
-	// 设置参数
+	// set parameters
 	"cmdPath": behinder.SetCommandPath,
 }

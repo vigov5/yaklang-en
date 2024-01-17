@@ -10,20 +10,20 @@ import (
 )
 
 type Config struct {
-	// 使用哪些规则来进行 Web 指纹探测？
+	// Which rules are used for web fingerprint detection?
 	Rules []*WebRule
 
-	// 主动模式
+	// active mode
 	ActiveMode bool
 
-	// 强制所有规则进行匹配
+	// forces all rules to match
 	ForceAllRuleMatching bool
 
-	// 在需要主动发送 Probe 的规则探测设置中
-	//    我们需要为每一个 Probe 设置 TimeoutSeconds
+	// In the rule detection settings that require actively sending Probe,
+	//    We need to set TimeoutSeconds for each Probe.
 	ProbeTimeout time.Duration
 
-	// 指纹大小默认 20480
+	// Fingerprint size defaults to 20480
 	FingerprintDataSize int
 
 	// Proxies

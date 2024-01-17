@@ -9,7 +9,7 @@ freq = fuzz.MustHTTPRequest(raw)
 params := freq.GetCommonParams()
 if len(params) != 4 {
     dump(params)
-    die(sprintf("获取通用参数数量错误: %s", len(params)))
+    die(sprintf("Error getting number of common parameters: %s", len(params)))
 }
 
 for p in params {
@@ -37,7 +37,7 @@ freq = fuzz.MustHTTPRequest(raw)
 params := freq.GetCommonParams()
 if len(params) != 8 {
     dump(params)
-    die(sprintf("获取通用参数数量错误: %s", len(params)))
+    die(sprintf("Error getting number of common parameters: %s", len(params)))
 }
 
 for p in params {

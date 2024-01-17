@@ -153,8 +153,8 @@ func FuzzQueryArrayOrLike(db *gorm.DB, field string, s []interface{}) *gorm.DB {
 	)
 
 	for _, sub := range s {
-		pattern := fmt.Sprintf("%%%v%%", sub)           // 将 'sub' 转换为类似于 '%sub%' 的形式
-		pattern = strings.ReplaceAll(pattern, "*", "%") // 将 '*' 替换为 SQL 通配符 '%'
+		pattern := fmt.Sprintf("%%%v%%", sub)           // 将 'sub' is converted to something like '%sub%' The form
+		pattern = strings.ReplaceAll(pattern, "*", "%") // 将 '*' is replaced by the SQL wildcard '%'
 		querys = append(querys, fmt.Sprintf("( %v LIKE ? )", field))
 		items = append(items, pattern)
 	}
@@ -174,8 +174,8 @@ func FuzzQueryArrayOrLikeExclude(db *gorm.DB, field string, s []interface{}) *go
 	)
 
 	for _, sub := range s {
-		pattern := fmt.Sprintf("%%%v%%", sub)           // 将 'sub' 转换为类似于 '%sub%' 的形式
-		pattern = strings.ReplaceAll(pattern, "*", "%") // 将 '*' 替换为 SQL 通配符 '%'
+		pattern := fmt.Sprintf("%%%v%%", sub)           // 将 'sub' is converted to something like '%sub%' The form
+		pattern = strings.ReplaceAll(pattern, "*", "%") // 将 '*' is replaced by the SQL wildcard '%'
 		querys = append(querys, fmt.Sprintf("( %v LIKE ? )", field))
 		items = append(items, pattern)
 	}

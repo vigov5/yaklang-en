@@ -84,7 +84,7 @@ func getApachePid(c context.Context) []int {
 	for i := range make([]int, 4) {
 		switch i {
 		case 0:
-			// 方法一，用 apache2.pid 判断
+			// Method 1, use apache2.pid to determine
 			var pids []int
 			for _, pidFile := range []string{"/var/run/apache2.pid", "/var/run/httpd.pid"} {
 				raw, err := ioutil.ReadFile(pidFile)

@@ -89,7 +89,7 @@ type WebsocketClient struct {
 	Context           context.Context
 	cancel            func()
 
-	// websocket扩展
+	// websocket extension
 	// isDeflate bool
 }
 
@@ -228,7 +228,7 @@ func NewWebsocketClient(packet []byte, opt ...WebsocketClientOpt) (*WebsocketCli
 	var port = config.Port
 	var host = config.Host
 
-	// 修正端口
+	// corrects the port
 	var noFixPort = false
 	if config.Port <= 0 {
 		if config.TLS {
@@ -245,7 +245,7 @@ func NewWebsocketClient(packet []byte, opt ...WebsocketClientOpt) (*WebsocketCli
 		return nil, utils.Errorf("extract url from request failed: %s", err)
 	}
 
-	// 修正host
+	// corrects the host
 	if config.Host == "" {
 		var newPort int
 		host, newPort, _ = utils.ParseStringToHostPort(urlIns.String())
@@ -257,7 +257,7 @@ func NewWebsocketClient(packet []byte, opt ...WebsocketClientOpt) (*WebsocketCli
 		}
 	}
 
-	// 获取连接
+	// gets the connection
 	var addr = utils.HostPort(host, port)
 	var conn net.Conn
 	if config.TLS {
@@ -272,24 +272,24 @@ func NewWebsocketClient(packet []byte, opt ...WebsocketClientOpt) (*WebsocketCli
 		}
 	}
 
-	// 判断websocket扩展
+	// determines the websocket extension
 	requestRaw := FixHTTPRequest(packet)
 	req, err := ParseBytesToHttpRequest(requestRaw)
 	if err != nil {
 		return nil, utils.Errorf("parse request failed: %s", err)
 	}
 
-	// 如果请求存在permessage-deflate扩展则设置isDeflate
+	// . If the request contains the permessage-deflate extension, set isDeflate
 	isDeflate := IsPermessageDeflate(req.Header)
 
-	// 发送请求
+	// Send request
 
 	_, err = conn.Write(requestRaw)
 	if err != nil {
 		return nil, utils.Errorf("write conn[ws] failed: %s", err)
 	}
 
-	// 接收响应并判断
+	// receives the response and determines
 	var responseRaw bytes.Buffer
 	rsp, err := http.ReadResponse(bufio.NewReader(io.TeeReader(conn, &responseRaw)), nil)
 	if err != nil {
@@ -299,10 +299,10 @@ func NewWebsocketClient(packet []byte, opt ...WebsocketClientOpt) (*WebsocketCli
 	if rsp.StatusCode != 101 && rsp.StatusCode != 200 {
 		return nil, utils.Errorf("upgrade websocket failed(101 switch protocols failed): %s", rsp.Status)
 	}
-	// 如果响应中不存在permessage-deflate扩展则要反设置isDeflate
+	// If the permessage-deflate extension does not exist in the response, set isDeflate
 	serverSupportDeflate := IsPermessageDeflate(rsp.Header)
 
-	// 当服务端不支持permessage-deflate扩展时，客户端也不应该使用
+	// when the server does not support it. Clients should also not use the
 	if !serverSupportDeflate && isDeflate {
 		isDeflate = false
 	}

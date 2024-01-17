@@ -24,19 +24,19 @@ const (
 )
 
 type Var struct {
-	Type TemplateVarType // 需要在保证nuclei中可以正确解析的情况下，携带类型信息，所以对于除nuclei-dsl类型的变量，在值前增加@raw、@fuzztag标记类型
+	Type TemplateVarType // needs to carry type information while ensuring that it can be parsed correctly in nuclei. Therefore, for variables other than nuclei-dsl type, add @raw and @fuzztag tag type
 	Data string
 }
 
 func NewVar(v string) *Var {
 	val := &Var{Data: v, Type: NucleiDslType}
-	if strings.HasPrefix(v, string(FuzztagPrefix)) { // 指定为fuzztag类型
+	if strings.HasPrefix(v, string(FuzztagPrefix)) { // Specify fuzztag type
 		val.Data = v[len(string(FuzztagPrefix)):]
 		val.Type = FuzztagType
-	} else if strings.HasPrefix(v, string(RawPrefix)) { // 指定为raw类型
+	} else if strings.HasPrefix(v, string(RawPrefix)) { // before the value and specify it as raw. type
 		val.Data = v[len(string(RawPrefix)):]
 		val.Type = RawType
-	} else if strings.Contains(v, "{{") { // 自动类型解析
+	} else if strings.Contains(v, "{{") { // . Automatic type resolution
 		val.Type = NucleiDslType
 	} else {
 		val.Type = RawType

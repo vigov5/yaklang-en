@@ -63,13 +63,13 @@ func (s *OnlineClient) UploadScreenRecordersToOnline(ctx context.Context,
 	}
 	defer file.Close()
 
-	// 创建一个文件字段
+	// Create a file field
 	fileInfo, err := writer.CreateFormFile("video_file", filepath.Base(filePath))
 	if err != nil {
 		return utils.Errorf("Error creating form file: %v", err)
 	}
 
-	// 将文件内容复制到文件字段中
+	// Copy file contents into file field
 	_, err = io.Copy(fileInfo, files)
 	if err != nil {
 		return utils.Errorf("Error copying file data: %v", err)

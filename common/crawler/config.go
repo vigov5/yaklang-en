@@ -71,12 +71,12 @@ func (c *Config) init() {
 }
 
 type Config struct {
-	// 基础认证
+	// basic authentication is implemented through execReq.
 	BasicAuth    bool
 	AuthUsername string
 	AuthPassword string
 
-	// Transport 中的配置
+	// Transport.
 	proxies          []string
 	concurrent       int
 	maxRedirectTimes int
@@ -86,22 +86,22 @@ type Config struct {
 	// UA
 	userAgent string
 
-	// 最大深度，在 preReq 中实现
+	// maximum depth,
 	maxDepth int // 5
 
-	// maxBodySize 通过 execReq 实现限制
+	// maxBodySize is implemented in preReq, and
 	maxBodySize int // 10 * 1024 * 1024
 
-	// 通过 preReq 限制
+	// Limit
 	disallowSuffix []string
 
-	// mime 限制
+	// mime Limit
 	disallowMIMEType []string
 
-	// 请求最大值限制
+	// Request maximum limit
 	maxCountOfRequest int // 1000
 
-	// maxCountOfLinks 在 handleReqResult 中限制
+	// maxCountOfLinks limits
 	maxCountOfLinks int // 2000
 
 	//
@@ -166,7 +166,7 @@ func (c *Config) GetLowhttpConfig() []lowhttp.LowhttpOpt {
 func (c *Config) CheckShouldBeHandledURL(u *url.URL) bool {
 	pass := false
 
-	// 只要有一个通过就通过
+	// As long as there is one that passes,
 	if len(c.allowDomains) > 0 {
 		pass = false
 		for _, g := range c.allowDomains {
@@ -180,7 +180,7 @@ func (c *Config) CheckShouldBeHandledURL(u *url.URL) bool {
 		}
 	}
 
-	// 只要有一个不通过的黑名单就不通过
+	// As long as there is a blacklist that does not pass, it will not pass.
 	pass = true
 	for _, g := range c.forbiddenDomain {
 		if g.Match(u.Hostname()) {
@@ -192,7 +192,7 @@ func (c *Config) CheckShouldBeHandledURL(u *url.URL) bool {
 		return false
 	}
 
-	// 只要有一个 URL 白名单
+	// As long as there is a URL Whitelist
 	if len(c.allowUrlRegexp) > 0 {
 		pass = false
 		for _, g := range c.allowUrlRegexp {
@@ -206,7 +206,7 @@ func (c *Config) CheckShouldBeHandledURL(u *url.URL) bool {
 		}
 	}
 
-	// 只要有一个不通过黑名单就不能通过
+	// As long as there is one that does not pass the blacklist, it cannot pass
 	pass = true
 	for _, g := range c.forbiddenUrlRegexp {
 		if g.MatchString(u.String()) {
@@ -233,10 +233,10 @@ func (c *Config) CheckShouldBeHandledURL(u *url.URL) bool {
 
 type ConfigOpt func(c *Config)
 
-// disallowSuffix 是一个选项函数，用于指定爬虫时的后缀黑名单
+// disallowSuffix is an option function used to specify the suffix when crawling. Blacklist
 // Example:
 // ```
-// crawler.Start("https://example.com", crawler.disallowSuffix(".css", ".jpg", ".png")) // 爬虫时不会爬取css、jpg、png文件
+// crawler.Start("https://example.com", crawler.disallowSuffix(".css", ".jpg", ".png")) // will not crawl css, jpg, and png files during crawling.
 // ```
 func WithDisallowSuffix(d []string) ConfigOpt {
 	return func(c *Config) {
@@ -250,7 +250,7 @@ func WithDisallowMIMEType(d []string) ConfigOpt {
 	}
 }
 
-// basicAuth 是一个选项函数，用于指定爬虫时的自动该填写的基础认证用户名和密码
+// basicAuth is an option function used to specify the basic authentication user name and password that should be automatically filled in when crawling.
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.basicAuth("admin", "admin"))
@@ -263,7 +263,7 @@ func WithBasicAuth(user, pass string) ConfigOpt {
 	}
 }
 
-// proxy 是一个选项函数，用于指定爬虫时的代理
+// proxy is an option function used to specify the proxy
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.proxy("http://127.0.0.1:8080"))
@@ -274,7 +274,7 @@ func WithProxy(proxies ...string) ConfigOpt {
 	}
 }
 
-// concurrent 是一个选项函数，用于指定爬虫时的并发数，默认为20
+// concurrent is an option function, used to specify the number of concurrency when crawling, the default is 20
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.concurrent(10))
@@ -285,7 +285,7 @@ func WithConcurrent(concurrent int) ConfigOpt {
 	}
 }
 
-// maxRedirect 是一个选项函数，用于指定爬虫时的最大重定向次数，默认为5
+// maxRedirect is an option function, used for Specify the maximum number of redirects when crawling, the default is 5
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.maxRedirect(10))
@@ -296,8 +296,8 @@ func WithMaxRedirectTimes(maxRedirectTimes int) ConfigOpt {
 	}
 }
 
-// domainInclude 是一个选项函数，用于指定爬虫时的域名白名单
-// domain允许使用glob语法，例如*.example.com
+// domainInclude is an option function, used for Specify the domain name whitelist when crawling.
+// domain allows the use of glob syntax, such as*.example.com
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.domainInclude("*.example.com"))
@@ -325,8 +325,8 @@ func WithDomainWhiteList(domain string) ConfigOpt {
 	}
 }
 
-// domainExclude 是一个选项函数，用于指定爬虫时的域名黑名单
-// domain允许使用glob语法，例如*.example.com
+// domainExclude is an option function used to specify the domain name blacklist when crawling.
+// domain allows the use of glob syntax, such as*.example.com
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.domainExclude("*.baidu.com"))
@@ -358,7 +358,7 @@ func WithExtraSuffixForEveryRootPath(path ...string) ConfigOpt {
 	}
 }
 
-// urlRegexpInclude 是一个选项函数，用于指定爬虫时的URL正则白名单
+// urlRegexpInclude is an option function used to specify the URL regular whitelist when crawling.
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.urlRegexpInclude(`\.html`))
@@ -374,7 +374,7 @@ func WithUrlRegexpWhiteList(re string) ConfigOpt {
 	}
 }
 
-// urlRegexpExclude 是一个选项函数，用于指定爬虫时的URL正则黑名单
+// urlRegexpExclude is an option function used to specify the URL regular blacklist when crawling
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.urlRegexpExclude(`\.jpg`))
@@ -390,7 +390,7 @@ func WithUrlRegexpBlackList(re string) ConfigOpt {
 	}
 }
 
-// connectTimeout 是一个选项函数，用于指定爬虫时的连接超时时间，默认为10s
+// connectTimeout is an option function used to specify the connection timeout when crawling, the default is 10s
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.connectTimeout(5))
@@ -401,8 +401,8 @@ func WithConnectTimeout(f float64) ConfigOpt {
 	}
 }
 
-// responseTimeout 是一个选项函数，用于指定爬虫时的响应超时时间，默认为10s
-// ! 未实现
+// . responseTimeout is an option function used to specify the response timeout when crawling. The default is 10s.
+// ! Not implemented
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.responseTimeout(5))
@@ -413,7 +413,7 @@ func WithResponseTimeout(f float64) ConfigOpt {
 	}
 }
 
-// userAgent 是一个选项函数，用于指定爬虫时的User-Agent
+// userAgent. It is an option function used to specify crawling time. The User-Agent
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.userAgent("yaklang-crawler"))
@@ -424,7 +424,7 @@ func WithUserAgent(ua string) ConfigOpt {
 	}
 }
 
-// maxDepth 是一个选项函数，用于指定爬虫时的最大深度，默认为5
+// will pass maxDepth is an option function used to specify the maximum depth when crawling, the default For 5
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.maxDepth(10))
@@ -435,7 +435,7 @@ func WithMaxDepth(depth int) ConfigOpt {
 	}
 }
 
-// bodySize 是一个选项函数，用于指定爬虫时的最大响应体大小，默认为10MB
+// bodySize is an option function used to specify when crawling. The maximum response body size, the default is 10MB.
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.bodySize(1024 * 1024))
@@ -446,7 +446,7 @@ func WithBodySize(size int) ConfigOpt {
 	}
 }
 
-// maxRequest 是一个选项函数，用于指定爬虫时的最大请求数，默认为1000
+// maxRequest is an option function, used to specify the maximum number of requests when crawling, the default is 1000
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.maxRequest(10000))
@@ -457,7 +457,7 @@ func WithMaxRequestCount(limit int) ConfigOpt {
 	}
 }
 
-// maxUrls 是一个选项函数，用于指定爬虫时的最大链接数，默认为10000
+// maxUrls Yes An option function used to specify the maximum number of links when crawling. The default is 10000.
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.maxUrls(20000))
@@ -468,7 +468,7 @@ func WithMaxUrlCount(limit int) ConfigOpt {
 	}
 }
 
-// maxRetry 是一个选项函数，用于指定爬虫时的最大重试次数，默认为3
+// maxRetry is an option function used to specify the maximum number of retries during crawling. The default is 3.
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.maxRetry(10))
@@ -479,11 +479,11 @@ func WithMaxRetry(limit int) ConfigOpt {
 	}
 }
 
-// forbiddenFromParent 是一个选项函数，用于指定爬虫时的是否禁止从根路径发起请求，默认为false
-// 对于一个起始URL，如果其并不是从根路径开始且没有禁止从根路径发起请求，那么爬虫会从其根路径开始爬取
+// in handleReqResult. forbiddenFromParent is an option function used to specify whether to prohibit requests from the root path when crawling. The default is false.
+// when crawling. For a starting URL, if it does not start from the root path And it is not prohibited to initiate requests from the root path, then the crawler will start crawling
 // Example:
 // ```
-// crawler.Start("https://example.com/a/b/c", crawler.forbiddenFromParent(false)) // 这会从 https://example.com/ 开始爬取
+// crawler.Start("https://example.com/a/b/c", crawler.forbiddenFromParent(false)) // This will start from https://example.com/ from its root path. Start crawling
 // ```
 func WithForbiddenFromParent(b bool) ConfigOpt {
 	return func(c *Config) {
@@ -491,7 +491,7 @@ func WithForbiddenFromParent(b bool) ConfigOpt {
 	}
 }
 
-// header 是一个选项函数，用于指定爬虫时的请求头
+// header is an option function, used to specify the request header when crawling.
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.header("User-Agent", "yaklang-crawler"))
@@ -505,11 +505,11 @@ func WithHeader(k, v string) ConfigOpt {
 	}
 }
 
-// urlExtractor 是一个选项函数，它接收一个函数作为参数，用于为爬虫添加额外的链接提取规则
+// urlExtractor is an option function, which receives a function as a parameter, used to add additional link extraction rules for crawlers.
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.urlExtractor(func(req) {
-// 尝试编写自己的规则，从响应体(req.Response()或req.ResponseRaw())中提取额外的链接
+// through preReq. Try to write your own rules to extract additional links from the response body (req.Response() or req.ResponseRaw()). Configuration in
 // })
 // ```
 func WithUrlExtractor(f func(*Req) []interface{}) ConfigOpt {
@@ -518,7 +518,7 @@ func WithUrlExtractor(f func(*Req) []interface{}) ConfigOpt {
 	}
 }
 
-// cookie 是一个选项函数，用于指定爬虫时的cookie
+// cookie is an option function. Cookie used to specify the crawler
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.cookie("key", "value"))
@@ -541,7 +541,7 @@ func WithOnRequest(f func(req *Req)) ConfigOpt {
 	}
 }
 
-// autoLogin 是一个选项函数，用于指定爬虫时的自动填写可能存在的登录表单
+// autoLogin is an option function used to specify the automatic number of retries during crawling. Fill in the possible login form
 // Example:
 // ```
 // crawler.Start("https://example.com", crawler.autoLogin("admin", "admin"))

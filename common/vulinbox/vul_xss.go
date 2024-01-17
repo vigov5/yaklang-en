@@ -49,12 +49,12 @@ func unsafeTemplateRender(writer http.ResponseWriter, req *http.Request, html st
 func (s *VulinServer) registerXSS() {
 	var router = s.router
 
-	xssGroup := router.PathPrefix("/xss").Name("XSS 多场景").Subrouter()
+	xssGroup := router.PathPrefix("/xss").Name("XSS Multi-scenario").Subrouter()
 	xssRoutes := []*VulInfo{
 		{
 			DefaultQuery: "name=admin",
 			Path:         "/safe",
-			Title:        "安全实体转义",
+			Title:        "safe entity escape",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var name = request.URL.Query().Get("name")
 				safeName := template.HTMLEscapeString(name)
@@ -70,7 +70,7 @@ Hello %v
 		{
 			DefaultQuery: "name=admin",
 			Path:         "/echo",
-			Title:        "直接拼接导致XSS注入",
+			Title:        "Direct splicing leads to XSS injection",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var name = request.URL.Query().Get("name")
 				writer.Header().Set("Content-Type", "text/html")
@@ -117,7 +117,7 @@ Hello %v
 		{
 			DefaultQuery: "name=admin",
 			Path:         "/replace/nocase",
-			Title:        "不安全的过滤导致XSS",
+			Title:        "Insecure filtering leads to XSS",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var name = request.URL.Query().Get("name")
 				scriptRegex := regexp.MustCompile("(?i)<script>")
@@ -136,7 +136,7 @@ Hello %v
 		{
 			DefaultQuery: "name=admin",
 			Path:         "/js/in-str",
-			Title:        "XSS: 存在于 JS 代码中(字符串中)",
+			Title:        "XSS: Exists in JS code (in string)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				unsafeTemplateRender(writer, request, `<!doctype html>
 <html>
@@ -182,7 +182,7 @@ Hello %v
 		{
 			DefaultQuery: "name=admin",
 			Path:         "/js/in-str2",
-			Title:        "XSS: 存在于 JS 代码中(字符串中2)",
+			Title:        "XSS: Exists in JS code (in string 2)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				unsafeTemplateRender(writer, request, `<!doctype html>
 <html>
@@ -230,7 +230,7 @@ console.info("Hello" + `+"`${name}`"+`);</script>
 		{
 			DefaultQuery: "name=admin",
 			Path:         "/js/in-str-temp",
-			Title:        "XSS: 存在于 JS 代码中(字符串模版中)",
+			Title:        "XSS: Exists in JS code (in string template)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				unsafeTemplateRender(writer, request, `<!doctype html>
 <html>
@@ -321,7 +321,7 @@ console.info("Hello" + `+"`{{ .name }}: ${name}`"+`);</script>
 		{
 			DefaultQuery: "code=2-1",
 			Path:         "/attr/onclick",
-			Title:        "输出存在于HTML节点on...属性中",
+			Title:        "output exists in the HTML node on... attribute",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				unsafeTemplateRender(writer, request, `<!doctype html>
 <html>
@@ -369,7 +369,7 @@ console.info("Hello" + `+"`{{ .name }}: ${name}`"+`);</script>
 		{
 			DefaultQuery: "value=visitor-name",
 			Path:         "/attr/alt",
-			Title:        "输出存在于HTML节点属性中，但是不再on属性中(IMG ALT)",
+			Title:        "The output exists in the HTML node attribute, but no longer in the on attribute (IMG ALT)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				// %27onmousemove=%27javascript:alert(1)
 				unsafeTemplateRender(writer, request, `<!doctype html>
@@ -418,7 +418,7 @@ console.info("Hello" + `+"`{{ .name }}: ${name}`"+`);</script>
 		{
 			DefaultQuery: "json={\"value\":\"value=visitor-name\"}",
 			Path:         "/attr/alt/json",
-			Title:        "进阶1：输出存在于HTML节点属性中，但是不再on属性中(IMG ALT)",
+			Title:        "Advanced 1: The output exists in the HTML node attribute, but no longer in the on attribute (IMG ALT)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				// %27onmousemove=%27javascript:alert(1)
 				unsafeTemplateRender(writer, request, `<!doctype html>
@@ -467,7 +467,7 @@ console.info("Hello" + `+"`{{ .name }}: ${name}`"+`);</script>
 		{
 			DefaultQuery: "b64json=eyJ2YWx1ZSI6InZhbHVlPXZpc2l0b3ItbmFtZSJ9",
 			Path:         "/attr/alt/b64/json",
-			Title:        "进阶2：输出存在于HTML节点属性中，但是不再on属性中(IMG ALT)",
+			Title:        "Advanced 2: The output exists in the HTML node attribute, but no longer in the on attribute (IMG ALT)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				// %27onmousemove=%27javascript:alert(1)
 				unsafeTemplateRender(writer, request, `<!doctype html>
@@ -516,7 +516,7 @@ console.info("Hello" + `+"`{{ .name }}: ${name}`"+`);</script>
 		{
 			DefaultQuery: "src=/static/logo.png",
 			Path:         "/attr/src",
-			Title:        "输出存在于HTML节点属性中，但是不再on属性中(IMG SRC)",
+			Title:        "Output exists in HTML node attribute, but no longer in on attribute (IMG SRC)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				// %27onmousemove=%27javascript:alert(1)
 				unsafeTemplateRender(writer, request, `<!doctype html>
@@ -565,7 +565,7 @@ console.info("Hello" + `+"`{{ .name }}: ${name}`"+`);</script>
 		{
 			DefaultQuery: "href=/static/logo.png",
 			Path:         "/attr/href",
-			Title:        "输出存在于HTML节点属性中，但是不再on属性中(HREF)",
+			Title:        "Output exists in HTML node attribute, but No longer in the on attribute (HREF)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				// %27onmousemove=%27javascript:alert(1)
 				unsafeTemplateRender(writer, request, `<!doctype html>
@@ -615,7 +615,7 @@ console.info("Hello" + `+"`{{ .name }}: ${name}`"+`);</script>
 		{
 			DefaultQuery: "code=2-1",
 			Path:         "/attr/onclick2",
-			Title:        "输出存在于HTML节点on...属性中的部分代码属性",
+			Title:        "outputs part of the code attribute that exists in the HTML node on... attribute",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				unsafeTemplateRender(writer, request, `<!doctype html>
 <html>
@@ -663,7 +663,7 @@ console.info("Hello" + `+"`{{ .name }}: ${name}`"+`);</script>
 		{
 			DefaultQuery: "name=OrdinaryVisitor",
 			Path:         "/attr/script",
-			Title:        "script标签的某些属性中",
+			Title:        "In some attributes of the script tag",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				unsafeTemplateRender(writer, request, `<!doctype html>
 <html>
@@ -711,7 +711,7 @@ console.info("Hello" + `+"`{{ .name }}: ${name}`"+`);</script>
 		{
 			DefaultQuery: "",
 			Path:         "/cookie/name",
-			Title:        "Cookie 中的 XSS",
+			Title:        "XSS in Cookie",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				raw, _ := utils.HttpDumpWithBody(request, true)
 				xCname := lowhttp.GetHTTPPacketCookieFirst(raw, "xCname")
@@ -771,7 +771,7 @@ console.info("Hello" + `+"`{{ .name }}: ${name}`"+`);</script>
 		{
 			DefaultQuery: "",
 			Path:         "/cookie/b64/name",
-			Title:        "Cookie 中的 XSS（Base64-json）",
+			Title:        "XSS in Cookie (Base64-json)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				raw, _ := utils.HttpDumpWithBody(request, true)
 				xCname := lowhttp.GetHTTPPacketCookieFirst(raw, "xCnameB64")
@@ -833,7 +833,7 @@ console.info("Hello" + `+"`{{ .name }}: ${name}`"+`);</script>
 		{
 			DefaultQuery: "",
 			Path:         "/cookie/b64/json/name",
-			Title:        "Cookie 中的 XSS（Base64-JSON）",
+			Title:        "Cookie XSS in (Base64-JSON)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				raw, _ := utils.HttpDumpWithBody(request, true)
 				xCname := lowhttp.GetHTTPPacketCookieFirst(raw, "xCnameB64J")

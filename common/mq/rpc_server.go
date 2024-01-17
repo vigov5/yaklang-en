@@ -23,8 +23,8 @@ type serverProcessing struct {
 func rpcServerConfig(
 	exchange, node string, funcNames []string,
 	cb func(
-		broker *Broker, ctx context.Context, // 基础信息
-		f, node string, // 消息来源
+		broker *Broker, ctx context.Context, // basic information
+		f, node string, // message source
 		delivery *amqp.Delivery) (interface{}, error),
 ) BrokerConfigHandler {
 	getRoutingKey := func(f, n string) string {
@@ -88,7 +88,7 @@ func rpcServerConfig(
 					return
 				}
 
-				// 设置上下文, 然后如果遇到了取消事件, 就应该结束
+				// Set the context, and then if a cancellation event is encountered, it should end
 				if raw, ok := processing.Load(msg.CorrelationId); ok {
 					if msg.Type == RPC_MessageType_Cancel {
 						defer processing.Delete(msg.CorrelationId)
@@ -234,7 +234,7 @@ func (r *RPCServer) DoConfigure(options ...BrokerConfigHandler) {
 	r.broker.DoConfigure(options...)
 }
 
-// 一定用在 Serve 之前
+// must be used before Serve
 func (r *RPCServer) GetRPCClient(id string) (*RPCClient, error) {
 	if id == "" {
 		return nil, errors.New("id cannot be empty")

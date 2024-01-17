@@ -20,7 +20,7 @@ import (
 var _codeMutateRegexp = regexp.MustCompile(`(?s){{yak\d*(\(.*\))}}`)
 
 func MutateHookCaller(raw string) (func([]byte) []byte, func([]byte) []byte, func([]byte, []byte, map[string]string) map[string]string) {
-	// 发送数据包之前的 hook
+	// hook before sending data packet
 	entry := NewScriptEngine(2)
 	entry.HookOsExit()
 	var engine *antlr4yak.Engine

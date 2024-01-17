@@ -26,7 +26,7 @@ var JsonExports = map[string]interface{}{
 	"withPrefix": _withPrefix,
 	"withIndent": _withIndent,
 
-	// 这是 JSONPath 模块
+	// This is the JSONPath module
 	"Find":          jsonpath.Find,
 	"FindPath":      jsonpath.FindFirst,
 	"ReplaceAll":    jsonpath.ReplaceAll,
@@ -41,7 +41,7 @@ func NewJsonConfig() *jsonConfig {
 	}
 }
 
-// withPrefix 设置 JSON dumps时的前缀
+// withPrefix Set the prefix for JSON dumps
 // Example:
 // ```
 // v = json.dumps({"a": "b", "c": "d"}, withPrefix="  ")
@@ -52,7 +52,7 @@ func _withPrefix(prefix string) JsonOpt {
 	}
 }
 
-// withIndent 设置 JSON dumps时的缩进
+// . withIndent Set the indent when JSON dumps
 // Example:
 // ```
 // v = json.dumps({"a": "b", "c": "d"}, withIndent="  ")
@@ -63,7 +63,7 @@ func _withIndent(indent string) JsonOpt {
 	}
 }
 
-// Marshal 将一个对象转换为 JSON bytes，返回转换后的 bytes 与错误
+// Marshal Convert an object to JSON bytes, return the converted bytes and error
 // Example:
 // ```
 // v, err = json.Marshal({"a": "b", "c": "d"})
@@ -73,8 +73,8 @@ func _jsonMarshal(v interface{}) ([]byte, error) {
 	return json.Marshal(v)
 }
 
-// dumps 将一个对象转换为 JSON 字符串，返回转换后的字符串
-// 它还可以接收零个到多个请求选项函数，用于配置转换过程，控制转换后的缩进，前缀等
+// dumps Convert an object to a JSON string, return the converted string
+// It can also receive zero to multiple request option functions for configuring the conversion process and controlling the converted Indentation, prefix, etc.
 // Example:
 // ```
 // v = json.dumps({"a": "b", "c": "d"})
@@ -93,13 +93,13 @@ func _jsonDumps(raw interface{}, opts ...JsonOpt) string {
 	return string(bytes)
 }
 
-// loads 将一个 JSON 字符串转换为对象，返回转换后的对象
+// loads Convert a JSON string to an object and return the converted object
 // Example:
 // ```
 // v = json.loads(`{"a": "b", "c": "d"}`)
 // ```
 func _jsonLoad(raw interface{}, opts ...JsonOpt) interface{} {
-	// opts 中暂时没有load的选项，所以这里暂时不处理
+	// . There is no load option in opts, so
 	var i interface{}
 	defaultValue := make(map[string]interface{})
 
@@ -107,7 +107,7 @@ func _jsonLoad(raw interface{}, opts ...JsonOpt) interface{} {
 	str = strings.TrimSpace(str)
 	err := json.Unmarshal([]byte(str), &i)
 	if err != nil {
-		// 尝试解码
+		// Try to decode
 		if strings.Contains(err.Error(), `character 'x'`) {
 			fixed := string(jsonextractor.FixJson([]byte(str)))
 			if fixed != "" {
@@ -119,7 +119,7 @@ func _jsonLoad(raw interface{}, opts ...JsonOpt) interface{} {
 			}
 		}
 
-		// 如果 JSON 解码失败则尝试修复一下
+		// If JSON decoding fails, try to fix it
 		if strings.HasPrefix(str, "{") {
 			fixed, ok := jsonextractor.JsonValidObject([]byte(str))
 			if ok {
@@ -140,7 +140,7 @@ type yakJson struct {
 	jsonObject interface{}
 }
 
-// 判断是不是 map/object {}
+// Determine if it is a map/object {}
 func (y *yakJson) IsObject() bool {
 	return y.jsonObject != nil && reflect.TypeOf(y.jsonObject).Kind() == reflect.Map
 }
@@ -149,7 +149,7 @@ func (y *yakJson) IsMap() bool {
 	return y.IsObject()
 }
 
-// 判断是不是 []
+// Determine whether it is []
 func (y *yakJson) IsSlice() bool {
 	return y.jsonObject != nil && ((reflect.TypeOf(y.jsonObject).Kind() == reflect.Slice) ||
 		(reflect.TypeOf(y.jsonObject).Kind() == reflect.Array))
@@ -159,7 +159,7 @@ func (y *yakJson) IsArray() bool {
 	return y.IsSlice()
 }
 
-// 判断是不是 null
+// is not processed here for the time being. determine whether it is null
 func (y *yakJson) IsNil() bool {
 	return y.jsonObject == nil
 }
@@ -168,12 +168,12 @@ func (y *yakJson) IsNull() bool {
 	return y.IsNil()
 }
 
-// 判断是不是 string
+// determines whether it is string
 func (y *yakJson) IsString() bool {
 	return y.jsonObject != nil && (reflect.TypeOf(y.jsonObject).Kind() == reflect.String)
 }
 
-// 判断是不是 number
+// Determine if it is a number
 func (y *yakJson) IsNumber() bool {
 	return y.jsonObject != nil && (reflect.TypeOf(y.jsonObject).Kind() == reflect.Float64 ||
 		reflect.TypeOf(y.jsonObject).Kind() == reflect.Int ||
@@ -187,7 +187,7 @@ func (y *yakJson) Value() interface{} {
 	return y.jsonObject
 }
 
-// New 根据传入的值创建并返回一个新的 JSON 对象与错误
+// New Creates and returns a new JSON object with an error based on the incoming value
 // Example:
 // ```
 // v, err = json.New("foo")
@@ -227,7 +227,7 @@ func _yakJson(i interface{}) (*yakJson, error) {
 	return j, nil
 }
 
-// Find 使用 JSONPath 查找并返回 JSON 中的所有值
+// Find use JSONPath Finds and returns all values in JSON
 // Example:
 // ```
 // v = json.Find(`{"a":"a1","c":{"a":"a2"}}`, "$..a") // v = [a1, a2]
@@ -236,7 +236,7 @@ func _jsonpathFind(json interface{}, jsonPath string) interface{} {
 	return jsonpath.Find(json, jsonPath)
 }
 
-// FindPath 使用 JSONPath 查找并找回啊 JSON 中的第一个值
+// FindPath Use JSONPath to find and retrieve the first value in JSON
 // Example:
 // ```
 //
@@ -247,7 +247,7 @@ func _jsonpathFindPath(json interface{}, jsonPath string) interface{} {
 	return jsonpath.FindFirst(json, jsonPath)
 }
 
-// ReplaceAll 使用 JSONPath 替换 JSON 中的所有值，返回替换后的 JSON map
+// ReplaceAll Use JSONPath to replace the JSON All values, return the replaced JSON map
 // Example:
 // ```
 // v = json.ReplaceAll(`{"a":"a1","c":{"a":"a2"}}`, "$..a", "b") // v = {"a":"b","c":{"a":"b"}}
@@ -256,7 +256,7 @@ func _jsonpathReplaceAll(json interface{}, jsonPath string, replaceValue interfa
 	return jsonpath.ReplaceAll(json, jsonPath, replaceValue)
 }
 
-// ExtractJSON 从一段文本中中提取所有修复后的 JSON 字符串
+// ExtractJSON Extract all repaired JSON strings from a piece of text
 // Example:
 // ```
 // v = json.ExtractJSON(`Here is your result: {"a": "b"} and {"c": "d"}`)
@@ -266,7 +266,7 @@ func _jsonpathExtractJSON(raw string) []string {
 	return jsonextractor.ExtractStandardJSON(raw)
 }
 
-// ExtractJSONEx 从一段文本中中提取所有修复后的 JSON 字符串，返回修复后的 JSON 字符串与修复前的 JSON 字符串
+// ExtractJSONEx From a piece of text Extract all the repaired JSON strings from it, and return the repaired JSON string and the pre-repaired JSON string.
 func _jsonpathExtractJSONEx(raw string) (results []string, rawStr []string) {
 	return jsonextractor.ExtractJSONWithRaw(raw)
 }

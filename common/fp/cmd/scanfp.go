@@ -106,7 +106,7 @@ func main() {
 					log.Error(err)
 					return
 				}
-				log.Infof("根据MD5生成规则如下：\n\n%v\n\n", string(ruleName))
+				log.Infof("The MD5 generation rule is as follows: \n\n%v\n\n", string(ruleName))
 			},
 		},
 		{
@@ -149,47 +149,47 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "hosts,target,t",
-			Usage: "输入扫描主机，以逗号分隔例如：(192.168.1.1/24,192.168.1.1-23,10.1.1.2)",
+			Usage: "input scanning host, separated by commas, for example: (192.168.1.1/24,192.168.1.1-23,10.1.1.2)",
 		},
 		cli.StringFlag{
 			Name:  "port,tcp-port,p",
-			Usage: "输入想要扫描的端口，支持单个端口和范围，例如（80,443,21-25,8080-8082）",
+			Usage: "input wants to scan Port, supports single port and range, for example (80, 443, 21-25, 8080-8082)",
 			Value: "22,80,443,3389,3306,8080-8082,9000-9002,7000-7002",
 		},
 		cli.StringFlag{
 			Name:  "udp-port",
-			Usage: "想要扫描的 UDP 端口，支持单个端口和范围",
+			Usage: "UDP port that you want to scan, supports single port and range",
 		},
 		cli.StringFlag{
 			Name:  "rule-path,rule,r",
-			Usage: "手动加载规则文件/文件夹",
+			Usage: "Manually load rule file/Folder",
 		},
 		cli.BoolFlag{
 			Name:  "only-rule",
-			Usage: "只加载这个文件夹中的 Web 指纹",
+			Usage: "Only load web fingerprints in this folder",
 		},
 		cli.IntFlag{
 			Name:  "concurrent,thread,c",
-			Usage: "并发速度，同时有多少个扫描过程进行？",
+			Usage: "concurrency speed, how many scanning processes are performed at the same time?",
 			Value: 20,
 		},
 		//cli.IntFlag{
 		//	Name:  "timeout",
-		//	Usage: "超时时间(Seconds)",
+		//	Usage: "timeout (Seconds)",
 		//	Value: 3600,
 		//},
 		cli.BoolFlag{
 			Name:  "web",
-			Usage: "主动开启 web 扫描模式",
+			Usage: "proactively turning on web scanning mode",
 		},
 		cli.IntFlag{
 			Name:  "request-timeout",
-			Usage: "单个请求的超时时间（Seconds）",
+			Usage: "Timeout for a single request (Seconds)",
 			Value: 10,
 		},
 		cli.StringFlag{
 			Name:  "json,o",
-			Usage: "详细结果输出 json 到文件",
+			Usage: "Detailed results output json to file",
 		},
 	}
 
@@ -213,16 +213,16 @@ func main() {
 		options = append(
 			options,
 
-			// 主动探测模式 - 主动发送符合条件的包
+			// active detection mode - proactively sending qualified packets
 			fp.WithActiveMode(true),
 
-			// 每一个指纹探测请求的超时时间
+			// Timeout for each fingerprint detection request
 			fp.WithProbeTimeout(time.Second*time.Duration(c.Int("request-timeout"))),
 
-			// web 指纹火力全开
+			// web fingerprint full firepower
 			fp.WithWebFingerprintUseAllRules(true),
 
-			// web 指纹
+			// web fingerprints
 			fp.WithWebFingerprintRule(webRules),
 		)
 		options = append(
@@ -239,7 +239,7 @@ func main() {
 		// udp/tcp
 		portSwg := utils.NewSizedWaitGroup(c.Int("concurrent"))
 
-		// 结果处理的同步锁
+		// result processing Synchronization lock
 		resultLock := new(sync.Mutex)
 
 		var res []*fp.MatchResult

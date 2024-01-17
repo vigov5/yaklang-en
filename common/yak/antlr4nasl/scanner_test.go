@@ -101,14 +101,14 @@ function smtp_get_port( default_list, ignore_broken, ignore_unscanned ) {
 
 //	func TestScriptLib(t *testing.T) {
 //		engine := New()
-//		engine.Debug()                                       // 开启调试模式，脚本退出时会打印调试信息
-//		engine.Init()                                        // 导入内置原生库
-//		InitPluginGroup(engine)                              // 初始化插件组
-//		PatchEngine(engine)                                  // 一些库缺少函数
-//		engine.SetIncludePath("/Users/z3/nasl/nasl-plugins") // 设置nasl依赖库位置
+//		engine.Debug()                                       // Turn on the debugging mode, and the debugging information will be printed when the script exits
+//		engine.Init()                                        // Import the built-in native library
+//		InitPluginGroup(engine)                              // Initialize the plug-in group
+//		PatchEngine(engine)                                  // Some libraries are missing functions.
+//		engine.SetIncludePath("/Users/z3/nasl/nasl-plugins") // Set the location of the nasl dependent library
 //		engine.LoadGroup(PluginGroupApache)
 //
-//		//获取所有脚本的依赖
+//		//Get the dependencies of all scripts
 //		libs := map[string]struct{}{}
 //		engine.compiler.RegisterVisitHook("includeHook", func(c *visitors.Compiler, ctx antlr.ParserRuleContext) {
 //			if v, ok := ctx.(*nasl.CallExpressionContext); ok {
@@ -143,7 +143,7 @@ function smtp_get_port( default_list, ignore_broken, ignore_unscanned ) {
 //		//for lib, _ := range libs {
 //		//	fmt.Println(lib)
 //		//}
-//		//检测依赖库用到的内置函数是否存在
+//		//Check whether the built-in functions used by the dependent libraries exist
 //		missMethod := map[string]struct{}{}
 //		userDefinedMethod := map[string]struct{}{}
 //		engine.compiler.RegisterVisitHook("buildInMethodCheck", func(c *visitors.Compiler, ctx antlr.ParserRuleContext) {
@@ -191,13 +191,13 @@ function smtp_get_port( default_list, ignore_broken, ignore_unscanned ) {
 //				fmt.Println(s)
 //			}
 //		}
-//		//BuildInMethodCheck(engine) // 检测当前已经加载的脚本内置函数是否存在
+//		//BuildInMethodCheck(engine) // Detect the currently loaded scripts Does the built-in function exist?
 //	}
 func TestPocScanner(t *testing.T) {
 	consts.GetGormProjectDatabase()
 	engine := NewScriptEngine()
 	//engine.vm.GetConfig().SetStopRecover(true)
-	engine.Debug() // 开启调试模式，脚本退出时会打印调试信息
+	engine.Debug() // Turn on the debugging mode, and the debugging information will be printed when the script exits
 	engine.LoadFamilys("Product detection")
 	//engine.LoadScriptFromDb("gb_cisco_asa_detect.nasl")
 	//engine.LoadScriptFromDb("gb_apache_hadoop_detect.nasl")
@@ -253,7 +253,7 @@ func TestPocScanner(t *testing.T) {
 			//for k, v := range engine.scriptObj.Xrefs {
 			//	xrefStr += fmt.Sprintf("\n Reference: %s(%s)", v, k)
 			//}
-			title := fmt.Sprintf("检测目标存在 [%s] 应用，版本号为 [%s]", app, version)
+			title := fmt.Sprintf("The detection target exists [%s] application, the version number is [%s]", app, version)
 			if cve != "" {
 				title += fmt.Sprintf(", CVE: %s", summary)
 			}
@@ -276,7 +276,7 @@ func TestPocScanner(t *testing.T) {
 			)
 			return origin(engine, params)
 		})
-		// 需要把ACT_SCAN的脚本都patch一遍
+		// You need to patch all the ACT_SCAN scripts
 		engine.AddNaslLibPatch("ping_host.nasl", func(code string) string {
 			codeBytes, err := os.ReadFile("/Users/z3/Downloads/ping_host_patch.nasl")
 			if err != nil {

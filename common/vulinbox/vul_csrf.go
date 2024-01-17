@@ -19,12 +19,12 @@ var info = "adminPassword"
 
 func (s *VulinServer) registerCsrf() {
 	var router = s.router
-	csrfGroup := router.PathPrefix("/csrf").Name("表单 CSRF 保护测试").Subrouter()
+	csrfGroup := router.PathPrefix("/csrf").Name("Form CSRF protection test").Subrouter()
 	csrfRoutes := []*VulInfo{
 		{
 			DefaultQuery: "",
 			Path:         "/unsafe",
-			Title:        "没有保护的表单",
+			Title:        "Unprotected form",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if !cookieCheck(writer, request, "/csrf/unsafe") {
 					return
@@ -38,7 +38,7 @@ func (s *VulinServer) registerCsrf() {
 		{
 			DefaultQuery: "",
 			Path:         "/safe",
-			Title:        "csrf_token保护的表单",
+			Title:        "csrf_token protected form",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if !cookieCheck(writer, request, "/csrf/safe") {
 					return
@@ -87,7 +87,7 @@ func updateInfo(writer http.ResponseWriter, request *http.Request, data map[stri
 			info = request.PostFormValue("info")
 			data["Info"] = info
 		} else {
-			writer.Write([]byte("缺少参数"))
+			writer.Write([]byte("Missing parameters"))
 			writer.WriteHeader(http.StatusBadRequest)
 			return
 		}

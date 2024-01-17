@@ -17,7 +17,7 @@ yakit.AutoInitYakit()
 loglevel("info")
 productMode = cli.Bool("prod")
 
-// 获取 flowsID
+// Get flowsID
 flows = make([]int64)
 flowsFile = cli.String("flows-file")
 if flowsFile != "" {
@@ -27,22 +27,22 @@ if flowsFile != "" {
     }
 }
 
-if !productMode { yakit.StatusCard("调试模式", "TRUE") }
+if !productMode { yakit.StatusCard("Debug mode", "TRUE") }
 
 if len(flows) <= 0 && !productMode {
-    yakit.Info("调试模式补充 FlowID")
+    yakit.Info("Debug mode Supplement FlowID")
     flows = append(flows, 1142)
 }
 
 caller, err = hook.NewMixPluginCaller()
 die(err)
 
-// 加载插件
+// Load plug-in
 plugins = cli.YakitPlugin() // yakit-plugin-file
 if len(plugins) <= 0 && !productMode {
-    // 设置默认插件，一般在这儿用于调试
+    // Set the default plug-in, generally used here for debugging
     plugins = [
-        "Spring Cloud Function SPEL表达式注入漏洞检测", "MySQL CVE 合规检查: 2016-2022",
+        "Spring Cloud Function SPEL expression injection vulnerability detection", "MySQL CVE compliance check: 2016-2022",
     ]
 }
 loadedPlugins = []
@@ -53,30 +53,30 @@ for _, pluginName = range x.If(plugins == undefined, [], plugins) {
         failedPlugins = append(failedPlugins, pluginName)
         yakit.Error("load plugin[%s] failed: %s", pluginName, err)
     }else{
-        yakit.Info("加载插件：%v", pluginName)
+        yakit.Info("Load plug-in: %v", pluginName)
         loadedPlugins = append(loadedPlugins, pluginName)
     }
 }
 
 if len(failedPlugins)>0 {
-    yakit.StatusCard("插件加载失败数", len(failedPlugins))
+    yakit.StatusCard("Number of plug-in loading failures", len(failedPlugins))
 }
 
 if len(loadedPlugins) <= 0 {
-    yakit.StatusCard("执行失败", "没有插件被正确加载", "error")
-    die("没有插件加载")
+    yakit.StatusCard("Execution failed", "No plug-in is loaded Correctly load", "error")
+    die("No plug-in is loaded")
 }else{
-    yakit.StatusCard("插件加载数", len(loadedPlugins))
+    yakit.StatusCard("Number of plug-in loads", len(loadedPlugins))
 }
 
 packetRawFile = cli.String("packet-file")
 packetHttps = cli.Bool("packet-https")
 
-// 设置并发参数
+// Set concurrency parameters
 pluginConcurrent = 20
 packetConcurrent = 20
 
-// 设置异步，设置并发，设置 Wait
+// Set asynchronous, set concurrency, set Wait
 caller.SetDividedContext(true)
 caller.SetConcurrent(pluginConcurrent)
 defer caller.Wait()
@@ -92,7 +92,7 @@ handleHTTPFlow = func(flow) {
     reqBytes = []byte(codec.StrconvUnquote(flow.Request)[0])
     rspBytes = []byte(codec.StrconvUnquote(flow.Response)[0])
     _, body = poc.Split(rspBytes)
-    // 调用镜像流量功能，并控制要不要进行端口扫描插件调用
+    // Call the mirror traffic function and control whether to perform port scanning The plug-in calls
     caller.MirrorHTTPFlowEx(true, flow.IsHTTPS, flow.Url, reqBytes, rspBytes, body)
 }
 
@@ -114,12 +114,12 @@ handleHTTPRequestRaw = func(https, reqBytes) {
     caller.MirrorHTTPFlowEx(true, https, urlstr, reqBytes, rsp, body)
 }
 
-// 开始获取 HTTPFlow ID
+// Start getting HTTPFlow ID
 if len(flows) > 0 {
-    yakit.StatusCard("扫描历史数据包", len(flows))
+    yakit.StatusCard("Scan historical data packets", len(flows))
 	for result = range db.QueryHTTPFlowsByID(flows...) {
-		// 提交扫描任务：
-		yakit.Info("提交扫描任务:【%v】%v", result.Method, result.Url)
+		// Submit scanning task:
+		yakit.Info("Submit scanning task: [%v] %v", result.Method, result.Url)
 		handleHTTPFlow(result)
 	}
 }
@@ -127,7 +127,7 @@ if len(flows) > 0 {
 if packetRawFile != "" {
     raw, err = file.ReadFile(packetRawFile)
     if err != nil {
-        yakit.StatusCard("失败原因", "无法接收参数", "error")
+        yakit.StatusCard("Reason for failure", "cannot receive parameters", "error")
     }
     handleHTTPRequestRaw(packetHttps, raw)
 }
@@ -145,7 +145,7 @@ func (s *Server) ExecPacketScan(req *ypb.ExecPacketScanRequest, stream ypb.Yak_E
 		}
 		fp, err := ioutil.TempFile(consts.GetDefaultYakitBaseTempDir(), "scan-packet-file-*.txt")
 		if err != nil {
-			return utils.Errorf("创建临时文件失败: %s", err)
+			return utils.Errorf("Failed to create temporary files: %s", err)
 		}
 		fp.Write(req.GetHTTPRequest())
 		fp.Close()
@@ -165,7 +165,7 @@ func (s *Server) ExecPacketScan(req *ypb.ExecPacketScanRequest, stream ypb.Yak_E
 		defer pluginCallback()
 	}
 
-	// httpflow 作为输入
+	// httpflow as input
 	if len(req.GetHTTPFlow()) > 0 {
 		var flows []int = funk.Map(req.GetHTTPFlow(), func(i int64) int {
 			return int(i)

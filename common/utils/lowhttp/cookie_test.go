@@ -234,7 +234,7 @@ func TestUrlParamsJoin(t *testing.T) {
 		},
 	} {
 		for key, value := range c {
-			println("开始测试案例：" + key)
+			println("Start test case:" + key)
 			if ret := utils.UrlJoinParams(value.url, value.params...); ret != value.expected {
 				fmt.Printf("expect: %v got: %v\n", value.expected, ret)
 				t.FailNow()

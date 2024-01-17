@@ -161,7 +161,7 @@ func ParsePEMCertificate(ca []byte) (*x509.Certificate, error) {
 }
 
 func GenerateSelfSignedCertKeyWithCommonName(commonName, host string, alternateIPs []net.IP, alternateDNS []string) ([]byte, []byte, error) {
-	// 默认使用commonName作为organization
+	// By default, commonName is used as organization
 	return GenerateSelfSignedCertKeyWithCommonNameWithPrivateKeyWithOrg(commonName, commonName, host, alternateIPs, alternateDNS, nil)
 }
 

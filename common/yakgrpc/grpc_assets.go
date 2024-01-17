@@ -83,11 +83,11 @@ func (s *Server) QueryPorts(ctx context.Context, req *ypb.QueryPortsRequest) (*y
 		return nil, err
 	}
 	var results []*ypb.Port
-	if !req.GetAll() { // 分页
+	if !req.GetAll() { // paging
 		for _, r := range res {
 			results = append(results, ToGrpcPort(r))
 		}
-	} else { // 全部
+	} else { // All
 		db := yakit.FilterPort(s.GetProjectDatabase(), req)
 		data := yakit.YieldPorts(db, context.Background())
 		for r := range data {
@@ -391,13 +391,13 @@ var riskTypeGroup = []string{
 func riskTypeGroupVerbose(i string, defaultStr string) string {
 	switch i {
 	case "nuclei-":
-		return "漏洞(From Nuclei)"
+		return "vulnerability (From Nuclei)"
 	case "reverse":
-		return "反连"
+		return "reverse connection"
 	case "random-port-trigger":
-		return "随机端口反连"
+		return "random port reverse connection"
 	case "default":
-		return "指纹/信息"
+		return "fingerprint/information"
 	default:
 		return defaultStr
 	}
@@ -457,17 +457,17 @@ func severityVerbose(i string) string {
 	i = strings.ToLower(i)
 	switch i {
 	case "trace", "debug", "note":
-		return "调试信息"
+		return "debugging information"
 	case "info", "fingerprint", "infof", "default":
-		return "信息/指纹"
+		return "information/fingerprint"
 	case "low":
-		return "低危"
+		return "low risk"
 	case "middle", "warn", "warning", "medium":
-		return "中危"
+		return "medium risk"
 	case "high":
-		return "高危"
+		return "High risk"
 	case "fatal", "critical", "panic":
-		return "严重"
+		return "severe"
 	default:
 		return fmt.Sprintf(`[%v]`, strings.ToUpper(i))
 	}
@@ -583,7 +583,7 @@ func (s *Server) ResetRiskTableStats(ctx context.Context, e *ypb.Empty) (*ypb.Em
 }
 
 func (s *Server) DeleteHistoryHTTPFuzzerTask(ctx context.Context, d *ypb.DeleteHistoryHTTPFuzzerTaskRequest) (*ypb.Empty, error) {
-	// 优先 id -> webfuzzerIndex -> 全部
+	// priority id -> webfuzzerIndex -> All
 
 	if d.GetId() > 0 {
 		err := yakit.DeleteWebFuzzerTask(s.GetProjectDatabase(), int64(d.GetId()))
@@ -820,14 +820,14 @@ func PortsServiceTypeGroup(data []*yakit.PortsTypeGroup) ypb.QueryPortsGroupResp
 	for k, v := range serviceTypeKey {
 		if reflect.ValueOf(data[0]).Elem().FieldByName(k).Interface().(int32) > 0 {
 			if IsValueInSortedSlice(v, databaseValues) {
-				databaseGroupList.GroupName = "数据库"
+				databaseGroupList.GroupName = "database"
 				databaseGroupList.GroupLists = append(databaseGroupList.GroupLists, &ypb.GroupList{
 					ServiceType:     v,
 					ShowServiceType: k,
 					Total:           reflect.ValueOf(data[0]).Elem().FieldByName(k).Interface().(int32),
 				})
 			} else {
-				webGroupList.GroupName = "服务器"
+				webGroupList.GroupName = "server"
 				webGroupList.GroupLists = append(webGroupList.GroupLists, &ypb.GroupList{
 					ServiceType:     v,
 					ShowServiceType: k,

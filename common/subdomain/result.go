@@ -14,8 +14,8 @@ type SubdomainResult struct {
 	IP     string
 	Domain string
 
-	// Tag 用于存储一些其他信息
-	// 比如数据源之类的
+	// Tag is used to store some other information
+	// such as data source and so on
 	Tags []string
 }
 

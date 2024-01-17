@@ -23,13 +23,13 @@ import (
 
 type mitmContentReplaceRulesSortable []*ypb.MITMContentReplacer
 
-func (a mitmContentReplaceRulesSortable) Len() int { // 重写 Len() 方法
+func (a mitmContentReplaceRulesSortable) Len() int { // overrides the Len() method.
 	return len(a)
 }
-func (a mitmContentReplaceRulesSortable) Swap(i, j int) { // 重写 Swap() 方法
+func (a mitmContentReplaceRulesSortable) Swap(i, j int) { // rewriting that is not enabled. Swap() method
 	a[i], a[j] = a[j], a[i]
 }
-func (a mitmContentReplaceRulesSortable) Less(i, j int) bool { // 重写 Less() 方法， 从大到小排序
+func (a mitmContentReplaceRulesSortable) Less(i, j int) bool { // rewrites the Less() method and sorts all
 	return a[i].Index < a[j].Index
 }
 
@@ -39,14 +39,14 @@ func sortContentReplacer(i []*ypb.MITMContentReplacer) []*ypb.MITMContentReplace
 }
 
 type mitmReplacer struct {
-	// 所有正常启动的规则
+	// through sync.Map. All the rules that are started normally
 	rules []*ypb.MITMContentReplacer
-	// 所有规则，包含未启用
+	// rules from large to small, including
 	allRules []*ypb.MITMContentReplacer
 
-	// 已经启动的需要劫持修改数据包内容的规则
+	// has started rules that need to hijack and modify the content of the packet.
 	_hijackingRules []*ypb.MITMContentReplacer
-	// 已经启动的仅需要镜像劫持的规则
+	// has started rules that only require mirror hijacking.
 	_mirrorRules []*ypb.MITMContentReplacer
 
 	autoSave func(...*ypb.MITMContentReplacer)
@@ -54,7 +54,7 @@ type mitmReplacer struct {
 	_ruleRegexpCache *sync.Map
 }
 
-// getRule 获取不到规则就返回空，通过 sync.Map 缓存规则
+// getRule If you cannot get the rules, it will return empty. Cache the rules
 func (m *mitmReplacer) getRule(r *ypb.MITMContentReplacer) *regexp2.Regexp {
 	raw, ok := m._ruleRegexpCache.Load(r)
 	if ok {
@@ -135,7 +135,7 @@ func (m *mitmReplacer) LoadRules(rules []*ypb.MITMContentReplacer) {
 			return false
 		}
 
-		// 缓存
+		// caches
 		raw := m.getRule(i)
 		if raw == nil {
 			log.Debugf("rule: %v is disabled(cannot compiled): %v", i.VerboseName, i.Rule)
@@ -177,7 +177,7 @@ func (m *mitmReplacer) ClearRules() {
 	}
 }
 
-// GetRules 获取已经缓存好的规则们
+// GetRules Get the cached rules
 func (m *mitmReplacer) GetRules() []*ypb.MITMContentReplacer {
 	return m.allRules
 }
@@ -310,7 +310,7 @@ func (m *mitmReplacer) replaceHTTPHeader(rule *ypb.MITMContentReplacer, headerMe
 		return headerMerged, false
 	}
 
-	/* 匹配规则 */
+	/* Matching rules */
 	if ok1, _ := r.MatchString(headerMerged); !ok1 {
 		if ok2, _ := r.MatchString(string(bodyMerged)); !ok2 {
 			return headerMerged, false
@@ -517,7 +517,7 @@ func (m *mitmReplacer) hook(isRequest, isResponse bool, origin []byte, args ...a
 		return matchedRules, origin, false
 	}
 
-	// 是否丢包
+	// Whether to drop packets.
 	dropPacket := false
 	extraRepeat := false
 	for _, rule := range rules {
@@ -528,8 +528,8 @@ func (m *mitmReplacer) hook(isRequest, isResponse bool, origin []byte, args ...a
 			continue
 		}
 
-		// 如果修改了 header，将不会修改其他的了
-		// 这个优先级比较高，并且只对请求生效
+		// If the header is modified, other ones will not be modified.
+		// . This priority is relatively high and only takes effect on requests.
 		var modified bool
 		if rule.ExtraHeaders != nil || rule.ExtraCookies != nil {
 			if isRequest && rule.EnableForHeader {
@@ -542,7 +542,7 @@ func (m *mitmReplacer) hook(isRequest, isResponse bool, origin []byte, args ...a
 		} else {
 			var matched bool
 			if rule.GetEnableForURI() && isRequest {
-				// 如果是请求，需要判断是否匹配了 uri
+				// If it is a request, you need to judge whether it matches the uri
 				headerMerged, matched = m.replaceURIInHeader(rule, headerMerged, isRequest)
 				if matched {
 					modified = true

@@ -20,7 +20,7 @@ func (y *YakCompiler) VisitExpressionStmt(raw yak.IExpressionStmtContext) interf
 
 	y.VisitExpression(i.Expression())
 
-	// 仅仅执行表达式并压栈，会导致栈无限制增长，一个 expr stmt 需要保持栈的平衡，所以需要 pop 一下
+	// only executes the expression and pushes the stack, which will cause the stack to grow without limit. An expr stmt needs to maintain the balance of the stack, so
 	y.pushOpPop()
 	return nil
 }
@@ -37,7 +37,7 @@ func (y *YakCompiler) VisitExpressionList(raw yak.IExpressionListContext) int {
 	recoverRange := y.SetRange(i.BaseParserRuleContext)
 	defer recoverRange()
 
-	// 如果 expression 不为一的话，列表就是表达式，直接执行 list 0 表示跳过指令
+	// If expression is not one, the list is an expression, and executing list 0 directly means skipping the instruction
 	exprs := i.AllExpression()
 	LenOfExprs := len(exprs)
 	defer y.pushListWithLen(LenOfExprs)
@@ -87,11 +87,11 @@ func (y *YakCompiler) VisitExpression(raw yak.IExpressionContext) interface{} {
 		y.VisitExpression(i.Expression(0))
 		y.writeString(")")
 		y.pushOperator(yakvm.OpPanic)
-	} else if s := i.Literal(); s != nil { // 解析单个字面量
+	} else if s := i.Literal(); s != nil { // needs to be popped. Parse a single literal
 		y.VisitLiteral(s)
-	} else if s := i.Identifier(); s != nil { // 解析变量
+	} else if s := i.Identifier(); s != nil { // parses the variable
 		y.writeString(s.GetText())
-		// 遇到变量的时候，在表达式中，使用符号！
+		// . When encountering a variable, use the symbol in the expression!
 		sym, ok := y.currentSymtbl.GetSymbolByVariableName(s.GetText())
 		if !ok {
 			y.pushIdentifierName(s.GetText())
@@ -113,20 +113,20 @@ func (y *YakCompiler) VisitExpression(raw yak.IExpressionContext) interface{} {
 			return nil
 		}
 		y.pushRef(sym)
-	} else if f := i.FunctionCall(); f != nil { // 函数调用或者其他原子操作（.ref / ref() / slice[]）
+	} else if f := i.FunctionCall(); f != nil { // function call or other atomic operation (.ref / ref() / slice[]）
 		y.VisitExpression(i.Expression(0))
 		y.VisitFunctionCall(f)
-	} else if op := i.AnonymousFunctionDecl(); op != nil { // 函数声明 ()=>{}
+	} else if op := i.AnonymousFunctionDecl(); op != nil { // function declaration ( )=>{}
 		y.VisitAnonymousFunctionDecl(op)
 	} else if pE := i.ParenExpression(); pE != nil { // '(' expression? ')'
 		i := pE.(*yak.ParenExpressionContext)
 		if e := i.Expression(); e != nil {
-			// 存在表达式
+			// . There is an expression
 			y.writeString("(")
 			y.VisitExpression(e)
 			y.writeString(")")
 		} else {
-			// 只有括号没有表达式
+			// has only parentheses and no expression.
 			y.writeString("()")
 			y.pushUndefined()
 		}
@@ -248,7 +248,7 @@ func (y *YakCompiler) VisitExpression(raw yak.IExpressionContext) interface{} {
 		jmptop := y.pushJmpIfTrueOrPop()
 		y.VisitExpression(i.Expression(1))
 		jmptop.Unary = y.GetNextCodeIndex()
-	} else if op := i.Question(); op != nil { // 三元条件运算符 ? :
+	} else if op := i.Question(); op != nil { // can be executed immediately. The ternary condition operator ? :
 		// e0 ? e1 : e2
 		y.VisitExpression(i.Expression(0))
 		y.writeStringWithWhitespace("?")
@@ -260,7 +260,7 @@ func (y *YakCompiler) VisitExpression(raw yak.IExpressionContext) interface{} {
 		y.VisitExpression(i.Expression(2))
 		jmpEnd.Unary = y.GetNextCodeIndex()
 	} else if instanceCode := i.InstanceCode(); instanceCode != nil {
-		//判断当前代码块是否可以立即执行，当处于全局代码块或者InstanceCode函数中时，可以立即执行
+		//to determine whether the current code block can be executed immediately. When it is in the global code block or InstanceCode function,
 		inGlobal := false
 		if y.currentSymtbl == y.rootSymtbl {
 			inGlobal = true
@@ -272,7 +272,7 @@ func (y *YakCompiler) VisitExpression(raw yak.IExpressionContext) interface{} {
 		if inGlobal {
 			y.contextInfo.Push("InstanceCode")
 		}
-		// 匿名函数，instance code
+		// anonymous function, instance code
 		y.VisitInstanceCode(instanceCode)
 		if inGlobal {
 			y.contextInfo.Pop()

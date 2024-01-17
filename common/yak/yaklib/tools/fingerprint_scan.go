@@ -55,7 +55,7 @@ func _scanFingerprint(ctx context.Context, config *fp.Config, concurrent int, ho
 						swg.Add()
 						go func() {
 							defer swg.Done()
-							proto, portWithoutProto := utils.ParsePortToProtoPort(buildinPort) // 这里将协议和端口分开，便于后面打印日志
+							proto, portWithoutProto := utils.ParsePortToProtoPort(buildinPort) // The protocol and port are separated here to facilitate later printing of logs
 							addr := utils.HostPort(buildinHost, buildinPort)
 							if filter.Exist(addr) {
 								return
@@ -85,7 +85,7 @@ func _scanFingerprint(ctx context.Context, config *fp.Config, concurrent int, ho
 				swg.Add()
 				rawPort := p
 				rawHost := h
-				proto, portWithoutProto := utils.ParsePortToProtoPort(p) // 这里将协议和端口分开，便于后面打印日志
+				proto, portWithoutProto := utils.ParsePortToProtoPort(p) // The protocol and port are separated here to facilitate later printing of logs
 				go func() {
 					defer swg.Done()
 
@@ -146,7 +146,7 @@ func _scanFromPingUtils(res chan *pingutil.PingResult, ports string, opts ...fp.
 func _scanFromTargetStream(res interface{}, opts ...fp.ConfigOption) (chan *fp.MatchResult, error) {
 	var synResults = make(chan *synscan.SynScanResult, 1000)
 
-	// 生成扫描结果
+	// generates scanning results.
 	go func() {
 		defer close(synResults)
 
@@ -225,7 +225,7 @@ func _scanFromTargetStream(res interface{}, opts ...fp.ConfigOption) (chan *fp.M
 		}
 	}()
 
-	// 扫描
+	// Scan
 	config := fp.NewConfig(opts...)
 	concurrent := config.PoolSize
 	ctx := context.Background()
@@ -246,7 +246,7 @@ func _scanFromTargetStream(res interface{}, opts ...fp.ConfigOption) (chan *fp.M
 			swg.Add()
 			rawPort := synRes.Port
 			rawHost := synRes.Host
-			proto, portWithoutProto := utils.ParsePortToProtoPort(rawPort) // 这里将协议和端口分开，便于后面打印日志
+			proto, portWithoutProto := utils.ParsePortToProtoPort(rawPort) // The protocol and port are separated here to facilitate later printing of logs
 			go func() {
 				defer swg.Done()
 
@@ -281,55 +281,55 @@ var FingerprintScanExports = map[string]interface{}{
 		return fp.WithTransportProtos(fp.ParseStringToProto(proto...)...)
 	},
 
-	// 整体扫描并发
+	// Overall scan concurrency
 	"concurrent": fp.WithPoolSize,
 
 	"excludePorts": fp.WithExcludePorts,
 	"excludeHosts": fp.WithExcludeHosts,
 
-	// 单个请求超时时间
+	// Single request timeout
 	"probeTimeout": fp.WithProbeTimeoutHumanRead,
 
 	// proxies
 	"proxy": fp.WithProxy,
 
-	// 启用缓存
+	// enables caching.
 	"cache":         fp.WithCache,
 	"databaseCache": fp.WithDatabaseCache,
 
-	// 使用 web 指纹识别规则进行扫描
+	// Use web fingerprint identification rules Scan
 	"webRule": fp.WithWebFingerprintRule,
 
-	// 可以使用 nmap 的规则进行扫描，也可以写 nmap 规则进行扫描
+	// can use nmap rules to scan, or write nmap rules to scan.
 	"nmapRule": fp.WithNmapRule,
 
-	// nmap 规则筛选，通过稀有度
+	// nmap rule filtering, by rarity
 	"nmapRarityMax": fp.WithRarityMax,
 
-	// 主动发包模式打开
+	// turns on active packet sending mode.
 	"active": fp.WithActiveMode,
 
-	// 每个服务最多主动发几个包？
+	// . How many packets can each service send actively?
 	"maxProbes": fp.WithProbesMax,
 
-	// 主动发包模式下，并发量？
+	// In active packet sending mode, what is the amount of concurrency?
 	"maxProbesConcurrent": fp.WithProbesConcurrentMax,
 
-	// 指定选择扫描目标协议：指开启 web 服务扫描
+	// Specify and select the scan target protocol: refers to turning on web service scanning
 	"web": func() fp.ConfigOption {
 		return func(config *fp.Config) {
 			config.OnlyEnableWebFingerprint = true
 		}
 	},
 
-	// 开启 nmap 规则库
+	// turns on nmap rule base.
 	"service": func() fp.ConfigOption {
 		return func(config *fp.Config) {
 			config.DisableWebFingerprint = true
 		}
 	},
 
-	// 全部服务扫描
+	// Scan all services
 	"all": func() fp.ConfigOption {
 		return func(config *fp.Config) {
 			config.ForceEnableWebFingerprint = true

@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	// 由yakast包注入
+	// injected by the yakast package
 	YakDebugCompiler CompilerWrapperInterface
 )
 
@@ -38,7 +38,7 @@ func NewSwitchBundle() *switchBundle {
 func GetCodeNumber(code *Code) (int, int, int, int) {
 	startLine, startColumn := code.StartLineNumber, code.StartColumnNumber
 	endLine, endColumn := code.EndLineNumber, code.EndColumnNumber
-	// 对ScopeEnd做特殊处理
+	// Special processing for ScopeEnd
 	if code.Opcode == OpScopeEnd {
 		startLine, startColumn = endLine, endColumn
 	}
@@ -48,17 +48,17 @@ func GetCodeNumber(code *Code) (int, int, int, int) {
 type Debugger struct {
 	vm           *VirtualMachine
 	once         sync.Once
-	startWG      sync.WaitGroup  // 用于等待程序启动
-	started      bool            // 表示程序是否已经启动
-	finished     bool            // 表示程序是否已经结束
-	wg           sync.WaitGroup  // 多个异步函数同时执行时回调断点,阻塞执行
-	initFunc     func(*Debugger) // 初始化函数
-	callbackFunc func(*Debugger) // 断点回调函数
+	startWG      sync.WaitGroup  // Used to wait for the program to start
+	started      bool            // indicates whether the program has been started.
+	finished     bool            // indicates whether the program has ended
+	wg           sync.WaitGroup  // When multiple asynchronous functions are executed at the same time, callback breakpoints block the execution of
+	initFunc     func(*Debugger) // Initialization function
+	callbackFunc func(*Debugger) // breakpoint callback function
 
-	description string     // 回调时信息
-	frame       *Frame     // 存储当前执行的frame
-	state       string     // 表示当前处于哪个函数
-	lock        sync.Mutex // 用于ShouldCallback的同步
+	description string     // . Callback information
+	frame       *Frame     // Store the currently executed frame
+	state       string     // indicates which function
+	lock        sync.Mutex // is used for ShouldCallback synchronization
 
 	sourceFilePath                string
 	sourceCode                    string
@@ -66,42 +66,42 @@ type Debugger struct {
 	codes                         map[string][]*Code // state -> []code
 	codePointer                   int
 	linePointer                   int
-	currentLinesFirstCodeStateMap LinesFirstCodeStateMap // 每行第一个opcode索引
+	currentLinesFirstCodeStateMap LinesFirstCodeStateMap // The first opcode index of each line
 
-	// 断点
+	// breakpoint
 	breakPointCount      int32
-	currentBreakPointMap BreakpointMap // 行 -> 断点
+	currentBreakPointMap BreakpointMap // . Line -> breakpoint
 
-	// 用于步过，步入，步出
+	// is used to step over, step into, step out
 	jmpState *DebuggerState
 	// stepOut      bool
 	nextState    *DebuggerState
 	stepInState  *DebuggerState
 	stepoutState *DebuggerState
 
-	// 停止
+	// Stop
 	halt bool
 
-	// 停止事件原因
+	// Stop event reason
 	stopReason string
 
 	// panic
 	vmPanic *VMPanic
 
-	// 堆栈跟踪
+	// Stack trace
 	StackTraces      map[int]*vmstack.Stack // threadID -> stacktraces
-	ThreadStackTrace map[int]*DebuggerState // 每个线程对应的当前的stackTrace
+	ThreadStackTrace map[int]*DebuggerState // . The current stackTrace corresponding to each thread.
 
-	// Reference,用于存储帧,作用域,变量引用的信息
+	// Reference, which is used to store information about frames, scopes, and variable references.
 	Reference *Reference
 
-	// 观察断点
+	// Observation breakpoint
 	currentObserveBreakPointMap ObserveBreakPointMap
 
-	// 观察表达式
+	// Observe expression
 	observeExpressions map[string]*Value
 
-	// switch bundle, 用于切换多文件间的LinesFirstCodeStateMap, BreakpointMap, ObserveBreakPointMap
+	// switch bundle, used to switch between multiple files. LinesFirstCodeStateMap, BreakpointMap, ObserveBreakPointMap
 	switchBundleMap map[string]*switchBundle
 }
 
@@ -171,11 +171,11 @@ func (g *Debugger) InitCode(codes []*Code) {
 }
 
 func (g *Debugger) initCode(codes []*Code, depth int) {
-	// 防止爆栈
+	// Prevent stack explosion
 	if depth >= 100000 {
 		return
 	}
-	// 找出所有的函数及其opcode
+	// Find all functions and their opcodes
 	for _, code := range codes {
 		if code.Opcode == OpPush {
 			v := code.Op1
@@ -223,8 +223,8 @@ func (g *Debugger) Init(codes []*Code) {
 				linesFirstCodeStateMap[code.StartLineNumber] = NewCodeState(index, state)
 			}
 
-			// 设置currentLinesFirstCodeStateMap和sourceFilePath
-			// 使用比较笨的办法,找到传入的sourceCode与code绑定的sourceCode相同的第一个code
+			// Set currentLinesFirstCodeStateMap and sourceFilePath
+			// . Use a relatively stupid method to find the incoming sourceCode bound to the code. The first code with the same sourceCode
 			if !hasSet && code.SourceCodePointer != nil && *code.SourceCodePointer == g.sourceCode {
 				hasSet = true
 				g.SwitchByOtherFileOpcode(code)
@@ -256,7 +256,7 @@ func (g *Debugger) SwitchByOtherFileOpcode(code *Code) {
 
 		currentBundle := g.getSwitchBundle(newFilePath)
 
-		// 修改currentLinesFirstCodeStateMap, currentBreakPointMap, currentObserveBreakPointMap
+		// Modify currentLinesFirstCodeStateMap , currentBreakPointMap, currentObserveBreakPointMap
 		g.currentLinesFirstCodeStateMap = currentBundle.linesFirstCodeStateMap
 		g.currentBreakPointMap = currentBundle.breakpointMap
 		g.currentObserveBreakPointMap = currentBundle.observeBreakPointMap
@@ -552,7 +552,7 @@ func (g *Debugger) GetStackTraces() map[int]*StackTraces {
 
 		sts := make([]StackTrace, stack.Len()+1)
 
-		// 加入ThreadStackTrace
+		// Add ThreadStackTrace
 		if state, ok := g.ThreadStackTrace[threadID]; ok && state.code != nil {
 			sts[0] = g.debuggerStateToStackTrace(state)
 		}
@@ -675,7 +675,7 @@ func (g *Debugger) ClearBreakpointsInLine(lineIndex int) {
 
 func (g *Debugger) ClearOtherBreakpointsWithSource(path string, existLines []int) {
 	breakpointMap := g.getBreakpointMapBySource(path)
-	// 清除除了existLines外所有的Breakpoint
+	// Clear all Breakpoints except existLines
 	for lineIndex := range breakpointMap {
 		if !lo.Contains(existLines, lineIndex) {
 			delete(breakpointMap, lineIndex)
@@ -727,7 +727,7 @@ func (g *Debugger) StepNext() error {
 
 func (g *Debugger) StepIn() error {
 	g.GetLineFirstCode(g.linePointer)
-	// 不会用到stackLen,所以设置为-1
+	// will not use stackLen, so set it to -1
 	g.stepInState = &DebuggerState{
 		lineIndex: g.linePointer,
 		frame:     g.frame,
@@ -739,7 +739,7 @@ func (g *Debugger) StepOut() error {
 	stackTrace := g.CurrentStackTrace()
 	stackLen := stackTrace.Len()
 	if stackTrace != nil && stackLen > 0 {
-		// 不会用到frame,所以设置为nil
+		// Frame will not be used, so set it to nil.
 		g.stepoutState = &DebuggerState{
 			lineIndex: g.linePointer,
 			stackLen:  stackLen,
@@ -758,7 +758,7 @@ func (g *Debugger) CurrentStackTracePop() {
 }
 
 func (g *Debugger) HitCount(breakpoint *Breakpoint) bool {
-	// 如果命中次数大于0，则命中次数减1,如果还大于0则不断点
+	// If the number of hits is greater than 0, then the number of hits is reduced by 1. If it is still greater than 0, keep clicking
 	if breakpoint.HitCount > 0 {
 		breakpoint.HitCount--
 	}
@@ -833,7 +833,7 @@ func (g *Debugger) ShouldCallback(frame *Frame) {
 
 	if code.Opcode == OpCall {
 		v := frame.peekN(code.Unary)
-		// 如果同步调用yak函数，则push stepIn栈
+		// If the yak function is called synchronously, push stepIn stack
 		if v != nil && v.IsYakFunction() {
 			defer func() {
 				if stackTrace != nil {
@@ -847,9 +847,9 @@ func (g *Debugger) ShouldCallback(frame *Frame) {
 			}()
 		}
 	}
-	// 退栈在frame.Exec的defer处理
+	// Back off the stack in defer processing of frame.Exec
 
-	// 更新ThreadStackTrace
+	// Update ThreadStackTrace
 	g.ThreadStackTrace[g.frame.ThreadID] = &DebuggerState{
 		code:      code,
 		codeIndex: codeIndex,
@@ -857,7 +857,7 @@ func (g *Debugger) ShouldCallback(frame *Frame) {
 		frame:     frame,
 	}
 
-	// 捕捉错误
+	// Capture error
 	defer func() {
 		if r := recover(); r != nil {
 			if rerr, ok := r.(error); ok {
@@ -869,30 +869,30 @@ func (g *Debugger) ShouldCallback(frame *Frame) {
 		}
 	}()
 
-	// 如果halt,则回调
+	// . If halt, callback
 	if g.halt {
 		g.halt = false
 		g.HandleForPause()
 		return
 	}
 
-	// 步进
+	// . Step
 	if g.nextState != nil {
-		// 如果debugger想要步过且出现了jmp,则回调
+		// If the debugger wants to step through and jmp appears, callback
 		if g.jmpState != nil && g.jmpState.codeIndex == codeIndex && g.jmpState.frame == frame {
 			g.jmpState = nil
 			g.HandleForStepNext()
 		} else if g.nextState.frame == frame && g.linePointer > g.nextState.lineIndex {
-			// 如果debugger想要步过且确实在后面行,则回调
+			// . If the debugger wants to step through and is indeed in the next line, call back
 			g.HandleForStepNext()
 		} else if stackTrace.Len() < g.nextState.stackLen {
-			// 当堆栈长度小于stepoutState.stackLen,有可能是一个函数返回了,也应该回调
+			// When the stack length is less than stepoutState.stackLen, it is possible that a function has returned, and the
 			g.stepoutState = nil
 			g.HandleForStepNext()
 		}
 		return
 	} else {
-		// 如果不处于next状态,jmpIndex应该清空
+		// If not in next state, jmpIndex should be cleared
 		defer func() {
 			if g.jmpState != nil {
 				g.jmpState = nil
@@ -900,21 +900,21 @@ func (g *Debugger) ShouldCallback(frame *Frame) {
 		}()
 	}
 
-	// 步入
+	// Step into
 	if g.stepInState != nil {
-		// 在同一个线程下，如果debugger想要步进且frame不同，则回调
+		// In the same thread, if the debugger wants to step and the frame is different, call back
 		if g.stepInState.frame.ThreadID == frame.ThreadID && g.stepInState.frame != frame {
 			g.HandleForStepIn()
 		} else if g.stepInState.lineIndex < g.linePointer {
-			// 如果已经超出此行，则回调
+			// If this line has been exceeded, callback
 			g.HandleForStepIn()
 		}
 		return
 	}
 
-	// 步出
+	// Step out of
 	if g.stepoutState != nil {
-		// 当前堆栈长度小于stepoutState.stackLen,则回调
+		// If the current stack length is less than stepoutState.stackLen, call back
 		if stackTrace.Len() < g.stepoutState.stackLen {
 			g.HandleForStepOut()
 		}
@@ -922,7 +922,7 @@ func (g *Debugger) ShouldCallback(frame *Frame) {
 	}
 
 	if len(g.currentObserveBreakPointMap) > 0 {
-		// 当函数(正常/异常)退出时不应该触发观察断点
+		// when the function (normal/should not be triggered when exiting due to
 		if code.Opcode != OpReturn && code.Opcode != OpPanic {
 			for expr, v := range g.currentObserveBreakPointMap {
 				nv, err := g.EvalExpression(expr)
@@ -940,54 +940,54 @@ func (g *Debugger) ShouldCallback(frame *Frame) {
 	}
 
 	triggered := false
-	// 如果存在于断点列表中，则回调
+	// If it exists in the breakpoint list, callback
 	for _, breakpoint := range g.currentBreakPointMap {
 
-		// 如果断点被禁用则不应该触发
+		// If the breakpoint is disabled,
 		if !breakpoint.On {
 			continue
 		}
 
-		// 如果不在同一个state里则不应该触发
+		// . If it is not in the same state,
 		if state != breakpoint.State {
 			continue
 		}
 
-		// 行断点,包含普通断点和条件断点, 当代码jump之后,判断条件会放宽,只需要满足行号相同即可
+		// line should be called back Breakpoints include ordinary breakpoints and conditional breakpoints. When the code jumps, the judgment conditions will be relaxed, and only the line numbers need to be the same.
 		//
 		if breakpoint.CodeIndex == codeIndex || (g.jmpState != nil && breakpoint.LineIndex == lineIndex) {
-			// 条件断点
+			// Conditional breakpoints
 			condition, hitCondition := breakpoint.Condition, breakpoint.HitCondition
 			if condition == "" {
-				// 如果命中次数大于0，则命中次数减1,如果还大于0则不断点
+				// If the number of hits is greater than 0, then the number of hits is reduced by 1. If it is still greater than 0, keep clicking
 				if g.HitCount(breakpoint) {
 					continue
 				}
 			}
 
 			if condition != "" || hitCondition != "" {
-				// 如果condition为空，则使用hitCondition
+				// If condition is empty, use hitCondition
 				cond := condition
 				if condition == "" {
 					cond = hitCondition
 				}
 				value, err := g.EvalExpression(cond)
 
-				// 如果condition不成立,则不断点
+				// If If the condition is not established, click
 				if err != nil || value.False() {
 					continue
 				}
 
-				// 如果命中次数大于0，则命中次数减1,如果还大于0则不断点
+				// If the number of hits is greater than 0, then the number of hits is reduced by 1. If it is still greater than 0, keep clicking
 				if g.HitCount(breakpoint) {
 					continue
 				}
 
-				// 如果hitCondition都不为空，则还需要判断hitCondition
+				// If hitCondition is not empty, you also need to judge hitCondition
 				if hitCondition != "" {
 					value, err := g.EvalExpression(hitCondition)
 
-					// 如果条件不成立,则不断点
+					// If the condition is not established, continue to point
 					if err != nil || value.False() {
 						continue
 					}
@@ -995,14 +995,14 @@ func (g *Debugger) ShouldCallback(frame *Frame) {
 					cond = fmt.Sprintf("%s && %s", condition, hitCondition)
 				}
 
-				// 触发条件断点的条件:
-				// 1. condition成立,没有hitCount和hitCondition
-				// 2. hitCount存在并减为0
-				// 3. condition成立,hitCondition成立
+				// Conditions for triggering conditional breakpoints:
+				// 1. The condition is established, there is no hitCount and hitCondition
+				// 2. hitCount exists and decreases to 0
+				// 3. condition is established, hitCondition is established
 
 				g.description = fmt.Sprintf("Trigger conditional breakpoint [%s] at line %d in %s", cond, g.linePointer, g.StateName())
 			} else {
-				// 普通断点
+				// Ordinary breakpoint
 				g.description = fmt.Sprintf("Trigger normal breakpoint at line %d in %s", g.linePointer, g.StateName())
 			}
 
@@ -1022,13 +1022,13 @@ func (g *Debugger) Callback() {
 	defer g.WaitGroupDone()
 	defer g.ResetStopReason()
 
-	// 处理stopOnEntry的情况
+	// . Handle stopOnEntry situation
 	if !g.started {
 		g.started = true
 		g.StartWGDone()
 	}
 
-	// 更新观察表达式
+	// Update observation expression
 	if len(g.observeExpressions) > 0 {
 		for expr := range g.observeExpressions {
 			value, err := g.EvalExpression(expr)
@@ -1110,7 +1110,7 @@ func (g *Debugger) evalExpressionWithOpCodes(opcode []*Code, frame *Frame) (*Val
 		return nil, errors.New("eval code error: no opcode")
 	}
 
-	// 对opcode做特殊处理,把pop改成return
+	// does special processing for opcode, change pop to return
 	if opcode[len(opcode)-1].Opcode == OpPop {
 		opcode[len(opcode)-1].Opcode = OpReturn
 	}

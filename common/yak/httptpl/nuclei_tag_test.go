@@ -15,7 +15,7 @@ func TestNucleiTag(t *testing.T) {
 	if res != "http://baidu.com:80/aaa" {
 		t.Fatal(errors.New("ExecNucleiTag error"))
 	}
-	// 集束炸弹
+	// cluster bomb
 	fuzzRes, err := FuzzNucleiTag("{{account}}:{{username}}-{{password}}", map[string]any{
 		"account": "account",
 	}, map[string][]string{
@@ -31,7 +31,7 @@ func TestNucleiTag(t *testing.T) {
 			t.Fatal("FuzzNucleiTag error")
 		}
 	}
-	// 草叉模式
+	// Pitchfork mode
 	fuzzRes, err = FuzzNucleiTag("{{account}}:{{username}}-{{password}}", map[string]any{
 		"account": "account",
 	}, map[string][]string{

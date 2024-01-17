@@ -289,7 +289,7 @@ func (l *LuaTranslator) pushNewVariadicMap(count int) {
 	l._pushOpcodeWithCurrentCodeContext(&yakvm.Code{
 		Opcode: yakvm.OpNewMap,
 		Unary:  count,
-		Op1:    yakvm.GetUndefined(), // 这个作为不定长map的标志位
+		Op1:    yakvm.GetUndefined(), // This is used as the flag of the variable-length map
 	})
 }
 
@@ -398,7 +398,7 @@ func (l *LuaTranslator) GetCodeIndex() int {
 }
 
 func (l *LuaTranslator) GetNextCodeIndex() int {
-	// 获取下一跳 OpCode 的索引
+	// Get the index of the next hop OpCode
 	return len(l.codes)
 }
 

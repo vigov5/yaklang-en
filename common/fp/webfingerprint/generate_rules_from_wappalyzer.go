@@ -180,7 +180,7 @@ func GenerateRulesFromWappalyzer() {
 		case map[string]interface{}:
 
 			for k, v := range meta {
-				keyword := ProcessMetaValue(v, k, name) // 假设这是处理逻辑
+				keyword := ProcessMetaValue(v, k, name) // Assume this is the processing logic
 				if keyword == nil {
 					continue
 				}
@@ -325,7 +325,7 @@ func ProcessMetaValue(v interface{}, key, name string) *KeywordMatcher {
 }
 
 func processHtml(value interface{}, name string) *KeywordMatcher {
-	// 具体处理逻辑
+	// specific processing logic
 	vStr := fmt.Sprint(value)
 	if strings.Contains(vStr, "?!") {
 		return nil
@@ -359,7 +359,7 @@ func processHtml(value interface{}, name string) *KeywordMatcher {
 }
 
 func processScript(value interface{}, name string) *KeywordMatcher {
-	// 具体处理逻辑
+	// specific processing logic
 	vStr := fmt.Sprint(value)
 	if strings.Contains(vStr, "?!") {
 		return nil

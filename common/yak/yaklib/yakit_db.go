@@ -379,7 +379,7 @@ func init() {
 	YakitExports["SavePayload"] = savePayloads
 	YakitExports["SavePayloadByFile"] = savePayloadByFile
 
-	// HTTP 资产
+	// HTTP asset
 	YakitExports["QueryUrlsByKeyword"] = queryUrlsByKeyword
 	YakitExports["QueryUrlsAll"] = queryAllUrls
 	YakitExports["QueryHTTPFlowsByKeyword"] = queryHTTPFlowByKeyword
@@ -387,13 +387,13 @@ func init() {
 		return queryHTTPFlowByKeyword("")
 	}
 
-	// Host:Port 资产
+	// Host:Port asset
 	YakitExports["QueryHostPortByNetwork"] = queryHostPortByNetwork
 	YakitExports["QueryHostPortByKeyword"] = queryHostPortByTarget
 	YakitExports["QueryHostPortByNetworkAndPort"] = queryHostPortByNetworkAndPort
 	YakitExports["QueryHostPortAll"] = queryHostPortAll
 
-	// 查询端口，主机与域名
+	// query port, host and domain name
 	YakitExports["QueryPortAssetByNetwork"] = queryPortAssetByNetwork
 	YakitExports["QueryHostsByNetwork"] = queryHostAssetByNetwork
 	YakitExports["QueryHostsByDomain"] = queryHostAssetByDomainKeyword

@@ -4,7 +4,7 @@ var FacadesExports = map[string]interface{}{
 	"NewFacadeServer": NewFacadeServer,
 	"Serve":           Serve,
 
-	// 使用参数
+	// Use parameters
 	"javaClassName":     SetJavaClassName,
 	"javaCodeBase":      SetJavaCodeBase,
 	"objectClass":       SetObjectClass,

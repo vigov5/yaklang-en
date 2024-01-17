@@ -12,7 +12,7 @@ func TestRedis2(t *testing.T) {
 for in synscan.Scan("47.52.100.1/24", "22")~ {}
 `},
 	}
-	Run("Yak Redis 测试", t, cases...)
+	Run("Yak Redis test", t, cases...)
 }
 
 func TestRedis(t *testing.T) {
@@ -31,12 +31,12 @@ dump(data)
 
 `},
 	}
-	Run("Yak Redis 测试", t, cases...)
+	Run("Yak Redis test", t, cases...)
 }
 
 func TestSynScan(t *testing.T) {
 	cases := []YakTestCase{
-		{Name: "syn限速器", Src: `
+		{Name: "syn rate limiter", Src: `
 loglevel("info");
 //res, err = synscan.Scan("47.52.100.1/24", "1-65535", synscan.rateLimit(10,1000))
 res, err = synscan.Scan("3.12.2.128/24", "22,80", synscan.concurrent(2000), synscan.callback(func(i){
@@ -53,12 +53,12 @@ r.Show()
 println(count)
 `},
 	}
-	Run("Yak SYNSCAN 测试", t, cases...)
+	Run("Yak SYNSCAN test", t, cases...)
 }
 
 func TestSynScan1(t *testing.T) {
 	cases := []YakTestCase{
-		{Name: "syn限速器", Src: `
+		{Name: "syn rate limiter", Src: `
 loglevel("info");
 res, err = synscan.Scan("www.baidu.com:80", "", synscan.concurrent(2000), synscan.callback(func(i){
 	db.SavePortFromResult(i)
@@ -74,12 +74,12 @@ r.Show()
 println(count)
 `},
 	}
-	Run("Yak SYNSCAN 测试", t, cases...)
+	Run("Yak SYNSCAN test", t, cases...)
 }
 
 func TestSynScan_FromPing(t *testing.T) {
 	cases := []YakTestCase{
-		{Name: "syn限速器", Src: `
+		{Name: "syn rate limiter", Src: `
 loglevel("error");
 
 hosts = "192.168.101.146"
@@ -97,7 +97,7 @@ r.Show()
 println(count)
 `},
 	}
-	Run("Yak SYNSCAN 测试", t, cases...)
+	Run("Yak SYNSCAN test", t, cases...)
 }
 
 func TestSuricata(t *testing.T) {

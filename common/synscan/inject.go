@@ -50,7 +50,7 @@ func (s *Scanner) sendService() {
 
 			failedCount := 0
 		RETRY_WRITE_IF:
-			// 5-15 us (每秒可以开到 1000 * 200 个包最快)
+			// 5-15 us (can open up to 1000 * 200 packets per second, the fastest)
 			err := s.handler.WritePacketData(packets)
 
 			total++

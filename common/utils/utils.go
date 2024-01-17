@@ -32,7 +32,7 @@ import (
 	"github.com/denisbrodbeck/machineid"
 )
 
-// LowerAndTrimSpace 将字符串raw转换为小写并去除前后空白字符
+// LowerAndTrimSpace Convert the raw string to lowercase and remove the leading and trailing whitespace characters
 // Example:
 // ```
 // str.LowerAndTrimSpace("  Hello  ") // "hello"
@@ -400,7 +400,7 @@ func HostContains(rule string, target string) bool {
 	if err != nil {
 		targetHost = target
 	}
-	_, netBlock, err := net.ParseCIDR(rule) // 尝试解CIDR
+	_, netBlock, err := net.ParseCIDR(rule) // Try to solve the CIDR
 	if err == nil && netBlock != nil {
 		return netBlock.Contains(net.ParseIP(targetHost))
 	}

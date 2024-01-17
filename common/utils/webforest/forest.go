@@ -13,12 +13,12 @@ import (
 type WebsiteNode struct {
 	Parent *WebsiteNode `json:"-"`
 
-	// 如果是根结点的话，
+	// If it is the root node,
 	NodeName       string   `json:"node_name"`
-	HTTPRequestIDs []uint   `json:"http_request_ids"` // 暂时弃用
+	HTTPRequestIDs []uint   `json:"http_request_ids"` // is temporarily deprecated.
 	Urls           []string `json:"urls"`
 
-	// path == / 或者 "" 都为根结点
+	// path == / or "" is the root node.
 	Path string `json:"path"`
 
 	Children map[string]*WebsiteNode `json:"children"`

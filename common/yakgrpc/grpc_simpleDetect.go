@@ -28,7 +28,7 @@ func (s *Server) SimpleDetect(req *ypb.RecordPortScanRequest, stream ypb.Yak_Sim
 	reqRecord := req.LastRecord
 	reqPortScan := req.PortScanRequest
 	reqBrute := req.StartBruteParams
-	// 把文件写到本地。
+	// writes the file to the local.
 	tmpTargetFile, err := ioutil.TempFile("", "yakit-portscan-*.txt")
 	if err != nil {
 		return utils.Errorf("create temp target file failed: %s", err)
@@ -45,7 +45,7 @@ func (s *Server) SimpleDetect(req *ypb.RecordPortScanRequest, stream ypb.Yak_Sim
 	var allTargets string
 	for _, target := range targets {
 		hosts := utils.ParseStringToHosts(target)
-		// 如果长度为 1 , 说明就是单个 IP
+		// If the length is 1, it means that it is a single IP.
 		if len(hosts) == 1 {
 			allTargets += hosts[0] + "\n"
 		} else {
@@ -68,7 +68,7 @@ func (s *Server) SimpleDetect(req *ypb.RecordPortScanRequest, stream ypb.Yak_Sim
 		Key:   "target-file",
 		Value: tmpTargetFile.Name(),
 	})
-	// 解析用户名
+	// resolves the user name.
 	userListFile, err := utils.DumpFileWithTextAndFiles(
 		strings.Join(reqBrute.Usernames, "\n"), "\n", reqBrute.UsernameFile,
 	)
@@ -83,7 +83,7 @@ func (s *Server) SimpleDetect(req *ypb.RecordPortScanRequest, stream ypb.Yak_Sim
 		Value: userListFile,
 	})
 
-	// 解析密码
+	// parses passwords.
 	passListFile, err := utils.DumpFileWithTextAndFiles(
 		strings.Join(reqBrute.Passwords, "\n"), "\n", reqBrute.PasswordFile,
 	)
@@ -127,7 +127,7 @@ func (s *Server) SimpleDetect(req *ypb.RecordPortScanRequest, stream ypb.Yak_Sim
 			Value: "",
 		})
 	}
-	// 是否使用默认字典？
+	// use the default dictionary?
 	if reqBrute.GetReplaceDefaultUsernameDict() {
 		reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{
 			Key: "replace-default-username-dict",
@@ -206,14 +206,14 @@ func (s *Server) SimpleDetect(req *ypb.RecordPortScanRequest, stream ypb.Yak_Sim
 		})
 	}
 
-	// 主动发包
+	// actively sends packets. Does
 	if reqPortScan.GetActive() {
 		reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{
 			Key: "active",
 		})
 	}
 
-	// 设置指纹扫描的并发
+	// sets the concurrency of fingerprint scanning.
 	if reqPortScan.GetConcurrent() > 0 {
 		reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{
 			Key:   "concurrent",
@@ -226,7 +226,7 @@ func (s *Server) SimpleDetect(req *ypb.RecordPortScanRequest, stream ypb.Yak_Sim
 		})
 	}
 
-	// 设置 SYN 扫描的并发
+	// sets the concurrency of the SYN scan.
 	if reqPortScan.GetSynConcurrent() > 0 {
 		reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{Key: "syn-concurrent", Value: fmt.Sprint(reqPortScan.GetSynConcurrent())})
 	} else {
@@ -252,14 +252,14 @@ func (s *Server) SimpleDetect(req *ypb.RecordPortScanRequest, stream ypb.Yak_Sim
 		})
 	}
 
-	// 爆破设置
+	// blasts the settings.
 	if reqPortScan.GetEnableBrute() {
 		reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{
 			Key: "enable-brute",
 		})
 	}
 
-	// 爬虫设置
+	// crawler settings.
 	if reqPortScan.GetEnableBasicCrawler() {
 		reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{
 			Key: "enable-basic-crawler",
@@ -341,7 +341,7 @@ func (s *Server) SimpleDetect(req *ypb.RecordPortScanRequest, stream ypb.Yak_Sim
 }
 
 func (s *Server) SaveCancelSimpleDetect(ctx context.Context, req *ypb.RecordPortScanRequest) (*ypb.Empty, error) {
-	// 用于管理进度保存相关内容
+	// is used to manage progress and save related content.
 	manager := NewProgressManager(s.GetProjectDatabase())
 	uid := uuid.NewV4().String()
 	manager.AddSimpleDetectTaskToPool(uid, req)

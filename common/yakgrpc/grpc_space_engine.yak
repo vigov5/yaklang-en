@@ -36,19 +36,19 @@ deltaActiveTask = i => {
 
 go func{
     for {
-        yakit.StatusCard("获取数据", f`${total}`)
+        yakit.StatusCard("Get data", f`${total}`)
         if scanTotal > 0 {
-            yakit.StatusCard("验证扫描", f`${scanTotal}`)
+            yakit.StatusCard("Verification scan", f`${scanTotal}`)
         }
         if activeTask > 0 {
-            yakit.StatusCard("正在扫描验证", f`${activeTask}`)
+            yakit.StatusCard("Scanning for verification", f`${activeTask}`)
         }
         sleep(1)
     }
 }
 
-tableName = "%v引擎结果" % engineType
-yakit.EnableTable(tableName, ["主机", "端口", "基础指纹", "网站标题"])
+tableName = "%v Engine Result" % engineType
+yakit.EnableTable(tableName, ["Host", "Port", "Basic fingerprint", "Website Title"])
 feeddata = (result) => {
     // handle spacengine
     defer func{ err = recover(); if err != nil { log.error(err)} }
@@ -56,7 +56,7 @@ feeddata = (result) => {
     host, port = str.ParseStringToHostPort(result.Addr)~
 
     yakit.TableData(tableName, {
-        "主机": host, "端口": port, "基础指纹": result.Fingerprints, "网站标题": result.HtmlTitle,
+        "Host": host, "Port": port, "Basic fingerprint": result.Fingerprints, "Website Title": result.HtmlTitle,
     })
 }
 

@@ -121,7 +121,7 @@ var CodecExports = map[string]interface{}{
 	"RC4Encrypt": codec.RC4Encrypt,
 	"RC4Decrypt": codec.RC4Decrypt,
 
-	// 智能解码
+	// Intelligent decoding
 	"AutoDecode": codec.AutoDecode,
 
 	// HMAC

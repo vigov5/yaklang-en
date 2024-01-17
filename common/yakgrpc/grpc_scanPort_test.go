@@ -20,7 +20,7 @@ func TestServer_PortScan(t *testing.T) {
 		Proto:       []string{"tcp"},
 		Concurrent:  50,
 		Active:      false,
-		ScriptNames: []string{"OpenSSH CVE 合规检查：2010-2021"},
+		ScriptNames: []string{"OpenSSH CVE Compliance Check: 2010-2021"},
 	})
 	_ = r
 	if err != nil {

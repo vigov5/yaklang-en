@@ -12,9 +12,9 @@ type fuzztagPos struct {
 }
 
 func Parse(raw string, tagTypes ...*TagDefine) ([]Node, error) {
-	// 去重、提取标签边界符
+	// Remove duplication and extract tag boundary characters
 	utagTypes := []*TagDefine{}
-	tagBoundaryMap := map[string]rune{} // 转义符映射
+	tagBoundaryMap := map[string]rune{} // Escape character mapping
 	var tagBoundarys []string
 	tagBoundarysDirection := map[string]int{}
 	typeMap := map[string]struct{}{}
@@ -37,13 +37,13 @@ func Parse(raw string, tagTypes ...*TagDefine) ([]Node, error) {
 		}
 	}
 
-	// 查找所有标签位置信息
+	// Find all tag position information
 	tagBoundaryPostions1 := IndexAllSubstrings(raw, tagBoundarys...)
 	pre := [2]int{-1, -1}
 	tagBoundaryPostions := [][2]int{}
 	for _, postion := range tagBoundaryPostions1 {
 		if pre[0] != -1 {
-			if pre[1] == postion[1] { // 当多个字符串之前存在包含关系时，只保留长的字符串
+			if pre[1] == postion[1] { // When multiple strings have previous inclusion relationships, only keep long strings
 				tagBoundaryPostions = tagBoundaryPostions[:len(tagBoundaryPostions)-1]
 			}
 			if pre[0] == postion[0] {
@@ -90,7 +90,7 @@ func Parse(raw string, tagTypes ...*TagDefine) ([]Node, error) {
 		if pos[1] < nextStart {
 			continue
 		}
-		if stack.Size() > 0 && pos[1] >= len(escapeSymbol) { // 跳过被转义的边界符
+		if stack.Size() > 0 && pos[1] >= len(escapeSymbol) { // Skip escaped boundary characters
 			if raw[pos[1]-len(escapeSymbol):pos[1]] == escapeSymbol {
 				nextStart = pos[1] + len(tagBoundarys[pos[0]])
 				continue
@@ -116,11 +116,11 @@ func Parse(raw string, tagTypes ...*TagDefine) ([]Node, error) {
 			top.end = pos[1]
 		}
 	}
-	// 过滤未闭合的标签
+	// Filter unclosed tags
 	var filterValidTag func(rootTags []*fuzztagPos) (result []*fuzztagPos)
 	filterValidTag = func(rootTags []*fuzztagPos) (result []*fuzztagPos) {
 		for _, tag := range rootTags {
-			if tag.end == 0 { // 无效tag
+			if tag.end == 0 { // Invalid tags
 				result = append(result, filterValidTag(tag.subs)...)
 			} else {
 				result = append(result, tag)
@@ -141,7 +141,7 @@ func Parse(raw string, tagTypes ...*TagDefine) ([]Node, error) {
 			return s
 		}
 	}
-	// 根据标签位位置信息解析tag
+	// Parse tags based on tag position information
 	var newDatasFromPos func(start, end int, tagType *TagDefine, poss []*fuzztagPos, deep int) []Node
 	newDatasFromPos = func(start, end int, tagType *TagDefine, poss []*fuzztagPos, deep int) []Node {
 		pre := start
@@ -162,7 +162,7 @@ func Parse(raw string, tagTypes ...*TagDefine) ([]Node, error) {
 			}
 		}
 		for _, pos := range poss {
-			if pos.start < start || pos.end > end { // 不解析参数外的fuzztag
+			if pos.start < start || pos.end > end { // Do not parse fuzztag outside parameters
 				continue
 			}
 			tag := pos.tagType.NewTag()

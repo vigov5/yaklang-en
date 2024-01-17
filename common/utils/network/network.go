@@ -9,7 +9,7 @@ import (
 	"github.com/yaklang/yaklang/common/utils"
 )
 
-// ParseStringToCClassHosts 尝试从给定的字符串中解析Host，再将其转为 C 类网段，用,分隔
+// ParseStringToCClassHosts attempts to parse the Host from the given string and then convert it into a Class C network segment, separated by,
 // Example:
 // ```
 // str.ParseStringToCClassHosts("192.168.0.1-255") // 192.168.0.0/24

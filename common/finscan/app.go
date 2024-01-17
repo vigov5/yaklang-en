@@ -50,12 +50,12 @@ type Scanner struct {
 	delayMs       float64
 	delayGapCount int
 
-	// onSubmitTaskCallback: 每提交一个数据包的时候，这个 callback 调用一次
+	// onSubmitTaskCallback: Each time one is submitted When receiving a data packet, this callback calls
 	onSubmitTaskCallback func(string, int)
 }
 
 func (s *Scanner) SetRateLimit(ms float64, count int) {
-	// ms 为
+	// ms is
 	s.delayMs = ms
 	s.delayGapCount = count
 }
@@ -78,14 +78,14 @@ var (
 	cacheEthernetLock = new(sync.Mutex)
 )
 
-// 以进行一次连接的代价让操作系统帮我们src mac和det mac的获取
-// 实际上不需要等包发出去，也无所谓这个端口是否开放
-// dstPort可选，如果填了相当于多探测了这个端口一次
+// allows the operating system to help us src mac and det mac gets
+// In fact, there is no need to wait for the packet to be sent out, and it does not matter whether the port is open or not.
+// dstPort is optional, if filled in it is equivalent to detecting this port one more time
 func (s *Scanner) getDefaultEthernet(target string) error {
 	cacheEthernetLock.Lock()
 	defer cacheEthernetLock.Unlock()
 
-	// 在加锁之后再判断一次
+	// once and then determines the
 	if s._cache_eth != nil && s.defaultDstHw != nil {
 		return nil
 	}
@@ -133,7 +133,7 @@ func (s *Scanner) getDefaultCacheEthernet(target string, dstPort int) (gopacket.
 }
 
 func NewScanner(ctx context.Context, config *Config) (*Scanner, error) {
-	// 初始化扫描网卡
+	// initializes the network card scan.
 	iface, gatewayIp, srcIp := config.Iface, config.GatewayIP, config.SourceIP
 	if iface == nil {
 		return nil, errors.New("empty iface")
@@ -149,7 +149,7 @@ func NewScanner(ctx context.Context, config *Config) (*Scanner, error) {
 		}
 	}
 
-	// 初始化本地端口，用来扫描本地环回地址
+	// initializes the local port, used to scan the local loopback address
 	log.Debug("start to create local network dev")
 	var localIfaceName string
 	devs, err := pcap.FindAllDevs()
@@ -165,7 +165,7 @@ FLAGS: %v
 `, d.Name, d.Description, net.Flags(d.Flags).String())
 		})
 
-		// 先获取地址 loopback
+		// Get the address loopback first
 		for _, addr := range d.Addresses {
 			if addr.IP.IsLoopback() {
 				localIfaceName = d.Name
@@ -177,14 +177,14 @@ FLAGS: %v
 			break
 		}
 
-		// 默认 desc 获取 loopback
+		// The default desc is to obtain loopback
 		if strings.Contains(strings.ToLower(d.Description), "adapter for loopback traffic capture") {
 			log.Infof("found loopback by desc: %v", d.Name)
 			localIfaceName = d.Name
 			break
 		}
 
-		// 获取 flags
+		// Get flags
 		if net.Flags(uint(d.Flags))&net.FlagLoopback == 1 {
 			log.Infof("found loopback by flag: %v", d.Name)
 			localIfaceName = d.Name
@@ -219,9 +219,9 @@ FLAGS: %v
 		handler:               handler,
 		localHandler:          localHandler,
 
-		// 默认扫描公网网卡的 网关IP
+		// of the public network card scanned by default. The gateway IP
 		defaultGatewayIp: gatewayIp,
-		// 默认扫描的公网网卡的 IP
+		// The IP
 		defaultSrcIp: srcIp,
 
 		opts: gopacket.SerializeOptions{
@@ -229,7 +229,7 @@ FLAGS: %v
 			ComputeChecksums: true,
 		},
 
-		// SynAckHandler 用来处理端口开放
+		// SynAckHandler is used to handle port opening
 		rstAckHandlerMutex: new(sync.Mutex),
 		rstAckHandlers:     make(map[string]rstAckHandler),
 		noRspHandlerMutex:  new(sync.Mutex),
@@ -280,7 +280,7 @@ func (s *Scanner) daemon() {
 						continue
 					}
 
-					//端口扫描的响应包
+					//scanned by default of the public network card. The response packet of the port scan.
 					if s.config.TcpFilter(l) {
 						if nl := packet.NetworkLayer(); nl != nil {
 							s.onRstAck(net.ParseIP(nl.NetworkFlow().Src().String()), int(l.SrcPort))

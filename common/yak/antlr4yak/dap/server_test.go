@@ -280,7 +280,7 @@ func checkStackFramesNamed(testName string, t *testing.T, got *dap.StackTraceRes
 	} else {
 		for i := 0; i < wantFrames; i++ {
 			frame := got.Body.StackFrames[i]
-			// 由于最顶层的frameID是最大的,所以要反着来
+			// Since the topmost frameID is the largest,
 			want := wantTotalFrames - wantStartFrame - (i + 1)
 			if frame.Id != want {
 				t.Errorf("%s\ngot  %#v\nwant Id=%d", testName, frame, want)
@@ -551,7 +551,7 @@ func TestLaunchStopOnEntry(t *testing.T) {
 			t.Errorf("\ngot %#v\nwant Seq=0, RequestSeq=5", cdResp)
 		}
 
-		// 一开始stopOnEntry,所以要continue,由于continue后会直接执行结束,所以会收到terminated事件
+		// from varRef=1, that is, Globals acts on it. StopOnEntry is started at the beginning, so continue. Since the execution will end directly after continue, the terminated event
 		// 6 >> continue, << continue, << terminated
 		client.ContinueRequest(1)
 		cResp := client.ExpectContinueResponse(t)
@@ -766,11 +766,11 @@ func TestPreSetBreakPoint(t *testing.T) {
 		if len(scopes.Body.Scopes) != 3 {
 			t.Errorf("\ngot  %#v\nwant len(Scopes)=3 (Locals)", scopes)
 		}
-		checkScope(t, scopes, 0, "Globals", 1) // varRef 从1开始
+		checkScope(t, scopes, 0, "Globals", 1) // will be received. varRef starts from 1
 		checkScope(t, scopes, 1, "Locals1", 2)
 		checkScope(t, scopes, 2, "Locals2", 3)
 
-		client.VariablesRequest(1) // 从varRef=1 即Globals作用于中获取变量
+		client.VariablesRequest(1) // needs to be reversed to get the variable
 		args := client.ExpectVariablesResponse(t)
 		checkChildren(t, args, "Globals", 3)
 		checkVarExact(t, args, 0, "a", "a", "1", "int", noChildren)

@@ -8,8 +8,8 @@ import (
 	"github.com/yaklang/yaklang/common/yak/antlr4yak/yakvm"
 )
 
-// eval 执行任意 Yak 代码
-// 这个函数是存在副作用的，即能够获取和改变当前引擎中的上下文
+// eval executes any Yak code.
+// This function has side effects, that is, it can obtain and change the context in the current engine.
 // Example:
 // ```
 // a = 1
@@ -33,7 +33,7 @@ func (e *Engine) YakBuiltinEval(code string) {
 	}
 }
 
-// yakfmt 格式化任意 Yak 代码，返回格式化后的代码
+// yakfmt Format any Yak code and return the formatted code
 // Example:
 // ```
 // yakfmt("for { println(`hello yak`) }")
@@ -47,7 +47,7 @@ func (e *Engine) YakBuiltinfmt(code string) string {
 	return newCode
 }
 
-// yakfmtWithError 格式化任意 Yak 代码，返回格式化后的代码和错误
+// yakfmtWithError Format any Yak code and return the formatted code Code and errors
 // Example:
 // ```
 // yakfmtWithError("for { println(`hello yak`) }")
@@ -56,7 +56,7 @@ func (e *Engine) YakBuiltinfmtWithError(code string) (string, error) {
 	return New().FormattedAndSyntaxChecking(code)
 }
 
-// getScopeInspects 获取当前作用域中的所有变量，返回 ScopeValue 结构体引用切片
+// getScopeInspects Get all variables in the current scope and return ScopeValue Structure reference slice
 // Example:
 // ```
 // a, b = 1, "yak"
@@ -69,7 +69,7 @@ func (e *Engine) YakBuiltinGetScopeInspects() ([]*ScopeValue, error) {
 	return e.GetScopeInspects()
 }
 
-// getFromScope 获取当前作用域中的变量，返回变量值
+// getFromScope gets the variables in the current scope and returns the variable value.
 // Example:
 // ```
 // a, b = 1, "yak"
@@ -87,7 +87,7 @@ func (e *Engine) YakBuiltinGetFromScope(v string, vals ...any) any {
 	return nil
 }
 
-// waitAllAsyncCallFinish 等待直到所有异步调用完成
+// waitAllAsyncCallFinish Wait until all asynchronous calls are completed
 // Example:
 // ```
 // a = 0

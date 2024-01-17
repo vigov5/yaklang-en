@@ -33,12 +33,12 @@ type LuaTranslator struct {
 	lexer            *lua.LuaLexer
 	parser           *lua.LuaParser
 
-	// 编译过程语法错误的地方
+	// The place where syntax errors occur during compilation
 	lexerErrors    LuaMergeError
 	parserErrors   LuaMergeError
 	compilerErrors LuaMergeError
 
-	// 为了精简，栈只存 for 开始位置
+	// In order to simplify, the stack only stores the start position of for
 	forDepthStack    *vmstack.Stack
 	repeatDepthStack *vmstack.Stack
 	whileDepthStack  *vmstack.Stack
@@ -227,10 +227,10 @@ func (l *LuaTranslator) SwitchSymbolTableInNewScope(name ...string) func() {
 func (l *LuaTranslator) addNearliestBreakScopeCounter(delta int) {
 	//if l.peekForStartIndex() > 0 && l.peekSwitchStartIndex() > 0 {
 	//	if l.GetNextCodeIndex()-l.peekForStartIndex() > l.GetNextCodeIndex()-l.peekSwitchStartIndex() {
-	//		// switch 离得近
+	//		// switch Closer
 	//		l.peekSwitchContext().switchBreakScopeCounter += delta
 	//	} else {
-	//		// for 离得近
+	//		// for Closer
 	//		l.peekForContext().breakScopeCounter += delta
 	//	}
 	//	return
@@ -250,10 +250,10 @@ func (l *LuaTranslator) addNearliestBreakScopeCounter(delta int) {
 func (l *LuaTranslator) getNearliestBreakScopeCounter() int {
 	if l.peekWhileStartIndex() > 0 && l.peekRepeatStartIndex() > 0 {
 		if l.GetNextCodeIndex()-l.peekWhileStartIndex() > l.GetNextCodeIndex()-l.peekRepeatStartIndex() {
-			// repeat 离得近
+			// repeat closer
 			return l.peekRepeatContext().switchBreakScopeCounter
 		} else {
-			// for 离得近
+			// for Closer
 			return l.peekWhileContext().breakScopeCounter
 		}
 	}
@@ -285,7 +285,7 @@ func (l *LuaTranslator) SwitchCodes() func() {
 	}
 }
 
-// peekForStartIndex 检查当前最近的 while 循环的开始位置
+// peekForStartIndex Check the start position of the current nearest while loop
 func (l *LuaTranslator) peekWhileStartIndex() int {
 	result := l.peekWhileContext()
 	if result == nil {

@@ -32,7 +32,7 @@ func (s *Server) GetSpaceEngineStatus(ctx context.Context, req *ypb.GetSpaceEngi
 		status := &ypb.SpaceEngineStatus{
 			Type:   SPACE_ENGINE_ZOOMEYE,
 			Status: SPACE_ENGINE_STATUS_NORMAL,
-			Info:   "ZoomEye额度按月刷新",
+			Info:   "ZoomEye quota is refreshed monthly",
 			Raw:    []byte(result.Raw),
 			Remain: remain,
 		}

@@ -34,8 +34,8 @@ func init() {
 
 func FuzzCalcExpr3() map[string]any {
 	vars := NewVars()
-	// int32 max: 2147483647               (10位)
-	// int64 max: 9223372036854775807      (19位)
+	// int32 max: 2147483647 (10 bits)
+	// int64 max: 9223372036854775807 (19 bits)
 	powFact := 18
 	var num1 int64 = int64(4*math.Pow10(powFact)) + int64(rand.Intn(int(4*math.Pow10(powFact)))) // int64 safe
 	var num2 int64 = int64(rand.Intn(int(4*math.Pow10(powFact) - 3)))                            // int64 safe
@@ -48,8 +48,8 @@ func FuzzCalcExpr3() map[string]any {
 
 func FuzzCalcExpr2() map[string]any {
 	vars := NewVars()
-	// int32 max: 2147483647               (10位)
-	// int64 max: 9223372036854775807      (19位)
+	// int32 max: 2147483647 (10 bits)
+	// int64 max: 9223372036854775807 (19 bits)
 	powFact := 9
 	var num1 int64 = int64(4*math.Pow10(powFact)) + int64(rand.Intn(int(4*math.Pow10(powFact)))) // int32 safe
 	var num2 int64 = int64(rand.Intn(int(4*math.Pow10(powFact) - 3)))                            // int32 safe
@@ -335,7 +335,7 @@ func processVulnerability(target any, filterVul *filter.StringFilter, vCh chan *
 				resp := i["responses"].([]*lowhttp.LowhttpResponse)
 				currTarget = resp[0].RemoteAddr
 				reqBulk := i["requests"].(*YakRequestBulkConfig)
-				// 根据 payload , tpl 名称 , target 条件过滤
+				// Filter based on payload, tpl name, target conditions
 				calcSha1 = utils.CalcSha1(tpl.Name, resp[0].RawRequest, target)
 				if len(resp) == 1 {
 					details["request"] = string(resp[0].RawRequest)

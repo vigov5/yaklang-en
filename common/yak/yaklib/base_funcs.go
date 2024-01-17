@@ -7,7 +7,7 @@ import (
 	"github.com/yaklang/yaklang/common/log"
 )
 
-// parseInt 尝试将传入的字符串转换为整数，如果失败则返回0
+// parseInt Attempts to convert the incoming string to an integer, returns 0 if it fails
 // Example:
 // ```
 // parseInt("123") // 123
@@ -22,7 +22,7 @@ func parseInt(s string) int {
 	return int(i)
 }
 
-// parseFloat 尝试将传入的字符串转换为浮点数，如果失败则返回0
+// parseFloat Attempts to convert the incoming string to a float, returns 0 if it fails
 // Example:
 // ```
 // parseFloat("123.456") // 123.456
@@ -37,7 +37,7 @@ func parseFloat(s string) float64 {
 	return float64(i)
 }
 
-// parseString 尝试将传入的值转换为字符串，其实际上相当于 `sprintf("%v", i)“
+// parseString attempts to convert the incoming value to a string, which is effectively equivalent to `sprintf("%v", i)“
 // Example:
 // ```
 // parseString(123) // "123"
@@ -47,7 +47,7 @@ func parseString(i interface{}) string {
 	return fmt.Sprintf("%v", i)
 }
 
-// parseBool 尝试将传入的值转换为布尔值，如果失败则返回false
+// parseBool attempts to convert the incoming value to a boolean, returning false if it fails
 // Example:
 // ```
 // parseBool("true") // true
@@ -59,7 +59,7 @@ func parseBool(i interface{}) bool {
 	return r
 }
 
-// atoi 尝试将传入的字符串转换为整数，返回转换后的整数和错误信息
+// atoi Attempts to convert the incoming string to an integer, returns Converted integer and error message
 // Example:
 // ```
 // atoi("123") // 123, nil

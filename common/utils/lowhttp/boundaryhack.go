@@ -31,10 +31,10 @@ import (
 //}
 //
 //func FixMultipartBodyLegacy(i []byte) (string, []byte) {
-//	// 移除前后空格
+//	// Remove leading and trailing spaces
 //	i = bytes.TrimSpace(i)
 //
-//	// 开头结尾必须是 --，否则不对，不是 Multipart Body
+//	// The beginning and end must be --, otherwise it is wrong, not Multipart Body
 //	if !(bytes.HasPrefix(i, []byte{'-', '-'}) && bytes.HasSuffix(i, []byte{'-', '-'})) {
 //		return "", nil
 //	}
@@ -55,7 +55,7 @@ import (
 //		current = scanner.Bytes()[0]
 //
 //		if boundary == "" {
-//			// boudnary 是空的话，就开始寻找第一个 boundary 作为真的 boundary
+//			// If boudnary is empty, start looking for the first boundary as the true boundary
 //			switch current {
 //			case '\n':
 //				boundary = strings.TrimSpace(blockContent.String())
@@ -76,10 +76,10 @@ import (
 //			}
 //		}
 //
-//		// 当前字符是 \n，且其他不是 \n
+//		// will not be repaired. The current character is \n, and other characters are not \n
 //		if current == '\n' {
 //			if strings.HasPrefix(blockContent.String(), "--"+boundary) {
-//				// 解析到了 boundary 行
+//				// Parse the boundary line
 //				fullBody.WriteString(splitBoundary)
 //				fullBody.WriteByte('\r')
 //				fullBody.WriteByte('\n')
@@ -87,14 +87,14 @@ import (
 //				lastByte = current
 //				continue
 //			} else {
-//				// 解析 textproto
+//				// Parse textproto
 //				r := textproto.NewReader(bufio.NewReader(bytes.NewBufferString(blockContent.String())))
 //				var headers []string
 //				for {
 //					line, _ := r.ReadLine()
 //					line = strings.TrimSpace(line)
 //					if line == "" {
-//						// 空行应该退出循环行
+//						// Empty lines should exit the loop line
 //						break
 //					}
 //					headers = append(headers, line)
@@ -122,7 +122,7 @@ import (
 //	return boundary, fullBody.Bytes()
 //}
 
-// 状态机
+// State machine
 func FixMultipartBody(i []byte) (string, []byte) {
 	var lineBuffer bytes.Buffer
 	var blockBuffer bytes.Buffer
@@ -149,7 +149,7 @@ func FixMultipartBody(i []byte) (string, []byte) {
 		if blockBuffer.Len() <= 0 {
 			return blockBuffer
 		}
-		// 解析 textproto
+		// Parse textproto
 		var rawBody []byte
 		r := textproto.NewReader(bufio.NewReader(bytes.NewBufferString(blockBuffer.String())))
 		var blockFixedBuffer bytes.Buffer
@@ -158,7 +158,7 @@ func FixMultipartBody(i []byte) (string, []byte) {
 		for {
 			line, err := r.ReadLine()
 			if err != nil {
-				// 读错误
+				// Reading error
 				fastFail = true
 				break
 			}
@@ -177,7 +177,7 @@ func FixMultipartBody(i []byte) (string, []byte) {
 
 		if !fastFail {
 			if bytes.HasSuffix(rawBody, []byte{'\r', '\n'}) {
-				// block 结尾是 CRLF，不修复
+				// block ends with CRLF,
 				blockFixedBuffer.Write(rawBody)
 			} else if bytes.HasSuffix(rawBody, []byte{'\n'}) {
 				blockFixedBuffer.Write(rawBody[:len(rawBody)-1])
@@ -198,7 +198,7 @@ func FixMultipartBody(i []byte) (string, []byte) {
 			continue
 		}
 
-		// 状态流转
+		// State flow
 	NEXT_STATE:
 		switch state {
 		case FINDING_BOUNDARY:

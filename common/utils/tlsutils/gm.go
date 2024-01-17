@@ -39,7 +39,7 @@ func GetX509GMServerTlsConfigWithAuth(ca, server, serverKey []byte, auth bool) (
 }
 
 func SignGMServerCrtNKeyWithParams(ca []byte, privateKey []byte, cn string, notAfter time.Time, auth bool) ([]byte, []byte, error) {
-	// 解析 ca 的 key
+	// Parse the key of ca
 	var pkey *sm2.PrivateKey
 	var err error
 	if bytes.HasPrefix(privateKey, []byte("---")) {
@@ -51,7 +51,7 @@ func SignGMServerCrtNKeyWithParams(ca []byte, privateKey []byte, cn string, notA
 		return nil, nil, errors.Wrap(err, "read sm2.privateKey")
 	}
 
-	// 服务端证书生成 key
+	// server certificate to generate key
 	sPriv, err := sm2.GenerateKey(cryptorand.Reader)
 	if err != nil {
 		return nil, nil, err

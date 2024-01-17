@@ -9,12 +9,12 @@ import (
 	"fmt"
 )
 
-// SecretKey 将字符串转换为符合冰蝎、哥斯拉加密要求的 md5[0:16] 后的结果
+// SecretKey The result after converting the string into md5[0:16] that meets the encryption requirements of Ice Scorpion and Godzilla
 func secretKey(pwd string) []byte {
 	return []byte(pass2MD5(pwd))
 }
 
-// 获取前十六位 md5 值
+// Obtain the first sixteen digits of md5 value
 func pass2MD5(input string) string {
 	md5hash := md5.New()
 	md5hash.Write([]byte(input))
@@ -28,7 +28,7 @@ func decodeBase64Values(i interface{}) (interface{}, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to decode base64 value: %w", err)
 		}
-		// 修复冰蝎返回的错误 json
+		// Fix the error json returned by Ice Scorpion
 		decoded = bytes.Replace(decoded, []byte(",]"), []byte("]"), 1)
 		var j interface{}
 		err = json.Unmarshal(decoded, &j)

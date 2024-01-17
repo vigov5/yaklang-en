@@ -4,7 +4,7 @@ prog := ssa.Parse(
 $(document).ready(function(){
 		$("button").click(function(){
 		  $.get("/example/jquery/demo_test.asp",function(data,status){
-			alert("数据：" + data + "\n状态：" + status);
+			alert("Data:" + data + "\nStatus:" + status);
 		  });
 		});
 	  });
@@ -18,7 +18,7 @@ $(document).ready(function(){
       city:"Duckburg"
     },
     function(data,status){
-      alert("数据：" + data + "\n状态：" + status);
+      alert("Data:" + data + "\nStatus:" + status);
     });
   });
 });
@@ -28,12 +28,12 @@ $.get(
     "submit.aspx",
     {
         id:     '123',
-        name:   '博客园',
+        name:   'Blog Park',
     },
     function(data,state){
-        //这里显示从服务器返回的数据
+        //Here is the data returned from the server
         alert(data);
-        //这里显示返回的状态
+        //Here is the returned status
         alert(state);
     }
 )`, 
@@ -125,14 +125,14 @@ $.ajax({
         url: 'submit.aspx',
         datatype: "json",
         type: 'post',
-        success: function (e) {   //成功后回调
+        success: function (e) {   //Callback after success
             alert(e); 
         },
-        error: function(e){    //失败后回调
+        error: function(e){    //Callback after failure
             alert(e);
         },
-        beforeSend: function(){  //发送请求前调用，可以放一些"正在加载"之类额话
-            alert("正在加载");
+        beforeSend: function(){  //Called before sending the request, you can put some"Loading"and the like
+            alert("Loading");
         }
 })
 `, 

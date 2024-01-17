@@ -11,7 +11,7 @@ if err != nil {
     die(err)
 }
 defer manager.Wait()
-// 这个有必要设置：独立上下文，避免在大并发的时候出现问题
+// This is necessary to set up: independent context to avoid problems during large concurrency
 manager.SetConcurrent(20)
 manager.SetDividedContext(true)
 //manager.SetFeedback(func(c){
@@ -44,12 +44,12 @@ Host: {{params(target)}}
 `
 
 
-tableName = "质量检测"
-columnType = "漏洞类型"
-columnTarget = "测试 Url"
-columnExpectedDetected = "预期检出"
-columnExpectedDetectedValue = "预期数"
-columnRealDetected = "实际检出"
+tableName = "Quality inspection"
+columnType = "Vulnerability type"
+columnTarget = "Test Url"
+columnExpectedDetected = "Expected checkout"
+columnExpectedDetectedValue = "Expected number"
+columnRealDetected = "Actual checkout"
 yakit.EnableTable(tableName, [columnType, columnTarget, columnExpectedDetected,columnExpectedDetectedValue, columnRealDetected])
 
 

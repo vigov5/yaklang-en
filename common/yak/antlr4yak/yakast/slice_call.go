@@ -16,7 +16,7 @@ func (y *YakCompiler) VisitSliceCall(raw yak.ISliceCallContext) interface{} {
 	recoverRange := y.SetRange(i.BaseParserRuleContext)
 	defer recoverRange()
 
-	//检查参数数量
+	//Check the number of parameters
 	exps := i.AllExpression()
 	if len(exps) == 0 {
 		y.panicCompilerError(sliceCallNoParamError)
@@ -26,10 +26,10 @@ func (y *YakCompiler) VisitSliceCall(raw yak.ISliceCallContext) interface{} {
 	}
 	y.writeString("[")
 	defer y.writeString("]")
-	//解决:一侧为空的情况
+	//Solution: When one side is empty,
 	childrens := i.GetChildren()
-	expect := true // 记录状态，如果期望是数字，得到的是:，则push一个默认数，不切换状态。
-	t := 0         // 记录参数个数
+	expect := true // records the status. If the expectation is a number and the result is:, then push a default number and do not switch the status.
+	t := 0         // Record the number of parameters
 	idEnd := false
 	visitChildrens := childrens[1:]
 	lenOfVisitChildrens := len(visitChildrens)
@@ -38,7 +38,7 @@ func (y *YakCompiler) VisitSliceCall(raw yak.ISliceCallContext) interface{} {
 			expression, isExpression := children.(*yak.ExpressionContext)
 
 			if isExpression {
-				// 表达式值类型必须为int，step值不能为0，否则报错
+				// The expression value type must be int, and the step value cannot be 0, otherwise an error will be reported
 				//if t == 2 &&  != nil {
 				//	panic(" step cannot be zero")
 				//}
@@ -59,7 +59,7 @@ func (y *YakCompiler) VisitSliceCall(raw yak.ISliceCallContext) interface{} {
 			}
 
 			t += 1
-		} else { // 如果期望是:, 则直接切换状态
+		} else { // If the expectation is:, then switch the state directly
 			if index != lenOfVisitChildrens-1 {
 				y.writeString(":")
 			}

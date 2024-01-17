@@ -979,7 +979,7 @@ func TestGRPCMUSTPASS_HTTPFuzzer_FuzzTag(t *testing.T) {
 		fuzzMode  string
 		forceMode bool
 	}{
-		{ // 验证force
+		{ // Verify force
 			tag: "{{base64({{url(yak)}})}}",
 			expect: []string{
 				"JTc5JTYxJTZi", "%79%61%6b",
@@ -991,12 +991,12 @@ func TestGRPCMUSTPASS_HTTPFuzzer_FuzzTag(t *testing.T) {
 			expect:    []string{},
 			forceMode: false,
 		},
-		{ // 验证fuzzMode close
+		{ // Verify fuzzMode close
 			tag:      "{{base64({{url(yak)}})}}",
 			expect:   []string{},
 			fuzzMode: "close",
 		},
-		{ // 验证fuzzMode standard
+		{ // Verify fuzzMode standard
 			tag: "{{base64({{url(yak)}})}}",
 			expect: []string{
 				"JTc5JTYxJTZi", "%79%61%6b",
@@ -1017,7 +1017,7 @@ func TestGRPCMUSTPASS_HTTPFuzzer_FuzzTag(t *testing.T) {
 			},
 			fuzzMode: "standard",
 		},
-		{ // 验证fuzzMode legacy
+		{ // Verify fuzzMode legacy
 			tag: "{{base64(url(yak))}}",
 			expect: []string{
 				"JTc5JTYxJTZi",
@@ -1031,7 +1031,7 @@ func TestGRPCMUSTPASS_HTTPFuzzer_FuzzTag(t *testing.T) {
 			},
 			fuzzMode: "legacy",
 		},
-		{ // 验证优先级
+		{ // Verify priority
 			tag:       "{{base64({{url(yak)}})}}",
 			expect:    []string{},
 			forceMode: true,
@@ -1082,7 +1082,7 @@ func TestGRPCMUSTPASS_HTTPFuzzer_SyncFuzzTag(t *testing.T) {
 		params    map[string]string
 		syncIndex bool
 	}{
-		{ // 同步
+		{ // Synchronous
 			tag: "{{array(1|2|3)}}{{array(1|2|3)}}",
 			expect: [][]string{
 				{
@@ -1097,7 +1097,7 @@ func TestGRPCMUSTPASS_HTTPFuzzer_SyncFuzzTag(t *testing.T) {
 			},
 			syncIndex: true,
 		},
-		{ // 笛卡尔
+		{ // Cartesian
 			tag: "{{array(1|2)}}{{array(1|2)}}",
 			expect: [][]string{
 				{
@@ -1115,7 +1115,7 @@ func TestGRPCMUSTPASS_HTTPFuzzer_SyncFuzzTag(t *testing.T) {
 			},
 			syncIndex: false,
 		},
-		{ // 设置变量
+		{ // Set variable
 			tag: "{{p(a)}}{{p(b)}}",
 			params: map[string]string{
 				"a": "{{array(1|2)}}",
@@ -1154,7 +1154,7 @@ func TestGRPCMUSTPASS_HTTPFuzzer_SyncFuzzTag(t *testing.T) {
 				return d[i] < d[j]
 			})
 		}
-		if len(test.params) != 0 { // params 变量的渲染结果不是幂等的
+		if len(test.params) != 0 { // The rendering result of params variable is not idempotent
 			expect := []string{}
 			for _, v := range test.expect {
 				sortStringSlice(v)

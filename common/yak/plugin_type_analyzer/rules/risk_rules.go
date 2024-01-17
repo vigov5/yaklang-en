@@ -9,7 +9,7 @@ func init() {
 	plugin_type.RegisterCheckRuler(plugin_type.PluginTypeYak, RuleRisk)
 }
 
-// 检查 cli.risk 是否符合规范
+// Check whether cli.risk complies with the specification
 func RuleRisk(prog *ssaapi.Program) {
 	tag := "cli.risk"
 

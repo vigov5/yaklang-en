@@ -75,7 +75,7 @@ type ReliableDNSConfig struct {
 	// Disable System Resolver
 	DisableSystemResolver bool
 
-	// SpecificDNSServers 作为备选项
+	// SpecificDNSServers as an alternative
 	FallbackSpecificDNS bool
 
 	SpecificDNSServers []string

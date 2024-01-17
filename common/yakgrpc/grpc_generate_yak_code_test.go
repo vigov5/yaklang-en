@@ -77,7 +77,7 @@ abc
 Content-Disposition: form-data; name="avatar_file"; filename="monkey0.jpg"
 Content-Type: image/jpeg
 
-����
+None
 ------WebKitFormBoundaryL9EjCsrvV7xykqHB
 Content-Disposition: form-data; name="more[site]"
 

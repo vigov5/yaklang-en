@@ -14,17 +14,17 @@ import (
 
 func init() {
 	//os.Setenv("LUA_DEBUG", "1")
-	// 使用 yakvm.Import 是最原始的导入方法 yaklang的import分两种，一种是通过script_engine.go以类似于内置依赖库的形式导入
-	// 另一种是在new Engine的时候导入eval等内置函数
-	// 此处先加入一些常用的lua内置函数方便测试
+	// . Using yakvm.Import is the most original import method of yaklang. There are two types of import. One is to import
+	// first. The other is to import eval and other built-in functions
+	// . Here, some commonly used Lua built-in functions are added to facilitate testing. The key of
 	// http://www.lua.org/manual/5.3/manual.html
 
-	// print (···)
+	// print (·· ·)
 	//Receives any number of arguments and prints their values to stdout, using the
 	//tostring function to convert each argument to a string. print is not intended
 	//for formatted output, but only as a quick way to show a value, for instance for
 	//debugging. For complete control over the output, use string.format and io.write.
-	// 原生lua的print会在多个参数中间加tab，这里问题不大go默认使用ws
+	// native Lua print Tabs will be added between multiple parameters. There is no big problem here. By default, go uses ws
 	Import("print", func(v ...interface{}) {
 		toStr := func(x interface{}) (string, bool) {
 			switch v := x.(type) {
@@ -201,9 +201,9 @@ func init() {
 
 			for index := 1; index <= mapLen; index++ {
 				value := valueOfInputMap.MapIndex(reflect.ValueOf(index))
-				// 使用 reflect 访问 map 元素时，需要注意检查 MapIndex 返回的值是否可用，
-				// 因为如果索引对应的键不存在，或者键对应的值为 nil，那么 MapIndex 方法会返回一个无效的 Value，
-				// 不能直接使用，需要先检查一下
+				// When using reflect to access map elements, you need to pay attention to check whether the value returned by MapIndex is available,
+				// because if the key corresponding to the index does not exist, or the value corresponding to the key is nil, then the MapIndex method will return an invalid Value,
+				// through script_engine.go in a form similar to the built-in dependent library. It cannot be used directly. You need to check
 				if value.IsValid() && !value.IsZero() {
 					tblLen++
 				} else {
@@ -240,7 +240,7 @@ func init() {
 				keysMap[keyStr] = iter.Key().Interface()
 			}
 			sort.Strings(keysString)
-			// map的key是唯一的
+			// map is the only
 			for index, value := range keysString {
 				if value == indexToNext {
 					if index+1 == len(keysString) {

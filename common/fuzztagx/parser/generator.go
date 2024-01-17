@@ -10,8 +10,8 @@ type GenerateConfig struct {
 	AssertError bool
 }
 type ExecNode interface {
-	Reset()              // 重置生成器
-	Exec() (bool, error) // 优先读取缓存，读完缓存后调用子生成器
+	Reset()              // Reset the generator
+	Exec() (bool, error) // . Read the cache first, and call the sub-generator
 	IsRep() bool
 }
 
@@ -22,7 +22,7 @@ type MethodContext struct {
 	dynTag         map[*TagExecNode]struct{}
 }
 
-// UpdateLabels 更新全局labelTable，先删除当前tag的所有label映射，再增加
+// UpdateLabels to update the global labelTable, first delete all label mappings of the current tag, and then add
 func (m *MethodContext) UpdateLabels(tag *TagExecNode) {
 	for _, label := range m.tagToLabelsMap[tag] {
 		if set, ok := m.labelTable[label]; ok {
@@ -103,7 +103,7 @@ func (f *TagExecNode) FirstExecWithBackpropagation(bp, exec, all bool) error {
 	return f.backpropagation()
 }
 
-// FirstExec 重置并执行
+// FirstExec reset and execute
 func (f *TagExecNode) FirstExec(bp, exec, all bool) error {
 	f.childGenerator.first = exec
 	_, err := f.childGenerator.generate()
@@ -157,7 +157,7 @@ func (f *TagExecNode) Exec() (bool, error) {
 		f.index++
 	}()
 	if f.index >= len(*f.cache) {
-		if f.isRep { // 当生成失败且存在rep标签时，使用最后一个元素
+		if f.isRep { // here. When the generation fails and there is a rep tag When, use the last element
 			f.submitResult((*f.cache)[len(*f.cache)-1])
 			return false, f.backpropagation()
 		}
@@ -387,7 +387,7 @@ func (g *Generator) generate() (bool, error) {
 					for _, param := range v1.params {
 						execAllFirst(param)
 					}
-					v1.FirstExec(false, true, true) //在这个节点第一次执行时已经判断了err，这里不用判断了
+					v1.FirstExec(false, true, true) //after reading the cache. Err has been judged when this node is executed for the first time, so there is no need to judge
 				}
 			}
 			for tag, _ := range failedTag {

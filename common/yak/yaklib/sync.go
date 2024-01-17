@@ -18,56 +18,56 @@ func (w *WaitGroupProxy) Add(delta ...int) {
 	w.WaitGroup.Add(n)
 }
 
-// NewWaitGroup 创建一个 WaitGroup 结构体引用，其帮助我们在处理多个并发任务时，等待所有任务完成后再进行下一步操作
+// NewWaitGroup Creates a WaitGroup structure reference, which helps us wait for all tasks to complete before proceeding to the next step when processing multiple concurrent tasks.
 // Example:
 // ```
 // wg = sync.NewWaitGroup()
 // for i in 5 {
-// wg.Add() // 增加一个任务
+// wg.Add() // Add a task
 // go func(i) {
 // defer wg.Done()
 // time.Sleep(i)
-// printf("任务%d 完成\n", i)
+// printf("Task %d completed\n", i)
 // }(i)
 // }
 // wg.Wait()
-// println("所有任务完成")
+// println("All tasks completed")
 // ```
 func NewWaitGroup() *WaitGroupProxy {
 	return &WaitGroupProxy{&sync.WaitGroup{}}
 }
 
-// NewSizedWaitGroup 创建一个 SizedWaitGroup 结构体引用，其帮助我们在处理多个并发任务时，等待所有任务完成后再进行下一步操作
-// SizedWaitGroup 与 WaitGroup 的区别在于 SizedWaitGroup 可以限制并发任务的数量
+// NewSizedWaitGroup creation A SizedWaitGroup structure reference, which helps us wait for all tasks to complete before proceeding to the next step when processing multiple concurrent tasks.
+// SizedWaitGroup and WaitGroup The difference is that SizedWaitGroup can limit the number of concurrent tasks.
 // Example:
 // ```
-// wg = sync.NewSizedWaitGroup(5) // 限制大小为5
+// wg = sync.NewSizedWaitGroup(5) // The limit size is 5
 // for i in 10 {
-// wg.Add() // 任务数量超过5时，会阻塞，直到有任务完成
+// wg.Add() // When the number of tasks exceeds 5, it will block until a task is completed
 // go func(i) {
 // defer wg.Done()
 // time.Sleep(i)
-// printf("任务%d 完成\n", i)
+// printf("Task %d completed\n", i)
 // }(i)
 // }
 // wg.Wait()
-// println("所有任务完成")
+// println("All tasks completed")
 // ```
 func NewSizedWaitGroup(size int) *utils.SizedWaitGroup {
 	swg := utils.NewSizedWaitGroup(size)
 	return swg
 }
 
-// NewMutex 创建一个 Mutex 结构体引用，用于实现互斥锁，其帮助我们避免多个并发任务访问同一个资源时出现数据竞争问题
+// NewMutex creates a Mutex structure reference to implement a mutex lock, which helps us avoid data competition problems when multiple concurrent tasks access the same resource.
 // Example:
 // ```
 // m = sync.NewMutex()
 // newMap = make(map[string]string)
 // go func{
 // for {
-// m.Lock()         // 请求锁
-// defer m.Unlock() // 释放锁
-// newMap["key"] = "value" // 防止多个并发任务同时修改 newMap
+// m.Lock()         // Request lock
+// defer m.Unlock() // Release the lock
+// newMap["key"] = "value" // Prevents multiple concurrent tasks from modifying newMap at the same time
 // }
 // }
 // for {
@@ -78,21 +78,21 @@ func NewMutex() *sync.Mutex {
 	return new(sync.Mutex)
 }
 
-// NewRWMutex 创建一个 RWMutex 结构体引用，用于实现读写锁，其帮助我们避免多个并发任务访问同一个资源时出现数据竞争问题
+// NewRWMutex Create a RWMutex structure reference to implement a read-write lock , which helps us avoid data competition problems when multiple concurrent tasks access the same resource.
 // Example:
 // ```
 // m = sync.NewRWMutex()
 // newMap = make(map[string]string)
 // go func{
 // for {
-// m.Lock()         // 请求写锁
-// defer m.Unlock() // 释放写锁
-// newMap["key"] = "value" // 防止多个并发任务同时修改 newMap
+// m.Lock()         // request Write lock
+// defer m.Unlock() // Release the write lock
+// newMap["key"] = "value" // Prevents multiple concurrent tasks from modifying newMap at the same time
 // }
 // }
 // for {
-// m.RLock()         // 请求读锁
-// defer m.RUnlock() // 释放读锁
+// m.RLock()         // Request a read lock
+// defer m.RUnlock() // Release the read lock
 // println(newMap["key"])
 // }
 // ```
@@ -100,17 +100,17 @@ func NewRWMutex() *sync.RWMutex {
 	return new(sync.RWMutex)
 }
 
-// NewLock 创建一个 Mutex 结构体引用，用于实现互斥锁，其帮助我们避免多个并发任务访问同一个资源时出现数据竞争问题
-// 它实际是 NewMutex 的别名
+// NewLock Create a Mutex structure reference to implement a mutex lock, which helps us avoid data competition problems when multiple concurrent tasks access the same resource
+// It is actually an alias of NewMutex
 // Example:
 // ```
 // m = sync.NewMutex()
 // newMap = make(map[string]string)
 // go func{
 // for {
-// m.Lock()         // 请求锁
-// defer m.Unlock() // 释放锁
-// newMap["key"] = "value" // 防止多个并发任务同时修改 newMap
+// m.Lock()         // Request lock
+// defer m.Unlock() // Release the lock
+// newMap["key"] = "value" // Prevents multiple concurrent tasks from modifying newMap at the same time
 // }
 // }
 // for {
@@ -121,7 +121,7 @@ func NewLock() *sync.Mutex {
 	return new(sync.Mutex)
 }
 
-// NewMap 创建一个 Map 结构体引用，这个 Map 是并发安全的
+// NewMap Create a Map structure reference. This Map is concurrency safe
 // Example:
 // ```
 // m = sync.NewMap()
@@ -142,7 +142,7 @@ func NewMap() *sync.Map {
 	return new(sync.Map)
 }
 
-// NewOnce 创建一个 Once 结构体引用，其帮助我们确保某个函数只会被执行一次
+// NewOnce Creates a Once structure reference, which helps us ensure that a function will only be executed once
 // Example:
 // ```
 // o = sync.NewOnce()
@@ -154,18 +154,18 @@ func NewOnce() *sync.Once {
 	return new(sync.Once)
 }
 
-// NewPool 创建一个 Pool 结构体引用，其帮助我们复用临时对象，减少内存分配的次数
+// NewPool creates a Pool structure reference, which helps us reuse temporary objects and reduce Number of memory allocations
 // Example:
 // ```
 // p = sync.NewPool(func() {
 // return make(map[string]string)
 // })
-// m = p.Get() // 从 Pool 中获取，如果 Pool 中没有，则会调用传入的第一个参数函数，返回一个新的 map[string]string
+// m = p.Get() // and obtains it from the Pool. If it is not in the Pool, then The first parameter function passed in will be called and a new map[string]string
 // m["1"] = "2"
 // println(m) // {"1": "2"}
-// // 将 m 放回 Pool 中
+// // Put m back into the Pool
 // p.Put(m)
-// m2 = p.Get() // 从 Pool 中获取，实际上我们获取到的是刚 Put 进去的 m
+// m2 = p.Get() // is obtained from the Pool. In fact, what we get is the m
 // println(m2) // {"1": "2"}
 // ```
 func NewPool(newFunc ...func() any) *sync.Pool {
@@ -177,8 +177,8 @@ func NewPool(newFunc ...func() any) *sync.Pool {
 	return new(sync.Pool)
 }
 
-// NewCond 创建一个 Cond 结构体引用，即一个条件变量，参考golang官方文档：https://golang.org/pkg/sync/#Cond
-// 条件变量是一种用于协调多个并发任务之间的同步机制，它允许一个任务等待某个条件成立，同时允许其他任务在条件成立时通知等待的任务
+// NewCond Create a Cond structure reference, that is, a condition variable. Refer to golang official documentation: https://golang.org/pkg/sync/#Cond
+// conditions Variables are a synchronization mechanism used to coordinate multiple concurrent tasks. It allows a task to wait for a certain condition to be true, and allows other tasks to notify the waiting task when the condition is true.
 // Example:
 // ```
 // c = sync.NewCond()

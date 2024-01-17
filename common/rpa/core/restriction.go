@@ -35,33 +35,33 @@ var defaultFillForm = map[string]string{
 
 var defaultUsername = []string{
 	"user", "admin", "tele", "email",
-	"用户", "账户", "账号", "手机", "电话", "邮箱",
+	"User", "Account", "Account", "Mobile phone", "Phone", "Email",
 }
 
 var strictUsername = []string{
 	"username", "admin", "telephone", "email",
-	"用户", "账户", "账号", "手机", "电话", "邮箱",
+	"User", "Account", "Account", "Mobile phone", "Phone", "Email",
 }
 
 var defaultPassword = []string{
 	"pass",
-	"密码",
+	"Password",
 }
 
 var strictPassword = []string{
-	"password", "密码",
+	"password", "Password",
 }
 
 var defaultCaptcha = []string{
 	"captcha",
-	"验证码",
+	"Verification code",
 	"code",
 	"verify",
 }
 
 var strictCaptcha = []string{
 	"captcha",
-	"验证码",
+	"Verification code",
 	"verifycode",
 }
 
@@ -88,8 +88,8 @@ var sensitiveWords = []string{
 }
 
 var sensitiveWordsCN = []string{
-	"添加", "删除", "修改", "清除", "上传",
-	"注册", "安装", "升级", "编辑", "设置",
+	"Add", "Delete", "Modify", "Clear", "Upload",
+	"Register", "Install", "Upgrade", "Edit", "Set",
 }
 
 func (m *Manager) checkFileSuffixValid(u string) bool {
@@ -98,7 +98,7 @@ func (m *Manager) checkFileSuffixValid(u string) bool {
 		return false
 	}
 
-	// 获得带 . 的前缀
+	// Get prefix with .
 	ext := strings.ToLower(filepath.Ext(uins.EscapedPath()))
 	if !strings.HasPrefix(ext, ".") {
 		ext = "." + ext
@@ -148,14 +148,14 @@ func (m *Manager) checkHostIsValid(url string) bool {
 			return false
 		}
 
-		// 黑名单优先级更高
+		// Blacklist has higher priority
 		for _, n := range m.blackNetwork {
 			if n.Contains(ipIns) {
 				return false
 			}
 		}
 
-		// 白名单兜底
+		// Whitelist
 		if len(m.whiteNetwork) > 0 {
 			for _, i := range m.whiteNetwork {
 				if i.Contains(ipIns) {

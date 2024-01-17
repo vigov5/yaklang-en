@@ -21,8 +21,8 @@ import (
 	"sync"
 )
 
-/** 学习标准库p256的优化方法实现sm2的快速版本
- * 标准库的p256的代码实现有些晦涩难懂，当然sm2的同样如此，有兴趣的大家可以研究研究，最后神兽压阵。。。
+/** Learn the optimization method of standard library p256 to implement a fast version of sm2
+ * The code implementation of p256 of the standard library is a bit obscure. Of course, the same is true for sm2. Anyone who is interested can study it , and finally the mythical beasts took over. . .
  *
  * ━━━━━━animal━━━━━━
  * 　　　┏┓　　　┏┓
@@ -66,7 +66,7 @@ const (
 func initP256Sm2() {
 	sm2P256.CurveParams = &elliptic.CurveParams{Name: "SM2-P-256"} // sm2
 	A, _ := new(big.Int).SetString("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC", 16)
-	//SM2椭	椭 圆 曲 线 公 钥 密 码 算 法 推 荐 曲 线 参 数
+	//SM2 elliptic elliptic curve public key cryptography algorithm recommended curve parameters
 	sm2P256.P, _ = new(big.Int).SetString("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF", 16)
 	sm2P256.N, _ = new(big.Int).SetString("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123", 16)
 	sm2P256.B, _ = new(big.Int).SetString("28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93", 16)
@@ -874,23 +874,23 @@ func sm2P256ReduceDegree(a *sm2P256FieldElement, b *sm2P256LargeFieldElement) {
 			}
 			if tmp[i+4] < 0x20000000 {
 				tmp[i+4] += 0x20000000 & xMask
-				tmp[i+4] -= set4 // 借位
+				tmp[i+4] -= set4 // Borrow
 				tmp[i+4] -= x >> 18
 				if tmp[i+5] < 0x10000000 {
 					tmp[i+5] += 0x10000000 & xMask
-					tmp[i+5] -= 1 // 借位
+					tmp[i+5] -= 1 // Borrow
 					if tmp[i+6] < 0x20000000 {
 						set7 = 1
 						tmp[i+6] += 0x20000000 & xMask
-						tmp[i+6] -= 1 // 借位
+						tmp[i+6] -= 1 // Borrow
 					} else {
-						tmp[i+6] -= 1 // 借位
+						tmp[i+6] -= 1 // Borrow
 					}
 				} else {
 					tmp[i+5] -= 1
 				}
 			} else {
-				tmp[i+4] -= set4 // 借位
+				tmp[i+4] -= set4 // Borrow
 				tmp[i+4] -= x >> 18
 			}
 			if tmp[i+7] < 0x10000000 {
@@ -909,7 +909,7 @@ func sm2P256ReduceDegree(a *sm2P256FieldElement, b *sm2P256LargeFieldElement) {
 					tmp[i+9] += (x >> 1) & xMask
 				}
 			} else {
-				tmp[i+7] -= set7 // 借位
+				tmp[i+7] -= set7 // Borrow
 				tmp[i+7] -= (x << 24) & bottom28Bits
 				tmp[i+8] += (x << 28) & bottom29Bits
 				if tmp[i+8] < 0x20000000 {
@@ -947,23 +947,23 @@ func sm2P256ReduceDegree(a *sm2P256FieldElement, b *sm2P256LargeFieldElement) {
 			}
 			if tmp[i+5] < 0x10000000 {
 				tmp[i+5] += 0x10000000 & xMask
-				tmp[i+5] -= set5 // 借位
+				tmp[i+5] -= set5 // Borrow
 				tmp[i+5] -= x >> 18
 				if tmp[i+6] < 0x20000000 {
 					tmp[i+6] += 0x20000000 & xMask
-					tmp[i+6] -= 1 // 借位
+					tmp[i+6] -= 1 // Borrow
 					if tmp[i+7] < 0x10000000 {
 						set8 = 1
 						tmp[i+7] += 0x10000000 & xMask
-						tmp[i+7] -= 1 // 借位
+						tmp[i+7] -= 1 // Borrow
 					} else {
-						tmp[i+7] -= 1 // 借位
+						tmp[i+7] -= 1 // Borrow
 					}
 				} else {
-					tmp[i+6] -= 1 // 借位
+					tmp[i+6] -= 1 // Borrow
 				}
 			} else {
-				tmp[i+5] -= set5 // 借位
+				tmp[i+5] -= set5 // Borrow
 				tmp[i+5] -= x >> 18
 			}
 			if tmp[i+8] < 0x20000000 {
@@ -977,11 +977,11 @@ func sm2P256ReduceDegree(a *sm2P256FieldElement, b *sm2P256LargeFieldElement) {
 			}
 			if tmp[i+9] < 0x10000000 {
 				tmp[i+9] += 0x10000000 & xMask
-				tmp[i+9] -= set9 // 借位
+				tmp[i+9] -= set9 // Borrow
 				tmp[i+9] -= x >> 4
 				tmp[i+10] += (x - 1) & xMask
 			} else {
-				tmp[i+9] -= set9 // 借位
+				tmp[i+9] -= set9 // Borrow
 				tmp[i+9] -= x >> 4
 				tmp[i+10] += x & xMask
 			}

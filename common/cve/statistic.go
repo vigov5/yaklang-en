@@ -29,20 +29,20 @@ type Statistics struct {
 
 	Total int
 
-	// 环形分析器，从内圈到外圈
+	// Ring analyzer, from inner circle to outer circle
 	NoAuthNetworkHighExploitableCount int
 	NoAuthNetworkCount                int
 	NetworkCount                      int
 
 	// NETWORK/LOCAL/ADJACENT_NETWORK/PHYSICAL
-	CWECounter               map[string]int            /* 探明漏洞类型 */
-	AccessVectorCounter      map[string]int            /* 总体攻击路径的统计 */
-	ComplexityCounter        map[string]int            /* 攻击复杂度判定 */
-	NetworkComplexityCounter map[string]int            /* 网络攻击复杂度 */
-	LocalComplexityCounter   map[string]int            /* 本地攻击复杂度 */
-	YearsCounter             map[string]int            /* 按年度统计 */
-	SeverityCounter          map[string]int            /* 按危险程度统计 */
-	YearsSeverityCounter     map[string]map[string]int /* 按年度统计 */
+	CWECounter               map[string]int            /* Detected vulnerability types */
+	AccessVectorCounter      map[string]int            /* Statistics of the overall attack path */
+	ComplexityCounter        map[string]int            /* Attack complexity determination */
+	NetworkComplexityCounter map[string]int            /* Network attack complexity */
+	LocalComplexityCounter   map[string]int            /* Local attack complexity */
+	YearsCounter             map[string]int            /* Statistics by year */
+	SeverityCounter          map[string]int            /* Statistics by risk level */
+	YearsSeverityCounter     map[string]map[string]int /* Statistics by year */
 }
 
 func (s *Statistics) init() {
@@ -86,7 +86,7 @@ func (s *Statistics) Feed(c *cveresources.CVE) {
 		if s.YearsSeverityCounter[k] == nil {
 			s.YearsSeverityCounter[k] = make(map[string]int)
 		}
-		// 增加计数
+		// Increase count
 		s.YearsSeverityCounter[k][severity]++
 	}
 

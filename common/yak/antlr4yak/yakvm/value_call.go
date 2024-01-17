@@ -38,7 +38,7 @@ func (v *Value) nativeCall(asyncCall, wavy bool, vm *Frame, vs ...*Value) interf
 	if funcName == "" {
 		funcName = v.GetNativeCallFunctionName()
 	}
-	// 这儿很不完善，需要做大量兼容性处理
+	// . This is very imperfect. , a lot of compatibility processing needs to be done.
 	numin := funcType.NumIn()
 	if funcType.IsVariadic() {
 		numin = len(vs)
@@ -52,15 +52,15 @@ func (v *Value) nativeCall(asyncCall, wavy bool, vm *Frame, vs ...*Value) interf
 		args[i] = reflect.ValueOf(val)
 	}
 	if funcType.IsVariadic() {
-		// 是否是可变参数
+		// Whether it is a variable parameter,
 		numInMax := funcType.NumIn()
 		if len(args) < numInMax-1 {
-			// 这里为啥要减一？
-			// 因为可变参数最后一个参数为 slice, 可以为 0
+			// . Why is it reduced by one here?
+			// Because the last parameter of the variable parameter is slice, it can be 0.
 			panic("variadic params need at lease params length: " + fmt.Sprint(numInMax-1))
 		}
 
-		// 取出元素类型
+		// takes out the element type
 		variadicParamsType := funcType.In(numInMax - 1).Elem()
 
 		for i := 0; i < len(args); i++ {
@@ -82,7 +82,7 @@ func (v *Value) nativeCall(asyncCall, wavy bool, vm *Frame, vs ...*Value) interf
 			args[i] = argVal
 		}
 	} else {
-		// 不可变参数的话，输入的函数参数列表长度和需要的参数列表长度应该是相等的
+		// If the parameter is immutable, the length of the input function parameter list and the required parameter list length should be equal.
 		if vm.vm.GetConfig().GetFunctionNumberCheck() && funcType.NumIn() != len(vs) {
 			msg := fmt.Sprintf("native func `%s` need [%v] params, actually got [%v] params", funcName, funcType.NumIn(), len(vs))
 			panic(msg)
@@ -116,7 +116,7 @@ func (v *Value) nativeCall(asyncCall, wavy bool, vm *Frame, vs ...*Value) interf
 	returns := rets.Call(args)
 	vals := make([]interface{}, len(returns))
 	for i, ret := range returns {
-		// 证明是别名，例如time.Duration 是 int64 类型别名，但是有自己实现的方法，所以不应该转换
+		// proves to be an alias. For example, time.Duration is an alias of the int64 type, but it has its own implementation method, so
 		pkgPath := ret.Type().PkgPath()
 		if pkgPath != "" {
 			vals[i] = ret.Interface()
@@ -193,7 +193,7 @@ func (v *Value) luaFunctionNCall(asyncCall bool, vm *Frame, vs ...*Value) interf
 }
 
 func (v *Value) Call(vm *Frame, wavy bool, vs ...*Value) interface{} {
-	// 原生调用函数
+	// natively calls the function
 	if v.NativeCallable() {
 		return v.NativeCall(vm, wavy, vs...)
 	} else {
@@ -202,7 +202,7 @@ func (v *Value) Call(vm *Frame, wavy bool, vs ...*Value) interface{} {
 }
 
 func (v *Value) CallLua(vm *Frame, vs ...*Value) interface{} {
-	// 原生调用函数
+	// natively calls the function
 	if v.NativeCallable() {
 		return v.NativeCall(vm, false, vs...)
 	} else {

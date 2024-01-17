@@ -70,7 +70,7 @@ func GetClient(ctx context.Context, addr, secret string) (context.Context, tpb.T
 		return ctx, nil, nil, err
 	}
 
-	// 设置密码
+	// set password
 	if secret != "" {
 		ctx = grpcMetadata.AppendToOutgoingContext(
 			ctx,
@@ -193,7 +193,7 @@ func MirrorLocalPortToRemoteWithRegisterEx(
 	}
 	defer conn.Close()
 
-	// 设置密码
+	// set password
 	if secret != "" {
 		ctx = grpcMetadata.AppendToOutgoingContext(
 			ctx,

@@ -59,7 +59,7 @@ func CompareHtml(htmlRaw1 interface{}, htmlRaw2 interface{}) ([]*DiffInfo, error
 	if err != nil {
 		return nil, err
 	}
-	//广度
+	//Breadth
 	checkEnd := func(cnode1 **html.Node, cnode2 **html.Node) bool {
 		cnode1x := *cnode1
 		cnode2x := *cnode2

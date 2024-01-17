@@ -12,7 +12,7 @@ func executeWithStringHandler(code string, funcMap map[string]func(string2 strin
 		return nil, err
 	}
 	fMap := map[string]*parser.TagMethod{}
-	for k, v := range funcMap { // 转换成标准的TagMethod，旧版的TagMethod可以通过panic的方式传递错误信息
+	for k, v := range funcMap { // Convert to standard TagMethod. The old version of TagMethod can transmit error information through panic.
 		k := k
 		v := v
 		fMap[k] = &parser.TagMethod{

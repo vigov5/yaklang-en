@@ -91,7 +91,7 @@ func AutoDecode(i interface{}) []*AutoDecodeResult {
 			if rawStr != "" {
 				results = append(results, &AutoDecodeResult{
 					Type:        "UrlDecode",
-					TypeVerbose: "URL解码",
+					TypeVerbose: "URL decoding",
 					Origin:      origin,
 					Result:      rawStr,
 				})
@@ -106,7 +106,7 @@ func AutoDecode(i interface{}) []*AutoDecodeResult {
 			if rawStr != "" {
 				results = append(results, &AutoDecodeResult{
 					Type:        "Html Entity Decode",
-					TypeVerbose: "Html Entity 解码",
+					TypeVerbose: "Html Entity decoding",
 					Origin:      origin,
 					Result:      rawStr,
 				})
@@ -132,7 +132,7 @@ func AutoDecode(i interface{}) []*AutoDecodeResult {
 			if rawStr != "" && rawStr != origin {
 				results = append(results, &AutoDecodeResult{
 					Type:        "Hex Decode",
-					TypeVerbose: "Hex 解码",
+					TypeVerbose: "Hex decoding",
 					Origin:      origin,
 					Result:      rawStr,
 				})
@@ -153,7 +153,7 @@ func AutoDecode(i interface{}) []*AutoDecodeResult {
 			if rawStr != "" {
 				results = append(results, &AutoDecodeResult{
 					Type:        "Json Unicode Decode",
-					TypeVerbose: "Json Unicode 解码",
+					TypeVerbose: "Json Unicode decoding",
 					Origin:      origin,
 					Result:      rawStr,
 				})
@@ -179,7 +179,7 @@ func AutoDecode(i interface{}) []*AutoDecodeResult {
 			if rawStr != "" && rawStr != origin {
 				results = append(results, &AutoDecodeResult{
 					Type:        "Base64 Decode",
-					TypeVerbose: "Base64 解码",
+					TypeVerbose: "Base64 decoding",
 					Origin:      origin,
 					Result:      rawStr,
 				})
@@ -205,7 +205,7 @@ func AutoDecode(i interface{}) []*AutoDecodeResult {
 			if rawStr != "" && rawStr != origin {
 				results = append(results, &AutoDecodeResult{
 					Type:        "Base32 Decode",
-					TypeVerbose: "Base32 解码",
+					TypeVerbose: "Base32 decoding",
 					Origin:      origin,
 					Result:      rawStr,
 				})
@@ -220,7 +220,7 @@ func AutoDecode(i interface{}) []*AutoDecodeResult {
 			if utf8.Valid(decodedByBas64) {
 				results = append(results, &AutoDecodeResult{
 					Type:        "Base64Url Decode",
-					TypeVerbose: "Base64 解码",
+					TypeVerbose: "Base64 decoding",
 					Origin:      origin,
 					Result:      string(decodedByBas64),
 				})
@@ -233,14 +233,14 @@ func AutoDecode(i interface{}) []*AutoDecodeResult {
 			if err == nil && len(decoded) > 0 {
 				results = append(results, &AutoDecodeResult{
 					Type:        "Base64Utf8 Decode",
-					TypeVerbose: "Base64 解码（UTF8-Invalid）",
+					TypeVerbose: "Base64 decoding (UTF8-Invalid)",
 					Origin:      origin,
 					Result:      EscapeInvalidUTF8Byte(decodedByBas64),
 				})
 				origin = rawStr
 				results = append(results, &AutoDecodeResult{
 					Type:        "GB(K/18030) Decode",
-					TypeVerbose: "GB(K/18030) 解码",
+					TypeVerbose: "GB(K/18030) decoding",
 					Origin:      origin,
 					Result:      EscapeInvalidUTF8Byte(decoded),
 				})
@@ -295,7 +295,7 @@ func AutoDecode(i interface{}) []*AutoDecodeResult {
 		return []*AutoDecodeResult{
 			{
 				Type:        "No",
-				TypeVerbose: "无编码",
+				TypeVerbose: "No encoding",
 				Origin:      rawStr,
 				Result:      rawStr,
 			},

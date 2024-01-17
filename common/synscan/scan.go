@@ -35,8 +35,8 @@ func (s *Scanner) callOnSubmitTask(addr string, port int) {
 }
 
 func (s *Scanner) scanPublic(publicHosts []string, ports []int, random bool) error {
-	// 获取网关的 mac 地址作为目的 Mac
-	// 当前网卡为 mac 源
+	// Obtain the gateways mac address as the destination MAC
+	// The current network card is mac. Source
 	type pair struct {
 		host string
 		port int
@@ -62,7 +62,7 @@ func (s *Scanner) scanPublic(publicHosts []string, ports []int, random bool) err
 			return s.ctx.Err()
 		}
 
-		// 设置回调函数
+		// Set the callback function
 		s.callOnSubmitTask(i.host, i.port)
 
 		i := i
@@ -117,18 +117,18 @@ func (s *Scanner) scanPrivate(privateHosts []string, ports []int, random bool) e
 		return err
 	}
 
-	// 打乱端口
+	// Disrupt the port
 	if random {
 		rand.Shuffle(len(ports), func(i, j int) {
 			ports[i], ports[j] = ports[j], ports[i]
 		})
 	}
 
-	// 控制一点并发
+	// Control a little concurrency
 	packetSwg := utils.NewSizedWaitGroup(80)
 	defer packetSwg.Wait()
 
-	// 进行统计
+	// To perform statistics
 	var count, total int64
 	for targetIP, hwAddr := range results {
 		hwAddr := hwAddr
@@ -140,7 +140,7 @@ func (s *Scanner) scanPrivate(privateHosts []string, ports []int, random bool) e
 		}
 
 		for _, port := range ports {
-			// 设置回调函数
+			// Set the callback function
 			s.callOnSubmitTask(targetIP, port)
 			port := port
 			packetSwg.Add()
@@ -187,8 +187,8 @@ func (s *Scanner) scan(host string, port string, random bool, noWait bool) error
 			continue
 		}
 
-		// 判断是不是当前网卡内网的地址？如果是，就添加到内网扫描中
-		// 内网扫描需要先去找 MAC 地址
+		// Determine whether it is the address of the current network cards internal network? If so, add it to the intranet scan
+		// Intranet scanning needs to find the MAC address first.
 		setPrivate := false
 		for _, addr := range addrs {
 			ifNet, ok := addr.(*net.IPNet)
@@ -200,7 +200,7 @@ func (s *Scanner) scan(host string, port string, random bool, noWait bool) error
 			}
 		}
 
-		// 公网扫描，一般来说网管地址就是目的 MAC，不需要额外处理
+		// Public network scan, generally speaking, the network management address is the destination MAC, no additional processing is required
 		if !setPrivate {
 			publicHosts = append(publicHosts, host)
 		}

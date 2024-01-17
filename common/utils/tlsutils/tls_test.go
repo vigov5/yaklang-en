@@ -64,7 +64,7 @@ func TestRevokeCert(t *testing.T) {
 	_ = config
 	_ = clientKey
 
-	// 检测生成的 CRL
+	// Detect generated CRL
 	crl, err := GenerateCRL(crt, key, clientCert)
 	if err != nil {
 		t.Log(err)
@@ -123,7 +123,7 @@ func TestRevokeCert(t *testing.T) {
 		}
 	}
 
-	// 验证 TLS CERT CRL
+	// Verify TLS CERT CRL
 	//roots := x509.NewCertPool()
 	//roots.AppendCertsFromPEM(crt)
 	//cfg, err := GetX509MutualAuthServerTlsConfig(crt, serverCert, serverKey)

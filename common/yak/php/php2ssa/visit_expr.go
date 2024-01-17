@@ -50,8 +50,8 @@ func (y *builder) VisitExpression(raw phpparser.IExpressionContext) ssa.Value {
 
 	switch ret := raw.(type) {
 	case *phpparser.CloneExpressionContext:
-		// 浅拷贝，一个对象
-		// 如果类定义了 __clone，就执行 __clone
+		// shallow copy, an object
+		// If the class defines __clone, execute __clone
 		target := y.VisitExpression(ret.Expression())
 		checkCloneBuildin := y.ir.BuildIf()
 		checkCloneBuildin.BuildCondition(func() ssa.Value {
@@ -380,7 +380,7 @@ func (y *builder) VisitExpression(raw phpparser.IExpressionContext) ssa.Value {
 			case ">>=":
 				rightValue = y.ir.EmitBinOp(ssa.OpShr, leftValues, rightValue)
 			case "??=":
-				// 左值为空的时候，才会赋值
+				// will only be assigned when the lvalue is empty.
 				var returnVal = leftValues
 				var leftValueIsEmpty ssa.Value
 				y.ir.BuildIf().BuildCondition(func() ssa.Value {
@@ -650,7 +650,7 @@ func (y *builder) VisitSquareCurlyExpression(raw phpparser.ISquareCurlyExpressio
 				$a = array("apple", "banana");
 				$a[] = "cherry";
 
-				// 现在，$a 包含 "apple", "banana", "cherry"
+				// . Now,$a contains "apple", "banana", "cherry"
 			*/
 			log.Warnf("PHP $a[...] call empty")
 			return nil

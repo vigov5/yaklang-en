@@ -14,7 +14,7 @@ func TestMisc_NUCLEI(t *testing.T) {
 
 	cases := []YakTestCase{
 		{
-			Name: "测试 nuclei",
+			Name: "test nuclei",
 			Src: fmt.Sprintf(`
 defer func{
 	err := recover()
@@ -38,13 +38,13 @@ for r = range rs {
 		},
 	}
 
-	Run("nuclei 可用性测试(外部网络)", t, cases...)
+	Run("nuclei usability test (external network)", t, cases...)
 }
 
 func TestMisc_NUCLEI_1(t *testing.T) {
 	code := `
 // CURRENT_NUCLEI_PLUGIN_NAME = "[thinkphp-5023-rce]: ThinkPHP 5.0.23 RCE"
-// 这个脚本需要进行操作，设置 CURRENT_NUCLEI_PLUGIN_NAME 作为变量名
+// This script needs to operate, set CURRENT_NUCLEI_PLUGIN_NAME as the variable name
 nucleiPoCName = "[thinkphp-5023-rce]: ThinkPHP 5.0.23 RCE" // MITM_PARAMS.CURRENT_NUCLEI_PLUGIN_NAME
 yakit.Info("loading yakit nuclei plugin: %s", nucleiPoCName)
 script, err := db.GetYakitPluginByName(nucleiPoCName)
@@ -84,11 +84,11 @@ execNuclei("127.0.0.1:8080")
 `
 	cases := []YakTestCase{
 		{
-			Name: "测试 nuclei 封装函数",
+			Name: "test nuclei package function",
 			Src:  code,
 		},
 	}
 
-	Run("nuclei 封装函数可用性冒烟测试", t, cases...)
+	Run("nuclei package function usability smoke test", t, cases...)
 
 }

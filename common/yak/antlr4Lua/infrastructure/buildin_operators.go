@@ -34,15 +34,15 @@ func _eq(value *yakvm.Value, value2 *yakvm.Value) *yakvm.Value {
 	}
 
 	if value2.IsBytes() || value.IsBytes() {
-		// 如果任意一个是 bytes 的话，都转为 string 进行比较
+		// If any one is bytes, it will be converted to string for comparison.
 		return yakvm.NewBoolValue(value.String() == value2.String())
 	}
 
-	// TODO: 关于lua的运算符还要细看一下 此处为临时举措
+	// TODO: We need to take a closer look at Luas operators. This is a temporary measure.
 	if value.IsUndefined() && !value2.IsUndefined() || !value.IsUndefined() && value2.IsUndefined() {
 		return yakvm.NewBoolValue(false)
 	}
-	// 如果任意又一个值为 undefined 的话
+	// If any other value is undefined
 	if value.IsUndefined() || value2.IsUndefined() {
 		return yakvm.NewBoolValue(value.False() == value2.False())
 	}
@@ -216,7 +216,7 @@ func init() {
 
 	yakvm.ImportLuaBinaryOperator(yakvm.OpAnd, func(op1 *yakvm.Value, op2 *yakvm.Value) *yakvm.Value {
 		if op1.IsInt64() && op2.IsInt64() {
-			// 都是整数相加相减
+			// They are all addition and subtraction of integers.
 			resultInt64 := op1.Int64() & op2.Int64()
 			if resultInt64 > math.MaxInt {
 				return &yakvm.Value{
@@ -237,7 +237,7 @@ func init() {
 
 	yakvm.ImportLuaBinaryOperator(yakvm.OpAndNot, func(op1 *yakvm.Value, op2 *yakvm.Value) *yakvm.Value {
 		if op1.IsInt64() && op2.IsInt64() {
-			// 都是整数相加相减
+			// They are all addition and subtraction of integers.
 			resultInt64 := op1.Int64() &^ op2.Int64()
 			if resultInt64 > math.MaxInt {
 				return &yakvm.Value{
@@ -258,7 +258,7 @@ func init() {
 
 	yakvm.ImportLuaBinaryOperator(yakvm.OpOr, func(op1 *yakvm.Value, op2 *yakvm.Value) *yakvm.Value {
 		if op1.IsInt64() && op2.IsInt64() {
-			// 都是整数相加相减
+			// They are all addition and subtraction of integers.
 			resultInt64 := op1.Int64() | op2.Int64()
 			if resultInt64 > math.MaxInt {
 				return &yakvm.Value{
@@ -279,7 +279,7 @@ func init() {
 
 	yakvm.ImportLuaBinaryOperator(yakvm.OpXor, func(op1 *yakvm.Value, op2 *yakvm.Value) *yakvm.Value {
 		if op1.IsInt64() && op2.IsInt64() {
-			// 都是整数相加相减
+			// They are all addition and subtraction of integers.
 			resultInt64 := op1.Int64() ^ op2.Int64()
 			if resultInt64 > math.MaxInt {
 				return &yakvm.Value{
@@ -300,7 +300,7 @@ func init() {
 
 	yakvm.ImportLuaBinaryOperator(yakvm.OpShl, func(op1 *yakvm.Value, op2 *yakvm.Value) *yakvm.Value {
 		if op1.IsInt64() && op2.IsInt64() {
-			// 都是整数相加相减
+			// They are all addition and subtraction of integers.
 			resultInt64 := op1.Int64() << op2.Int64()
 			if resultInt64 > math.MaxInt {
 				return &yakvm.Value{
@@ -321,7 +321,7 @@ func init() {
 
 	yakvm.ImportLuaBinaryOperator(yakvm.OpShr, func(op1 *yakvm.Value, op2 *yakvm.Value) *yakvm.Value {
 		if op1.IsInt64() && op2.IsInt64() {
-			// 都是整数相加相减
+			// They are all addition and subtraction of integers.
 			resultInt64 := op1.Int64() >> op2.Int64()
 			if resultInt64 > math.MaxInt {
 				return &yakvm.Value{

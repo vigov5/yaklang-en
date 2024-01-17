@@ -85,12 +85,12 @@ var alertText = map[alert]string{
 	alertNoRenegotiation:        "no renegotiation",
 	alertNoApplicationProtocol:  "no application protocol",
 	//GMT0024
-	alertUnspporttedSite2Site: "不支持site2site",
-	alertNoArea:               "没有保护域",
-	alertUnspportedAreaType:   "不支持的保护域类型",
-	alertBadIBCParam:          "接收到一个无效的ibc公共参数",
-	alertUnspportedIBCParam:   "不支持ibc参数中定义的信息",
-	alertIdentityNeed:         "缺少对方的ibc标识",
+	alertUnspporttedSite2Site: "does not support site2site.",
+	alertNoArea:               "has no protection domain.",
+	alertUnspportedAreaType:   "does not support the protection domain type.",
+	alertBadIBCParam:          "received an invalid ibc public parameter.",
+	alertUnspportedIBCParam:   "does not support the information defined in the ibc parameter.",
+	alertIdentityNeed:         "The ibc identifier of the other party is missing.",
 }
 
 func (e alert) String() string {

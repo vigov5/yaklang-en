@@ -70,7 +70,7 @@ func (s *Server) ExecuteChaosMakerRule(req *ypb.ExecuteChaosMakerRuleRequest, st
 	}
 	groups := req.GetGroups()
 	if len(groups) == 0 {
-		sendLog("日志", "没有指定分组，将使用全部数据")
+		sendLog("Log", "No grouping is specified, all data will be used")
 	}
 
 	delayer, err := utils.NewDelayWaiter(req.GetTrafficDelayMinSeconds(), req.GetTrafficDelayMaxSeconds())
@@ -98,16 +98,16 @@ func (s *Server) ExecuteChaosMakerRule(req *ypb.ExecuteChaosMakerRuleRequest, st
 				return
 			case <-t.C:
 				sendLogger.Output(&yaklib.YakitStatusCard{
-					Id:   "Agent命中流量",
+					Id:   "Agent hit traffic",
 					Data: fmt.Sprintf("%d", matchCounter),
 				})
 			default:
 				sendLogger.Output(&yaklib.YakitStatusCard{
-					Id:   "已运行",
+					Id:   "Running",
 					Data: fmt.Sprintf("%ds", int64(time.Now().Sub(start).Seconds())),
 				})
 				sendLogger.Output(&yaklib.YakitStatusCard{
-					Id:   "模拟攻击事件",
+					Id:   "Simulating attack events",
 					Data: fmt.Sprintf("%d", trafficCounter),
 				})
 			}
@@ -118,13 +118,13 @@ func (s *Server) ExecuteChaosMakerRule(req *ypb.ExecuteChaosMakerRuleRequest, st
 		var rules []*rule.Storage
 		if len(req.GetGroups()) > 0 {
 			for _, group := range req.GetGroups() {
-				sendLog("info", "开始加载模拟场景，关键字: %v, 协议: %v", group.Keywords, group.Protocols)
+				sendLog("info", "starts loading the simulation scenario, keyword: %v, protocol: %v", group.Keywords, group.Protocols)
 				for r := range chaosmaker.YieldRulesByKeywords(group.Keywords, group.Protocols...) {
 					rules = append(rules, r)
 				}
 			}
 		} else {
-			sendLog("info", "开始加载全部模拟攻击剧本")
+			sendLog("info", "Starting to load all simulated attack scripts")
 			for r := range rule.YieldRules(consts.GetGormProfileDatabase(), stream.Context()) {
 				rules = append(rules, r)
 			}
@@ -137,7 +137,7 @@ func (s *Server) ExecuteChaosMakerRule(req *ypb.ExecuteChaosMakerRuleRequest, st
 		concurrent = 30
 	}
 
-	sendLog("info", "正在初始化Agent")
+	sendLog("info", "Initializing Agent")
 	var clients []*vulinboxagentclient.Client
 	vulinboxAgentMap.Range(func(key, value any) bool {
 		agent, ok := value.(*VulinboxAgentFacade)
@@ -148,7 +148,7 @@ func (s *Server) ExecuteChaosMakerRule(req *ypb.ExecuteChaosMakerRuleRequest, st
 		return true
 	})
 
-	// 暂时只支持 suricata
+	// Currently only supports suricata
 	rules := getRules()
 	var suriraw []string
 	for _, r := range rules {
@@ -174,7 +174,7 @@ func (s *Server) ExecuteChaosMakerRule(req *ypb.ExecuteChaosMakerRuleRequest, st
 	generator.SetContext(stream.Context())
 
 	var attackOnce = func() {
-		sendLog("info", "开始执行本地模拟攻击剧本")
+		sendLog("info", "Start executing local Simulated attack script")
 		swg := utils.NewSizedWaitGroup(int(concurrent))
 
 		wp := workpool.New(int(concurrent), func(rec chan []byte) {
@@ -196,7 +196,7 @@ func (s *Server) ExecuteChaosMakerRule(req *ypb.ExecuteChaosMakerRuleRequest, st
 		}
 
 		swg.Wait()
-		sendLog("info", "本地模拟攻击剧本执行完成")
+		sendLog("info", "The execution of the local simulated attack script is completed.")
 	}
 
 	if req.GetExtraRepeat() >= 0 {
@@ -206,7 +206,7 @@ func (s *Server) ExecuteChaosMakerRule(req *ypb.ExecuteChaosMakerRuleRequest, st
 		default:
 		}
 		for _index := 1; _index <= int(req.GetExtraRepeat())+1; _index++ {
-			sendLog("info", "开始进行第%v次攻击模拟", _index)
+			sendLog("info", "Starting the %vth attack simulation", _index)
 			attackOnce()
 			delayer.Wait()
 		}
@@ -219,7 +219,7 @@ func (s *Server) ExecuteChaosMakerRule(req *ypb.ExecuteChaosMakerRuleRequest, st
 			default:
 			}
 			count++
-			sendLog("info", "开始进行第%v次攻击模拟", count)
+			sendLog("info", "Starting the %vth attack simulation", count)
 			attackOnce()
 		}
 	}

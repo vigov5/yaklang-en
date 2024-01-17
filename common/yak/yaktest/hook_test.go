@@ -24,7 +24,7 @@ func TestMisc_Hook(t *testing.T) {
 
 	cases := []YakTestCase{
 		{
-			Name: "测试 hook",
+			Name: "test hook",
 			Src: fmt.Sprintf(`
 a = hook.NewManager()
 err = hook.LoadYakitPlugin(a, "asdfhuiasdhfhasdf", "clear")
@@ -33,7 +33,7 @@ if err == nil {
 }
 `),
 		},
-		{Name: "测试 hooks，已知插件", Src: `
+		{Name: "Test hooks, known plug-ins", Src: `
 a = hook.NewManager()
 err = hook.LoadYakitPlugin(a, "testtype", "clear")
 if err != nil {
@@ -44,5 +44,5 @@ a.CallByName("clear")
 `},
 	}
 
-	Run("hooks 测试", t, cases...)
+	Run("hooks test", t, cases...)
 }

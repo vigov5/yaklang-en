@@ -9,14 +9,14 @@ import (
 )
 
 func TestIndexString(t *testing.T) {
-	res := IndexAllSubstrings("{{=aa=}}", "{{", "{{=", "}}", "=}}") //有点小bug
+	res := IndexAllSubstrings("{{=aa=}}", "{{", "{{=", "}}", "=}}") //A little bug
 	spew.Dump(res)
 }
 func TestEscaper_Unescape(t *testing.T) {
-	chars := []string{"{{", "("} // 单双字符
+	chars := []string{"{{", "("} // Single and double characters
 	escaper := NewDefaultEscaper(chars...)
 	for _, testcase := range [][2]string{
-		// 测试边界
+		// Test boundary
 		{
 			`\%s\%s`,
 			`%s%s`,
@@ -29,12 +29,12 @@ func TestEscaper_Unescape(t *testing.T) {
 			`aa\%saaa\%saa`,
 			`aa%saaa%saa`,
 		},
-		//转义未定义字符(转义后应该是字符本身)
+		//Escape undefined characters (it should be the characters themselves after escaping)
 		{
 			`aa\a%saaa\a%saa`,
 			`aaa%saaaa%saa`,
 		},
-		// 转义转义符
+		// Escape escape characters
 		{
 			`aa\\%saaa\\%saa`,
 			`aa\%saaa\%saa`,
@@ -63,11 +63,11 @@ func TestEscaper_Unescape(t *testing.T) {
 	}
 }
 func TestAutoEscape(t *testing.T) {
-	chars := []string{"{{", "}}", "(", ")"} // 单双字符
+	chars := []string{"{{", "}}", "(", ")"} // Single and double characters
 	escaper := NewDefaultEscaper(chars...)
 	for _, testcase := range [][2]string{
 		{
-			"{{asd())", // 测试边界
+			"{{asd())", // Test boundary
 			`\{{asd\(\)\)`,
 		},
 		{

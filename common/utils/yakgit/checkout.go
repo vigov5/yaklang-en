@@ -7,11 +7,11 @@ import (
 	"github.com/yaklang/yaklang/common/utils"
 )
 
-// Checkout 用于指定一个本地仓库，切换其分支或者恢复工作树的文件，这种行为称之为检出(checkout)，它还可以接收零个到多个选项函数，用于影响检出行为
+// . Checkout is used to specify a local warehouse, switch its branches or restore the files of the working tree. This behavior is called checkout. It can also receive zero to more option functions. Use to affect detection behavior
 // Example:
 // ```
-// git.Checkout("C:/Users/xxx/Desktop/yaklang", "feat/new-branch", git.checkoutCreate(true)) // 创建新分支
-// git.Checkout("C:/Users/xxx/Desktop/yaklang", "old-branch", git.checkoutForce(true)) // 强制切换
+// git.Checkout("C:/Users/xxx/Desktop/yaklang", "feat/new-branch", git.checkoutCreate(true)) // Create a new branch
+// git.Checkout("C:/Users/xxx/Desktop/yaklang", "old-branch", git.checkoutForce(true)) // and force switching
 // ```
 func checkout(localPath string, ref string, opts ...Option) error {
 	c := &config{Remote: "origin"}

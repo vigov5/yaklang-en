@@ -180,7 +180,7 @@ func LuaVMValuesToFunctionMap(f *Function, vs []*Value) map[int]*Value {
 
 	funcName := f.GetActualName()
 
-	// 先展开传入参数包含可变参数的情况
+	// First expand the case where the incoming parameters contain variable parameters.
 	newVS := make([]*Value, 0)
 	for _, val := range vs {
 		if val.TypeVerbose == "variadic-params" {
@@ -257,7 +257,7 @@ func (vm *Frame) CallYakFunction(asyncCall bool, f *Function, vs []*Value) inter
 func (vm *Frame) CallLuaFunction(asyncCall bool, f *Function, vs []*Value) interface{} {
 	params := LuaVMValuesToFunctionMap(f, vs)
 
-	// TODO: 目前lua暂不支持coroutine
+	// TODO: Lua currently does not support coroutine.
 	//if asyncCall {
 	//	vm.vm.ExecAsyncYakFunction(f, params)
 	//	return nil

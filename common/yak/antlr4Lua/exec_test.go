@@ -13,20 +13,20 @@ import (
 	"testing"
 )
 
-// init 暂时用来注入一些函数 lua规定变量名不能@开头，所以此处函数名若@开头表明其作用为替代一些yakvm中不存在的opcode的功能
+// init is temporarily used to inject some functions. Lua stipulates that variable names cannot start with @, so if the function name here starts with @, it indicates that its function is to replace some opcode functions that do not exist in yakvm.
 // func init() {
 // 	//os.Setenv("LUA_DEBUG", "1")
-// 	// 使用 yakvm.Import 是最原始的导入方法 yaklang的import分两种，一种是通过script_engine.go以类似于内置依赖库的形式导入
-// 	// 另一种是在new Engine的时候导入eval等内置函数
-// 	// 此处先加入一些常用的lua内置函数方便测试
+// 	// . Using yakvm.Import is the most original import method of yaklang. There are two types of import. One is to import
+// 	// first. The other is to import eval and other built-in functions
+// 	// . Here, some commonly used Lua built-in functions are added to facilitate testing. The key of
 // 	// http://www.lua.org/manual/5.3/manual.html
 
-// 	// print (···)
+// 	// print (·· ·)
 // 	//Receives any number of arguments and prints their values to stdout, using the
 // 	//tostring function to convert each argument to a string. print is not intended
 // 	//for formatted output, but only as a quick way to show a value, for instance for
 // 	//debugging. For complete control over the output, use string.format and io.write.
-// 	// 原生lua的print会在多个参数中间加tab，这里问题不大go默认使用ws
+// 	// native Lua print Tabs will be added between multiple parameters. There is no big problem here. By default, go uses ws
 // 	Import("print", func(v ...interface{}) {
 // 		toStr := func(x interface{}) (string, bool) {
 // 			switch v := x.(type) {
@@ -203,9 +203,9 @@ import (
 
 // 			for index := 1; index <= mapLen; index++ {
 // 				value := valueOfInputMap.MapIndex(reflect.ValueOf(index))
-// 				// 使用 reflect 访问 map 元素时，需要注意检查 MapIndex 返回的值是否可用，
-// 				// 因为如果索引对应的键不存在，或者键对应的值为 nil，那么 MapIndex 方法会返回一个无效的 Value，
-// 				// 不能直接使用，需要先检查一下
+// 				// When using reflect to access map elements, you need to pay attention to check whether the value returned by MapIndex is available,
+// 				// because if the key corresponding to the index does not exist, or the value corresponding to the key is nil, then the MapIndex method will return an invalid Value,
+// 				// through script_engine.go in a form similar to the built-in dependent library. It cannot be used directly. You need to check
 // 				if value.IsValid() && !value.IsZero() {
 // 					tblLen++
 // 				} else {
@@ -242,7 +242,7 @@ import (
 // 				keysMap[keyStr] = iter.Key().Interface()
 // 			}
 // 			sort.Strings(keysString)
-// 			// map的key是唯一的
+// 			// map is the only
 // 			for index, value := range keysString {
 // 				if value == indexToNext {
 // 					if index+1 == len(keysString) {
@@ -265,21 +265,21 @@ import (
 
 func TestMultilineComment(t *testing.T) {
 	code := `--[[
- 多行注释
-assert(false, "多行注释bug")
- 多行注释
+ multi-line comment
+assert(false, "multi-line comment bug")
+ multi-line comment
  --]]`
 	NewLuaSnippetExecutor(code).SmartRun()
 }
 
 func TestLongStr(t *testing.T) {
-	code := `string3 = [["Lua 教程"]]
-str = '"Lua 教程"'
+	code := `string3 = [["Lua tutorial"]]
+str = '"Lua tutorial"'
 a=[[=["lua"]=]]
 print(a)
 print(str)
 print(string3)
-assert(string3 == '"Lua 教程"', "LongString error")
+assert(string3 == '"Lua tutorial"', "LongString error")
 assert(a == '=["lua"]=', "LongString error")
 `
 	NewLuaSnippetExecutor(code).SmartRun()
@@ -292,19 +292,19 @@ c = 15
 d = 5
 
 e = (a + b) * c / d;-- ( 30 * 15 ) / 5
-print("(a + b) * c / d 运算值为  :",e )
+print("(a + b) * c / d is:",e )
 assert(e==90.0, "OperatorPriority not right")
 
 e = ((a + b) * c) / d; -- (30 * 15 ) / 5
-print("((a + b) * c) / d 运算值为 :",e )
+print("((a + b) * c) / d The operation value is:",e )
 assert(e==90.0, "OperatorPriority not right")
 
 e = (a + b) * (c / d);-- (30) * (15/5)
-print("(a + b) * (c / d) 运算值为 :",e )
+print("(a + b) * (c / d) The operation value is:",e )
 assert(e==90.0, "OperatorPrior	ity not right")
 
 e = a + (b * c) / d;  -- 20 + (150/5)
-print("a + (b * c) / d 运算值为   :",e )
+print("a + (b * c) / d The operation value is:",e )
 assert(e==50.0, "OperatorPriority not right")
 `
 	NewLuaSnippetExecutor(code).SmartRun()
@@ -371,7 +371,7 @@ print(func..(3.14^3.14))
 
 func TestGetLenOperator(t *testing.T) {
 	code := `
-res = "Zhongli (Chinese: 钟离 Zhōnglí) is a playable Geo character in Genshin Impact. A consultant of the Wangsheng Funeral Parlor, he is later revealed to be the current vessel of the Geo Archon, Morax, who has decided to experience the world from the perspective of a mortal."
+res = "Zhongli (Chinese: Zhongli Zhōnglí) is a playable Geo character in Genshin Impact. A consultant of the Wangsheng Funeral Parlor, he is later revealed to be the current vessel of the Geo Archon, Morax, who has decided to experience the world from the perspective of a mortal."
 assert(#res==274, "Getlen Operator <#> failed")
 `
 	NewLuaSnippetExecutor(code).SmartRun()
@@ -379,7 +379,7 @@ assert(#res==274, "Getlen Operator <#> failed")
 
 func TestGetLenOperator1(t *testing.T) {
 	code := `
-assert(#"Zhongli (Chinese: 钟离 Zhōnglí) is a playable Geo character in Genshin Impact. A consultant of the Wangsheng Funeral Parlor, he is later revealed to be the current vessel of the Geo Archon, Morax, who has decided to experience the world from the perspective of a mortal."==274, "Getlen Operator <#> failed")
+assert(#"Zhongli (Chinese: Zhongli Zhōnglí) is a playable Geo character in Genshin Impact. A consultant of the Wangsheng Funeral Parlor, he is later revealed to be the current vessel of the Geo Archon, Morax, who has decided to experience the world from the perspective of a mortal."==274, "Getlen Operator <#> failed")
 `
 	NewLuaSnippetExecutor(code).SmartRun()
 }
@@ -729,11 +729,11 @@ assert(a == 14, "basic while loop bug with break")
 
 func TestBasicRepeatUntil(t *testing.T) {
 	code := `
---[ 变量定义 --]
+--[Variable definition--]
 a = 10
---[ 执行循环 --]
+--[Execute loop--]
 repeat
-   print("a的值为:", a)
+   print("The value of a is:", a)
    a = a + 1
 until( a > 15 )
 assert(a==16, "basic repeat-until loop bug without break")
@@ -743,11 +743,11 @@ assert(a==16, "basic repeat-until loop bug without break")
 
 func TestBasicRepeatUntilWithBreak(t *testing.T) {
 	code := `
---[ 变量定义 --]
+--[Variable definition--]
 a = 10
---[ 执行循环 --]
+--[Execute loop--]
 repeat
-   print("a的值为:", a)
+   print("The value of a is:", a)
    a = a + 1
    break
 until( a > 15 )
@@ -775,15 +775,15 @@ end
 	NewLuaSnippetExecutor(code).SmartRun()
 }
 
-// Fixed: 在lua里if 0 和 if (0) 都被认为是 true 这个和yak的jmpIfFalse等跳转的opcode的跳转逻辑不同 暂时没处理
+// Fixed: In Lua, if 0 and if (0) are both considered true. This is different from the jump logic of yaks jmpIfFalse and other jump opcodes. It has not been processed yet
 func TestIfWithZero(t *testing.T) {
 	code := `
---[ 0 为 true ]
+- [0 is true]
 a = false
 if(0)
 then
 	a = true
-   print("0 为 true")
+   print("0 is true.")
 end
 assert(a, "0 in if-condition should be equivalent to true")
 `
@@ -792,27 +792,27 @@ assert(a, "0 in if-condition should be equivalent to true")
 
 func TestElseIf(t *testing.T) {
 	code := `
---[ 定义变量 --]
+--[Define variables--]
 a = 100
 
---[ 检查布尔条件 --]
+--[Check Boolean condition--]
 if( a == 10 )
 then
-   --[ 如果条件为 true 打印以下信息 --]
+   a or b - The condition is true
    assert(false, "basic else-if failed")
 elseif( a == 20 )
 then  
-   --[ if else if 条件为 true 时打印以下信息 --]
+   --[ if else if the following information is printed when the condition is true --]
    assert(false, "basic else-if failed")
 elseif( a == 30 )
 then
-   --[ if else if condition 条件为 true 时打印以下信息 --]
+   --[If the condition is true, execute the following if condition judgment --]
   assert(false, "basic else-if failed")
 else
-   --[ 以上条件语句没有一个为 true 时打印以下信息 --]
-   print("没有匹配 a 的值" )
+   --[ if else if the condition is true, print the following information--]
+   print("There is no value matching a" )
 end
-print("a 的真实值为: ", a )
+print("a is: ", a )
 assert(a==100, "basic else-if failed")
 	`
 	NewLuaSnippetExecutor(code).SmartRun()
@@ -820,18 +820,18 @@ assert(a==100, "basic else-if failed")
 
 func TestElseIf1(t *testing.T) {
 	code := `
---[ 定义变量 --]
+--[Define variables--]
 a = 100;
 b = 200;
 ok = false;
---[ 检查条件 --]
+--[Check condition--]
 if( a == 100 )
 then
-   --[ if 条件为 true 时执行以下 if 条件判断 --]
+   --[When the if condition is true, perform the following if condition judgment--]
    if( b == 200 )
    then
-      --[ if 条件为 true 时执行该语句块 --]
-      print("a 的值为 100 b 的值为 200" );
+      --[0 is true] (a and b) - The condition is false
+      print("a is:" );
       ok = true
 
    end
@@ -847,32 +847,32 @@ b = true
 
 if ( a and b )
 then
-   print("a and b - 条件为 true" )
+   print("a and b - The condition is true" )
 end
 
 if ( a or b )
 then
-   print("a or b - 条件为 true" )
+   print("a or b - The condition is true" )
 end
 
-print("---------分割线---------" )
+print("---------Separation line---------" )
 
--- 修改 a 和 b 的值
+-- modify the values of a and b
 a = false
 b = true
 
 if ( a and b )
 then
-   print("a and b - 条件为 true" )
+   print("a and b - The condition is true" )
 else
-   print("a and b - 条件为 false" )
+   print("a and b - The condition is false" )
 end
 
 if ( not( a and b) )
 then
-   print("not( a and b) - 条件为 true" )
+   print("not( a and b) - The condition is true" )
 else
-   print("not( a and b) - 条件为 false" )
+   print("not( a and b) - the condition is false" )
 end`
 	NewLuaSnippetExecutor(code).SmartRun()
 }
@@ -1003,7 +1003,7 @@ assert(native==nil, "FUNCTION SHOULD NOT ESCAPED")
 	NewLuaSnippetExecutor(code).SmartRun()
 }
 
-// Fixed: 目前多变量赋值行为还是有问题，这个主要是因为yak的opCode行为和lua不一致导致的 此前采用的办法在面对函数这种运行时动态赋值无效 tweak op_assign
+// Fixed: There is still a problem with the multi-variable assignment behavior at present. This is mainly due to the inconsistency between yaks opCode behavior and lua. The previously adopted method is invalid when facing functions such as dynamic assignment. tweak op_assign
 func TestFunctionWithMultipleReturnVar(t *testing.T) {
 	code := `
 function gen()
@@ -1091,7 +1091,7 @@ gen()`
 }
 
 func TestLocalWithConst(t *testing.T) {
-	//这个错误应该是编译时检查的
+	//. This error should be
 	defer func() {
 		if msg := recover(); msg != nil {
 			if !strings.Contains(msg.(string), "attempt to assign to const variable 'a'") {
@@ -1147,7 +1147,7 @@ test(1)
 	NewLuaSnippetExecutor(code).SmartRun()
 }
 
-// SOLVED： 现在yakvm的opcode不支持 map[nil]的写法
+// SOLVED: Now the opcode of yakvm does not support the writing method of map[nil]
 func TestTableConstructor(t *testing.T) {
 	code := `
 function f()
@@ -1165,7 +1165,7 @@ assert(a.x == 1, "tbl ctor bug 7")
 	NewLuaSnippetExecutor(code).SmartRun()
 }
 
-// SOLVED： 现在yakvm的opcode不支持 map[nil]的写法
+// SOLVED: Now the opcode of yakvm does not support the writing method of map[nil]
 func TestTableConstructor1(t *testing.T) {
 	code := `
 a = {
@@ -1202,41 +1202,41 @@ assert(a.x==1, "TestTblAssign failed")
 
 func TestBasicTbl(t *testing.T) {
 	code := `
--- 简单的 table
+-- Simple table
 mytable = {}
-print("mytable 的类型是 ","table")
+print("The type of mytable is ","table")
 
 mytable[1]= "Lua"
-mytable["wow"] = "修改前"
-print("mytable 索引为 1 的元素是 ", mytable[1])
+mytable["wow"] = "The element with index 1 of alternatetable is"
+print("mytable The element with index 1 is ", mytable[1])
 
 assert(mytable[1]=="Lua", "TestBasicTbl failed1")
 
-print("mytable 索引为 wow 的元素是 ", mytable["wow"])
-assert(mytable["wow"]=="修改前", "TestBasicTbl failed2")
+print("The element indexed by wow in mytable is ", mytable["wow"])
+assert(mytable["wow"]=="The element with index 1 of alternatetable is", "TestBasicTbl failed2")
 
--- alternatetable和mytable的是指同一个 table
+-- alternatetable and mytable refer to the same table
 alternatetable = mytable
 
-print("alternatetable 索引为 1 的元素是 ", alternatetable[1])
+print("alternatetable element with index 1 is ", alternatetable[1])
 assert(alternatetable[1]=="Lua", "TestBasicTbl failed3")
-print("mytable 索引为 wow 的元素是 ", alternatetable["wow"])
-assert(alternatetable["wow"]=="修改前", "TestBasicTbl failed4")
-alternatetable["wow"] = "修改后"
+print("The element indexed by wow in mytable is ", alternatetable["wow"])
+assert(alternatetable["wow"]=="The element with index 1 of alternatetable is", "TestBasicTbl failed4")
+alternatetable["wow"] = "modified"
 
-print("mytable 索引为 wow 的元素是 ", mytable["wow"])
-assert(alternatetable["wow"]=="修改后", "TestBasicTbl failed5")
+print("The element indexed by wow in mytable is ", mytable["wow"])
+assert(alternatetable["wow"]=="modified", "TestBasicTbl failed5")
 
--- 释放变量
+- release variable
 alternatetable = nil
-print("alternatetable 是 ", alternatetable)
+print("alternatetable is ", alternatetable)
 assert(alternatetable==nil, "TestBasicTbl failed6")
 
--- mytable 仍然可以访问
-print("mytable 索引为 wow 的元素是 ", mytable["wow"])
-assert(mytable["wow"]=="修改后", "TestBasicTbl failed7")
+-- mytable can still access
+print("The element indexed by wow in mytable is ", mytable["wow"])
+assert(mytable["wow"]=="modified", "TestBasicTbl failed7")
 mytable = nil
-print("mytable 是 ", mytable)
+print("mytable is ", mytable)
 assert(mytable==nil, "TestBasicTbl failed8")
 `
 	NewLuaSnippetExecutor(code).SmartRun()
@@ -1341,7 +1341,7 @@ assert(fibl(20)==6765, "fibl failed")
 func TestFunctionWithEllipsis(t *testing.T) {
 	code := `function add(...)
     local s = 0
-    --for i, v in ipairs {...} do -- > {...} 表示一个由所有变长参数构成的数组  
+    --for i, v in ipairs {...} do -- > {...} represents an array  
       --  s = s + v
     -- end
 s=25
@@ -1351,16 +1351,16 @@ print(add(3, 4, 5, 6, 7)) --->25
 
 function average(...)
     result = 0
-    local arg = {...}    --> arg 为一个表，局部变量
+    local arg = {...}    --> arg is a table, local variable
     -- for i,v in ipairs(arg) do
        -- result = result + v
     -- end
 result = 33
-    print("总共传入 " .. #arg .. " 个数")  --> #数组变量名 可以获取数组长度，但是如果这个数组中包含nil，那么需要通过select获取
+    print("A total of " .. #arg .. " number")  --> #The array variable name can get the array length, but if the array contains nil , then you need to obtain
     return result/#arg
 end
  
-print("平均值为",average(10,5,3,4,5,6)) ---> 5.5
+print("The average value is",average(10,5,3,4,5,6)) ---> 5.5
 `
 	NewLuaSnippetExecutor(code).SmartRun()
 }
@@ -1410,11 +1410,11 @@ func TestIterMultiStates(t *testing.T) {
 function elementIterator(collection)
     local index = 0
     local count = #collection
-    -- 闭包函数
+    - closure function
     return function()
         index = index + 1
         if index <= count then
-            --  返回迭代器的当前元素
+            -- Return the current element of the iterator
             return collection[index]
         end
     end
@@ -1494,13 +1494,13 @@ assert(test1 and test2 and test3, "TestIterWithPairs Not Iterate all elem!")
 }
 
 func TestIterWithCustom(t *testing.T) {
-	code := `-- 创建迭代器的工厂函数
+	code := `-- Factory function to create iterator
 function kvpair(tbl)
-    -- 迭代器为next
+    -- the iterator is next
     return next, tbl, nil
 end
 test1, test2, test3 = false, false, false
--- 泛型for
+-- generic for
 local tbl = {
     nickname = "alice",
     gender = 1

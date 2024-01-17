@@ -48,7 +48,7 @@ func Intersect(x interface{}, y interface{}) interface{} {
 	return zSlice.Interface()
 }
 
-// Intersect / IntersectString 返回两个字符串切片之间的交集
+// Intersect / IntersectString returns the intersection between two string slices
 // Example:
 // ```
 // str.Intersect(["1", "2", "3"], ["3", "4", "5"]) // ["3"]

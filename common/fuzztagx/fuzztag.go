@@ -30,7 +30,7 @@ func (f *FuzzTag) Exec(raw *parser.FuzzResult, methods ...map[string]*parser.Tag
 			if isIdentifyString(data) {
 				name = data
 			}
-		} else if len(matchedPos) > 1 && matchedPos[0][0] == 0 && matchedPos[len(matchedPos)-1][0] == 1 { // 第一个是左括号，最后一个右括号
+		} else if len(matchedPos) > 1 && matchedPos[0][0] == 0 && matchedPos[len(matchedPos)-1][0] == 1 { // The first is the left bracket and the last is the right bracket
 			leftPos := matchedPos[0]
 			rightPos := matchedPos[len(matchedPos)-1]
 			if leftPos[0] == 0 && rightPos[0] == 1 && strings.TrimSpace(data[rightPos[1]+len(MethodRight):]) == "" {
@@ -63,7 +63,7 @@ func (f *FuzzTag) Exec(raw *parser.FuzzResult, methods ...map[string]*parser.Tag
 		}
 		return nil
 	}
-	if err := compile(); err != nil { // 对于编译错误，返回原文
+	if err := compile(); err != nil { // For compilation errors, return the original text
 		escaper := parser.NewDefaultEscaper(`\`, "{{", "}}")
 		return []*parser.FuzzResult{parser.NewFuzzResultWithData(fmt.Sprintf("{{%s}}", escaper.Escape(data)))}, nil
 	}
@@ -292,7 +292,7 @@ func (f *SimpleFuzzTag) Exec(raw *parser.FuzzResult, methods ...map[string]*pars
 	if isDyn {
 		labels = append(labels, "dyn")
 	}
-	if err := compile(); err != nil { // 对于编译错误，返回原文
+	if err := compile(); err != nil { // For compilation errors, return the original text
 		escaper := parser.NewDefaultEscaper(`\`, "{{", "}}")
 		return []*parser.FuzzResult{parser.NewFuzzResultWithData(fmt.Sprintf("{{%s}}", escaper.Escape(rawData)))}, nil
 	}

@@ -66,7 +66,7 @@ type DocumentHelper struct {
 	Libs          map[string]*ScriptLib
 	Functions     map[string]*FuncDecl
 	Instances     map[string]*LibInstance
-	StructMethods map[string]*ScriptLib // 结构体方法，名字 -> 所有结构体与结构体指针方法
+	StructMethods map[string]*ScriptLib // Structure method, name -> All structures and structure pointer methods
 
 	hooks []func(h *DocumentHelper)
 }
@@ -152,8 +152,8 @@ func (h *DocumentHelper) HelpInfo() string {
 
 	buffer := bytes.NewBuffer(nil)
 
-	// 内置用户函数
-	buffer.WriteString("### 函数定义\n")
+	// Built-in user function
+	buffer.WriteString("### Function definition\n")
 	var items []string
 	for _, i := range h.Functions {
 		items = append(items, i.String())
@@ -166,7 +166,7 @@ func (h *DocumentHelper) HelpInfo() string {
 	buffer.WriteString(fmt.Sprintf("\n%v\n", strings.Repeat("-", 48)))
 
 	t := tablewriter.NewWriter(buffer)
-	t.SetHeader([]string{"内置值", "值的类型", "值"})
+	t.SetHeader([]string{"Built-in value", "Value type", "Value"})
 	for name, item := range h.Instances {
 		if item.ValueStr == "" {
 			t.Append([]string{name, item.Type, "-"})
@@ -179,7 +179,7 @@ func (h *DocumentHelper) HelpInfo() string {
 	buffer.WriteString(fmt.Sprintf("\n%v\n", strings.Repeat("-", 48)))
 
 	t = tablewriter.NewWriter(buffer)
-	t.SetHeader([]string{"可用依赖库", "依赖库可用元素(值/函数)"})
+	t.SetHeader([]string{"Available dependent library", "Dependent library available elements (value/function)"})
 	for libName, libs := range h.Libs {
 		t.Append([]string{libName, fmt.Sprint(len(libs.ElementDocs))})
 	}
@@ -256,7 +256,7 @@ func (h *DocumentHelper) libFuncToStr(libName, funcName string, strType string) 
 
 	switch strType {
 	case "help":
-		return fmt.Sprintf("函 数 名: %s.%s\n函数声明: %s\n函数文档: %s", libName, funcName, f.Decl, f.Document)
+		return fmt.Sprintf("Function name: %s.%s\nFunction declaration: %s\nFunction document: %s", libName, funcName, f.Decl, f.Document)
 	case "completion":
 		return f.VSCodeSnippets
 	default:
@@ -342,7 +342,7 @@ func (f *FuncDecl) String() string {
 // }
 
 func CustomHandleTypeName(typName string) string {
-	// 这里需要手动处理context
+	// Here you need to manually handle the context
 	if strings.Contains(typName, "context") {
 		return "context.Context"
 	}

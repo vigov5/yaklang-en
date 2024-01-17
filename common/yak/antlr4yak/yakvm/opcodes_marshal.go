@@ -165,16 +165,16 @@ func (c *CodesMarshaller) consumeSymbolTable(buf []byte) (*SymbolTable, []byte, 
 		tableDesc[tbl.Index] = tbl
 	}
 
-	// 先初始化symboltable
+	// initializes symboltable first
 	for index := 1; index <= blockLen; index++ {
 		c.table[index] = &SymbolTable{}
 	}
-	// 对symboltable赋值
+	// assigns value to symboltable
 	for id, desc := range tableDesc {
 		c.descToIns(desc, id)
 	}
 	rootTable := c.table[1]
-	// 设置rootTable
+	// sets rootTable
 	rootTable.tableCount = blockLen
 	rootTable.idToSymbolTable = c.table
 
@@ -191,7 +191,7 @@ func (c *CodesMarshaller) marshalSymbolTable(buf []byte, tbl *SymbolTable) ([]by
 
 	for _, tbl := range tables {
 		// index - verbose(bytes) index(varint) parentIndex(varint) - childrenCount(varint) childrenIndex(varint) - symbolCount(varint) symbolName(bytes) symbolId(varint)
-		// index 最小为1
+		// index minimum is 1
 
 		// index
 		buf = protowire.AppendVarint(buf, uint64(tbl.index))
@@ -241,7 +241,7 @@ func (c *CodesMarshaller) consumeFunc(buf []byte) (*Function, []byte, error) {
 
 	i, n = protowire.ConsumeVarint(buf)
 	if i == 1 {
-		// 可变参数
+		// variable parameters
 		f.isVariableParameter = true
 	}
 	buf = buf[n:]
@@ -430,11 +430,11 @@ func (c *CodesMarshaller) marshalAny(buf []byte, i interface{}) ([]byte, error) 
 			return buf, nil
 		} else {
 			switch v := i.(type) {
-			case string: // string 直接quote，不需要json序列化
+			case string: // string quotes directly, no need for json serialization
 				buf = protowire.AppendVarint(buf, uint64(reflect.TypeOf(i).Kind()))
 				buf = protowire.AppendBytes(buf, []byte(strconv.Quote(v)))
 				return buf, nil
-			case []byte: // 对[]byte做特殊处理
+			case []byte: // does special processing for []byte
 				buf = protowire.AppendVarint(buf, 27)
 			default:
 				buf = protowire.AppendVarint(buf, uint64(reflect.TypeOf(i).Kind()))
@@ -500,7 +500,7 @@ func (c *CodesMarshaller) consumeCode(buf []byte) (*Code, []byte, error) {
 	i, n = protowire.ConsumeVarint(buf)
 	buf = buf[n:]
 	if i == 1 {
-		// 有 op1
+		// There is op1
 		code.Op1, buf, err = c.consumeValue(buf)
 		if err != nil {
 			return nil, nil, utils.Errorf("consume value(op1) failed: %v", err)

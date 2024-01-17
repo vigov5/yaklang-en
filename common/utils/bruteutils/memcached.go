@@ -34,7 +34,7 @@ var memcachedAuth = &DefaultServiceAuthInfo{
 		}
 
 		if bytes.Contains(outputs, []byte("STAT")) {
-			// 未授权登录成功
+			// Unauthorized login successful
 			result.Ok = true
 			result.Username = ""
 			result.Password = ""

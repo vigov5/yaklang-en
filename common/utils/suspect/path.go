@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// IsFullURL 根据 value 猜测是否是一个完整 url，目前只关心 http 和 https
+// IsFullURL Guess whether it is a complete url based on value. Currently, we only care about http and https.
 func IsFullURL(v interface{}) bool {
 	var value = fmt.Sprint(v)
 	prefix := []string{"http://", "https://"}
@@ -18,7 +18,7 @@ func IsFullURL(v interface{}) bool {
 	return false
 }
 
-// 根据 value 猜测是否是一个 url path
+// Guess whether it is a url path based on value.
 func IsURLPath(v interface{}) bool {
 	var value = fmt.Sprint(v)
 	return strings.Contains(value, "/") || commonURLPathExtRegex.MatchString(value)

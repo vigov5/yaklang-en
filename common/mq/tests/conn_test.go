@@ -14,16 +14,16 @@ import (
 )
 
 func Test_Conn(t *testing.T) {
-	//获得ampq地址
+	//Obtain the ampq address
 	u := thirdpartyservices.GetAMQPUrl()
 
 	test := assert.New(t)
-	//设置message broker, 第二个参数是config方法覆盖默认值
+	//Set the message broker, the second parameter is the config method to override the default value
 	broker, err := mq.NewBroker(utils.TimeoutContext(5*time.Second), mq.WithAMQPUrl(u))
 	if err != nil {
 		test.FailNow(err.Error())
 	}
-	//创建一个broker server, 设置地址为 test?? 并发200
+	//Create a broker server, set the address to test?? Concurrency 200
 	server, err := mq.NewListener(broker, "test", 200)
 	if err != nil {
 		test.FailNow(err.Error())

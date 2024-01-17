@@ -31,8 +31,8 @@ func TestP7BlockDecrypt(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Printf("原文: %02X\n", src)
-	fmt.Printf("加密: %02X\n", encOut.Bytes())
+	fmt.Printf("Original text: %02X\n", src)
+	fmt.Printf("Encryption: %02X\n", encOut.Bytes())
 
 	decrypter := cipher.NewCBCDecrypter(block, iv)
 	decOut := bytes.NewBuffer(make([]byte, 0, 1024))
@@ -41,8 +41,8 @@ func TestP7BlockDecrypt(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	fmt.Printf("解密: %02X\n", decOut.Bytes())
+	fmt.Printf("Decryption: %02X\n", decOut.Bytes())
 	if !bytes.Equal(src, decOut.Bytes()) {
-		t.Fatalf("实际解密结果: %02X, 期待结果: %02X", decOut.Bytes(), src)
+		t.Fatalf("Actual decryption result: %02X, Expected result: %02X", decOut.Bytes(), src)
 	}
 }

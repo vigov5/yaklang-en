@@ -21,17 +21,17 @@ func TestMutateDoc(t *testing.T) {
 
 	var GetFuzztagMarkdownDoc = func() string {
 		/*
-			表格内
-			|标签名|标签别名|标签描述|
+			table
+			|tag name|tag alias|Tag description|
 			|:--------|:-------|:------|
 
 		*/
 		var buf bytes.Buffer
 		buf.Write([]byte(`
 
-## fuzztag 可用标签一览
+## fuzztag List of available tags
 
-|标签名|标签别名|标签描述|
+|tag name|tag alias|Tag description|
 |:-------|:-------|:-------|
 `))
 		escapeVertical := func(s string) string {

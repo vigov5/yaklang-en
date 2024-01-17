@@ -26,12 +26,12 @@ import (
 )
 
 func TestSm2(t *testing.T) {
-	priv, err := GenerateKey(rand.Reader) // 生成密钥对
+	priv, err := GenerateKey(rand.Reader) // Generate key pair
 	fmt.Println(priv)
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Printf("%v\n", priv.Curve.IsOnCurve(priv.X, priv.Y)) // 验证是否为sm2的曲线
+	fmt.Printf("%v\n", priv.Curve.IsOnCurve(priv.X, priv.Y)) // Verify whether it is the curve of sm2
 	pub := &priv.PublicKey
 	msg := []byte("123456")
 	d0, err := pub.EncryptAsn1(msg, rand.Reader)
@@ -56,8 +56,8 @@ func TestSm2(t *testing.T) {
 		fmt.Printf("Error: failed to decrypt: %v\n", err)
 	}
 	fmt.Printf("clear text = %s\n", d3)
-	msg, _ = ioutil.ReadFile("ifile")             // 从文件读取数据
-	sign, err := priv.Sign(rand.Reader, msg, nil) // 签名
+	msg, _ = ioutil.ReadFile("ifile")             // Read data from the file
+	sign, err := priv.Sign(rand.Reader, msg, nil) // Signature
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -67,14 +67,14 @@ func TestSm2(t *testing.T) {
 		t.Fatal(err)
 	}
 	signdata, _ := ioutil.ReadFile("TestResult")
-	ok := priv.Verify(msg, signdata) // 密钥验证
+	ok := priv.Verify(msg, signdata) // Key verification
 	if ok != true {
 		fmt.Printf("Verify error\n")
 	} else {
 		fmt.Printf("Verify ok\n")
 	}
 	pubKey := priv.PublicKey
-	ok = pubKey.Verify(msg, signdata) // 公钥验证
+	ok = pubKey.Verify(msg, signdata) // Public key verification
 	if ok != true {
 		fmt.Printf("Verify error\n")
 	} else {
@@ -86,17 +86,17 @@ func TestSm2(t *testing.T) {
 func BenchmarkSM2(t *testing.B) {
 	t.ReportAllocs()
 	msg := []byte("test")
-	priv, err := GenerateKey(nil) // 生成密钥对
+	priv, err := GenerateKey(nil) // Generate key pair
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.ResetTimer()
 	for i := 0; i < t.N; i++ {
-		sign, err := priv.Sign(nil, msg, nil) // 签名
+		sign, err := priv.Sign(nil, msg, nil) // Signature
 		if err != nil {
 			t.Fatal(err)
 		}
-		priv.Verify(msg, sign) // 密钥验证
+		priv.Verify(msg, sign) // Key verification
 	}
 }
 

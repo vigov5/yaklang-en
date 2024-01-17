@@ -1,4 +1,4 @@
-// 放在yakit runner中检查报错信息和位置
+// Put it in yakit runner to check the error message and location
 var a1 
 if 1 {
 	a1 = 1

@@ -1301,7 +1301,7 @@ func send(addr string) {
 	invokableId := "\xff\xff\xff\xff"
 	abbrevOffset := "\x00\x00\x00\x00"
 	//countLength := "\x01"
-	//capacityLength := "\xfe\x01\x00" //必须大于上面设置的AS值
+	//capacityLength := "\xfe\x01\x00" //Must be greater than the AS value set above
 	capacityLength := "\x10"
 	readObjectType := "\x00" //00 object deserial 01 ascii
 	data := cmd + qos + flags + responseId + invokableId + abbrevOffset

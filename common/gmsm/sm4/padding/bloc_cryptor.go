@@ -5,10 +5,10 @@ import (
 	"io"
 )
 
-// P7BlockDecrypt 解密密文，并去除PKCS#7填充
-// decrypter: 块解密器
-// in: 密文输入流
-// out: 明文输出流
+// P7BlockDecrypt decrypts the ciphertext, and removes PKCS#7 padding
+// decrypter: block decryptor
+// in: ciphertext input stream
+// out: plaintext output stream
 func P7BlockDecrypt(decrypter cipher.BlockMode, in io.Reader, out io.Writer) error {
 	bufIn := make([]byte, 1024)
 	bufOut := make([]byte, 1024)
@@ -30,10 +30,10 @@ func P7BlockDecrypt(decrypter cipher.BlockMode, in io.Reader, out io.Writer) err
 	return p7Out.Final()
 }
 
-// P7BlockEnc 以PKCS#7填充模式填充原文，并加密输出
-// encrypter: 块加密器
-// in: 明文输入流
-// out: 密文输出流
+// P7BlockEnc fills the original text with PKCS#7 padding mode, and encrypts the output
+// encrypter: block encryptor
+// in: plain text input stream
+// out: cipher text output stream
 func P7BlockEnc(encrypter cipher.BlockMode, in io.Reader, out io.Writer) error {
 	bufIn := make([]byte, 1024)
 	bufOut := make([]byte, 1024)

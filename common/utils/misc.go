@@ -21,7 +21,7 @@ func WaitConnect(addr string, timeout float64) error {
 					ch <- 1
 					return
 				}
-				//println("连接失败")
+				//println("Connection failed")
 				time.Sleep(100 * time.Microsecond)
 			}
 		}
@@ -30,7 +30,7 @@ func WaitConnect(addr string, timeout float64) error {
 	select {
 	case <-time.After(FloatSecondDuration(timeout)):
 		cancle()
-		//println("超时")
+		//println("timeout")
 		return errors.New("Connection attempt timed out")
 	case <-ch:
 		return nil

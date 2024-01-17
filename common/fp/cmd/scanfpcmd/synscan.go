@@ -19,7 +19,7 @@ import (
 var SynScanCmd = cli.Command{
 	Name:      "synscan",
 	ShortName: "syn",
-	Usage:     "SYN 端口扫描",
+	Usage:     "SYN port scan",
 	Before:    nil,
 	After:     nil,
 
@@ -35,49 +35,49 @@ var SynScanCmd = cli.Command{
 		},
 		cli.IntFlag{
 			Name:  "wait,waiting",
-			Usage: "在 SYN 包发送完毕之后等待多长时间进行收尾（Seconds）",
+			Usage: "How long to wait for finishing after the SYN packet is sent (Seconds)",
 			Value: 5,
 		},
 
-		// 指纹识别相关配置
+		// fingerprint recognition related configuration
 		cli.BoolFlag{
 			Name:  "fingerprint,fp,x",
-			Usage: "开启指纹扫描",
+			Usage: "Enable fingerprint scanning",
 		},
 		cli.IntFlag{
 			Name:  "request-timeout",
-			Usage: "单个请求的超时时间（Seconds）",
+			Usage: "Timeout for a single request (Seconds)",
 			Value: 10,
 		},
 		cli.StringFlag{
 			Name:  "rule-path,rule,r",
-			Usage: "手动加载规则文件/文件夹",
+			Usage: "Manually load rule file/Folder",
 		},
 		cli.BoolFlag{
 			Name:  "only-rule",
-			Usage: "只加载这个文件夹中的 Web 指纹",
+			Usage: "Only load web fingerprints in this folder",
 		},
 		cli.StringFlag{
 			Name:  "fp-json,fpo",
-			Usage: "详细结果输出 json 到文件",
+			Usage: "Detailed results output json to file",
 		},
 
-		// 输出实时的开放端口信息
+		// output real-time Open port information
 		cli.StringFlag{
 			Name:  "output",
-			Usage: "输出端口开放的信息到文件",
+			Usage: "output port open information to file",
 		},
 
 		cli.StringFlag{
 			Name:  "output-line-prefix",
 			Value: "",
-			Usage: "输出 OUTPUT 每一行的前缀，例如：https:// http://",
+			Usage: "Output the prefix of each line of OUTPUT, for example: https:// http://",
 		},
 
 		cli.IntFlag{
 			Name:  "fingerprint-concurrent,fc",
 			Value: 20,
-			Usage: "设置指纹扫描的并发量(同时进行多少个指纹扫描模块)",
+			Usage: "Set the concurrency of fingerprint scanning (how many fingerprint scanning modules are performed at the same time)",
 		},
 	},
 
@@ -117,7 +117,7 @@ var SynScanCmd = cli.Command{
 
 		log.Infof("default config: \n    iface:%v src:%v gateway:%v", synScanConfig.Iface.Name, synScanConfig.SourceIP, synScanConfig.GatewayIP)
 
-		// 解析指纹配置
+		// Analyze fingerprint configuration
 		// web rule
 		webRules, _ := fp.GetDefaultWebFingerprintRules()
 		userRule := webfingerprint.FileOrDirToWebRules(c.String("rule-path"))
@@ -129,22 +129,22 @@ var SynScanCmd = cli.Command{
 		}
 
 		fingerprintMatchConfigOptions := []fp.ConfigOption{
-			// 主动探测模式 - 主动发送符合条件的包
+			// active detection mode - proactively sending qualified packets
 			fp.WithActiveMode(true),
 
-			// 每一个指纹探测请求的超时时间
+			// Timeout for each fingerprint detection request
 			fp.WithProbeTimeout(time.Second * time.Duration(c.Int("request-timeout"))),
 
-			// web 指纹火力全开
+			// web fingerprint full firepower
 			fp.WithWebFingerprintUseAllRules(true),
 
-			// web 指纹
+			// web fingerprints
 			fp.WithWebFingerprintRule(webRules),
 
-			// 打开 Web 指纹识别
+			// Open Web fingerprint recognition
 			fp.WithForceEnableWebFingerprint(true),
 
-			// 开启 TCP 扫描
+			// enable TCP scan
 			fp.WithTransportProtos(fp.TCP),
 		}
 		fpConfig := fp.NewConfig(fingerprintMatchConfigOptions...)
@@ -155,8 +155,8 @@ var SynScanCmd = cli.Command{
 			return
 		}
 
-		// 指纹扫描开关
-		// 指纹扫描单独进行扫描
+		// fingerprint scan switch
+		// Scan fingerprint scanning separately
 		scanCenterConfig.DisableFingerprintMatch = true
 
 		log.Info("start create hyper scan center...")
@@ -174,7 +174,7 @@ var SynScanCmd = cli.Command{
 		var openPortCount int
 		var openResult []string
 
-		//// 分发任务与回调函数
+		//// distribution task and callback function
 		//err = scanCenter.RegisterMatcherResultHandler("cmd", func(matcherResult *fp.MatchResult, err error) {
 		//	fpLock.Lock()
 		//	defer fpLock.Unlock()

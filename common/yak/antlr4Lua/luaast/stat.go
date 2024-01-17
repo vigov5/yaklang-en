@@ -76,7 +76,7 @@ func (l *LuaTranslator) VisitStat(raw lua.IStatContext) interface{} {
 			jmp-to-exp
 			while-scope-end
 
-			当存在break时
+			When there is a break,
 			while-scope
 			exp
 			jmp-to-end-if-false
@@ -105,10 +105,10 @@ func (l *LuaTranslator) VisitStat(raw lua.IStatContext) interface{} {
 		var whileEnd = l.GetNextCodeIndex()
 
 		f()
-		// 设置解析的 block 中没有设置过的 break
+		// of a slice that has not been set in the parsed block. break
 		l.exitWhileContext(whileEnd + 1)
 
-		// 设置条件自带的 toEnd 位置
+		// sets the toEnd position
 		for _, toEnd := range toEnds {
 			if toEnd != nil {
 				toEnd.Unary = whileEnd
@@ -117,10 +117,10 @@ func (l *LuaTranslator) VisitStat(raw lua.IStatContext) interface{} {
 
 		return nil
 	}
-	//In the repeat–until loop, the inner block does not end at the until keyword,
+	//. In the repeat–until loop, the inner block does not end at the until keyword,
 	//but only after the condition. So, the condition can refer to local variables
 	//declared inside the loop block
-	// 考虑用语法糖的形式实现
+	// . Consider using syntactic sugar to implement
 	if s := i.Repeat(); s != nil {
 		var toEnds []*yakvm.Code
 
@@ -130,23 +130,23 @@ func (l *LuaTranslator) VisitStat(raw lua.IStatContext) interface{} {
 		f := l.SwitchSymbolTableInNewScope("repeat-loop", uuid.NewV4().String())
 
 		l.VisitBlock(i.Block(0))
-		// 把exp条件放进block-scope 这样在block里生命的local在until进行条件判断时仍可使用
+		// . Put the exp condition into the block-scope. In this way, the local life in the block can still be used when making conditional judgment until until.
 		var endScope *yakvm.Code
 		endScope, l.codes = l.codes[len(l.codes)-1], l.codes[:len(l.codes)-1]
 		exp := i.Exp(0)
 		l.VisitExp(exp)
 		l.codes = append(l.codes, endScope)
 
-		toEnds = append(toEnds, l.pushJmpIfTrue()) // repeat的条件不为true则一直循环 不像for-while
-		l.pushJmp().Unary = startIndex + 1         // 避免重复开启scope
+		toEnds = append(toEnds, l.pushJmpIfTrue()) // . If the condition of repeat is not true, it will always loop like for-while
+		l.pushJmp().Unary = startIndex + 1         // to avoid opening the scope repeatedly.
 
 		var untilEnd = l.GetNextCodeIndex()
 
 		f()
-		// 设置解析的 block 中没有设置过的 break
+		// of a slice that has not been set in the parsed block. break
 		l.exitWhileContext(untilEnd + 1)
 
-		// 设置条件自带的 toEnd 位置
+		// sets the toEnd position
 		for _, toEnd := range toEnds {
 			if toEnd != nil {
 				toEnd.Unary = untilEnd
@@ -159,9 +159,9 @@ func (l *LuaTranslator) VisitStat(raw lua.IStatContext) interface{} {
 	if s := i.If(); s != nil {
 		conditionExprCnt, blockCnt := 0, 0
 		l.VisitExp(i.Exp(conditionExprCnt))
-		var jmpfCode = l.pushJmpIfFalse() // 条件不为真 跳转到else分支
+		var jmpfCode = l.pushJmpIfFalse() // . If the condition is not true, jump to the else branch
 		l.VisitBlock(i.Block(blockCnt))
-		var jmp = l.pushJmp() // 条件为真跳转到整个if-else的下条语句
+		var jmp = l.pushJmp() // If the condition is true, jump to the next statement of the entire if-else.
 		elseIndex := l.GetNextCodeIndex()
 		jmpfCode.Unary = elseIndex
 		for range i.AllElseIf() {
@@ -188,17 +188,17 @@ func (l *LuaTranslator) VisitStat(raw lua.IStatContext) interface{} {
 			f := l.SwitchSymbolTableInNewScope("for-numerical", uuid.NewV4().String())
 			defer f()
 			iterateVarName := i.NAME().GetText()
-			// 把var赋值
+			// first. Assign var to
 			iterateVarID := l.currentSymtbl.NewSymbolWithoutName()
 			l.pushLeftRef(iterateVarID)
 			l.VisitExp(i.Exp(0))
 			l.pushOperator(yakvm.OpFastAssign)
 			l.pushOpPop()
-			// 只计算一次condition
+			// only calculates the condition once.
 			conditionId := l.currentSymtbl.NewSymbolWithoutName()
 			l.pushLeftRef(conditionId)
 			l.VisitExp(i.Exp(1))
-			// 为了后面可以根据条件判断是否执行第三条语句，我们需要把结果缓存到中间符号中
+			// for the following We can judge whether to execute the third statement based on the condition. We need to cache the result into the intermediate symbol
 			l.pushOperator(yakvm.OpFastAssign)
 			l.pushOpPop()
 
@@ -212,8 +212,8 @@ func (l *LuaTranslator) VisitStat(raw lua.IStatContext) interface{} {
 				l.pushOperator(yakvm.OpFastAssign)
 				l.pushOpPop()
 			}
-			// for 执行体结束之后应该无条件跳转回开头，重新判断
-			// 但是三语句 for ;; 应该是 block 执行解释后执行第三条语句
+			// after the execution body ends, it should jump back unconditionally At the beginning, re-judge
+			// on the left. However, the third statement for ;; . It should be a block. After executing the explanation, execute the third statement
 			l.pushLeftRef(iterateVarID)
 			if stepExp != nil { // step
 				l.pushRef(iterateVarID)
@@ -311,7 +311,7 @@ func (l *LuaTranslator) VisitStat(raw lua.IStatContext) interface{} {
 			if err != nil {
 				l.panicCompilerError(autoCreateSymbolFailed, iterateVarName)
 			}
-			l.pushLeftRef(fakeIterateVarID) // 注入假变量
+			l.pushLeftRef(fakeIterateVarID) // . Inject the fake variable
 			l.pushRef(iterateVarID)
 			l.pushOperator(yakvm.OpFastAssign)
 			l.pushOpPop()
@@ -408,10 +408,10 @@ func (l *LuaTranslator) VisitStat(raw lua.IStatContext) interface{} {
 		} else {
 			list := i.Attnamelist().(*lua.AttnamelistContext)
 			nameList := list.AllNAME()
-			// fixed: 先不管这个attrib attributeList := list.AllAttrib()
+			// fixed: Ignore this first. attrib attributeList := list.AllAttrib()
 			if expList := i.Explist(); expList != nil {
 				l.VisitExpList(expList)
-			} else { // 只声明不赋值
+			} else { // only declares no value.
 				for range nameList {
 					l.pushUndefined()
 				}
@@ -446,7 +446,7 @@ func (l *LuaTranslator) VisitLastStat(raw lua.ILaststatContext) interface{} {
 		l.pushOperator(yakvm.OpReturn)
 	}
 	if i.Continue() != nil {
-		// TODO: 这个continue作为last stat的情况没遇到过 lua按理说没有continue这个关键字 先放着
+		// TODO: This continues As a last stat situation, I have never encountered Lua. Logically speaking, there is no continue keyword. Put
 		panic("TODO")
 	}
 	if i.Break() != nil {

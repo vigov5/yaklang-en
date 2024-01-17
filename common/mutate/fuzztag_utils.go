@@ -179,13 +179,13 @@ func fuzzpass(i string, level int) []string {
 	return res
 }
 
-// 解析失败会panic，只能在fuzztagx中使用
+// will panic if parsing fails and can only be used in fuzztagx.
 func atoi(s string) int {
 	v, _ := strconv.Atoi(s)
 	return v
 }
 
-// 读取一个分隔符最后出现位置的部分
+// Read the part where the last occurrence of a delimiter occurs.
 func sepToEnd(s string, sep string) (string, string) {
 	if strings.LastIndex(s, sep) < 0 {
 		return s, ""

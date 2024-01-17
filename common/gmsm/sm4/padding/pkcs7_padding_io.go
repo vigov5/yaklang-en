@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-// PKCS7PaddingReader 符合PKCS#7填充的输入流
+// PKCS7PaddingReader Input stream conforming to PKCS#7 padding
 type PKCS7PaddingReader struct {
 	fIn       io.Reader
 	padding   io.Reader
@@ -16,9 +16,9 @@ type PKCS7PaddingReader struct {
 	eop       bool
 }
 
-// NewPKCS7PaddingReader 创建PKCS7填充Reader
-// in: 输入流
-// blockSize: 分块大小
+// NewPKCS7PaddingReader Create PKCS7 padding Reader
+// in: Input stream
+// blockSize: Block size
 func NewPKCS7PaddingReader(in io.Reader, blockSize int) *PKCS7PaddingReader {
 	return &PKCS7PaddingReader{
 		fIn:       in,
@@ -31,14 +31,14 @@ func NewPKCS7PaddingReader(in io.Reader, blockSize int) *PKCS7PaddingReader {
 
 func (p *PKCS7PaddingReader) Read(buf []byte) (int, error) {
 	/*
-		- 读取文件
-			- 文件长度充足， 直接返还
-			- 不充足
-		- 读取到 n 字节， 剩余需要 m 字节
-		- 从 padding 中读取然后追加到 buff
-			- EOF  直接返回， 整个Reader end
+		based on the length that has been read - read Get the file
+			- The file length is sufficient, directly return
+			- Insufficient
+		- Read n bytes, remaining Requires m bytes
+		- read from padding and append to buff.
+			- EOF returns directly, the entire Reader end
 	*/
-	// 都读取完了
+	// All have been read
 	if p.eof && p.eop {
 		return 0, io.EOF
 	}
@@ -46,29 +46,29 @@ func (p *PKCS7PaddingReader) Read(buf []byte) (int, error) {
 	var n, off = 0, 0
 	var err error
 	if !p.eof {
-		// 读取文件
+		// Read the file
 		n, err = p.fIn.Read(buf)
 		if err != nil && !errors.Is(err, io.EOF) {
-			// 错误返回
+			// Error return
 			return 0, err
 		}
 		p.readed += int64(n)
 		if errors.Is(err, io.EOF) {
-			// 标志文件结束
+			// Mark the end of the file
 			p.eof = true
 		}
 		if n == len(buf) {
-			// 长度足够直接返回
+			// is long enough to directly return
 			return n, nil
 		}
-		// 文件长度已经不足，根据已经已经读取的长度创建Padding
+		// The file length is insufficient, create Padding
 		p.newPadding()
-		// 长度不足向Padding中索要
+		// . If the length is not enough, ask for
 		off = n
 	}
 
 	if !p.eop {
-		// 读取流
+		// Read the stream
 		var n2 = 0
 		n2, err = p.padding.Read(buf[off:])
 		n += n2
@@ -79,7 +79,7 @@ func (p *PKCS7PaddingReader) Read(buf []byte) (int, error) {
 	return n, err
 }
 
-// 新建Padding
+// Create new Padding
 func (p *PKCS7PaddingReader) newPadding() {
 	if p.padding != nil {
 		return
@@ -89,30 +89,30 @@ func (p *PKCS7PaddingReader) newPadding() {
 	p.padding = bytes.NewReader(padding)
 }
 
-// PKCS7PaddingWriter 符合PKCS#7去除的输入流，最后一个 分组根据会根据填充情况去除填充。
+// PKCS7PaddingWriter In line with the input stream removed by PKCS#7, the last packet The filling will be removed based on the filling condition.
 type PKCS7PaddingWriter struct {
-	cache     *bytes.Buffer // 缓存区
-	swap      []byte        // 临时交换区
-	out       io.Writer     // 输出位置
-	blockSize int           // 分块大小
+	cache     *bytes.Buffer // The buffer area
+	swap      []byte        // Temporary swap area
+	out       io.Writer     // Output position
+	blockSize int           // points Block size
 }
 
-// NewPKCS7PaddingWriter PKCS#7 填充Writer 可以去除填充
+// NewPKCS7PaddingWriter PKCS#7 Padding Writer Can remove padding
 func NewPKCS7PaddingWriter(out io.Writer, blockSize int) *PKCS7PaddingWriter {
 	cache := bytes.NewBuffer(make([]byte, 0, 1024))
 	swap := make([]byte, 1024)
 	return &PKCS7PaddingWriter{out: out, blockSize: blockSize, cache: cache, swap: swap}
 }
 
-// Write 保留一个填充大小的数据，其余全部写入输出中
+// Write Keep a padding size of data, and write the rest to the output
 func (p *PKCS7PaddingWriter) Write(buff []byte) (n int, err error) {
-	// 写入缓存
+	// Write cache
 	n, err = p.cache.Write(buff)
 	if err != nil {
 		return 0, err
 	}
 	if p.cache.Len() > p.blockSize {
-		// 把超过一个分组长度的部分读取出来，写入到实际的out中
+		// Read out the part that exceeds one packet length and write it into the actual out
 		size := p.cache.Len() - p.blockSize
 		_, _ = p.cache.Read(p.swap[:size])
 		_, err = p.out.Write(p.swap[:size])
@@ -124,20 +124,20 @@ func (p *PKCS7PaddingWriter) Write(buff []byte) (n int, err error) {
 
 }
 
-// Final 去除填充写入最后一个分块
+// from Padding. Final remove the padding and write the last block
 func (p *PKCS7PaddingWriter) Final() error {
-	// 在Write 之后 cache 只会保留一个Block长度数据
+	// After Write, cache will only retain one Block length data
 	b := p.cache.Bytes()
 	length := len(b)
 	if length != p.blockSize {
-		return errors.New("非法的PKCS7填充")
+		return errors.New("Illegal PKCS7 padding")
 	}
 	if length == 0 {
 		return nil
 	}
 	unpadding := int(b[length-1])
 	if unpadding > p.blockSize || unpadding == 0 {
-		return errors.New("非法的PKCS7填充")
+		return errors.New("Illegal PKCS7 padding")
 	}
 	_, err := p.out.Write(b[:(length - unpadding)])
 	return err

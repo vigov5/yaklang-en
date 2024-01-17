@@ -65,7 +65,7 @@ type RegisterTunnelRequest struct {
 
 	PublicKeyPEM []byte `protobuf:"bytes,1,opt,name=PublicKeyPEM,proto3" json:"PublicKeyPEM,omitempty"`
 	Secret       string `protobuf:"bytes,2,opt,name=Secret,proto3" json:"Secret,omitempty"`
-	// 用来描述 Tunnel 携带信息的，比如想要测试的机器名或者测试的内容之类的
+	// is used to describe the information carried by the Tunnel, such as the name of the machine you want to test or the content of the test.
 	Verbose string `protobuf:"bytes,3,opt,name=Verbose,proto3" json:"Verbose,omitempty"`
 }
 
@@ -174,7 +174,7 @@ type GetAllRegisteredTunnelRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 二级密码
+	// secondary password
 	SecondaryPassword string `protobuf:"bytes,5,opt,name=SecondaryPassword,proto3" json:"SecondaryPassword,omitempty"`
 }
 
@@ -341,7 +341,7 @@ type GetRegisteredTunnelDescriptionByIDRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Id string `protobuf:"bytes,1,opt,name=Id,proto3" json:"Id,omitempty"`
-	// 二级密码
+	// secondary password
 	SecondaryPassword string `protobuf:"bytes,2,opt,name=SecondaryPassword,proto3" json:"SecondaryPassword,omitempty"`
 }
 
@@ -1350,11 +1350,11 @@ type TunnelInput struct {
 	unknownFields protoimpl.UnknownFields
 
 	Mirrors []*Mirror `protobuf:"bytes,1,rep,name=Mirrors,proto3" json:"Mirrors,omitempty"`
-	// 发送给哪个端口镜像的？
+	// is sent to?
 	ToId string `protobuf:"bytes,2,opt,name=ToId,proto3" json:"ToId,omitempty"`
-	// 数据
+	// data at the specified position
 	Data []byte `protobuf:"bytes,3,opt,name=Data,proto3" json:"Data,omitempty"`
-	// 对应的远端地址是啥？用来区分 conn
+	// What is the corresponding remote address? Used to distinguish which port mirror conn
 	ToRemoteAddr string `protobuf:"bytes,4,opt,name=ToRemoteAddr,proto3" json:"ToRemoteAddr,omitempty"`
 	// Close
 	Close bool `protobuf:"varint,5,opt,name=Close,proto3" json:"Close,omitempty"`

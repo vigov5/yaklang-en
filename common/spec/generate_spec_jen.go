@@ -197,7 +197,7 @@ func JenGeneratePalmRpcBySchema(schema *PalmRpcApiSchema) ([]byte, error) {
 		),
 	)
 
-	// 生成服务器端代码
+	// Generate server-side code
 	var codes []jen.Code
 	for _, m := range methods {
 		codes = append(codes,
@@ -216,10 +216,10 @@ func JenGeneratePalmRpcBySchema(schema *PalmRpcApiSchema) ([]byte, error) {
 	f.Type().Id(schema.Name + "ServerHelper").Struct(codes...)
 	f = generateServerFunc(schema, f)
 
-	// 生成客户端代码
+	// Generate client-side code
 	f = generateClientFunc(schema, f)
 
-	// 生成数据模型代码
+	// Generate data model code
 	f = generateModels(schema, f)
 
 	return []byte(f.GoString()), nil

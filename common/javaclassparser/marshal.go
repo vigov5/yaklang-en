@@ -51,7 +51,7 @@ func _MarshalJavaClass(cp *ClassObject) []byte {
 	constantPoolLen := len(cp.ConstantPool)
 	writer.Write2Byte(constantPoolLen + 1)
 
-	//写常量池
+	//Write constant pool
 	for i := 0; i < constantPoolLen; i++ {
 		switch cp.ConstantPool[i].(type) {
 		case *ConstantIntegerInfo:
@@ -119,7 +119,7 @@ func _MarshalJavaClass(cp *ClassObject) []byte {
 		writer.Write2Byte(cp.Interfaces[i])
 	}
 
-	//写字段
+	//Write field
 	fieldsLen := len(cp.Fields)
 	writer.Write2Byte(fieldsLen)
 	for i := 0; i < fieldsLen; i++ {
@@ -129,7 +129,7 @@ func _MarshalJavaClass(cp *ClassObject) []byte {
 		attrs := cp.Fields[i].Attributes
 		writeAttributes(writer, attrs, cp)
 	}
-	//写方法
+	//Write method
 	methodsLen := len(cp.Methods)
 	writer.Write2Byte(methodsLen)
 	for i := 0; i < methodsLen; i++ {
@@ -139,7 +139,7 @@ func _MarshalJavaClass(cp *ClassObject) []byte {
 		attrs := cp.Methods[i].Attributes
 		writeAttributes(writer, attrs, cp)
 	}
-	//写属性
+	//Write attribute
 	writeAttributes(writer, cp.Attributes, cp)
 	return writer.Bytes()
 }

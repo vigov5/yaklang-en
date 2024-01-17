@@ -27,7 +27,7 @@ func (s *Server) OpenPort(inputStream ypb.Yak_OpenPortServer) error {
 		port = firstInput.Port
 	}
 
-	// 处理监听端口的 TCP 连接
+	// Process the TCP connection of the listening port.
 	addr := utils.HostPort(host, port)
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
@@ -36,7 +36,7 @@ func (s *Server) OpenPort(inputStream ypb.Yak_OpenPortServer) error {
 	}
 	defer lis.Close()
 
-	// 控制生命周期
+	// controls the life cycle.
 	ctx, cancel := context.WithCancel(inputStream.Context())
 	defer cancel()
 	go func() {
@@ -50,7 +50,7 @@ func (s *Server) OpenPort(inputStream ypb.Yak_OpenPortServer) error {
 	}()
 
 	log.Infof("start to listening on: %s", addr)
-	// 发送第一个等待消息
+	// sends the first waiting message.
 	err = inputStream.Send(&ypb.Output{
 		Control: true,
 		Waiting: true,
@@ -59,7 +59,7 @@ func (s *Server) OpenPort(inputStream ypb.Yak_OpenPortServer) error {
 		return utils.Errorf("start failed...")
 	}
 
-	// 处理对方的 Conn
+	// handles the other party’s Conn.
 	conn, err := lis.Accept()
 	if err != nil {
 		log.Errorf("accept from %v failed: %s", addr, err)
@@ -79,7 +79,7 @@ func (s *Server) OpenPort(inputStream ypb.Yak_OpenPortServer) error {
 			return err
 		}
 	}
-	// 发送连接信息
+	// sends connection information.
 	_ = inputStream.Send(&ypb.Output{
 		LocalAddr:  conn.LocalAddr().String(),
 		RemoteAddr: conn.RemoteAddr().String(),

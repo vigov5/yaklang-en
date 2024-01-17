@@ -19,7 +19,7 @@ func extractAllJson(raw string) []string {
 	_ = results
 	for i := 0; i < 10; i++ {
 		if lastResultMd5 == codec.Md5(raw) {
-			// 结果是否稳定
+			// Is the result stable?
 			break
 		}
 

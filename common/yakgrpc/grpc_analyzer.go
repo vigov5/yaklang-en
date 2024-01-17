@@ -21,7 +21,7 @@ func (s *Server) HTTPRequestAnalyzer(ctx context.Context, req *ypb.HTTPRequestAn
 		return nil, err
 	}
 
-	// 利用 Fuzz 分析出参数
+	// Use Fuzz to analyze parameters
 	var params []*ypb.HTTPRequestParamItem
 	var testableRequest []string
 	for _, p := range fReq.GetCommonParams() {

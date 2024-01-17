@@ -313,27 +313,27 @@ func ResultToYaml(d any) (string, error) {
 func checksum(data []byte) uint16 {
 	var sum uint32
 
-	// 按16位进行累加
+	// Accumulate by 16 bits
 	for i := 0; i < len(data)-1; i += 2 {
 		sum += uint32(binary.BigEndian.Uint16(data[i:]))
 	}
 
-	// 如果字节数组是奇数，将最后一个字节加入计算
+	// If the byte array is an odd number, add the last byte to the calculation
 	if len(data)%2 == 1 {
 		sum += uint32(data[len(data)-1]) << 8
 	}
 
-	// 将进位加到校验和上并再次加上进位
+	// Add the carry to the checksum and add the carry again
 	sum = (sum >> 16) + (sum & 0xFFFF)
 	sum += (sum >> 16)
 
-	// 取反
+	// negation
 	var checksum uint16 = ^uint16(sum & 0xFFFF)
 
 	return checksum
 }
 
-// 伪头部的结构
+// Structure of the pseudo header
 type pseudoHeader struct {
 	SourceAddress      [4]byte
 	DestinationAddress [4]byte
@@ -342,7 +342,7 @@ type pseudoHeader struct {
 	TCPLength          uint16
 }
 
-// 创建伪头部数据
+// Create pseudo Header data
 func makePseudoHeader(srcIP, dstIP string, tcpLen uint16) []byte {
 	src := net.ParseIP(srcIP).To4()
 	dst := net.ParseIP(dstIP).To4()
@@ -350,7 +350,7 @@ func makePseudoHeader(srcIP, dstIP string, tcpLen uint16) []byte {
 		SourceAddress:      [4]byte{src[0], src[1], src[2], src[3]},
 		DestinationAddress: [4]byte{dst[0], dst[1], dst[2], dst[3]},
 		Zero:               0,
-		Protocol:           6, // TCP 的协议号是 6
+		Protocol:           6, // The protocol number for TCP is 6
 		TCPLength:          tcpLen,
 	}
 

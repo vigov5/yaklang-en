@@ -77,7 +77,7 @@ func CompareHTTPResponse(rsp1 *http.Response, rsp2 *http.Response) float64 {
 
 	var scoreFloat64 score = 0
 
-	// 设置 URL 权重
+	// Set URL weight
 	var url1, url2 string
 	url1Ins, _ := lowhttp.ExtractURLFromHTTPRequest(rsp1.Request, false)
 	if url1Ins != nil {
@@ -93,12 +93,12 @@ func CompareHTTPResponse(rsp1 *http.Response, rsp2 *http.Response) float64 {
 		scoreFloat64 = scoreFloat64.Add(compareString(url1, url2), 0.2)
 	}
 
-	// 设置状态权重
+	// Set state weight
 	status1, status2 := rsp1.StatusCode, rsp2.StatusCode
 	scoreFloat64 = scoreFloat64.Add(eq(status1, status2), 0.3)
 
 	// content-type
-	// 判断是否是 JSON / XML(HTML)
+	// Determine whether it is JSON / XML(HTML)
 	jsonCompareBody := false
 	ct1, ct2 := rsp1.Header.Get("Content-Type"), rsp1.Header.Get("Content-Type")
 	if utils.MatchAllOfRegexp(ct1, `(?i)json`) && utils.MatchAllOfRegexp(ct2, `(?i)json`) {
@@ -112,12 +112,12 @@ func CompareHTTPResponse(rsp1 *http.Response, rsp2 *http.Response) float64 {
 	sort.Stable(CookieSortable(cookie1))
 	scoreFloat64 = scoreFloat64.Add(compareCookies(cookie1, cookie2), 0.02)
 
-	// 整体 Header 相似度
+	// Overall Header similarity
 	header1, _ := utils.DumpHTTPResponse(rsp1, false)
 	header2, _ := utils.DumpHTTPResponse(rsp2, false)
 	scoreFloat64 = scoreFloat64.Add(compareBytes(header1, header2), 0.06)
 
-	// 读取并恢复 Body
+	// Read and restore Body
 	body1, err := io.ReadAll(rsp1.Body)
 	if err != nil {
 		log.Error(err)

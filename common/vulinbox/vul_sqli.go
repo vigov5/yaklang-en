@@ -52,13 +52,13 @@ func sqliWriterEx(enableDebug bool, writer http.ResponseWriter, request *http.Re
 func (s *VulinServer) registerSQLinj() {
 	var router = s.router
 
-	sqli := router.Name("SQL注入漏洞案例（复杂度递增）").Subrouter()
+	sqli := router.Name("SQL injection vulnerability case (increasing complexity)").Subrouter()
 
 	vroutes := []*VulInfo{
 		{
 			DefaultQuery: "id=1",
 			Path:         "/user/by-id-safe",
-			Title:        "不存在SQL注入的情况（数字严格校验）",
+			Title:        "There is no SQL injection (number Strict verification)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var a = request.URL.Query().Get("id")
 				i, err := strconv.ParseInt(a, 10, 64)
@@ -77,12 +77,12 @@ func (s *VulinServer) registerSQLinj() {
 				return
 			},
 			RiskDetected:   false,
-			ExpectedResult: map[string]int{"参数:id未检测到闭合边界": 1},
+			ExpectedResult: map[string]int{"Parameter: id No closed boundary detected": 1},
 		},
 		{
 			DefaultQuery: "id=1",
 			Path:         "/user/id",
-			Title:        "ID 为数字型的简单边界 SQL注入",
+			Title:        "ID is a simple boundary SQL injection of numeric type.",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var a = request.URL.Query().Get("id")
 				u, err := s.database.GetUserByIdUnsafe(a)
@@ -95,12 +95,12 @@ func (s *VulinServer) registerSQLinj() {
 				return
 			},
 			RiskDetected:   true,
-			ExpectedResult: map[string]int{"疑似SQL注入：【参数：数字型[id] 无边界闭合】": 1, "存在基于UNION SQL 注入: [参数名:id 原值:1]": 1},
+			ExpectedResult: map[string]int{"Suspected SQL injection: [ Parameter: Numeric type [id] Unbounded closure]": 1, "exists based on UNION SQL injection: [Parameter name: id Original value: 1]": 1},
 		},
 		{
 			DefaultQuery: `id={"uid":1,"id":"1"}`,
 			Path:         "/user/id-json",
-			Title:        "参数是 JSON,JSON中字段存在SQL注入",
+			Title:        "parameter is JSON, and there is SQL injection in the field in JSON.",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var a = request.URL.Query().Get("id")
 				var jsonMap map[string]any
@@ -127,12 +127,12 @@ func (s *VulinServer) registerSQLinj() {
 				return
 			},
 			RiskDetected:   true,
-			ExpectedResult: map[string]int{"疑似SQL注入：【参数：数字型[id] 无边界闭合】": 1, "存在基于UNION SQL 注入: [参数名:id 原值:1]": 1},
+			ExpectedResult: map[string]int{"Suspected SQL injection: [ Parameter: Numeric type [id] Unbounded closure]": 1, "exists based on UNION SQL injection: [Parameter name: id Original value: 1]": 1},
 		},
 		{
 			DefaultQuery: "id=eyJ1aWQiOjEsImlkIjoiMSJ9",
 			Path:         "/user/id-b64-json",
-			Title:        "GET参数是被编码的JSON，JSON中字段存在SQL注入",
+			Title:        "GET parameter is Encoded JSON, there is SQL injection in the field in JSON",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var a = request.URL.Query().Get("id")
 				decodedB64, err := codec.DecodeBase64(a)
@@ -165,12 +165,12 @@ func (s *VulinServer) registerSQLinj() {
 				return
 			},
 			RiskDetected:   true,
-			ExpectedResult: map[string]int{"疑似SQL注入：【参数：数字型[id] 无边界闭合】": 1, "存在基于UNION SQL 注入: [参数名:id 原值:1]": 1},
+			ExpectedResult: map[string]int{"Suspected SQL injection: [ Parameter: Numeric type [id] Unbounded closure]": 1, "exists based on UNION SQL injection: [Parameter name: id Original value: 1]": 1},
 		},
 		{
 			DefaultQuery: "id=1",
 			Path:         "/user/id-error",
-			Title:        "ID 为数字型的简单边界SQL报错检测",
+			Title:        "ID is a simple boundary of numeric type SQL error detection",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var a = request.URL.Query().Get("id")
 				u, err := s.database.GetUserByIdUnsafe(a)
@@ -189,12 +189,12 @@ func (s *VulinServer) registerSQLinj() {
 				return
 			},
 			RiskDetected:   true,
-			ExpectedResult: map[string]int{"疑似SQL注入：【参数：数字[id] 无边界闭合】": 1, "存在基于UNION SQL 注入: [参数名:id 值:[1]]": 1},
+			ExpectedResult: map[string]int{"Suspected SQL injection: [ Parameter: Number [id] Unbounded closure]": 1, "exists based on UNION SQL injection: [Parameter name: id Value: [1]]": 1},
 		},
 		{
 			DefaultQuery: "",
 			Path:         "/user/cookie-id",
-			Title:        "Cookie-ID SQL注入",
+			Title:        "Cookie- ID SQL injection",
 			Headers: []*ypb.KVPair{
 				{
 					Key:   "Cookie",
@@ -206,9 +206,9 @@ func (s *VulinServer) registerSQLinj() {
 				if err != nil {
 					cookie := http.Cookie{
 						Name:     "ID",
-						Value:    "1",                                // 设置 cookie 的值
-						Expires:  time.Now().Add(7 * 24 * time.Hour), // 设置过期时间
-						HttpOnly: false,                              // 仅限 HTTP 访问，不允许 JavaScript 访问
+						Value:    "1",                                // Set the cookie value
+						Expires:  time.Now().Add(7 * 24 * time.Hour), // Set the expiration time. If
+						HttpOnly: false,                              // Only HTTP access, JavaScript access is not allowed
 					}
 					http.SetCookie(writer, &cookie)
 					writer.Header().Set("Location", "/user/cookie-id?skip=1")
@@ -229,12 +229,12 @@ func (s *VulinServer) registerSQLinj() {
 				sqliWriter(writer, request, []*VulinUser{u})
 			},
 			RiskDetected:   true,
-			ExpectedResult: map[string]int{"疑似SQL注入：【参数：数字[ID] 双引号闭合】": 1, "存在基于UNION SQL 注入: [参数名:ID 值:[1]]": 1},
+			ExpectedResult: map[string]int{"Suspected SQL injection: [Parameter: number [ID] enclosed in double quotes]": 1, "exists based on UNION SQL injection: [Parameter name: ID value: [1]]": 1},
 		},
 		{
 			DefaultQuery: "name=admin",
 			Path:         "/user/name",
-			Title:        "字符串为注入点的 SQL注入",
+			Title:        "String is the injection point of SQL injection",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				var a = request.URL.Query().Get("name")
 				u, err := s.database.GetUserByUsernameUnsafe(a)
@@ -247,12 +247,12 @@ func (s *VulinServer) registerSQLinj() {
 				return
 			},
 			RiskDetected:   true,
-			ExpectedResult: map[string]int{"疑似SQL注入：【参数：字符串[name] 单引号闭合】": 1, "存在基于UNION SQL 注入: [参数名:name 原值:admin]": 1},
+			ExpectedResult: map[string]int{"Suspected SQL injection: [Parameter: string [name] single quote closed]": 1, "There is SQL injection based on UNION: [Parameter name: name Original value: admin]": 1},
 		},
 		{
 			DefaultQuery: "name=a",
 			Path:         "/user/name/like",
-			Title:        "字符串注入点模糊查询",
+			Title:        "string injection point fuzzy query",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				db := s.database.db
 				var name = LoadFromGetParams(request, "name")
@@ -271,12 +271,12 @@ func (s *VulinServer) registerSQLinj() {
 				sqliWriterEx(true, writer, request, users, msg)
 			},
 			RiskDetected:   true,
-			ExpectedResult: map[string]int{"疑似SQL注入：【参数：字符串[name] like注入( %' )】": 1, "存在基于UNION SQL 注入: [参数名:name 值:[a]]": 1},
+			ExpectedResult: map[string]int{"Suspected SQL injection: [Parameter: string [name] like injection (%' )】": 1, "exists based on UNION SQL injection: [Parameter name: name value :[a]]": 1},
 		},
 		{
 			DefaultQuery: "name=a",
 			Path:         "/user/name/like/2",
-			Title:        "字符串注入点模糊查询(括号边界)",
+			Title:        "String injection point fuzzy query (bracket boundary)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				db := s.database.db
 				var name = LoadFromGetParams(request, "name")
@@ -295,12 +295,12 @@ func (s *VulinServer) registerSQLinj() {
 				sqliWriterEx(true, writer, request, users, rowStr)
 			},
 			RiskDetected:   true,
-			ExpectedResult: map[string]int{"疑似SQL注入：【参数：字符串[name] like注入( %' )】": 1},
+			ExpectedResult: map[string]int{"Suspected SQL injection: [Parameter: string [name] like injection (%' )】": 1},
 		},
 		{
 			DefaultQuery: "nameb64=YQ==",
 			Path:         "/user/name/like/b64",
-			Title:        "参数编码字符串注入点模糊查询(括号边界)",
+			Title:        "Parameter encoding string injection point fuzzy query (bracket boundary)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				db := s.database.db
 				var users []*VulinUser
@@ -323,7 +323,7 @@ func (s *VulinServer) registerSQLinj() {
 		{
 			DefaultQuery: "data=eyJuYW1lYjY0aiI6ImEifQ==",
 			Path:         "/user/name/like/b64j",
-			Title:        "Base64参数(JSON)嵌套字符串注入点模糊查询(括号边界)",
+			Title:        "Base64 parameter (JSON) nested string injection point fuzzy query (bracket boundary)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				db := s.database.db
 				var name = LoadFromGetBase64JSONParam(request, "data", "nameb64j")
@@ -342,12 +342,12 @@ func (s *VulinServer) registerSQLinj() {
 				sqliWriterEx(true, writer, request, users, rowStr)
 			},
 			RiskDetected:   true,
-			ExpectedResult: map[string]int{"疑似SQL注入：【参数：字符串[data] like注入( %' )】": 1},
+			ExpectedResult: map[string]int{"Suspected SQL injection: [Parameter: String [data] like injection (%' )】": 1},
 		},
 		{
 			DefaultQuery: "limit=1",
 			Path:         "/user/limit/int",
-			Title:        "LIMIT（语句结尾）注入案例",
+			Title:        "LIMIT (end of statement) injection case",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				db := s.database.db
 				var limit = LoadFromGetParams(request, "limit")
@@ -370,7 +370,7 @@ func (s *VulinServer) registerSQLinj() {
 		{
 			DefaultQuery: "order=desc",
 			Path:         "/user/limit/4/order1",
-			Title:        "ORDER注入：单个条件排序位于 LIMIT 之前",
+			Title:        "ORDER injection: single condition sorting is before LIMIT",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				db := s.database.db
 				var data = LoadFromGetParams(request, "order")
@@ -393,7 +393,7 @@ func (s *VulinServer) registerSQLinj() {
 		{
 			DefaultQuery: "order=desc",
 			Path:         "/user/limit/4/order2",
-			Title:        "ORDER注入：多条件排序位于 LIMIT 之前",
+			Title:        "ORDER injection: multi-condition sorting is before LIMIT.",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				db := s.database.db
 				var data = LoadFromGetParams(request, "order")
@@ -416,7 +416,7 @@ func (s *VulinServer) registerSQLinj() {
 		{
 			DefaultQuery: "order=desc",
 			Path:         "/user/order3",
-			Title:        "注入：多条件排序位（无LIMIT）",
+			Title:        "injection: multi-condition sorting bit (no LIMIT)",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				db := s.database.db
 				var data = LoadFromGetParams(request, "order")
@@ -439,7 +439,7 @@ func (s *VulinServer) registerSQLinj() {
 		{
 			DefaultQuery: "orderby=username",
 			Path:         "/user/limit/4/orderby",
-			Title:        "ORDERBY 注入：多字段",
+			Title:        "ORDERBY injection: multi-field",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				db := s.database.db
 				var data = LoadFromGetParams(request, "orderby")
@@ -462,7 +462,7 @@ func (s *VulinServer) registerSQLinj() {
 		{
 			DefaultQuery: "orderby=id",
 			Path:         "/user/limit/4/orderby1",
-			Title:        "ORDER BY注入：反引号+排序",
+			Title:        "ORDER BY injection: backtick + sorting",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				db := s.database.db
 				var data = LoadFromGetParams(request, "orderby")
@@ -485,7 +485,7 @@ func (s *VulinServer) registerSQLinj() {
 		{
 			DefaultQuery: "orderby=id",
 			Path:         "/user/limit/4/orderby2",
-			Title:        "ORDER BY 注入：反引号+多字段",
+			Title:        "ORDER BY injection: backtick + multi-field",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				db := s.database.db
 				var data = LoadFromGetParams(request, "orderby")

@@ -28,7 +28,7 @@ const (
 	EIGHT_BYTE_BIT         = 0b01111111
 
 	TWO_BYTE_SIZE  = 65535
-	SEVEN_BIT_SIZE = 125 // 根据websocket协议，126和127分别代表用后续两个字节/八个字节表示长度，所以这里只能用125
+	SEVEN_BIT_SIZE = 125 // According to the websocket protocol, 126 and 127 respectively represent the following two bytes/are left to represent the length, so only 125
 
 	DEFAULT_TEXT_MESSAGE_FISRT_BYTE = 0b10000001
 
@@ -53,7 +53,7 @@ type Frame struct {
 	maskingKey     []byte
 	payloadLength  uint64
 	payloadData    []byte
-	rawPayloadData []byte // 未经过inflate得到的payloadData
+	rawPayloadData []byte // needs to be decompressed only when the frameType is TextMessage and BinaryMessage.
 	isDeflate      bool
 
 	messageType int
@@ -102,7 +102,7 @@ func (f *Frame) Bytes() ([]byte, []byte) {
 		rawBuf.Write(l)
 	}
 
-	// 存储明文信息
+	// can be used to store plaintext information.
 	var clearData = make([]byte, len(data))
 	copy(clearData, data)
 
@@ -193,7 +193,7 @@ func (fr *FrameReader) ReadFrame() (frame *Frame, err error) {
 	}
 	defer func() {
 		/*
-			这儿不用也没关系，但是保护性编程，还是留着
+			is not used here, but for protective programming, eight bytes of
 		*/
 		if recoveredError := recover(); recoveredError != nil {
 			log.Errorf("read frame failed: %s", recoveredError)
@@ -284,7 +284,7 @@ func (fr *FrameReader) ReadFrame() (frame *Frame, err error) {
 		return frame, errors.Wrap(err, "ws frameReader.Reader io.LimitReader failed")
 	}
 
-	// websocket扩展：permessage-deflate，只有frameType为TextMessage和BinaryMessage时才需要解压缩
+	// websocket extension: permessage-deflate.
 	if fr.isDeflate && !frame.IsControl() {
 		newData, err := inflate(data)
 		if err != nil {
@@ -364,7 +364,7 @@ func (fw *FrameWriter) WriteRaw(raw []byte) (err error) {
 	return err
 }
 
-// 客户端发送数据时需要设置mask为true
+// payloadData obtained without inflate. The client needs to set the mask when sending data. It doesnt matter if
 func (fw *FrameWriter) write(data []byte, messageType int, mask bool, headerBytes ...byte) error {
 	headerBytesLength := len(headerBytes)
 	if headerBytesLength == 0 {

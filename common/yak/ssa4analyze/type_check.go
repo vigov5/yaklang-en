@@ -190,7 +190,7 @@ func (t *TypeCheck) TypeCheckCall(c *ssa.Call) {
 			}
 		}
 
-		// 如果是 没有拆包 则检查后续错误是否处理
+		// If it is not unpacked, check whether subsequent errors are handled.
 		if !c.Unpack {
 			if hasError {
 				// a = func() (m * any, error)
@@ -208,7 +208,7 @@ func (t *TypeCheck) TypeCheckCall(c *ssa.Call) {
 					}
 				}
 			}
-			// 如果未拆包 不需要后续检查
+			// If it is not unpacked, no subsequent check is required.
 			return
 		}
 

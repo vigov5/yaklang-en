@@ -16,15 +16,15 @@ type Value struct {
 	Value       interface{}
 	Literal     string
 
-	// 运行时才存在的成员
+	// The member that exists only at runtime.
 
 	// Identifier = expr
-	// 当变量被赋值时，SymbolId 应该为赋值操作的根本
+	// When a variable is assigned a value, the SymbolId should be used for the assignment operation. Basically
 	SymbolId int
-	// MemberCall 和 SliceCall 的 Caller 和 Collee
-	// 一般来说 Caller.Callee 的时候，Callee 应该取 Identifier 的 Value 值
-	// Caller[Callee] 的时候，Callee 取 Value
-	// 这几个操作用反射都可以很容易做到
+	// MemberCall and SliceCall.
+	// Generally speaking, when calling Caller.Callee, Callee should take the Value value of Identifier.
+	// Caller[Callee]. When Callee takes Value
+	// These operations can be easily done using reflection. It is easy to do the Caller and Collee of
 	CallerRef *Value
 	CalleeRef *Value
 	ExtraInfo map[string]interface{}
@@ -95,7 +95,7 @@ func (v *Frame) getValueForLeftIterableCall(args []*Value) *Value {
 
 		var sliceRes reflect.Value
 
-		// 这里可以转变为左值，因为 abc[expr] = xxx 是可以赋值的
+		// This can be converted to an lvalue, because abc[expr] = xxx is assignable
 		sliceRes = iterableValueRF.Index(start)
 		if iterableValueType.Kind() == reflect.String {
 			return NewValue("char", sliceRes.Interface().(rune), fmt.Sprintf("%c", sliceRes.Interface()))
@@ -138,15 +138,15 @@ func (v *Frame) getValueForLeftIterableCall(args []*Value) *Value {
 	return undefined
 }
 
-// ConvertToLeftValue 当前值能不能转成左值？
-// 这个是方法调用赋值的关键
+// ConvertToLeftValue, can the current value be converted into an lvalue?
+// This is the key to method call assignment.
 func (v *Value) ConvertToLeftValue() (*Value, error) {
 	selfConvertable := v.IsLeftValueRef() || v.IsLeftMemberCall() || v.IsLeftSliceCall()
 	if selfConvertable {
 		return v, nil
 	}
 
-	// 通过 Caller 和 Callee 记录路径，把右值可以专左值
+	// Record the path through Caller and Callee, and the rvalue can be used as the lvalue.
 	if v.CallerRef != nil && v.CalleeRef != nil {
 		subVal := NewValue("memberCall.leftExpression", []*Value{v.CallerRef, v.CalleeRef}, "")
 		switch {
@@ -159,7 +159,7 @@ func (v *Value) ConvertToLeftValue() (*Value, error) {
 		}
 	}
 
-	// 通过 CallerRef 记录符号可以转左值
+	// The symbol recorded through CallerRef can be converted to an lvalue.
 	if v.CallerRef != nil && v.CallerRef.IsLeftValueRef() {
 		return v.CallerRef, nil
 	}
@@ -656,7 +656,7 @@ func (v *Value) AssignBySymbol(table *Scope, val *Value) {
 	current := table
 	for {
 		if current == nil {
-			// 找不到符号对应的值的 scope
+			// cannot find the scope of the value corresponding to the symbol.
 			table.NewValueByID(v.SymbolId, val)
 			break
 		}
@@ -679,7 +679,7 @@ func (v *Value) GlobalAssignBySymbol(table *Scope, val *Value) {
 	current := table
 	for {
 		if current.parent == nil {
-			// 找不到符号对应的值的 scope
+			// cannot find the scope of the value corresponding to the symbol.
 			current.NewValueByID(v.SymbolId, val)
 			break
 		}
@@ -920,7 +920,7 @@ func (v *Value) IsLeftSliceCall() bool {
 		return false
 	}
 
-	// x[...] 的调用仅限于 slice / map / string
+	// The call of x[...] is limited to slice / map / string
 
 	switch reflect.TypeOf(raw[0].Value).Kind() {
 	case reflect.Slice, reflect.String, reflect.Map:
@@ -1077,7 +1077,7 @@ func (_v *Value) Equal(value *Value) bool {
 	}
 
 	if value.IsBytes() || _v.IsBytes() {
-		// 如果任意一个是 bytes 的话，都转为 string 进行比较
+		// If any one is bytes, it will be converted to string for comparison.
 		return _v.String() == value.String()
 	}
 
@@ -1093,7 +1093,7 @@ func (_v *Value) Equal(value *Value) bool {
 		}
 	}
 
-	// 如果任意又一个值为 undefined 的话
+	// If any other value is undefined
 	if _v.IsUndefined() || value.IsUndefined() {
 		return _v.False() == value.False()
 	}
@@ -1143,7 +1143,7 @@ func (_v *Value) GlobalAssign(vir *Frame, right *Value) {
 		left.GlobalAssignBySymbol(vir.CurrentScope(), NewAutoValue(val))
 		return
 	case left.IsLeftSliceCall():
-		left.LuaLeftSliceAssignTo(vir, right) // TODO: 这里还要仔细看一下 和yak目前不太一样
+		left.LuaLeftSliceAssignTo(vir, right) // TODO: Let’s take a closer look here and it’s not the same as yak currently.
 	case left.IsLeftMemberCall():
 		left.LeftMemberAssignTo(vir, right)
 	default:

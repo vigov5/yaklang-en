@@ -263,7 +263,7 @@ func (cs *http2ClientStream) doRequest() error {
 		schema = "http"
 	}
 
-	addH2Header(":authority", "") // 占位
+	addH2Header(":authority", "") // placeholder
 	if connectedPort := httpctx.GetContextIntInfoFromRequest(cs.req, httpctx.REQUEST_CONTEXT_KEY_ConnectedToPort); connectedPort > 0 {
 		portValid := (connectedPort == 443 && isHttps) || (connectedPort == 80 && !isHttps)
 		if !portValid {
@@ -304,9 +304,9 @@ func (cs *http2ClientStream) doRequest() error {
 					}
 				}
 
-			case "content-length", "connection", "proxy-connection", //todo cl问题是否处理
+			case "content-length", "connection", "proxy-connection", //todo cl problem is handled
 				"transfer-encoding", "upgrade",
-				"keep-alive": // H2不应该存在的头
+				"keep-alive": // H2 Header that should not exist
 			default:
 				addH2Header(key, value)
 			}
@@ -436,9 +436,9 @@ func (rl *http2ClientConnReadLoop) processHeaders(f *http2.HeadersFrame) {
 		return
 	}
 
-	cs.hPackByte.Write(f.HeaderBlockFragment()) //存入 hPack缓冲区
+	cs.hPackByte.Write(f.HeaderBlockFragment()) //stored in hPack buffer
 
-	if f.HeadersEnded() { //当头部结束时才开始解析
+	if f.HeadersEnded() { //Parsing starts when the header ends
 		var respInstance = cs.resp
 		parsedHeaders, err := cs.h2Conn.hDec.DecodeFull(cs.hPackByte.Bytes())
 		cs.hPackByte.Reset()
@@ -480,9 +480,9 @@ func (rl *http2ClientConnReadLoop) processContinuation(f *http2.ContinuationFram
 		return
 	}
 
-	cs.hPackByte.Write(f.HeaderBlockFragment()) //存入 hPack缓冲区
+	cs.hPackByte.Write(f.HeaderBlockFragment()) //stored in hPack buffer
 
-	if f.HeadersEnded() { //当头部结束时才开始解析
+	if f.HeadersEnded() { //Parsing starts when the header ends
 		var respInstance = cs.resp
 		parsedHeaders, err := cs.h2Conn.hDec.DecodeFull(cs.hPackByte.Bytes())
 		cs.hPackByte.Reset()

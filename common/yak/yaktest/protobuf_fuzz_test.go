@@ -7,7 +7,7 @@ import (
 func TestProtobuf_Fuzz(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "Protobuf fuzz 测试",
+			Name: "Protobuf fuzz test",
 			Src: `
 println("---------------START TEST 1------------------")
 result, err = fuzz.ProtobufHex("080110012001405f4a5f7b226d657373616765223a22476f6c616e6720576562736f636b6574204d6573736167653a20323032322d30392d30362032323a35333a32392e363336303732202b3038303020435354206d3d2b343632362e333935343136323130227d0a5001").FuzzEveryIndex(fn(index, typ, data) {
@@ -30,7 +30,7 @@ println("---------------END TEST 1------------------")
 `,
 		},
 		{
-			Name: "Protobuf fuzz group测试",
+			Name: "Protobuf fuzz group test",
 			Src: `
 println("---------------START TEST 2------------------")
 result, err = fuzz.ProtobufHex("0b10b90ab301eb14e3950210b90a18b90ae49502ec14b4010c").FuzzEveryIndex(fn(index, type, data) {
@@ -48,7 +48,7 @@ println("---------------END TEST 2------------------")
 `,
 		},
 		{
-			Name: "Protobuf fuzz 错误测试",
+			Name: "Protobuf fuzz error test",
 			Src: `
 println("---------------START TEST 3------------------")
 result, err = fuzz.ProtobufHex("xxxxxx").FuzzEveryIndex(fn(index, type, data) {
@@ -82,7 +82,7 @@ println("---------------END TEST 3------------------")
 `,
 		},
 		{
-			Name: "Protobuf fuzz 结构体转换测试",
+			Name: "Protobuf fuzz structure conversion test",
 			Src: `
 println("---------------START TEST 4------------------")
 v = fuzz.ProtobufHex("2206038e029ea705")
@@ -104,5 +104,5 @@ println("---------------END TEST 4------------------")
 		},
 	}
 
-	Run("Protobuf fuzz 测试", t, cases...)
+	Run("Protobuf fuzz test", t, cases...)
 }

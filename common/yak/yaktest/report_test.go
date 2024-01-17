@@ -8,12 +8,12 @@ import (
 func TestRun_Report(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试 report.New()",
+			Name: "test report.New()",
 			Src: fmt.Sprintf(`r = report.New();
-r.Title("生成一份报告的标题")
+r.Title("Generate the title of a report")
 r.Owner("v1ll4n")
 r.From("NAME")
-r.Markdown("你好，我是一份报告！")
+r.Markdown("Hello, I am A report!")
 r.Table(
 	["abasdfasdf", 123, 111, "asdfas"],
 	["abas123123dfasdf", 123, 111, "asdfas"],
@@ -25,26 +25,26 @@ r.Save()
 `),
 		},
 		{
-			Name: "测试 report.New() 1",
+			Name: "test report.New() 1",
 			Src: fmt.Sprintf(`r = report.New();
-r.Title("自定义了一个报告")
+r.Title("Customized a report")
 r.Owner("v1ll4n")
 r.From("NAME")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
-r.Markdown("# 你好，我是一份报告！大标题\n\n你好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发好你好你好好阿斯顿发送到发\n\n> 引用数据\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
+r.Markdown("# Hello, I am a report! Big title\n\nHello Hello Hello Hello Aston Send to Send Hello Hello Hello Aston Send to Send Hello Hello Hello Hello Aston Send to Send\n\n> reference data\n\n1. 123123123123\n2. 34weqeasdfasd\n\n")
 r.Table(
 	["abasdfasdf", 123, 111, "asdfas"],
 	["abas123123dfasdf", 123, 111, "asdfas"],
@@ -60,5 +60,5 @@ r.Save()
 		},
 	}
 
-	Run("x.ConvertToMap 可用性测试", t, cases...)
+	Run("x.ConvertToMap usability testing", t, cases...)
 }

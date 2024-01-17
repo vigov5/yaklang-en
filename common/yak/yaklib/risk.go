@@ -28,16 +28,16 @@ func YakitNewRiskBuilder(client *YakitClient) func(target string, opts ...yakit.
 					title = risk.Title
 				}
 				log.Infof("use bot notify risk: %s", risk.Title)
-				botClient.SendMarkdown(fmt.Sprintf(`# Yakit 发现 Risks
+				botClient.SendMarkdown(fmt.Sprintf(`# Yakit Discovery Risks
 
-风险标题：%v
+Risk Title: %v
 
-风险目标：%v
+Risk Target: %v
 
 `, title, risk.IP))
 			}
 			client.Output(&YakitStatusCard{
-				Id: "漏洞/风险/指纹", Data: fmt.Sprint(fmt.Sprint(client.addCounter())), Tags: nil,
+				Id: "Vulnerability/Risk/fingerprint", Data: fmt.Sprint(fmt.Sprint(client.addCounter())), Tags: nil,
 			})
 			client.Output(risk)
 		}

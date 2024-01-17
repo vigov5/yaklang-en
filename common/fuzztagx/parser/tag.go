@@ -86,7 +86,7 @@ type BaseTag struct {
 	Data    []Node
 	Labels  []string
 	Methods *map[string]*TagMethod
-	// initOnce 用来对子结构体的初始化
+	// initOnce is used to initialize the substructure.
 	initOnce sync.Once
 }
 
@@ -94,7 +94,7 @@ func (*BaseTag) IsNode() {
 
 }
 
-// DoOnce 用来对子结构体的初始化，可以在Exec函数中调用
+// DoOnce is used to initialize the substructure, which can be called in the Exec function.
 func (b *BaseTag) DoOnce(f func()) {
 	b.initOnce.Do(f)
 }
@@ -113,7 +113,7 @@ func (b *BaseTag) GetLabels() []string {
 	return b.Labels
 }
 
-// TagDefine 自定义tag类型
+// TagDefine customizes the tag type.
 type TagDefine struct {
 	name      string
 	start     string
@@ -137,7 +137,7 @@ func (t *TagDefine) NewTag() TagNode {
 	//return reflect.New(reflect.ValueOf(t.tagStruct).Type().Elem()).Interface().(TagNode)
 }
 
-// NewTagDefine hooks参数用于判断数据是否需要解析tag
+// NewTagDefine hooks parameters are used to determine whether the data needs to be parsed.
 func NewTagDefine(name, start, end string, tagStruct TagNode, raw ...bool) *TagDefine {
 	var r bool
 	if len(raw) > 0 {

@@ -33,7 +33,7 @@ var (
 )
 
 func GetDeclAndCompletion(funcName string, params, results []*Field) (string, string) {
-	// 通用处理params和results
+	// General processing params and results
 	paramsStr := make([]string, 0, len(params))
 	for i, p := range params {
 		variadic := strings.HasPrefix(p.Type, "...")
@@ -44,10 +44,10 @@ func GetDeclAndCompletion(funcName string, params, results []*Field) (string, st
 		p.Type = ShrinkTypeVerboseName(p.Type)
 
 		/*
-			设置vscode AutoCompletion
-			vscode 参数补全格式为： ${n:default}
-			n 代表第几个光标：从1开始，0为末尾
-			default 为默认补充的值
+			Set vscode AutoCompletion
+			vscode parameter completion format It is: ${n:default}
+			n represents the cursor number: starting from 1, 0 is the end
+			default is the default Supplementary value
 		*/
 		if variadic {
 			paramsStr = append(paramsStr, fmt.Sprintf("${%v:%v...}", i+1, p.Name))
@@ -66,7 +66,7 @@ func GetDeclAndCompletion(funcName string, params, results []*Field) (string, st
 		r.Type = ShrinkTypeVerboseName(r.Type)
 	}
 
-	// 生成declaration
+	// generates declaration
 	paramStr := strings.Join(lo.Map(params, func(p *Field, _ int) string {
 		return fmt.Sprintf("%s %s", p.Name, p.Type)
 	}), ", ")
@@ -227,7 +227,7 @@ func HandleResults(funcRefType reflect.Type, typ *ast.FuncType, fset *token.File
 			}
 			results = append(results, result)
 		}
-		// 处理没有实名返回值的情况
+		// Handle the situation without real-name return value
 		if len(field.Names) == 0 {
 			result := &Field{
 				Name: "",
@@ -252,7 +252,7 @@ func HandleFieldsRaw(fieldStr string) []*Field {
 			continue
 		}
 		splited := strings.Split(r, " ")
-		// 一般认为一定有变量名，所以splited出来的第一个一定是变量名
+		// . It is generally believed that there must be a variable name, so the first one that is split must be the variable name
 		if len(splited) < 2 {
 			field := &Field{
 				Name: splited[0],
@@ -277,7 +277,7 @@ func HandleFieldsRaw(fieldStr string) []*Field {
 }
 
 func customHandleParamsAndResults(libName string, overideName string, params []*Field, results []*Field) ([]*Field, []*Field) {
-	// eval时丢掉第一个参数，因为第一个参数是context，是在执行时自动注入的
+	// Discard the first parameter when eval, because the first parameter is context, which is automatically injected during execution
 	// if libName == "__GLOBAL__" && overideName == "eval" {
 	// 	params = params[1:]
 	// }
@@ -354,18 +354,18 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 		found = true
 
 		decl := theFunc.Decl
-		// 获取函数注释
+		// should not appear Get function comments
 		document = theFunc.Doc
-		// // 删除CRLF
+		// // . Delete CRLF
 		// document = strings.ReplaceAll(document, "\r", "")
 		// document = strings.ReplaceAll(document, "\n", "")
 
-		// 获取参数
+		// Get parameters
 		if decl != nil && decl.Type != nil && decl.Type.Params != nil {
 			params = HandleParams(funcRefType, decl.Type, fset)
 		}
 
-		// 获取返回值
+		// Get the return value
 		if decl != nil && decl.Type != nil && decl.Type.Results != nil {
 			results = HandleResults(funcRefType, decl.Type, fset)
 		}
@@ -373,7 +373,7 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 		break
 	}
 
-	// 试图找到map里的
+	// tries to find
 	if !found {
 		for _, v := range docPkg.Vars {
 			decl := v.Decl
@@ -419,7 +419,7 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 					continue
 				}
 
-				// 处理 "asd" => 引用其他函数的情况
+				// . Processing "asd" => in the map When referencing other functions
 				v, ok := kv.Value.(*ast.Ident)
 				if ok {
 					obj := v.Obj
@@ -437,7 +437,7 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 						break
 					}
 
-					// 处理 "asd" => 引用变量 => 函数情况
+					// . Processing "asd" => . Reference variable => function situation
 					if specs, ok := decl.(*ast.ValueSpec); ok {
 						if len(specs.Values) == 0 {
 							continue
@@ -452,7 +452,7 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 					}
 				}
 
-				// 处理 "asd" => 匿名函数的情况
+				// . Processing "asd" => anonymous function situation
 				funcLit, ok := kv.Value.(*ast.FuncLit)
 				if ok {
 					params = HandleParams(funcRefType, funcLit.Type, fset)
@@ -461,7 +461,7 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 					break
 				}
 
-				// 处理调用函数获得函数的情况
+				// handles the situation of calling a function to obtain a function
 				callExpr, ok := kv.Value.(*ast.CallExpr)
 				if !ok {
 					continue
@@ -478,7 +478,7 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 				if decl == nil {
 					continue
 				}
-				// 解析第一个返回值，是函数类型
+				// parses the first one The return value is the function type
 				if funcDecl, ok := decl.(*ast.FuncDecl); ok {
 					typ := funcDecl.Type
 					if typ == nil {
@@ -505,7 +505,7 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 					break
 				}
 
-				// 按理来说不应该出现 "asd" => utils.xxx的情况，因为上面已经处理了，出现的情况可能是因为重名了
+				// Logically speaking, "asd" => In the case of utils.xxx, because it has been dealt with above, the situation may be due to the duplicate name
 
 				_ = decl
 			}
@@ -516,7 +516,7 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 		}
 	}
 
-	// 最后的fallback，无法拿到变量名与返回名,尝试直接解析字符串
+	// The final fallback cannot get the variable name and return name, try to directly parse the string
 	if !found {
 		lines := strings.Split(string(buf), "\n")
 		if line >= len(lines) {
@@ -524,39 +524,39 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 		}
 		lineStr := lines[line-1]
 		lineStr = ShrinkTypeVerboseName(lineStr)
-		// 去除注释
+		// removes comments
 		if commentIndex := strings.Index(lineStr, "//"); commentIndex != -1 {
 			lineStr = lineStr[:commentIndex]
 		}
-		// 去除func 前的字符串
+		// removes the string before func
 		if index := strings.Index(lineStr, "func "); index != -1 {
 			lineStr = lineStr[index:]
 		}
-		// 是结构体方法
+		// is a structure method
 		if strings.HasPrefix(lineStr, "func (") {
 			lineStr = lineStr[strings.Index(lineStr, ")")+1:]
 		}
-		// 去除赋值前的字符串
+		// Remove the string before assignment
 		if strings.Contains(lineStr, "=") {
 			lineStr = lineStr[strings.Index(lineStr, "=")+1:]
 		}
 		if strings.Contains(lineStr, ":") {
 			lineStr = lineStr[strings.Index(lineStr, ":")+1:]
 		}
-		// 去除空格
+		// Remove spaces
 		lineStr = strings.TrimSpace(lineStr)
-		// 去除return
+		// removes return
 		lineStr = strings.TrimPrefix(lineStr, "return ")
-		// 去除func
+		// Remove func
 		lineStr = strings.TrimPrefix(lineStr, "func")
-		// 去除空格
+		// Remove spaces
 		lineStr = strings.TrimSpace(lineStr)
-		// 去除左花括号
+		// . Remove the left Curly braces
 		index := strings.Index(lineStr, "{")
 		if index != -1 {
 			lineStr = lineStr[:index]
 		}
-		// 获取参数
+		// Get parameters
 		if paramsIndex := strings.Index(lineStr, "("); paramsIndex != -1 {
 			paramsStr := lineStr[paramsIndex+1:]
 			paramsEndIndex := strings.Index(paramsStr, ")")
@@ -576,9 +576,9 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 				}
 			}
 		}
-		// 获取返回值
+		// Get the return value
 		if resultsIndex := strings.Index(lineStr, "("); resultsIndex != -1 {
-			// 多返回值
+			// Multiple return values 
 			resultsStr := lineStr[resultsIndex+1:]
 			resultEndIndex := strings.Index(resultsStr, ")")
 			if resultEndIndex != -1 {
@@ -589,7 +589,7 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 
 			results = HandleFieldsRaw(resultsStr)
 		} else {
-			// 单返回值
+			// single return value
 			resultsStr := strings.TrimSpace(lineStr)
 			results = append(results, &Field{
 				Name: "",
@@ -603,12 +603,12 @@ func FuncToFuncDecl(f interface{}, libName string, overideName string) (*FuncDec
 		finalName = funcName
 	}
 
-	// 特殊处理params和results
+	// Special processing params and results
 	// params, results = customHandleParamsAndResults(libName, overideName, params, results)
 
 	declaration, completion = GetDeclAndCompletion(finalName, params, results)
 
-	// 特殊处理Document
+	// Special processing Document
 	if document != "" {
 		exampleIndex := strings.Index(document, "Example:")
 		if exampleIndex != -1 {

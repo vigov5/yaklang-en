@@ -31,14 +31,14 @@ var stringBuildinMethod = map[string]*buildinMethod{
 				return rune(c[0])
 			}
 		}),
-		Description: "获取字符串第一个字符",
+		Description: "Get the string The first character",
 	},
 	"Reverse": {
 		Name:       "Reverse",
 		ParamTable: nil,
 		HandlerFactory: NewStringMethodFactory(func(s string) interface{} {
 			return func() string {
-				// runes 是为了处理中文字符问题，这个是合理的
+				// runes is to deal with Chinese character problems, this is reasonable
 				runes := []rune(s)
 				for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
 					runes[i], runes[j] = runes[j], runes[i]
@@ -46,7 +46,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 				return string(runes)
 			}
 		}),
-		Description: "倒序字符串",
+		Description: "Reverse characters String",
 	},
 	"Shuffle": {
 		Name:       "Shuffle",
@@ -60,7 +60,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 				return string(raw)
 			}
 		}),
-		Description: "随机打乱字符串",
+		Description: "Randomly scramble the string",
 	},
 	"Fuzz": {
 		Name:       "Fuzz",
@@ -97,7 +97,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 				return strings.Contains(s, substr)
 			}
 		}),
-		Description: "判断字符串是否包含子串",
+		Description: "Determine whether the string contains a substring",
 	},
 	"IContains": {
 		Name:       "IContains",
@@ -110,7 +110,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 				return strings.Contains(strings.ToLower(s), strings.ToLower(substr))
 			}
 		}),
-		Description: "判断字符串是否包含子串",
+		Description: "Determine whether the string contains a substring",
 	},
 	"ReplaceN": {
 		Name:       "ReplaceN",
@@ -121,7 +121,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "替换字符串中的子串",
+		Description: "Replace the substring in the string",
 	},
 	"ReplaceAll": {
 		Name:       "ReplaceAll",
@@ -132,7 +132,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "替换字符串中所有的子串",
+		Description: "replaces all substrings in the string.",
 	},
 	"Split": {
 		Name:       "Split",
@@ -143,7 +143,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "分割字符串",
+		Description: "Split the string",
 	},
 	"SplitN": {
 		Name:       "SplitN",
@@ -154,7 +154,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "分割字符串，最多分割为N份",
+		Description: "Split the string into N parts at most",
 	},
 	"Join": {
 		Name:       "Join",
@@ -165,7 +165,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "连接字符串",
+		Description: "Connect the string",
 	},
 	"Trim": {
 		Name:            "Trim",
@@ -181,7 +181,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "去除字符串两端的cutset",
+		Description: "removes the cutsets at both ends of the string.",
 	},
 	"TrimLeft": {
 		Name:            "TrimLeft",
@@ -196,7 +196,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 				return strings.TrimLeftFunc(s, unicode.IsSpace)
 			}
 		}),
-		Description: "去除字符串左端的cutset",
+		Description: "Remove the cutset at the left end of the string",
 	},
 	"TrimRight": {
 		Name:       "TrimRight",
@@ -210,7 +210,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 				return strings.TrimRightFunc(s, unicode.IsSpace)
 			}
 		}),
-		Description: "去除字符串右端的cutset",
+		Description: "Removes the cutset at the right end of the string",
 	},
 	"HasPrefix": {
 		Name:       "HasPrefix",
@@ -221,7 +221,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字符串是否以prefix开头",
+		Description: "Determine whether the string starts with prefix",
 	},
 	"RemovePrefix": {
 		Name:       "RemovePrefix",
@@ -232,7 +232,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "移除前缀",
+		Description: "Remove the prefix",
 	},
 	"HasSuffix": {
 		Name:       "HasSuffix",
@@ -243,7 +243,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字符串是否以suffix结尾",
+		Description: "Determine whether the string ends with suffix",
 	},
 	"RemoveSuffix": {
 		Name:       "RemoveSuffix",
@@ -254,7 +254,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "移除后缀",
+		Description: "Remove the suffix",
 	},
 	"Zfill": {
 		Name:       "Zfill",
@@ -270,7 +270,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "字符串左侧填充0",
+		Description: "Fill the left side of the string with 0",
 	},
 	"Rzfill": {
 		Name:       "Rzfill",
@@ -286,7 +286,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "字符串右侧填充0",
+		Description: "Fill the right side of the string with 0",
 	},
 	"Ljust": {
 		Name:       "Ljust",
@@ -306,7 +306,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "字符串左侧填充空格",
+		Description: "Left side of the string Fill the side with spaces",
 	},
 	"Rjust": {
 		Name:       "Rjust",
@@ -326,7 +326,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "字符串右侧填充空格",
+		Description: "Fill the right side of the string with spaces",
 	},
 	"Count": {
 		Name:       "Count",
@@ -337,7 +337,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "统计字符串中substr出现的次数",
+		Description: "Counts the number of times substr appears in the string",
 	},
 	"Find": {
 		Name:       "Find",
@@ -348,7 +348,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "查找字符串中substr第一次出现的位置, 如果没找到则返回-1",
+		Description: "Find the first occurrence of substr in the string, if not found, return -1",
 	},
 	"Rfind": {
 		Name:       "Rfind",
@@ -359,7 +359,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "查找字符串中substr最后一次出现的位置, 如果没找到则返回-1",
+		Description: "Find the last occurrence of substr in the string, if not found Return -1",
 	},
 	"Lower": {
 		Name: "Lower",
@@ -369,7 +369,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "将字符串转换为小写",
+		Description: "Convert the string to lowercase",
 	},
 	"Upper": {
 		Name: "Upper",
@@ -379,7 +379,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "将字符串转换为大写",
+		Description: "Convert the string to uppercase",
 	},
 	"Title": {
 		Name: "Title",
@@ -389,7 +389,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "将字符串转换为Title格式(即所有单词第一个字母大写, 其余小写)",
+		Description: "converts the string into Title format (i.e. the first character of all words). Letters are uppercase, the rest are lowercase)",
 	},
 	"IsLower": {
 		Name: "IsLower",
@@ -399,7 +399,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字符串是否为小写",
+		Description: "Determine whether the string is lowercase",
 	},
 	"IsUpper": {
 		Name: "IsUpper",
@@ -409,7 +409,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字符串是否为大写",
+		Description: "determines whether the string is uppercase.",
 	},
 	"IsTitle": {
 		Name: "IsTitle",
@@ -419,7 +419,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字符串是否为Title格式",
+		Description: "determines whether the string is in Title format.",
 	},
 	"IsAlpha": {
 		Name: "IsAlpha",
@@ -429,7 +429,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字符串是否为字母",
+		Description: "Determines whether the string is a letter",
 	},
 	"IsDigit": {
 		Name: "IsDigit",
@@ -439,7 +439,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字符串是否为数字",
+		Description: "Determine whether the string is a number",
 	},
 	"IsAlnum": {
 		Name: "IsAlnum",
@@ -449,7 +449,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字符串是否为字母或数字",
+		Description: "Determine whether the string is a letter or number",
 	},
 	"IsPrintable": {
 		Name: "IsPrintable",
@@ -459,7 +459,7 @@ var stringBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字符串是否为可打印字符",
+		Description: "Determines whether the string is a printable character",
 	},
 }
 

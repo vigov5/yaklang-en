@@ -89,7 +89,7 @@ func (f *FacadeServer) rmiShakeHands(peekConn *utils.BufferedPeekableConn) error
 		log.Errorf("read header failed: %s", err)
 		return err
 	}
-	// 初步握手
+	// Preliminary handshake
 	headerRaw := byt[:4]
 	headerRaw = append(bytes.Repeat([]byte{0x00}, 4), headerRaw...)
 	header := binary.BigEndian.Uint64(headerRaw)
@@ -99,7 +99,7 @@ func (f *FacadeServer) rmiShakeHands(peekConn *utils.BufferedPeekableConn) error
 		return err
 	}
 
-	// 读取版本
+	// . Read version
 	verRaw := byt[4:6]
 	verRaw = append(bytes.Repeat([]byte{0x00}, 6), verRaw...)
 	ver := binary.BigEndian.Uint64(verRaw)
@@ -111,7 +111,7 @@ func (f *FacadeServer) rmiShakeHands(peekConn *utils.BufferedPeekableConn) error
 	//protocol := binary.BigEndian.Uint64(protocolRaw)
 	//protocol, _ := jreader.ReadByteToInt(reader)
 	log.Infof("protocol: 0x%02x", protocol)
-	// 读取 Connection 的协议
+	// Read the Connection protocol
 	flag := protocol
 
 	switch flag {
@@ -119,7 +119,7 @@ func (f *FacadeServer) rmiShakeHands(peekConn *utils.BufferedPeekableConn) error
 		log.Infof("%v's protocol: stream", conn.RemoteAddr())
 		var buffer bytes.Buffer
 		buffer.Write(rmiACK)
-		// 写入  SuggestedHost Port
+		// Write to the SuggestedHost Port
 		// UTF + Int(4)
 		remoteAddr := f.ConvertRemoteAddr(conn.RemoteAddr().String())
 		remoteIP, remotePort, _ := utils.ParseStringToHostPort(remoteAddr)
@@ -210,20 +210,20 @@ func (f *FacadeServer) rmiServe(peekConn *utils.BufferedPeekableConn) error {
 		return nil
 
 		//conn.SetReadDeadline(time.Now().Add(30 * time.Second))
-		//// return 表示可以开始服务端读入 input stream 了
+		//// return Indicates that the server can start reading the input stream
 		//conn.Write([]byte{rmiCommandReturn})
 		//
 		//log.Infof("start to write 0xaced!")
-		//// 从这里开始写入流 0xaced... XXD
+		//// Start writing the stream 0xaced from here... XXD
 		//_, _ = conn.Write(serializationHeader)
 		//
-		//// 客户端会接受一个 BLOCKDATA Byte(s) 需要额外发回去，看下客户端如何处理
-		//// 假装他是一个正常的 Return
+		//// The client will accept it A BLOCKDATA Byte(s) needs to be sent back extra. Let’s see how the client handles
+		//// Pretend it is a normal Return
 		//conn.Write(jreader.MarshalBlockDataBytes([]byte{rmiNormalReturn}))
 		//
 		//var buf = bytes.NewBuffer(nil)
 		//
-		//// 发送 UID (UniqueID:Int(4) Timestamp:Long(8) Count:Short(2))
+		//// and send UID (UniqueID:Int(4) Timestamp:Long(8) Count:Short(2))
 		//buf.Write(jreader.IntTo4Bytes(rand.Intn(65535)))
 		//buf.Write(jreader.Uint64To8Bytes(uint64(time.Now().Unix())))
 		//buf.Write(jreader.IntTo2Bytes(1))

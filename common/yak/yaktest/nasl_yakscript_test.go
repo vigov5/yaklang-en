@@ -15,26 +15,26 @@ func init() {
 func TestDeleteScript(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试从数据库删除Script",
+			Name: "Test delete Script from database",
 			Src:  `nasl.RemoveDatabase()`,
 		},
 	}
-	Run("测试从数据库删除Script", t, cases...)
+	Run("Test delete Script from database", t, cases...)
 }
 func TestUpdateScript(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试更新NaslScript",
+			Name: "Test update NaslScript",
 			Src:  `nasl.UpdateDatabase("/Users/z3/nasl/nasl-plugins/2023/apache")`,
 		},
 	}
-	Run("测试从本地文件更新NaslScript到数据库", t, cases...)
+	Run("Test update NaslScript from local file to database", t, cases...)
 }
 
 func TestScanTarget(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试扫描目标",
+			Name: "Test scan target",
 			Src: `
 naslScriptName = "gb_apache_tomcat_consolidation.nasl"
 proxy = ""
@@ -56,25 +56,25 @@ naslScanHandle("183.234.44.226:8099")
 `,
 		},
 	}
-	Run("测试扫描目标", t, cases...)
+	Run("Test scan target", t, cases...)
 }
 func TestQueryAll(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试查询NaslScript",
+			Name: "Test query NaslScript",
 			Src: `
 naslScripts = nasl.QueryAllScript()
 dump(naslScripts.Length())
 `,
 		},
 	}
-	Run("测试查询NaslScript", t, cases...)
+	Run("Test query NaslScript", t, cases...)
 }
 
 func TestInitNaslDatabase(t *testing.T) {
 	cases := []YakTestCase{
 		{
-			Name: "测试初始化NaslScript",
+			Name: "Test initialize NaslScript",
 			Src: `
 
 libraryPath = "/Users/z3/nasl/nasl-plugins/gb_netapp_data_ontap_consolidation.nasl"
@@ -85,7 +85,7 @@ if err{
 `,
 		},
 	}
-	Run("测试初始化NaslScript到数据库", t, cases...)
+	Run("Test initialize NaslScript to database", t, cases...)
 }
 func TestCommonScan(t *testing.T) {
 	scanCode := `

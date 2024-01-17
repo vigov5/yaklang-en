@@ -18,7 +18,7 @@ type SymbolTable struct {
 	symbolToId map[string]int
 	InitedId   map[int]struct{}
 	index      int
-	// 只有根表才有
+	// is only available in the root table
 	tableCount      int
 	idToSymbolTable map[int]*SymbolTable
 }
@@ -138,7 +138,7 @@ func (s *SymbolTable) GetSymbolByVariableName(name string) (int, bool) {
 	}
 	i, ok := s.symbolToId[name]
 	//if s.IsRoot {
-	// 如果定义域是根节点
+	// If the domain is the root node
 	//if ok {
 	//	return i, true
 	//} else {
@@ -170,7 +170,7 @@ func (s *SymbolTable) GetLocalSymbolByVariableName(name string) (int, bool) {
 //func (s *SymbolTable) GetValueByVariableId(id int) (*Value, bool) {
 //	i, ok := s.idToValue[id]
 //	if s.IsRoot {
-//		// 如果定义域是根节点
+//		// If the domain is the root node
 //		if ok {
 //			return i, true
 //		} else {

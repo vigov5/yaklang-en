@@ -24,21 +24,21 @@ var profilePage []byte
 
 func (s *VulinServer) registerUserRoute() {
 	var router = s.router
-	logicGroup := router.PathPrefix("/logic").Name("逻辑场景").Subrouter()
+	logicGroup := router.PathPrefix("/logic").Name("Logic scenario").Subrouter()
 	logicRoutes := []*VulInfo{
 		{
 			DefaultQuery: "",
 			Path:         "/user/login",
-			Title:        "Web 后台",
+			Title:        "Web background",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == http.MethodGet {
-					// 返回登录页面
+					// Return to the login page
 					writer.Header().Set("Content-Type", "text/html")
 					writer.Write(loginPage)
 					return
 				}
 
-				// 解析请求体中的 JSON 数据
+				// Parse the JSON data in the request body
 				var loginRequest struct {
 					Username string `json:"username"`
 					Password string `json:"password"`
@@ -54,14 +54,14 @@ func (s *VulinServer) registerUserRoute() {
 				username := loginRequest.Username
 				password := loginRequest.Password
 
-				// 在这里执行用户登录逻辑，验证用户名和密码是否正确
-				// 检查数据库中是否存在匹配的用户信息
+				// Execute user login logic here to verify whether the user name and password are correct
+				// Check whether there is a match in the database User information
 				if username == "" || password == "" {
 					writer.WriteHeader(400)
 					writer.Write([]byte("username or password cannot be empty"))
 					return
 				}
-				// sql 注入 , 万能密码
+				// sql injection, universal password
 				users, err := s.database.GetUserByUnsafe(username, password)
 				if err != nil {
 					writer.WriteHeader(500)
@@ -70,7 +70,7 @@ func (s *VulinServer) registerUserRoute() {
 				}
 				user := users[0]
 
-				// 假设验证通过，返回登录成功消息
+				// Assuming the verification is passed, return the login success message
 				response := struct {
 					Id      uint   `json:"id"`
 					Success bool   `json:"success"`
@@ -109,12 +109,12 @@ func (s *VulinServer) registerUserRoute() {
 			Path:         "/user/register",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				if request.Method == http.MethodGet {
-					// 返回登录页面
+					// Return to the login page
 					writer.Header().Set("Content-Type", "text/html")
 					writer.Write(registerPage)
 					return
 				} else if request.Method == http.MethodPost {
-					// 解析请求体中的 JSON 数据
+					// Parse the JSON data in the request body
 					user := &VulinUser{
 						Role: "user",
 					}
@@ -131,7 +131,7 @@ func (s *VulinServer) registerUserRoute() {
 					filterRemake = strings.ReplaceAll(filterRemake, "script", "")
 					user.Remake = filterRemake
 
-					// 在这里执行用户注册逻辑，将用户信息存储到数据库
+					// Execute user registration logic here and store user information into the database
 					err = s.database.CreateUser(user)
 					if err != nil {
 						writer.Write([]byte(err.Error()))
@@ -139,7 +139,7 @@ func (s *VulinServer) registerUserRoute() {
 						return
 					}
 
-					// 假设验证通过，返回登录成功消息
+					// Assuming the verification is passed, return the login success message
 					responseData, err := json.Marshal(user)
 					if err != nil {
 						writer.Write([]byte(err.Error()))
@@ -178,7 +178,7 @@ func (s *VulinServer) registerUserRoute() {
 					return
 				}
 
-				// 通过 id 获取用户信息
+				// Get the user by id Information
 				var a = request.URL.Query().Get("id")
 				i, err := strconv.ParseInt(a, 10, 64)
 				if err != nil {
@@ -193,7 +193,7 @@ func (s *VulinServer) registerUserRoute() {
 					return
 				}
 
-				// 水平越权
+				// Horizontal override
 				if realUser.Role != "admin" && realUser.Role != userInfo.Role {
 					writer.Write([]byte("Not Enough Permissions"))
 					writer.WriteHeader(http.StatusBadRequest)
@@ -202,7 +202,7 @@ func (s *VulinServer) registerUserRoute() {
 
 				writer.Header().Set("Content-Type", "text/html")
 
-				tmpl, err := template.New("Profile").Parse(string(profilePage)) // 请将文件名替换为你保存的 HTML 文件名
+				tmpl, err := template.New("Profile").Parse(string(profilePage)) // Please replace the file name with the HTML file name you saved
 				err = tmpl.Execute(writer, userInfo)
 				if err != nil {
 					writer.WriteHeader(http.StatusInternalServerError)
@@ -219,7 +219,7 @@ func (s *VulinServer) registerUserRoute() {
 				if err != nil {
 					return
 				}
-				// 读取请求体数据
+				// Reads the request body data
 				body, err := ioutil.ReadAll(request.Body)
 				if err != nil {
 					writer.Write([]byte(err.Error()))
@@ -227,13 +227,13 @@ func (s *VulinServer) registerUserRoute() {
 					return
 				}
 
-				// 过滤请求体内容
+				// Filters the request body content
 				lowerBody := strings.ToLower(string(body))
 				filteredBody := strings.ReplaceAll(lowerBody, "<", "")
 				filteredBody = strings.ReplaceAll(filteredBody, ">", "")
 				filteredBody = strings.ReplaceAll(filteredBody, "script", "")
 
-				// 解析过滤后的 JSON 数据
+				// Parse the filtered JSON data
 				var oldUser VulinUser
 				err = json.Unmarshal([]byte(filteredBody), &oldUser)
 				if err != nil {
@@ -242,7 +242,7 @@ func (s *VulinServer) registerUserRoute() {
 					return
 				}
 
-				// 正常逻辑先解析再过滤
+				// Normal logic parses first and then filters
 				//var oldUser VulinUser
 				//err := json.NewDecoder(request.Body).Decode(&oldUser)
 				//if err != nil {
@@ -277,7 +277,7 @@ func (s *VulinServer) registerUserRoute() {
 				}
 				writer.Header().Set("Content-Type", "text/html")
 
-				tmpl, err := template.New("profile").Parse(string(profilePage)) // 请将文件名替换为你保存的 HTML 文件名
+				tmpl, err := template.New("profile").Parse(string(profilePage)) // Please replace the file name with the HTML file name you saved
 				err = tmpl.Execute(writer, userInfo)
 				if err != nil {
 					writer.WriteHeader(http.StatusInternalServerError)

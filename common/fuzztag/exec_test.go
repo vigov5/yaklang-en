@@ -379,7 +379,7 @@ func TestExecutePrefixTag(t *testing.T) {
 	}
 }
 
-// 测试PrefixTag，但不符合规范的案例
+// expect is the base64 encoding of `base64dec(base64(aaa))`
 func TestExecutePrefixTagAndCommonTag(t *testing.T) {
 	var m = map[string]func(string) []string{
 		"expr:a": func(s string) []string {
@@ -400,15 +400,15 @@ func TestExecutePrefixTagAndCommonTag(t *testing.T) {
 		//},
 		{
 			"{{base64(expr:a(base64dec(base64(aaa))))}}",
-			"YmFzZTY0ZGVjKGJhc2U2NChhYWEpKQ==", // expect是 `base64dec(base64(aaa))` 的base64编码
+			"YmFzZTY0ZGVjKGJhc2U2NChhYWEpKQ==", // expect is the base64 encoding of `base64dec(base64(aaa))`
 		},
 		{
-			"{{base64(expr:a( base64dec(base64(aaa))))}}", // 注意：正常来说，fuzztag函数的参数只能为数据或函数，不允许混合使用
-			"IGJhc2U2NGRlYyhiYXNlNjQoYWFhKSk=",            // expect是 ` base64dec(base64(aaa))` 的base64编码
+			"{{base64(expr:a( base64dec(base64(aaa))))}}", // Note: Normally, the parameters of the fuzztag function can only be data or functions, and mixed use of
+			"IGJhc2U2NGRlYyhiYXNlNjQoYWFhKSk=",            // expect is the base64 encoding
 		},
 		{
 			"{{base64(expr:a(base64dec(base64(aaa) )))}}",
-			"YmFzZTY0ZGVjKGJhc2U2NChhYWEpICk=", // expect是 `base64dec(base64(aaa) )` 的base64编码
+			"YmFzZTY0ZGVjKGJhc2U2NChhYWEpICk=", // is not allowed. expect is the base64 of `base64dec(base64(aaa))` Encoding
 		},
 	} {
 		res, err := ExecuteWithStringHandler(testCase[0], m)

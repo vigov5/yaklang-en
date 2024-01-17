@@ -9,8 +9,8 @@ import (
 type buildinMethod struct {
 	Name string
 
-	// 参数表
-	// 如果是几个参数，应该执行什么样的函数，内容是啥？
+	// Parameter list
+	// If there are several parameters, what kind of function should be executed and what is the content? Core function executed by
 	ParamTable      []string
 	IsVariadicParam bool
 	Snippet         string
@@ -18,7 +18,7 @@ type buildinMethod struct {
 	// 执行的核心函数
 	HandlerFactory MethodFactory
 
-	// 这个内置方法的描述
+	// Description of this built-in method
 	Description string
 }
 

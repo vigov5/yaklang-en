@@ -19,7 +19,7 @@ type TunnelServer struct {
 
 	ExternalIP string
 
-	// 二级密码是用来分别
+	// The secondary password is used to distinguish
 	SecondaryPassword string
 }
 

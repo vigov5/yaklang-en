@@ -18,11 +18,11 @@ type ConnectionFrame struct {
 	From string `json:"from"`
 	Buf  []byte `json:"buf"`
 
-	// 服务端和客户端都应该处理，客户端收到这个，就直接取消全部上下文
-	// 服务端收到这个，马上关闭文件，删除缓存
+	// Both the server and the client should process it. When the client receives this, it will directly cancel all contexts
+	// When the server receives this, it will close the file immediately. , delete the cache
 	Closed bool `json:"closed"`
 
-	// 只有服务端处理这个，创建会话
+	// Only the server handles this and creates a session
 	First bool `json:"first"`
 }
 
@@ -97,7 +97,7 @@ func (l *Listener) init() error {
 					return
 				}
 
-				// 如果 closed 的话，就删除本地缓存
+				// . If it is closed, delete the local cache
 				if frame.Closed {
 					log.Infof("recv close signal for [%s]", frame.From)
 					raw, ok := l.conns.Load(frame.From)
@@ -420,7 +420,7 @@ func (c *Connection) Close() error {
 	)
 }
 
-// 初始化网络地址 API
+// Initialize the network address API
 type ConnectionAddr struct {
 	net.Addr
 
@@ -447,5 +447,5 @@ func (c *Connection) RemoteAddr() net.Addr {
 	}
 }
 
-// 假装这是 conn/listen pair
-//     1. 构建 GRPC Client
+// and pretend this is conn/listen pair
+//     1. Build GRPC Client

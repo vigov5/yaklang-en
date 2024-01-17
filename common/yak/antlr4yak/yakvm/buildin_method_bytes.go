@@ -30,14 +30,14 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 				return rune(s[0])
 			}
 		}),
-		Description: "获取字节数组的第一个字符",
+		Description: "Get the first character of the byte array",
 	},
 	"Reverse": {
 		Name:       "Reverse",
 		ParamTable: nil,
 		HandlerFactory: NewBytesMethodFactory(func(s []byte) interface{} {
 			return func() []byte {
-				// runes 是为了处理中文字符问题，这个是合理的
+				// runes is to deal with Chinese character problems, this is reasonable
 				runes := []rune(string(s))
 				for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
 					runes[i], runes[j] = runes[j], runes[i]
@@ -45,7 +45,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 				return []byte(string(runes))
 			}
 		}),
-		Description: "倒序字节数组",
+		Description: "Reverse word Section array",
 	},
 	"Shuffle": {
 		Name:       "Shuffle",
@@ -59,7 +59,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 				return []byte(string(runes))
 			}
 		}),
-		Description: "随机打乱字节数组",
+		Description: "Randomly scramble the byte array",
 	},
 	"Fuzz": {
 		Name:       "Fuzz",
@@ -96,7 +96,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 				return bytes.Contains(s, subslice)
 			}
 		}),
-		Description: "判断字节数组是否包含子字节数组",
+		Description: "Determine whether byte array contains sub-byte array",
 	},
 	"IContains": {
 		Name:       "IContains",
@@ -109,7 +109,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 				return bytes.Contains(bytes.ToLower(s), bytes.ToLower(subslice))
 			}
 		}),
-		Description: "判断字节数组是否包含子字节数组,忽略大小写",
+		Description: "Determine whether the byte array contains a sub-byte array, ignore the case",
 	},
 	"ReplaceN": {
 		Name:       "ReplaceN",
@@ -120,7 +120,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "替换字节数组中的子字节数组",
+		Description: "Replace the sub-byte array in the byte array",
 	},
 	"ReplaceAll": {
 		Name:       "ReplaceAll",
@@ -131,7 +131,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "替换字节数组中所有的子字节数组",
+		Description: "Replace all sub-byte arrays in the byte array",
 	},
 	"Split": {
 		Name:       "Split",
@@ -142,7 +142,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "分割字节数组",
+		Description: "Split byte array",
 	},
 	"SplitN": {
 		Name:       "SplitN",
@@ -153,7 +153,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "分割字节数组，最多分割为N份",
+		Description: "Split byte array into at most N parts",
 	},
 	"Join": {
 		Name:       "Join",
@@ -164,7 +164,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "连接字节数组",
+		Description: "Connect the byte array",
 	},
 	"Trim": {
 		Name:            "Trim",
@@ -180,7 +180,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "去除字节数组两端的cutset",
+		Description: "Remove The cutsets at both ends of the byte array",
 	},
 	"TrimLeft": {
 		Name:            "TrimLeft",
@@ -195,7 +195,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 				return bytes.TrimLeftFunc(s, unicode.IsSpace)
 			}
 		}),
-		Description: "去除字节数组左端的cutset",
+		Description: "Remove the cutset at the left end of the byte array",
 	},
 	"TrimRight": {
 		Name:       "TrimRight",
@@ -209,7 +209,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 				return bytes.TrimRightFunc(s, unicode.IsSpace)
 			}
 		}),
-		Description: "去除字节数组右端的cutset",
+		Description: "Remove the cutset at the right end of the byte array",
 	},
 	"HasPrefix": {
 		Name:       "HasPrefix",
@@ -220,7 +220,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字节数组是否以prefix开头",
+		Description: ". Determine whether the byte array starts with prefix",
 	},
 	"RemovePrefix": {
 		Name:       "RemovePrefix",
@@ -231,7 +231,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "移除前缀",
+		Description: "Remove the prefix",
 	},
 	"HasSuffix": {
 		Name:       "HasSuffix",
@@ -242,7 +242,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字节数组是否以suffix结尾",
+		Description: "Determine whether the byte array ends with suffix",
 	},
 	"RemoveSuffix": {
 		Name:       "RemoveSuffix",
@@ -253,7 +253,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "移除后缀",
+		Description: "Remove the suffix",
 	},
 	"Zfill": {
 		Name:       "Zfill",
@@ -270,7 +270,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "字节数组左侧填充0",
+		Description: "byte array with 0",
 	},
 	"Rzfill": {
 		Name:       "Rzfill",
@@ -287,7 +287,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "字节数组右侧填充0",
+		Description: ". Fill the right side of the byte array with 0",
 	},
 	"Ljust": {
 		Name:       "Ljust",
@@ -308,7 +308,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "字节数组左侧填充空格",
+		Description: "Fill the left side of the byte array with spaces",
 	},
 	"Rjust": {
 		Name:       "Rjust",
@@ -329,7 +329,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "字节数组右侧填充空格",
+		Description: ". Fill the right side of the byte array with spaces",
 	},
 	"Count": {
 		Name:       "Count",
@@ -340,7 +340,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "统计字节数组中subslice出现的次数",
+		Description: "Count the number of occurrences of subslice in the byte array",
 	},
 	"Find": {
 		Name:       "Find",
@@ -351,7 +351,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "查找字节数组中subslice第一次出现的位置, 如果没找到则返回-1",
+		Description: "Find the position where subslice first appears in the byte array, if not found, return -1",
 	},
 	"Rfind": {
 		Name:       "Rfind",
@@ -362,7 +362,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "查找字节数组中subslice最后一次出现的位置, 如果没找到则返回-1",
+		Description: "Find byte array The position where subslice last appeared. If not found, -1 is returned.",
 	},
 	"Lower": {
 		Name: "Lower",
@@ -372,7 +372,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "将字节数组转换为小写",
+		Description: "Convert byte array to lowercase",
 	},
 	"Upper": {
 		Name: "Upper",
@@ -382,7 +382,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "将字节数组转换为大写",
+		Description: "Convert the byte array to uppercase",
 	},
 	"Title": {
 		Name: "Title",
@@ -392,7 +392,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "将字节数组转换为Title格式(即所有单词第一个字母大写, 其余小写)",
+		Description: ". Convert the byte array to Title format (i.e. The first letter of all words is capitalized, the rest are lowercase)",
 	},
 	"IsLower": {
 		Name: "IsLower",
@@ -402,7 +402,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字节数组是否为小写",
+		Description: "Determine whether byte array is lowercase",
 	},
 	"IsUpper": {
 		Name: "IsUpper",
@@ -412,7 +412,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字节数组是否为大写",
+		Description: "Determine whether the byte array is uppercase",
 	},
 	"IsTitle": {
 		Name: "IsTitle",
@@ -422,7 +422,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字节数组是否为Title格式",
+		Description: "Determine whether the byte array is in Title format",
 	},
 	"IsAlpha": {
 		Name: "IsAlpha",
@@ -432,7 +432,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字节数组是否为字母",
+		Description: ". Determine whether the byte array is the letter",
 	},
 	"IsDigit": {
 		Name: "IsDigit",
@@ -442,7 +442,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字节数组是否为数字",
+		Description: "Determine whether the byte array Fill the left side of the digital",
 	},
 	"IsAlnum": {
 		Name: "IsAlnum",
@@ -452,7 +452,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字节数组是否为字母或数字",
+		Description: "Determine the word Whether the section array is letters or numbers",
 	},
 	"IsPrintable": {
 		Name: "IsPrintable",
@@ -462,7 +462,7 @@ var bytesBuildinMethod = map[string]*buildinMethod{
 			}
 		},
 		),
-		Description: "判断字节数组是否为可打印字符",
+		Description: "Determine whether the byte array is a printable character",
 	},
 }
 

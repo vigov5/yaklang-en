@@ -39,7 +39,7 @@ func NewScanNodeWithAMQPUrl(id, serverPort string, amqpUrl string, serverIp stri
 			node.GetIpecho(serverIp, serverPort)
 		},
 	)
-	// 回传日志信息
+	// Return log information
 	agent.node.HookAfterRegisteringFinished(
 		func() {
 			go func() {

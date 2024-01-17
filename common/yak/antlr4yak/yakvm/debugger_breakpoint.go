@@ -12,14 +12,14 @@ type Breakpoint struct {
 	Condition, HitCondition string
 	State                   string
 
-	HitCount int // 命中次数
+	HitCount int // Number of hits
 }
 
 func (g *Debugger) NewBreakPoint(codeIndex, lineIndex int, condition, hitCondition, state string) *Breakpoint {
 	hitCount := 0
 	if hitCondition != "" {
 		hitCount, _ = strconv.Atoi(hitCondition)
-		// 如果存在hitCount,设置hitCondition为空
+		// If hitCount exists, set hitCondition to empty
 		if hitCount > 0 {
 			hitCondition = ""
 		}

@@ -46,7 +46,7 @@ func haveDomainSuffix(b []string) (string, bool) {
 
 	if ret := strings.Split(rootDomain, "."); len(ret) > 0 {
 		if blackWordsInMain.Exist(strings.ToLower(ret[0])) {
-			// 在禁用词中
+			// in the forbidden words
 			return "", false
 		}
 		if len(ret[0]) <= 1 {
@@ -71,7 +71,7 @@ func _haveDomainSuffix(b []string) (string, bool) {
 		return strings.Trim(strings.Join(b, "."), "."), singleWordDomainSuffix.Exist(strings.TrimRight(b[1], "."))
 	}
 
-	// 3 个以及以上的话需要区分优先级
+	// If there are 3 or more, you need to prioritize
 	if doubleWordDomainSuffix.Exist(strings.TrimRight(strings.Join([]string{
 		b[len(b)-2], b[len(b)-1],
 	}, "."), ".")) {
@@ -192,14 +192,14 @@ func scan(code string) ([]string, []string) {
 		3rd: (?P<jsonunicode>(([\\]{2}u[0-9a-fA-F]{4,5})|([\\]{1}u[0-9a-fA-F]{4,5})))
 		4th: (?P<urlencode>((%[a-fA-F0-9]{2})+))
 
-		html 实体编码实际上不需要处理，标准情况的话，实体编码前后都有 ;
+		html entity encoding does not actually need to be processed. In the standard case, there are before and after the entity encoding. ;
 	*/
-	// 多种编码需要处理
+	// Multiple encodings need to be processed
 	// 1. %[0-9a-fA-F]{2}
 	// 2. \u[0-9a-fA-F]{4};?
 	// 3. &#x[0-9a-fA-F]{4};?
 	// 4. &#[0-9]{1,5};
-	// 5. %25{\d}{2} 有多个的时候，一般这个会有用
+	// 5. %25{\d}{2} When there are multiple, this will generally be useful
 	// 6. \?\x[0-9a-fA-F]{2}
 	return _scan(TryDecode(code))
 }

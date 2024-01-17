@@ -14,15 +14,15 @@ type WebShell struct {
 	Url string `json:"url" gorm:"index" `
 	// pass=payload
 	Pass string `json:"pass"`
-	// 加密密钥
+	// encryption key
 	SecretKey string `json:"secret_key" gorm:"not null"`
-	// 加密模式
+	// encryption mode
 	EncryptedMode string `json:"enc_mode" gorm:"column:enc_mode"`
-	// 字符集编码
+	// character set encoding
 	Charset string `json:"charset" gorm:"default:'UTF-8'"`
-	// 冰蝎还是哥斯拉,或者是其他
+	// Ice Scorpion or Godzilla, or other
 	ShellType string `json:"shell_type"`
-	// 脚本语言
+	// Scripting language
 	ShellScript      string `json:"shell_script"`
 	Headers          string `json:"headers" gorm:"type:json"`
 	Status           bool   `json:"status"`

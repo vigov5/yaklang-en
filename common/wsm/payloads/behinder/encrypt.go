@@ -18,7 +18,7 @@ func Encryption(binCode, key []byte, script string) ([]byte, error) {
 		}
 		result = []byte(base64.StdEncoding.EncodeToString(encCls))
 	case ypb.ShellScript_PHP.String():
-		// 冰蝎很烦的是不确定用 aes 还是 xor
+		// The annoying thing about Ice Scorpion is that it is not sure whether to use aes or xor.
 		encPhp, err := payloads.EncryptForPhp(binCode, key)
 		if err != nil {
 			return nil, err
@@ -43,7 +43,7 @@ func Decryption(body, key []byte, script string) ([]byte, error) {
 	case ypb.ShellScript_JSPX.String():
 		fallthrough
 	case ypb.ShellScript_JSP.String():
-		// 冰蝎4 的 AES 加密结果套了一层 base64
+		// The AES encryption result of Ice Scorpion 4 is covered with a layer of base64.
 		deCode, err := base64.StdEncoding.DecodeString(string(body))
 		if err != nil {
 			return nil, err

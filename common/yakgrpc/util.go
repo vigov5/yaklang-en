@@ -97,7 +97,7 @@ func (s *YakOutputStreamerHelperWC) Close() (err error) {
 // ----------------------------------------------------------------------------------------
 
 /*
-一键处理 pluginNames 作为参数
+One-click processing pluginNames as the default value of the parameter
 */
 func appendPluginNames(params []*ypb.ExecParamItem, plugins ...string) ([]*ypb.ExecParamItem, func(), error) {
 	return appendPluginNamesEx("yakit-plugin-file", "|", params, plugins...)
@@ -185,10 +185,10 @@ func NewLocalClient(locals ...bool) (ypb.YakClient, error) {
 }
 
 type YamlMapBuilder struct {
-	keySet         map[string]struct{} // 去重，如果存在多个相同的key，只保留第一个
+	keySet         map[string]struct{} // deduplication will be skipped. If there are multiple identical keys, only the first one will be retained.
 	forceKeySet    map[string]struct{}
 	slice          *yaml.MapSlice
-	defaultField   map[string]any // field的默认值，如果新增字段是默认值，则跳过
+	defaultField   map[string]any // field. If the new field is the default value,
 	emptyLineIndex int
 }
 type YamlArrayBuilder struct {

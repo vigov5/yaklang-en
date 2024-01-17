@@ -22,10 +22,10 @@ func GenerateSingleFile(basepath string, lib *yakdoc.ScriptLib) {
 	}
 	defer file.Close()
 	file.WriteString("# " + lib.Name + "\n\n")
-	file.WriteString("|成员函数|函数描述/介绍|\n")
+	file.WriteString("|member function|function description/introduction|\n")
 	file.WriteString("|:------|:--------|\n")
 
-	// 将Functions转成list
+	// Convert Functions into list
 	funcList := lo.MapToSlice(lib.Functions, func(key string, value *yakdoc.FuncDecl) *yakdoc.FuncDecl {
 		return value
 	})
@@ -38,7 +38,7 @@ func GenerateSingleFile(basepath string, lib *yakdoc.ScriptLib) {
 		document := fun.Document
 		exampleIndex := strings.Index(document, "Example:")
 		if exampleIndex != -1 {
-			// Example 代码块不应该替换<和>
+			// Example code block should not replace<and>
 			doc := document[:exampleIndex]
 			doc = strings.ReplaceAll(doc, "<", "&lt;")
 			doc = strings.ReplaceAll(doc, ">", "&gt;")
@@ -48,7 +48,7 @@ func GenerateSingleFile(basepath string, lib *yakdoc.ScriptLib) {
 			document = strings.ReplaceAll(document, ">", "&gt;")
 		}
 
-		// 简略的描述，去除\r，替换\n，删除Example:后面的内容，转义|，截取150个字符
+		// , remove \r, replace\n, delete the content after Example:, escape|, intercept 150 characters
 		simpleDocument := document
 		simpleDocument = strings.ReplaceAll(simpleDocument, "\r", "")
 		simpleDocument = strings.ReplaceAll(simpleDocument, "\n", " ")
@@ -70,11 +70,11 @@ func GenerateSingleFile(basepath string, lib *yakdoc.ScriptLib) {
 		file.WriteString(fmt.Sprintf("| [%s.%s](#%s) |%s|\n", fun.LibName, fun.MethodName, lowerMethodName, simpleDocument))
 		buf := strings.Builder{}
 		buf.WriteString(fmt.Sprintf("### %s\n\n", fun.MethodName))
-		buf.WriteString(fmt.Sprintf("#### 详细描述\n%s\n\n", document))
-		buf.WriteString(fmt.Sprintf("#### 定义\n\n`%s`\n\n", fun.Decl))
+		buf.WriteString(fmt.Sprintf("#### Detailed description\n%s\n\n Brief description of", document))
+		buf.WriteString(fmt.Sprintf("#### Definition\n\n`%s`\ n\n", fun.Decl))
 		if len(fun.Params) > 0 {
-			buf.WriteString("#### 参数\n")
-			buf.WriteString("|参数名|参数类型|参数解释|\n")
+			buf.WriteString("#### Parameter\n")
+			buf.WriteString("|parameter name|Parameter type|Parameter explanation|\n")
 			buf.WriteString("|:-----------|:---------- |:-----------|\n")
 			for _, param := range fun.Params {
 				buf.WriteString(fmt.Sprintf("| %s | `%s` |   |\n", param.Name, param.Type))
@@ -82,8 +82,8 @@ func GenerateSingleFile(basepath string, lib *yakdoc.ScriptLib) {
 			buf.WriteString("\n")
 		}
 		if len(fun.Results) > 0 {
-			buf.WriteString("#### 返回值\n")
-			buf.WriteString("|返回值(顺序)|返回值类型|返回值解释|\n")
+			buf.WriteString("#### Return value\n")
+			buf.WriteString("|return value (sequence)|Return value type|return value explanation|\n")
 			buf.WriteString("|:-----------|:---------- |:-----------|\n")
 			for _, result := range fun.Results {
 				buf.WriteString(fmt.Sprintf("| %s | `%s` |   |\n", result.Name, result.Type))
@@ -94,7 +94,7 @@ func GenerateSingleFile(basepath string, lib *yakdoc.ScriptLib) {
 		bufList = append(bufList, buf)
 	}
 	file.WriteString("\n\n")
-	file.WriteString("## 函数定义\n")
+	file.WriteString("## Function definition\n")
 	for _, buf := range bufList {
 		file.WriteString(buf.String())
 	}

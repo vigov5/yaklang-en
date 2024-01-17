@@ -40,10 +40,10 @@ func (y *YakCompiler) getContinueScopeCounter() int {
 func (y *YakCompiler) addNearliestBreakScopeCounter(delta int) {
 	if y.peekForStartIndex() >= 0 && y.peekSwitchStartIndex() >= 0 {
 		if y.GetNextCodeIndex()-y.peekForStartIndex() > y.GetNextCodeIndex()-y.peekSwitchStartIndex() {
-			// switch 离得近
+			// switch Closer
 			y.peekSwitchContext().switchBreakScopeCounter += delta
 		} else {
-			// for 离得近
+			// for Closer
 			y.peekForContext().breakScopeCounter += delta
 		}
 		return
@@ -63,10 +63,10 @@ func (y *YakCompiler) addNearliestBreakScopeCounter(delta int) {
 func (y *YakCompiler) getNearliestBreakScopeCounter() int {
 	if y.peekForStartIndex() >= 0 && y.peekSwitchStartIndex() >= 0 {
 		if y.GetNextCodeIndex()-y.peekForStartIndex() > y.GetNextCodeIndex()-y.peekSwitchStartIndex() {
-			// switch 离得近
+			// switch Closer
 			return y.peekSwitchContext().switchBreakScopeCounter
 		} else {
-			// for 离得近
+			// for Closer
 			return y.peekForContext().breakScopeCounter
 		}
 	}
@@ -115,7 +115,7 @@ func (y *YakCompiler) GetRangeVerbose() string {
 	return prefix
 }
 
-// SetRange 设置当前解析到的范围，用来自动关联 Opcode 的 Range
+// SetRange Sets the currently parsed range, which is used to automatically associate the Range of the Opcode
 func (y *YakCompiler) SetRange(b canStartStopToken) func() {
 	originEndPosition := y._setCurrentEndPosition(b.GetStop())
 	originStartPosition := y._setCurrentStartPosition(b.GetStart())

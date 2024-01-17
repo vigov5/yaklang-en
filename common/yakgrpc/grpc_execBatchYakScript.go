@@ -27,7 +27,7 @@ import (
 var batchExecScripts []byte
 
 func (s *Server) ExecBatchYakScript(req *ypb.ExecBatchYakScriptRequest, stream ypb.Yak_ExecBatchYakScriptServer) error {
-	// 用于管理进度保存相关内容
+	// is used to manage progress and save related content.
 	manager := NewProgressManager(s.GetProjectDatabase())
 
 	ctx, cancel := context.WithTimeout(stream.Context(), time.Duration(req.TotalTimeoutSeconds)*time.Second)
@@ -35,7 +35,7 @@ func (s *Server) ExecBatchYakScript(req *ypb.ExecBatchYakScriptRequest, stream y
 
 	extraParams := req.GetExtraParams()
 	/*
-		加载可执行的脚本
+		loads the executable script. The core function of
 	*/
 	var (
 		rsp []*ypb.YakScript
@@ -49,7 +49,7 @@ func (s *Server) ExecBatchYakScript(req *ypb.ExecBatchYakScriptRequest, stream y
 
 	groupSize := req.GetProgressTaskCount()
 
-	// 如果启动了插件过滤器的话
+	// If the plug-in filter is enabled,
 	if req.GetEnablePluginFilter() {
 		if req.GetFromRecover() || len(req.GetPluginFilter().GetIncludedScriptNames()) > 200 {
 			for _, y := range yakit.QueryYakScriptByNames(s.GetProfileDatabase(), req.GetPluginFilter().GetIncludedScriptNames()...) {
@@ -78,7 +78,7 @@ func (s *Server) ExecBatchYakScript(req *ypb.ExecBatchYakScriptRequest, stream y
 			}
 		}
 	} else {
-		// 不启动过滤器就走原来的流程
+		// Go through the original process without starting the filter
 		if len(req.GetScriptNames()) > 0 {
 			for _, y := range yakit.QueryYakScriptByNames(s.GetProfileDatabase(), req.GetScriptNames()...) {
 				rsp = append(rsp, y.ToGRPCModel())
@@ -120,7 +120,7 @@ func (s *Server) ExecBatchYakScript(req *ypb.ExecBatchYakScriptRequest, stream y
 	groupScriptTotal := len(yakScriptGroups)
 
 	/*
-		加载目标
+		loads the target
 	*/
 	var targets []string
 	var targetRaw = req.GetTarget()
@@ -138,7 +138,7 @@ func (s *Server) ExecBatchYakScript(req *ypb.ExecBatchYakScriptRequest, stream y
 	var progressRunning int64
 	var scanTaskExecutingCount int64
 
-	// 开始在这里准备保存结果
+	// . Start preparing to save the results here.
 	var lastScripts []string
 	var lastScriptLock = new(sync.Mutex)
 	addLastScript := func(s ...*ypb.YakScript) {
@@ -164,7 +164,7 @@ func (s *Server) ExecBatchYakScript(req *ypb.ExecBatchYakScriptRequest, stream y
 	}
 
 	defer func() {
-		// 如果推出的时候，last Script/Targets 都不为空，说明有一些没有完成的任务，
+		// If launched, last Script/None of Targets is empty, indicating that there are some unfinished tasks.
 		if len(lastScripts) <= 0 {
 			return
 		}
@@ -187,7 +187,7 @@ func (s *Server) ExecBatchYakScript(req *ypb.ExecBatchYakScriptRequest, stream y
 	}()
 
 	/*
-		执行任务的核心函数在下面，我们在下面内容控制分组与进程的对应关系
+		to execute the task is below. We control the corresponding relationship between grouping and process in the following content.
 	*/
 	_ = stream.Send(&ypb.ExecBatchYakScriptResult{
 		ProgressMessage: true, ProgressPercent: 0.1,
@@ -259,13 +259,13 @@ func (s *Server) ExecBatchYakScript(req *ypb.ExecBatchYakScriptRequest, stream y
 				taskId := uuid.NewV4().String() // codec.Sha512(target + script.ScriptName + fmt.Sprint(script.Id))
 
 				/**
-				这儿需要小心点处理：
+				needs to be handled carefully here:
 
-				批量执行将不再建议使用 “进程”
+				and batch execution will no longer recommend using “process”
 
-				通过上下文控制即可。
+				can be controlled through context.
 
-				不同插件的调用方式和目标处理都不一样，一个插件组可能有不同的插件类型，因此需要写一个脚本同时调用 N 种插件
+				The calling methods and target processing of different plug-ins are Different, a plug-in group may have different plug-in types, so you need to write a script to call N plug-ins at the same time.
 				*/
 				var templates []string
 				var ordinaries []string
@@ -298,7 +298,7 @@ func (s *Server) ExecBatchYakScript(req *ypb.ExecBatchYakScriptRequest, stream y
 				stream.Send(&ypb.ExecBatchYakScriptResult{
 					Status: "data",
 					Result: yaklib.NewYakitLogExecResult(
-						"info", fmt.Sprintf("正在启动对 %v 的扫描子进程，插件进程数：[%v]", target, len(scriptGroup)),
+						"info", fmt.Sprintf("is starting the scanning sub-process for %v. Number of plug-in processes: [%v]", target, len(scriptGroup)),
 					),
 					Target:     target,
 					ExtraParam: extraParams,
@@ -307,7 +307,7 @@ func (s *Server) ExecBatchYakScript(req *ypb.ExecBatchYakScriptRequest, stream y
 				})
 				time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
 
-				//// 启动一个带上下文引擎的内容
+				//// Start a content with context engine
 				//err = s.execRequest(params, `general-batch`, subCtx, func(result *ypb.ExecResult, logItem *yaklib.YakitLog) error {
 				//	if logItem == nil {
 				//		return nil

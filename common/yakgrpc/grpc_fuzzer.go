@@ -137,7 +137,7 @@ func (s *Server) RedirectRequest(ctx context.Context, req *ypb.RedirectRequestPa
 		return nil, err
 	}
 	rspRaw := rspIns.RawPacket
-	// 提取响应
+	// Extract the response
 	extractHTTPResponseResult, err := s.ExtractHTTPResponse(ctx, &ypb.ExtractHTTPResponseParams{
 		HTTPResponse: string(rspRaw),
 		Extractors:   req.GetExtractors(),
@@ -151,7 +151,7 @@ func (s *Server) RedirectRequest(ctx context.Context, req *ypb.RedirectRequestPa
 			})
 		}
 	}
-	// 匹配响应
+	// Match response
 	var httpTPLmatchersResult bool
 	if len(req.GetMatchers()) != 0 {
 		httpTplMatcher := make([]*httptpl.YakMatcher, 0)
@@ -224,7 +224,7 @@ func (s *Server) RedirectRequest(ctx context.Context, req *ypb.RedirectRequestPa
 		}
 		rsp.BodyLength = bodyLen
 
-		// 解析 Headers
+		// parses the headers.
 		for k, vs := range responseIns.Header {
 			for _, v := range vs {
 				rsp.Headers = append(rsp.Headers, &ypb.HTTPHeader{
@@ -269,7 +269,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 	// pause
 	pauseTaskID := req.GetPauseTaskID()
 	isPause := pauseTaskID > 0
-	// 暂停任务
+	// Pause task
 	var sw *utils.Switch
 	if !isPause {
 		sw = utils.NewSwitch(true)
@@ -382,9 +382,9 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 	historyID := req.GetHistoryWebFuzzerId()
 	reMatch := req.GetReMatch()
 	if historyID > 0 {
-		// 回溯找到所有之前的包，进行整合
+		// Backtrack to find all previous packages and integrate them
 		oldIDs, err := yakit.GetWebFuzzerTasksIDByRetryRootID(s.GetProjectDatabase(), uint(historyID))
-		// 找到最新的任务并排除
+		// finds the latest task and excludes
 		latestID := lo.Max(oldIDs)
 		if !reMatch {
 			oldIDs = lo.Filter(oldIDs, func(item uint, _ int) bool {
@@ -395,9 +395,9 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 		if err != nil {
 			log.Errorf("get old web fuzzer success response failed: %s", err)
 		} else {
-			// 重匹配的分支
+			// Rematched branches
 			if reMatch {
-				if len(oldIDs) == 0 { // 尝试修复
+				if len(oldIDs) == 0 { // try to repair
 					oldIDs = []uint{uint(historyID)}
 				}
 				newHitColor := req.GetHitColor()
@@ -434,7 +434,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 				for resp := range yakit.YieldWebFuzzerResponseByTaskIDs(s.GetProjectDatabase(), stream.Context(), oldIDs, true) {
 					respModel, _ := resp.ToGRPCModel()
 
-					if haveHTTPTplExtractor { // 提取器提取参数
+					if haveHTTPTplExtractor { // extractor extraction parameters
 						params := make(map[string]any)
 						for _, extractor := range httpTplExtractor {
 							vars, err := extractor.Execute(respModel.ResponseRaw, params)
@@ -444,12 +444,12 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 							}
 							for k, v := range vars {
 								params[k] = v
-								extractorResults = append(extractorResults, &ypb.KVPair{Key: k, Value: httptpl.ExtractResultToString(v)}) // 提取器 参数
+								extractorResults = append(extractorResults, &ypb.KVPair{Key: k, Value: httptpl.ExtractResultToString(v)}) // extractor parameter
 							}
 						}
 					}
 					for mergedParams := range s.PreRenderVariables(stream.Context(), req.GetParams(), req.GetIsHTTPS(), req.GetIsGmTLS(), false) {
-						existedParams := make(map[string]string) // 传入的参数
+						existedParams := make(map[string]string) // passes in the parameters.
 						if mergedParams != nil {
 							for k, v := range utils.InterfaceToMap(mergedParams) {
 								existedParams[k] = strings.Join(v, ",")
@@ -457,13 +457,13 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 						}
 
 						if respModel != nil && getMirrorHTTPFlowParams != nil {
-							for k, v := range getMirrorHTTPFlowParams(respModel.RequestRaw, respModel.ResponseRaw, existedParams) { // 热加载的参数
+							for k, v := range getMirrorHTTPFlowParams(respModel.RequestRaw, respModel.ResponseRaw, existedParams) { // Hot loading parameters
 								extractorResults = append(extractorResults, &ypb.KVPair{Key: utils.EscapeInvalidUTF8Byte([]byte(k)), Value: utils.EscapeInvalidUTF8Byte([]byte(v))})
 							}
 						}
 
 						matcherParams := utils.CopyMapInterface(mergedParams)
-						for _, kv := range extractorResults { // 合并
+						for _, kv := range extractorResults { // Merge
 							matcherParams[kv.GetKey()] = kv.GetValue()
 						}
 						httpTPLmatchersResult, err := ins.Execute(
@@ -488,7 +488,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 				}
 
 			} else {
-				// 只展示之前成功的包
+				// only displays the previously successful package.
 				for resp := range yakit.YieldWebFuzzerResponseByTaskIDs(s.GetProjectDatabase(), stream.Context(), oldIDs, true) {
 					respModel, err := resp.ToGRPCModel()
 					if err != nil {
@@ -498,7 +498,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 					feedbackResponse(respModel, true)
 				}
 
-				// 展示最新任务的所有包
+				// Display all packages of the latest task
 				for resp := range yakit.YieldWebFuzzerResponses(s.GetProjectDatabase(), stream.Context(), int(latestID)) {
 					respModel, err := resp.ToGRPCModel()
 					if err != nil {
@@ -529,7 +529,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 	if err != nil {
 		return utils.Errorf("save to web fuzzer to database failed: %s", err)
 	}
-	// 重试任务
+	// Retry task
 	var retryRootID uint
 	taskID := task.ID
 	task.FuzzerIndex = req.GetFuzzerIndex()
@@ -543,7 +543,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 		}
 		task.RetryRootID = retryRootID
 	}
-	// 存储重试任务的开关
+	// Store retry task The switch
 	_FuzzerTaskSwitchMap.Store(task.ID, sw)
 
 	defer func() {
@@ -552,7 +552,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 		}
 	}()
 
-	/* 丢包过滤器 */
+	/* packet loss filter. */
 	includeStatusCodeFilter := utils.NewPortsFilter()
 	var maxBody, minBody int64
 	var regexps, keywords []string
@@ -574,7 +574,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 		}
 	}
 
-	// 保存 request 中 host/port
+	// saves the host in the request./port
 	defer func() {
 		if req.GetActualAddr() != "" {
 			task.Host = req.GetActualAddr()
@@ -609,14 +609,14 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 		}
 	}
 
-	// 重试处理，通过taskid找到所有失败的发送包
+	// retry processing, find all failed sending packets through taskid
 	var iInput any
 	httpPoolOpts := make([]mutate.HttpPoolConfigOption, 0)
-	retryPayloadsMap := make(map[string][]string, 0) // key 是原始请求报文，value 是重试的payload，我们需要将重试的payload绑定回去
-	// 这里可能会出现原始请求报文一样的情况，但是这样也是因为payload没有而导致的，例如{{repeat(10)}}
+	retryPayloadsMap := make(map[string][]string, 0) // key is the original request message, value is the retry payload, we need to bind the retry payload back
+	// The same situation as the original request message may occur here , but this is also caused by the lack of payload. For example,{{repeat(10)}}
 
 	if !isRetry {
-		// 插入 {{repeat(n)}}的fuzz标签
+		// insert {{repeat(n)}}fuzz tag
 		if req.GetRepeatTimes() > 0 {
 			var buf bytes.Buffer
 			buf.WriteString("{{repeat(" + fmt.Sprint(req.GetRepeatTimes()) + ")}}")
@@ -625,7 +625,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 		}
 		iInput = rawRequest
 	} else {
-		// 找到上次任务的包
+		// finds the package of the last task.
 		failedResponses := make([]*yakit.WebFuzzerResponse, 0)
 		for resp := range yakit.YieldWebFuzzerResponses(s.GetProjectDatabase(), stream.Context(), int(req.RetryTaskID)) {
 			if !resp.OK {
@@ -638,7 +638,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 			return utils.Errorf("no failed web fuzzer request found")
 		}
 
-		// 回溯找到所有之前重试成功的包
+		// Backtrack to find All previously successfully retried packages
 		oldIDs, err := yakit.GetWebFuzzerTasksIDByRetryRootID(s.GetProjectDatabase(), retryRootID)
 		if err != nil {
 			log.Errorf("get old web fuzzer success response failed: %s", err)
@@ -715,7 +715,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 
 		fuzzMode := req.GetFuzzTagMode() // ""/"close"/"standard"/"legacy"
 		forceFuzz := req.GetForceFuzz()  // true/false
-		if fuzzMode == "" {              // 以forceFuzz为准
+		if fuzzMode == "" {              // subject to forceFuzz
 			if forceFuzz {
 				fuzzMode = "standard"
 			} else {
@@ -724,7 +724,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 		}
 		mutate.WithPoolOpt_ForceFuzzfile(req.GetForceFuzz())
 		if isRetry {
-			// 重试的时候，不需要渲染fuzztag
+			// When retrying, there is no need to render the fuzztag
 			fuzzMode = "close"
 		}
 		switch fuzzMode {
@@ -753,7 +753,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 			task.Reason = utils.Errorf("exec http pool failed: %s", err).Error()
 			return err
 		}
-		// 可以用于计算相似度
+		// Can be used to calculate the similarity
 		var firstHeader, firstBody []byte
 		for result := range res {
 			task.HTTPFlowTotal++
@@ -920,7 +920,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 				}
 			}
 
-			// 处理额外时间
+			// Processing additional time
 			if result.LowhttpResponse != nil && result.LowhttpResponse.TraceInfo != nil {
 				rsp.TotalDurationMs = result.LowhttpResponse.TraceInfo.TotalTime.Milliseconds()
 				rsp.DurationMs = result.LowhttpResponse.TraceInfo.ServerTime.Milliseconds()
@@ -930,7 +930,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 				rsp.RemoteAddr = result.LowhttpResponse.RemoteAddr
 			}
 			if rsp.ResponseRaw != nil {
-				// 处理结果，相似度
+				// processing results, similarity
 				header, body := lowhttp.SplitHTTPHeadersAndBodyFromPacket(rsp.ResponseRaw)
 				if firstHeader == nil {
 					log.Debugf("start to set first header[%v]...", result.Url)
@@ -969,7 +969,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 				}
 				rsp.BodyLength = bodyLen
 
-				// 解析 Headers
+				// parses the headers.
 				for k, vs := range result.Response.Header {
 					for _, v := range vs {
 						rsp.Headers = append(rsp.Headers, &ypb.HTTPHeader{
@@ -981,14 +981,14 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 			}
 
 			if rsp.StatusCode > 0 {
-				// 通过长度过滤
+				// Filter by length
 				if minBody <= maxBody && (minBody > 0 || maxBody > 0) {
 					if maxBody >= rsp.BodyLength && minBody <= rsp.BodyLength {
 						rsp.MatchedByFilter = true
 					}
 				}
 
-				// 通过 StatusCode 过滤
+				// Filter by StatusCode
 				if !rsp.MatchedByFilter {
 					rsp.MatchedByFilter = includeStatusCodeFilter.Contains(int(rsp.StatusCode))
 				}
@@ -1003,7 +1003,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 					}
 				}
 			}
-			// 自动重定向
+			// Automatic redirect
 			if !req.GetNoFollowRedirect() {
 
 				for i := 0; i < len(redirectPacket)-1; i++ {
@@ -1043,7 +1043,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 						}
 						redirectRsp.BodyLength = bodyLen
 
-						// 解析 Headers
+						// parses the headers.
 						for k, vs := range lowhttp.GetHTTPPacketHeaders(redirectRes.RawPacket) {
 							for _, v := range vs {
 								redirectRsp.Headers = append(redirectRsp.Headers, &ypb.HTTPHeader{
@@ -1055,14 +1055,14 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 					}
 
 					if redirectRsp.StatusCode > 0 {
-						// 通过长度过滤
+						// Filter by length
 						if minBody <= maxBody && (minBody > 0 || maxBody > 0) {
 							if maxBody >= redirectRsp.BodyLength && minBody <= redirectRsp.BodyLength {
 								redirectRsp.MatchedByFilter = true
 							}
 						}
 
-						// 通过 StatusCode 过滤
+						// Filter by StatusCode
 						if !redirectRsp.MatchedByFilter {
 							redirectRsp.MatchedByFilter = includeStatusCodeFilter.Contains(int(redirectRsp.StatusCode))
 						}
@@ -1085,7 +1085,7 @@ func (s *Server) HTTPFuzzer(req *ypb.FuzzerRequest, stream ypb.Yak_HTTPFuzzerSer
 						continue
 					}
 				}
-				// 如果重定向了,修正最后一个req
+				// If redirected, Correct the last req
 				if len(redirectPacket) > 0 {
 					rsp.RequestRaw = redirectPacket[len(redirectPacket)-1].Request
 				}
@@ -1261,14 +1261,14 @@ func (s *Server) HTTPRequestMutate(ctx context.Context, req *ypb.HTTPRequestMuta
 		}, nil
 	}
 
-	// chunk编码
+	// Chunk encoding
 	if req.ChunkEncode {
 		_, body := lowhttp.SplitHTTPHeadersAndBodyFromPacket(rawRequest)
 		rawRequest = lowhttp.ReplaceHTTPPacketBody(rawRequest, body, true)
 		return &ypb.MutateResult{Result: rawRequest}, nil
 	}
 
-	// 上传数据包
+	// Upload packets
 	if req.UploadEncode {
 		params := lowhttp.GetAllHTTPRequestQueryParams(rawRequest)
 		for k, v := range lowhttp.GetAllHTTPRequestPostParams(rawRequest) {

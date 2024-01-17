@@ -131,10 +131,10 @@ func (s *Server) hybridScanResume(manager *HybridScanTaskManager, stream HybridS
 
 				statusManager.PushActiveTask(taskIndex, targetRequestInstance, pluginInstance.ScriptName, stream)
 
-				// 过滤执行过的任务
-				// 小于最小索引的任务，直接跳过
-				// 大于最大索引的任务，直接执行
-				// 在最小索引和最大索引之间的任务，如果没有执行过，执行
+				// Filter the tasks that have been executed.
+				// Tasks that are smaller than the minimum index will be skipped directly.
+				// Tasks that are larger than the maximum index will be executed directly.
+				// Tasks between the minimum index and the maximum index. If they have not been executed, execute them.
 				if taskIndex < minIndex {
 					return
 				} else if taskIndex >= minIndex && taskIndex <= maxIndex {

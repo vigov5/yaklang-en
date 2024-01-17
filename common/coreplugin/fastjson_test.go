@@ -60,7 +60,7 @@ func TestGRPCMUSTPASS_Fastjson(t *testing.T) {
 
 	log.Infof("vulAddr: %v", vulAddr)
 	//time.Sleep(5 * time.Hour)
-	pluginName := "Fastjson 综合检测"
+	pluginName := "Fastjson Comprehensive detection of"
 	//wg := sync.WaitGroup{}
 	addFastjsonTestCase := func(vulInfo VulInfo, msg ...string) {
 		//wg.Add(1)
@@ -76,7 +76,7 @@ func TestGRPCMUSTPASS_Fastjson(t *testing.T) {
 			"/fastjson/json-in-query?auth=" + codec.EncodeUrlCode(`{"user":"admin","password":"password"}`) + "&action=login",
 		},
 		ExpectedResult: map[string]int{
-			"目标 fastjson 框架可能存在 RCE 漏洞 (DNSLog Check)": 1,
+			"target fastjson framework may have RCE vulnerabilities (DNSLog Check )": 1,
 		},
 		StrictMode: true,
 		Id:         "json in query test",
@@ -95,7 +95,7 @@ func TestGRPCMUSTPASS_Fastjson(t *testing.T) {
 	//	},
 	//	Body: []byte(`auth={"user":"admin","password":"password"}`),
 	//	ExpectedResult: map[string]int{
-	//		"目标 fastjson 框架可能存在 RCE 漏洞 (DNSLog Check)": 1,
+	//		"target fastjson framework may have RCE vulnerabilities (DNSLog Check )": 1,
 	//	},
 	//	StrictMode: true,
 	//	Id: "json in form",
@@ -113,12 +113,12 @@ func TestGRPCMUSTPASS_Fastjson(t *testing.T) {
 	//		},
 	//	},
 	//	ExpectedResult: map[string]int{
-	//		"目标 fastjson 框架可能存在 RCE 漏洞 (DNSLog Check)": 1,
+	//		"target fastjson framework may have RCE vulnerabilities (DNSLog Check )": 1,
 	//	},
 	//	StrictMode: true,
 	//	Id: "json in body",
 	//}
-	//vulInGetServeByJackson := VulInfo{ // 这里不应该检出任何漏洞，并且发包数量应该为 1
+	//vulInGetServeByJackson := VulInfo{ // No vulnerabilities should be detected here, and the number of packets sent should be 1
 	//	Method: "GET",
 	//	Path: []string{
 	//		"/fastjson/jackson-in-query?auth=" + codec.EncodeUrlCode(`{"user":"admin","password":"password"}`) + "&action=login",
@@ -127,23 +127,23 @@ func TestGRPCMUSTPASS_Fastjson(t *testing.T) {
 	//	StrictMode:     true,
 	//	Id: "jackson in query",
 	//}
-	addFastjsonTestCase(vulInGet, "Fastjson 综合检测插件对于 json in query 检测结果不符合预期")
-	//addFastjsonTestCase(vulInForm, "Fastjson 综合检测插件对于 json in form 检测结果不符合预期")
-	//addFastjsonTestCase(vulInBodyJson, "Fastjson 综合检测插件对于 json in body 检测结果不符合预期")
-	//addFastjsonTestCase(vulInGetServeByJackson, "Fastjson 综合检测插件对于 Jackson 检测结果不符合预期")
-	// TODO: 需要先修复 fuzz 请求出错后不能获取Duration的问题
+	addFastjsonTestCase(vulInGet, "Fastjson comprehensive detection plug-in’s detection results for json in query are not as expected.")
+	//addFastjsonTestCase(vulInForm, "Fastjson comprehensive detection plug-in’s detection results for json in form are not as expected.")
+	//addFastjsonTestCase(vulInBodyJson, "Fastjson comprehensive detection plug-in’s detection results for json in body are not as expected.")
+	//addFastjsonTestCase(vulInGetServeByJackson, "Fastjson comprehensive detection plug-in’s detection results for Jackson are not as expected.")
+	// TODO: Need to fix the problem of not being able to obtain Duration after fuzz request error.
 	//vulInGetIntranet := VulInfo{
 	//	Method: "GET",
 	//	Path: []string{
 	//		"/fastjson/get-in-query-intranet?auth=" + codec.EncodeUrlCode(`{"user":"admin","password":"password"}`) + "&action=login",
 	//	},
 	//	ExpectedResult: map[string]int{
-	//		"目标 fastjson 框架可能存在 RCE 漏洞 (Delay Check)": 1,
+	//		"target fastjson framework may have RCE vulnerabilities (Delay Check)": 1,
 	//	},
 	//	StrictMode: true,
 	//}
-	//Must(TestCoreMitmPlug(pluginName, server, vulInGetIntranet, client, t), "Fastjson 综合检测插件检测结果不符合预期")
-	// TODO: Cookie Fuzz 需要支持自动解码
+	//Must(TestCoreMitmPlug(pluginName, server, vulInGetIntranet, client, t), "Fastjson comprehensive detection plug-in’s detection results are not as expected.")
+	// TODO: Cookie Fuzz needs to support automatic decoding of
 	//vulInGet := VulInfo{
 	//	Method: "GET",
 	//	Path: []string{
@@ -156,12 +156,12 @@ func TestGRPCMUSTPASS_Fastjson(t *testing.T) {
 	//		},
 	//	},
 	//	ExpectedResult: map[string]int{
-	//		"目标 fastjson 框架可能存在 RCE 漏洞 (DNSLog Check)": 1,
+	//		"target fastjson framework may have RCE vulnerabilities (DNSLog Check )": 1,
 	//	},
 	//	StrictMode: true,
 	//}
-	//Must(TestCoreMitmPlug(pluginName, server, vulInGet, client, t), "Fastjson 综合检测插件检测结果不符合预期")
-	// TODO: Authorization Fuzz 需要支持自动解码
+	//Must(TestCoreMitmPlug(pluginName, server, vulInGet, client, t), "Fastjson comprehensive detection plug-in’s detection results are not as expected.")
+	// TODO: Authorization Fuzz needs to support automatic decoding.
 	//vulInAuthorization := VulInfo{
 	//	Method: "GET",
 	//	Path: []string{
@@ -174,11 +174,11 @@ func TestGRPCMUSTPASS_Fastjson(t *testing.T) {
 	//		},
 	//	},
 	//	ExpectedResult: map[string]int{
-	//		"目标 fastjson 框架可能存在 RCE 漏洞 (DNSLog Check)": 1,
+	//		"target fastjson framework may have RCE vulnerabilities (DNSLog Check )": 1,
 	//	},
 	//	StrictMode: true,
 	//}
-	//addFastjsonTestCase(vulInAuthorization, "Fastjson 综合检测插件对于 Jackson 检测结果不符合预期")
+	//addFastjsonTestCase(vulInAuthorization, "Fastjson comprehensive detection plug-in’s detection results for Jackson are not as expected.")
 }
 func TestFastjson(t *testing.T) {
 	client, err := yakgrpc.NewLocalClient()
@@ -188,16 +188,16 @@ func TestFastjson(t *testing.T) {
 
 	log.Infof("vulAddr: %v", vulAddr)
 	//time.Sleep(5 * time.Hour)
-	pluginName := "Fastjson 综合检测"
+	pluginName := "Fastjson Comprehensive detection of"
 	vulInGet := VulInfo{
 		Method: "GET",
 		Path: []string{
 			"/fastjson/get-in-query-intranet?auth=" + codec.EncodeUrlCode(`{"user":"admin","password":"password"}`) + "&action=login",
 		},
 		ExpectedResult: map[string]int{
-			"目标 fastjson 框架可能存在 RCE 漏洞 (Delay Check)": 1,
+			"target fastjson framework may have RCE vulnerabilities (Delay Check)": 1,
 		},
 		StrictMode: true,
 	}
-	Must(CoreMitmPlugTest(pluginName, server, vulInGet, client, t), "Fastjson 综合检测插件检测结果不符合预期")
+	Must(CoreMitmPlugTest(pluginName, server, vulInGet, client, t), "Fastjson comprehensive detection plug-in’s detection results are not as expected.")
 }

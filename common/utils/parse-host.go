@@ -111,7 +111,7 @@ func SplitHostsAndPorts(hosts, ports string, portGroupSize int, proto string) []
 	return rawTarget
 }
 
-// IPv4ToCClassNetwork 尝试从一个 IPv4 地址中获取 C 类网络地址，并返回错误
+// IPv4ToCClassNetwork attempts to obtain a Class C network address from an IPv4 address and returns an error
 // Example:
 // ```
 // network, err = str.IPv4ToCClassNetwork("192.168.0.1") // network = "192.168.0.0/24", err = nil

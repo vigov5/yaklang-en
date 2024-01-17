@@ -108,7 +108,7 @@ func (l *LdapServer) Run(ctx context.Context) {
 	//		return
 	//	}
 	//}
-	//启动ldap服务
+	//Start ldap service
 	go server.ListenAndServe(fmt.Sprintf("%s:%d", l.host, l.ldapport))
 	log.Info("LdapServer started")
 

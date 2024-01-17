@@ -16,7 +16,7 @@ var wsIndexHtml []byte
 
 func (s *VulinServer) registerWebsocket() {
 	r := s.router
-	wsGroup := r.Name("Websocket 仿真测试").Subrouter()
+	wsGroup := r.Name("Websocket simulation test").Subrouter()
 	var upgrader = websocket.Upgrader{}
 	wsHandlerFactory := func(compress int) func(writer http.ResponseWriter, request *http.Request) {
 		return func(writer http.ResponseWriter, request *http.Request) {
@@ -59,7 +59,7 @@ func (s *VulinServer) registerWebsocket() {
 	wsRoutes := []*VulInfo{
 		{
 			Path:  "/websocket/",
-			Title: "Websocket基础案例",
+			Title: "Websocket basic case",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				writer.Header().Set("Content-Type", "text/html")
 				writer.Write(wsIndexHtml)

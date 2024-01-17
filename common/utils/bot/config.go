@@ -16,9 +16,9 @@ const (
 	BotType_Lark       = "lark"
 )
 
-// Config 这个 Bot 主要针对钉钉 / 企业微信 / 飞书lark
-// 企业微信的推送是最简单的，其次是飞书，最后是钉钉
-// 配置一般来说分两个字段，Webhook 和 Secret
+// Config This Bot is mainly for DingTalk / Enterprise WeChat / Feishu lark
+// Enterprise WeChat push is the simplest, followed by Feishu, and finally DingTalk
+// configuration is generally divided into two fields, Webhook and Secret
 type Config struct {
 	Webhook string
 	Secret  string

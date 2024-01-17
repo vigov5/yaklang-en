@@ -78,16 +78,16 @@ type NaslScriptInfo struct {
 	Category       string
 	Family         string
 	Copyright      string
-	Dependencies   []string // 依赖脚本
+	Dependencies   []string // Dependency script
 
 	Xrefs           map[string]string
 	Preferences     map[string]interface{}
-	RequirePorts    []string // 前置条件断言
-	RequireKeys     []string // 前置条件断言
-	ExcludeKeys     []string // 前置条件断言
-	RequireUdpPorts []string // 前置条件断言
+	RequirePorts    []string // precondition assertion
+	RequireKeys     []string // precondition assertion
+	ExcludeKeys     []string // precondition assertion
+	RequireUdpPorts []string // precondition assertion
 	BugtraqId       []int
-	MandatoryKeys   []string // 前置条件断言
+	MandatoryKeys   []string // precondition assertion
 	Timeout         int      // milliseconds
 	RecvTimeout     int      // milliseconds
 	Vhosts          []*NaslVhost

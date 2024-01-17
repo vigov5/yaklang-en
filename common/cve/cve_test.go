@@ -26,17 +26,17 @@ type productWithVersion struct {
 func TestQueryCVEWithFixName(t *testing.T) {
 	data := []productWithVersion{
 		{
-			name:    "httpd", //硬编码修复测试
+			name:    "httpd", //Hard coding repair test
 			version: "2.4.49",
 			target:  "CVE-2021-42013",
 		},
 		{
-			name:    "apt2", //产品名冗杂修复
+			name:    "apt2", //Repair the verbose product name
 			version: "0.7.5",
 			target:  "CVE-2009-1358",
 		},
 		{
-			name:    "python3-e", //产品名冗杂修复
+			name:    "python3-e", //Repair the verbose product name
 			version: "2.2",
 			target:  "CVE-2006-1542",
 		},
@@ -47,14 +47,14 @@ func TestQueryCVEWithFixName(t *testing.T) {
 		},
 	}
 
-	//读 embed 文件
+	//Read the embed file
 	DbFp, err := DbFs.Open("CIDate.db")
 	if err != nil {
 		log.Errorf("%v", err)
 	}
 	defer DbFp.Close()
 
-	//写到临时目录
+	//Write to the temporary directory
 	tempFp, err := os.CreateTemp("", "Date.db")
 	if err != nil {
 		log.Errorf("%v", err)

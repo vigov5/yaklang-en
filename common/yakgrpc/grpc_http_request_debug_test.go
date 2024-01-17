@@ -454,7 +454,7 @@ func TestGRPCMUSTPASS_HTTP_FuzzPacket(t *testing.T) {
 		}
 		return string(raw)
 	}
-	// path 合并
+	// path merge
 	var targetUrl = "http://" + utils.HostPort(host, port) + "/aa"
 	res := fuzz(targetUrl, &ypb.DebugPluginRequest{
 		Code: `
@@ -483,7 +483,7 @@ mirrorHTTPFlow = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rsp /*[]
 	}
 	assert.Equal(t, marshalResult(expect), marshalResult(res))
 
-	// https 优先级
+	// https priority
 	targetUrl = "http://" + utils.HostPort(host, port) + "/aa"
 	res = fuzz(targetUrl, &ypb.DebugPluginRequest{
 		Code: `
@@ -512,7 +512,7 @@ mirrorHTTPFlow = func(isHttps /*bool*/, url /*string*/, req /*[]byte*/, rsp /*[]
 		},
 	}
 	assert.Equal(t, marshalResult(expect), marshalResult(res))
-	// https 优先级
+	// https priority
 	targetUrl = "http://" + utils.HostPort(host, port) + "/aa"
 	res = fuzz(targetUrl, &ypb.DebugPluginRequest{
 		Code: `

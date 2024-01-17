@@ -21,19 +21,19 @@ import (
 //}
 
 type Behinder struct {
-	// 连接地址
+	// The connection address
 	Url string
-	// 密钥
+	// The key
 	SecretKey []byte
-	// shell 类型
+	// shell type
 	ShellScript string
 
 	Proxy string
-	// response 开头的干扰字符
+	// The interfering characters at the beginning of the response
 	respPrefixLen int
-	// response 结尾的干扰字符
+	// The interfering characters at the end of the response
 	respSuffixLen int
-	// 自定义 header 头
+	// Custom header header
 	Headers              map[string]string
 	PacketScriptContent  string
 	PayloadScriptContent string
@@ -70,7 +70,7 @@ func NewBehinder(ys *ypb.WebShell) (*Behinder, error) {
 }
 
 func (b *Behinder) echoResultEncode(raw []byte) ([]byte, error) {
-	// 如果没有自定义的数据包编码器，也没有自定义的回显解码器，就代表使用的是冰蝎3 的版本
+	// If there is no custom packet encoder, There is no custom echo decoder, which means that the
 	if (b.customPacketEncoder == nil && b.customEchoDecoder == nil) && len(b.PayloadScriptContent) == 0 {
 		if b.ShellScript == ypb.ShellScript_PHP.String() {
 			b.customEchoEncoder = defaultPHPEchoEncoder
@@ -237,15 +237,15 @@ func (b *Behinder) getPayload(binCode payloads.Payload, params map[string]string
 	return rawPayload, nil
 }
 
-// 原生的加密方式
+// The native encryption method
 func (b *Behinder) enCryption(binCode []byte) ([]byte, error) {
 	return behinder.Encryption(binCode, b.SecretKey, b.ShellScript)
 }
 
-// todo  前后存在干扰字符的解密方式
+// The decryption method of interfering characters before and after todo
 func (b *Behinder) deCryption(raw []byte) ([]byte, error) {
 	//var targetBts []byte
-	//// 提取一下 resp raw body 中的需要的结果
+	//// Extract the required results in the resp raw body
 	//if (b.respSuffixLen != 0 || b.respPrefixLen != 0) && len(raw)-b.respPrefixLen >= b.respSuffixLen {
 	//	targetBts = raw[b.respPrefixLen : len(raw)-b.respSuffixLen]
 	//} else {
@@ -255,7 +255,7 @@ func (b *Behinder) deCryption(raw []byte) ([]byte, error) {
 }
 
 func (b *Behinder) sendHttpRequest(data []byte) ([]byte, error) {
-	// request body 编码操作
+	// Request body encoding operation
 	data, err := b.clientRequestEncode(data)
 	if err != nil {
 		return nil, utils.Errorf("clientRequestEncode error: %v", err)
@@ -280,7 +280,7 @@ func (b *Behinder) sendHttpRequest(data []byte) ([]byte, error) {
 	if len(raw) == 0 {
 		return nil, utils.Errorf("empty response")
 	}
-	// payload 回显结果解码操作
+	// payload echo result decoding operation of the Ice Scorpion 3 version is used.
 	result, err := b.echoResultDecode(raw)
 
 	if err != nil {

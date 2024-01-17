@@ -41,13 +41,13 @@ func init() {
 }
 
 func Register(t *mux.Router) (*mux.Router, []string) {
-	verificationGroup := t.PathPrefix("/verification").Name("验证码场景").Subrouter()
+	verificationGroup := t.PathPrefix("/verification").Name("Verification code scenario").Subrouter()
 
 	const (
-		ordinaryCase1 = `{"Title":"有验证码拦截的表单提交", "Path":"/op", "DefaultQuery": "", "RiskDetected": false, "Headers": [], "ExpectedResult": {}}`
-		ordinaryCase2 = `{"Title":"有验证码拦截的表单提交（逻辑问题）", "Path":"/bad/op", "DefaultQuery": "", "RiskDetected": false, "Headers": [], "ExpectedResult": {}}`
+		ordinaryCase1 = `{"Title":"Form submission with verification code interception", "Path":"/op", "DefaultQuery": "", "RiskDetected": false, "Headers": [], "ExpectedResult": {}}`
+		ordinaryCase2 = `{"Title":"Form submission with verification code interception (logical problem)", "Path":"/bad/op", "DefaultQuery": "", "RiskDetected": false, "Headers": [], "ExpectedResult": {}}`
 	)
-	// 最普通的案例
+	// The most common case
 	verificationGroup.HandleFunc("/op", func(writer http.ResponseWriter, request *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
@@ -84,7 +84,7 @@ func Register(t *mux.Router) (*mux.Router, []string) {
 			}
 
 			if password != defaultPass {
-				writer.Write([]byte(`{"code":500,"msg":"密码错误"}`))
+				writer.Write([]byte(`{"code":500,"msg":"Incorrect password"}`))
 			}
 			writer.Write(secretHtml)
 			return
@@ -110,20 +110,20 @@ func Register(t *mux.Router) (*mux.Router, []string) {
 		session := lowhttp.GetHTTPPacketCookie(reqRaw, COOKIECONST)
 		if session == "" {
 			writer.WriteHeader(502)
-			writer.Write([]byte(`{"code":500,"msg":"验证码生成失败(NO COOKIE)"}`))
+			writer.Write([]byte(`{"code":500,"msg":"Verification code generation failed (NO COOKIE)"}`))
 			return
 		}
 
 		v, ok := sessionCacher.Get(session)
 		if !ok {
-			writer.Write([]byte(`{"code":500,"msg":"验证码生成失败(COOKIE NOT GENERATED)"}`))
+			writer.Write([]byte(`{"code":500,"msg":"Verification code generation failure (COOKIE NOT GENERATED)"}`))
 			writer.WriteHeader(502)
 			return
 		}
 
 		kv, ok := v.(map[string]any)
 		if !ok {
-			writer.Write([]byte(`{"code":500,"msg":"验证码生成失败(COOKIE NOT GENERATED)"}`))
+			writer.Write([]byte(`{"code":500,"msg":"Verification code generation failure (COOKIE NOT GENERATED)"}`))
 			writer.WriteHeader(502)
 			return
 		}
@@ -134,7 +134,7 @@ func Register(t *mux.Router) (*mux.Router, []string) {
 			data, err = captcha.New(150, 50)
 			if err != nil {
 				spew.Dump(err)
-				writer.Write([]byte(`{"code":500,"msg":"验证码生成失败(captch.New)"}`))
+				writer.Write([]byte(`{"code":500,"msg":"Verification code generation failed (captch.New)"}`))
 				writer.WriteHeader(502)
 				return
 			}
@@ -143,7 +143,7 @@ func Register(t *mux.Router) (*mux.Router, []string) {
 
 		err := data.WriteImage(writer)
 		if err != nil {
-			writer.Write([]byte(fmt.Sprintf(`{"code":500,"msg":"验证码生成失败: %v"}`, strconv.Quote(err.Error()))))
+			writer.Write([]byte(fmt.Sprintf(`{"code":500,"msg":"Verification code generation failed: %v"}`, strconv.Quote(err.Error()))))
 			writer.WriteHeader(502)
 			return
 		}
@@ -187,7 +187,7 @@ func Register(t *mux.Router) (*mux.Router, []string) {
 			}
 
 			if password != defaultPass {
-				writer.Write([]byte(`{"code":500,"msg":"密码错误"}`))
+				writer.Write([]byte(`{"code":500,"msg":"Incorrect password"}`))
 			}
 			writer.Write(secretHtml)
 			return
@@ -205,7 +205,7 @@ func Register(t *mux.Router) (*mux.Router, []string) {
 			data, err := captcha.New(150, 50)
 			if err != nil {
 				spew.Dump(err)
-				writer.Write([]byte(`{"code":500,"msg":"验证码生成失败(captch.New)"}`))
+				writer.Write([]byte(`{"code":500,"msg":"Verification code generation failed (captch.New)"}`))
 				return
 			}
 			http.SetCookie(writer, &http.Cookie{
@@ -224,34 +224,34 @@ func Register(t *mux.Router) (*mux.Router, []string) {
 		session := lowhttp.GetHTTPPacketCookie(reqRaw, COOKIECONST_BAD)
 		if session == "" {
 			writer.WriteHeader(502)
-			writer.Write([]byte(`{"code":500,"msg":"验证码生成失败(NO COOKIE)"}`))
+			writer.Write([]byte(`{"code":500,"msg":"Verification code generation failed (NO COOKIE)"}`))
 			return
 		}
 
 		v, ok := sessionCacher.Get(session)
 		if !ok {
-			writer.Write([]byte(`{"code":500,"msg":"验证码生成失败(COOKIE NOT GENERATED)"}`))
+			writer.Write([]byte(`{"code":500,"msg":"Verification code generation failure (COOKIE NOT GENERATED)"}`))
 			writer.WriteHeader(502)
 			return
 		}
 
 		kv, ok := v.(map[string]any)
 		if !ok {
-			writer.Write([]byte(`{"code":500,"msg":"验证码生成失败(COOKIE NOT GENERATED)"}`))
+			writer.Write([]byte(`{"code":500,"msg":"Verification code generation failure (COOKIE NOT GENERATED)"}`))
 			writer.WriteHeader(502)
 			return
 		}
 
 		data, ok := utils.MapGetRaw(kv, "code").(*captcha.Data)
 		if !ok {
-			writer.Write([]byte(`{"code":500,"msg":"请访问原主页生成验证码"}`))
+			writer.Write([]byte(`{"code":500,"msg":"Please visit the original Home page generates verification code"}`))
 			writer.WriteHeader(502)
 			return
 		}
 
 		err := data.WriteImage(writer)
 		if err != nil {
-			writer.Write([]byte(fmt.Sprintf(`{"code":500,"msg":"验证码生成失败: %v"}`, strconv.Quote(err.Error()))))
+			writer.Write([]byte(fmt.Sprintf(`{"code":500,"msg":"Verification code generation failed: %v"}`, strconv.Quote(err.Error()))))
 			writer.WriteHeader(502)
 			return
 		}

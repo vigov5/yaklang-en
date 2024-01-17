@@ -45,8 +45,8 @@ yakit.SetProgress(0.1)
 
 hostTotal = len(str.ParseStringToHosts(str.Trim(hosts, ",")))
 portTotal = len(str.ParseStringToPorts(str.Trim(ports, ",")))
-// yakit.StatusCard("扫描主机数", hostTotal)
-// yakit.StatusCard("扫描端口数", portTotal)
+// yakit.StatusCard("Number of scanned hosts", hostTotal)
+// yakit.StatusCard("Number of scanned ports", portTotal)
 totalTasks = hostTotal * portTotal
 portResultFinalTotal = 0
 progressLock = sync.NewLock()
@@ -61,7 +61,7 @@ updateProgress = func(delta) {
     if portResultFinalTotal > totalTasks {
         portResultFinalTotal = totalTasks
     }
-    // yakit.StatusCard("已出结果", sprintf("%v/%v", portResultFinalTotal, totalTasks))
+    // yakit.StatusCard("Results have been released", sprintf("%v/%v", portResultFinalTotal, totalTasks))
     yakit.SetProgress(0.1 + (float(portResultFinalTotal) / float(totalTasks) ) * 0.9)
 }
 defer yakit.SetProgress(1)
@@ -79,7 +79,7 @@ if protos != "" {
     opts = append(opts, servicescan.proto(protoList...))
 }
 
-// 使用指纹检测规则条数
+// Number of fingerprint detection rules used
 if probeMax > 0 {
 	opts = append(opts, servicescan.maxProbes(probeMax))
 } else {
@@ -117,10 +117,10 @@ scriptNames = x.If(scriptNameFile != "", x.Filter(
         func(e){return str.TrimSpace(e)},
     ), func(e){return e!=""}), make([]string))
 
-scriptNames = ["FastJSON 漏洞检测 via DNSLog"]
+scriptNames = ["FastJSON vulnerability detection via DNSLog"]
 
 scriptNameList = str.Join(x.Map(scriptNames, func(i) {
-    // 0x60 反引号
+    // 0x60 backtick
     return "1. \x60" + sprint(i) + "\x60"
 }), "\n")
 
@@ -130,7 +130,7 @@ if err != nil {
     yakit.Error("build mix plugin caller failed: %s", err)
     die(err)
 }
-// 这个有必要设置：独立上下文，避免在大并发的时候出现问题
+// It is necessary to set up: independent context to avoid problems during large concurrency
 manager.SetConcurrent(20)
 manager.SetDividedContext(true) 
 x.Foreach(scriptNames, func(e){
@@ -189,7 +189,7 @@ handleCrawler = func(result) {
 }
 
 
-// 保存统计数据
+// Save statistics
 startTimestamp = time.Now().Unix()
 portTableHeader = ["Host", "Port", "Fingerprint", "HtmlTitle"]
 portTableData = make([][]string)
@@ -270,7 +270,7 @@ getPingScan = func() {
         hosts, ping.proxy(proxies), ping.skip(skippedHostAliveScan), ping.tcpPingPorts(hostAliveTCPPorts), 
         ping.timeout(hostAliveTimeout), ping.concurrent(hostAliveConcurrent), ping.onResult(func(i){
             if (i.Ok) { return }
-            // 这里返回
+            // Return here
             updateProgress(portTotal)
         }),
     ) 
@@ -322,19 +322,19 @@ if mode == "all" {
 }
 
 
-// 生成报告
+// generated Report
 reportIns = report.New()
 reportIns.From("port-scan")
 resultPortCount = len(portTableData)
 
 endTimestamp = time.Now().Unix()
 
-reportIns.Title("端口扫描报告:[%v]台主机/[%v]个开放端口/涉及[%v]个C段", len(targetCounter), resultPortCount, len(cClassCounter))
+reportIns.Title("port scan report: [%v] host/[%v] Open port/Involves [%v] C segments", len(targetCounter), resultPortCount, len(cClassCounter))
 reportIns.Table(portTableHeader, portTableData...)
 reportIns.Markdown(
-    sprintf("# 扫描状态统计\n\n"+
-    "本次扫描耗时 %v 秒\n\n"+
-    "涉及扫描插件: %v 个", 
+    sprintf("# Scan status statistics\n\n"+
+    "This scan takes %v seconds\n\n"+
+    "Involving scanning plug-in: %v", 
     endTimestamp - startTimestamp, len(scriptNames),
 ))
 if scriptNameList != "" {
@@ -342,25 +342,25 @@ if scriptNameList != "" {
 }
 
 if len(cClassCounter) > 0 {
-    reportIns.Markdown("## C 段统计\n\n")
+    reportIns.Markdown("## C segment statistics\n\n")
     items = make([][]string)
     for name, count = range cClassCounter{
         items = append(items, [sprint(name), sprint(count)])
     }
-    reportIns.Table(["C 段", "开放端口数量"], items...)
+    reportIns.Table(["C segment", "Number of open ports"], items...)
 }
 
 if len(targetCounter) > 0 {
-    reportIns.Markdown("## 主机维度端口统计")
+    reportIns.Markdown("## Host dimension port statistics")
     for name, count = range targetCounter{
         items = append(items, [sprint(name), sprint(count)])
     }
-    reportIns.Table(["主机 IP", "开放端口数量"], items...)
+    reportIns.Table(["Host IP", "Number of open ports"], items...)
 }
 reportIns.Save()
 
 
-// 等待插件执行结果
+// Wait for plug-in execution results
 yakit.Info("PortScan Finished Waiting for Plugin Results")
 println("PortScan Finished... Waiting Plugins")
 wg.Wait()
@@ -368,9 +368,9 @@ manager.Wait()
 
 /*
 type palm/common/yakgrpc/yakit.(Report) struct {
-  Fields(可用字段): 
-  StructMethods(结构方法/函数): 
-  PtrStructMethods(指针结构方法/函数): 
+  Fields (available fields): 
+  StructMethods (structural method/function): 
+  PtrStructMethods (pointer structure method/function): 
       func Divider() 
       func From(v1: interface {}, v2 ...interface {}) 
       func Markdown(v1: string) 
@@ -390,10 +390,10 @@ func TestMisc_YAKIT_grpc_portscan(t *testing.T) {
 
 	cases := []YakTestCase{
 		{
-			Name: "测试 yakit.File",
+			Name: "test yakit.File",
 			Src:  code,
 		},
 	}
 
-	Run("yakit. grpc PortScan 可用性测试", t, cases...)
+	Run("yakit. grpc PortScan usability test", t, cases...)
 }

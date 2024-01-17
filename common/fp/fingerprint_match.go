@@ -25,7 +25,7 @@ func (f *Matcher) MatchWithContext(ctx context.Context, host string, port int, o
 		return nil, utils2.Errorf("[IGNORE] %v is filtered by servicescan.excludeHosts/Ports", addr)
 	}
 
-	// 是否需要适配 ConfigOption
+	// Do you need to adapt ConfigOption
 	var config = NewConfig()
 	if len(options) > 0 {
 		err := copier.Copy(config, f.Config)
@@ -58,7 +58,7 @@ func (f *Matcher) MatchWithContext(ctx context.Context, host string, port int, o
 		}
 	}
 
-	// 设置初始化匹配结果
+	// Set initialization matching result
 	result = &MatchResult{
 		Target: host,
 		Port:   port,
@@ -69,7 +69,7 @@ func (f *Matcher) MatchWithContext(ctx context.Context, host string, port int, o
 		},
 	}
 
-	// 解析需要检测指纹的主机
+	// Analyze the host that needs to detect fingerprints
 	ip := net.ParseIP(utils2.FixForParseIP(host))
 	if ip == nil {
 		log.Debugf("found host:%s is a domain, resolve it to ip", host)
@@ -92,12 +92,12 @@ func (f *Matcher) MatchWithContext(ctx context.Context, host string, port int, o
 		return nil, errors.Errorf("config confliction for web fingerprint options: %s", "disable/onlyEnable")
 	}
 
-	// 指纹识别的顺序也应该注意，7000 以下除了 80-85 和 443 优先 nmap 服务识别
-	// 其他优先指纹识别
+	// The order of fingerprint recognition should also be noted, except 80-85 and 443 below 7000. Prioritize nmap service recognition
+	// Other priority fingerprint recognition
 	webFirst := func() (*MatchResult, error) {
 		if !config.DisableWebFingerprint {
 			result, err = f.webDetector(result, ctx, config, host, ip, port)
-			// 禁用服务扫描
+			// Disable service scanning
 			if config.OnlyEnableWebFingerprint {
 				return result, err
 			}
@@ -116,7 +116,7 @@ func (f *Matcher) MatchWithContext(ctx context.Context, host string, port int, o
 		}
 
 		//////////////////////////////////////////////////////////////////////////
-		////////////////////////////// 主机指纹识别 ///////////////////////////////
+		////////////////////////////// Host fingerprint recognition ///////////////////////////////
 		//////////////////////////////////////////////////////////////////////////
 		result2, _ := f.matchWithContext(ctx, ip, port, config)
 		result.Merge(result2)

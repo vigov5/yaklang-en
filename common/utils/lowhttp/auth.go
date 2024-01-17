@@ -26,7 +26,7 @@ func (ba *BasicAuthentication) Authenticate(conn net.Conn, config *LowhttpExecCo
 }
 
 type DigestAuthentication struct {
-	// DigestAuthentication的相关属性
+	// DigestAuthentication related attributes
 	Username string
 	Password string
 }
@@ -92,7 +92,7 @@ func (na *NtlmAuthentication) Authenticate(conn net.Conn, config *LowhttpExecCon
 }
 
 type CustomAuthClient struct {
-	handler func([]byte) ([]byte, error) //自定义认证处理函数
+	handler func([]byte) ([]byte, error) //custom authentication processing function
 }
 
 func (ca *CustomAuthClient) Authenticate(conn net.Conn, config *LowhttpExecConfig) ([]byte, error) {
@@ -108,7 +108,7 @@ func GetAuth(authHeader string, username string, password string) Authentication
 			domainAndUsername := strings.SplitN(username, "\\", 2)
 			domain, username = domainAndUsername[0], domainAndUsername[1]
 		}
-		if len(authResp) > 1 { // 连接复用的情况 可能会跳过协商阶段 直接质询
+		if len(authResp) > 1 { // connection reuse may skip the negotiation phase and directly challenge the
 			handler := func(packet []byte) ([]byte, error) {
 				ntv2 := nla.NewNTLMv2(domain, username, password)
 				challenge, err := codec.DecodeBase64(authResp[1])

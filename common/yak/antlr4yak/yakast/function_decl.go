@@ -32,12 +32,12 @@ func (y *YakCompiler) VisitAnonymousFunctionDecl(raw yak.IAnonymousFunctionDeclC
 		funcSymbolId = id
 	}
 
-	//函数分为闭包函数（包括箭头函数）和全局函数。
-	//闭包函数可以在任何地方定义，并且继承父作用域。全局函数只能在根作用域定义。
-	//闭包函数必须使用变量来接收或者立即调用，全局函数作用域是全局,且可以在任何位置调用。
-	//闭包函数存于栈中，全局函数存于全局变量中。
+	//Functions are divided into closure functions (including arrow functions) and global functions.
+	//closure function can be defined anywhere and inherits the parent scope. Global functions can only be defined in the root scope.
+	//closure function must use variables to receive or call immediately. The global function scope is global and can be called at any location.
+	//closure functions stored in the stack, and global functions stored in global variables.
 
-	// 切换符号表和代码栈
+	// switches the symbol table and code stack.
 
 	recoverCodeStack := y.SwitchCodes()
 	recoverSymbolTable := y.SwitchSymbolTable("function", uuid.NewV4().String())
@@ -46,7 +46,7 @@ func (y *YakCompiler) VisitAnonymousFunctionDecl(raw yak.IAnonymousFunctionDeclC
 	var fun *yakvm.Function
 	var isVariable bool
 	if i.EqGt() != nil {
-		// 处理参数：为参数设置函数内定义域的符号表
+		// Processing parameters: Set the symbol table of the domain within the function for the parameter
 		if i.LParen() != nil && i.RParen() != nil {
 			y.writeString("(")
 			paramsSymbol, isVariable = y.VisitFunctionParamDecl(i.FunctionParamDecl())
@@ -63,8 +63,8 @@ func (y *YakCompiler) VisitAnonymousFunctionDecl(raw yak.IAnonymousFunctionDeclC
 			paramsSymbol = append(paramsSymbol, symbolId)
 		}
 
-		// 箭头函数模式
-		// Expression 和 Block 需要分别支持
+		// Arrow function mode
+		// Expression and Block need to support
 		if i.Block() == nil && i.Expression() == nil {
 			y.panicCompilerError(compileError, "BUG: arrow function need expression or block at least")
 		}
@@ -72,20 +72,20 @@ func (y *YakCompiler) VisitAnonymousFunctionDecl(raw yak.IAnonymousFunctionDeclC
 			y.VisitBlock(i.Block(), true)
 			y.pushOperator(yakvm.OpReturn)
 		} else {
-			// 一般来说，这儿的栈是不平的，但是因为这是函数调用内部，最后一个栈数据应该作为函数返回值，这儿所以不需要处理，其他的情况
-			// 隐式来说，这个相当于是 () => {return 123;} 也就是说 ()=>123 和 ()=>{return 123}等价，栈不平，在函数结束的时候
-			// 应该 pop 一次栈数据做返回，如果没有，就返回 undefined
+			// Generally speaking, the stack here is not flat, but because this is inside a function call, the last stack data should be used as the function return value, so there is no need to process it here. In other cases,
+			// Implicitly, this is equivalent to () => {return 123;} means () =>123 and ( )=>{return 123}is equivalent. The stack is not flat. At the end of the function,
+			// should pop the stack data once and return it. If not, return undefined.
 			y.VisitExpression(i.Expression())
 			y.pushOperator(yakvm.OpReturn)
 		}
 
-		// 编译好的 FuncCode 配合符号表，一般来说就可以供执行和调用了
+		// The compiled FuncCode is matched with the symbol table. Generally speaking, it can be executed and called.
 		fun = yakvm.NewFunction(y.codes, y.currentSymtbl)
 		if y.sourceCodePointer != nil {
 			fun.SetSourceCode(*y.sourceCodePointer)
 		}
 	} else {
-		// 创建符号
+		// to create symbols
 		if fn := i.Func(); fn != nil {
 			y.writeString(fn.GetText())
 		}
@@ -96,23 +96,23 @@ func (y *YakCompiler) VisitAnonymousFunctionDecl(raw yak.IAnonymousFunctionDeclC
 		y.writeString("(")
 		paramsSymbol, isVariable = y.VisitFunctionParamDecl(i.FunctionParamDecl())
 		y.writeString(") ")
-		// visit代码块
+		// visit code block.
 		y.VisitBlock(i.Block(), true)
 		y.pushOperator(yakvm.OpReturn)
 		funcCode := y.codes
-		// 编译好的 FuncCode 配合符号表，一般来说就可以供执行和调用了
+		// The compiled FuncCode is matched with the symbol table. Generally speaking, it can be executed and called.
 		fun = yakvm.NewFunction(funcCode, y.currentSymtbl)
 		if y.sourceCodePointer != nil {
 			fun.SetSourceCode(*y.sourceCodePointer)
 		}
 	}
 	if funcName != "" {
-		// 如果函数名存在的话，设置函数名，创建新符号，并且把新符号告诉函数，以便后续处理
+		// If the function name exists, set the function name and create a new one. symbol, and tell the function the new symbol for subsequent processing
 		fun.SetName(funcName)
 		fun.SetSymbol(funcSymbolId)
 	}
 
-	//恢复现场
+	//restores the scene.
 	recoverCodeStack()
 
 	if fun == nil {
@@ -125,13 +125,13 @@ func (y *YakCompiler) VisitAnonymousFunctionDecl(raw yak.IAnonymousFunctionDeclC
 		Value:       fun,
 	}
 	if funcName != "" {
-		// 如果有函数名的话，进行快速赋值
+		// If there is a function name, perform quick assignment
 		funcVal.TypeVerbose = "named-function"
 		y.pushLeftRef(fun.GetSymbolId())
 		y.pushValue(funcVal)
 		y.pushOperator(yakvm.OpFastAssign)
 	} else {
-		// 闭包函数，直接push到栈中
+		// closure function, push directly to the stack.
 		y.pushValueWithCopy(funcVal)
 	}
 
@@ -177,7 +177,7 @@ func (y *YakCompiler) VisitFunctionParamDecl(raw yak.IFunctionParamDeclContext) 
 		idText := id.GetText()
 		lineLength += identifierTokenLengths[index]
 
-		if lenOfIds > 1 { // 如果不是只有一个参数，超出单行最长长度或任意一个参数过长，就换行
+		if lenOfIds > 1 { // . If there is not only one parameter, the maximum length of a single line is exceeded. If the length or any parameter is too long, wrap it in a new line.
 			if eachParamOneLine {
 				y.writeNewLine()
 				if !hadIncIndent {
@@ -205,18 +205,18 @@ func (y *YakCompiler) VisitFunctionParamDecl(raw yak.IFunctionParamDeclContext) 
 			y.writeString(fmt.Sprintf(" /* %s */", comments[index]))
 		}
 
-		// 如果是最后一个参数且有...，就要加...
+		// If it is the last parameter and there is..., you need to add...
 		if index == lenOfIds-1 {
 			if ellipsis != nil {
 				y.writeString("...")
 			}
 		}
-		// 如果不是最后一个参数或者每个参数一行就要加,
+		// If it is not the last parameter or each parameter is in one line, it must be added.
 		if index != lenOfIds-1 || eachParamOneLine {
 			y.writeString(", ")
 			lineLength += 2
 		}
-		// 如果是最后一个参数且每个参数一行，就要换行
+		// If it is the last parameter and each parameter is in one line, it must be changed to
 		if index == lenOfIds-1 && eachParamOneLine {
 			y.writeNewLine()
 			if hadIncIndent {

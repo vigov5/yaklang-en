@@ -80,8 +80,8 @@ func (s *VulinServer) registerSensitive() {
 		log.Errorf("cannot open zip file: %s", err)
 	}
 
-	var sensitiveGroup = r.PathPrefix("/sensitive").Name("敏感信息与敏感文件泄漏").Subrouter()
-	var swaggerGroup = r.PathPrefix("/swagger").Name("敏感信息与敏感文件泄漏（Swagger）").Subrouter()
+	var sensitiveGroup = r.PathPrefix("/sensitive").Name("Sensitive information and sensitive files leak").Subrouter()
+	var swaggerGroup = r.PathPrefix("/swagger").Name("Sensitive information and sensitive files leak (Swagger)").Subrouter()
 	var vuls = []*VulInfo{
 		{
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
@@ -89,12 +89,12 @@ func (s *VulinServer) registerSensitive() {
 				writer.Write(GetSensitiveFile("openapi-2.json"))
 			},
 			Path:         `/v1/swagger.json`,
-			Title:        "OpenAPI 2.0 Swagger 泄漏",
+			Title:        "OpenAPI 2.0 Swagger leak",
 			RiskDetected: true,
 		},
 		{
 			Path:  `/v2/swagger.json`,
-			Title: "OpenAPI 3.0 Swagger 泄漏",
+			Title: "OpenAPI 3.0 Swagger leak",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				writer.Header().Set("Content-Type", "application/json")
 				writer.Write(GetSensitiveFile("openapi-3.json"))
@@ -103,7 +103,7 @@ func (s *VulinServer) registerSensitive() {
 		},
 		{
 			Path:  `/`,
-			Title: "Swagger UI 泄漏",
+			Title: "Swagger UI leak",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				writer.Header().Set("Content-Type", `text/html`)
 				writer.Write(GetSensitiveFile("swagger-ui.html"))
@@ -112,7 +112,7 @@ func (s *VulinServer) registerSensitive() {
 		},
 		{
 			Path:  `/website/`,
-			Title: "Git Repository 泄漏",
+			Title: "Git Repository leak",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				writer.Header().Set("Location", "/git/website/index.html")
 				writer.WriteHeader(302)

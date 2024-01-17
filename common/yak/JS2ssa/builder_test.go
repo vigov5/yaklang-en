@@ -77,11 +77,11 @@ func TestSwitch(t *testing.T) {
 switch (fruit) {
   case "apple":
   case "banana":
-    print("这是一个香蕉");
+    print("This is a banana");
   case "orange":
-    print("这是一个橙子");
+    print("This is an orange");
   default:
-    print("未知水果");
+    print("Unknown fruit");
 }
 	`)
 	if err != nil {
@@ -119,13 +119,13 @@ func Test_Main(t *testing.T) {
 
 func TestNew(t *testing.T) {
 	prog, err := ParseSSA(`
-	// 创建一个XMLHttpRequest对象
+	// creates an XMLHttpRequest object
 	let xhr = new XMLHttpRequest()
-	// 调用open函数填写请求方式和url地址
+	// calls the open function to fill in the request method and url address
 	xhr.open('GET', 'http://*****')
-	// 调用send函数发送请求
+	// calls the send function to send the request
 	xhr.send()
-	// 监听load事件，响应请求后的结果
+	// listens to the load event and responds to the request result
 	xhr.addEventListener('load', function a() {
 		console.log(this.response)
 	})
@@ -145,8 +145,8 @@ func TestFunc(t *testing.T) {
 		return x + y;
 	}
 	 
-	a = myFunction(0, 2) // 输出 2
-	b = myFunction(5); // 输出 15, y 参数的默认值
+	a = myFunction(0, 2) // Output 2
+	b = myFunction(5); // outputs 15, the default value of the y parameter
 
 	`)
 	if err != nil {
@@ -203,7 +203,7 @@ func TestIdentifier(t *testing.T) {
 	$(document).ready(function(){
 		$("button").click(function(){
 		  $.get("/example/jquery/demo_test.asp",function(data,status){
-			alert("数据：" + data + "\n状态：" + status);
+			alert("data:" + data + "\nStatus:" + status);
 		  });
 		});
 	  });
@@ -289,7 +289,7 @@ func TestObject(t *testing.T) {
 }
 
 func TestUse(t *testing.T) {
-	// var 多个值
+	// var Multiple values 
 	code := `
 		o = function() {o = 1}
 		c = a && o()

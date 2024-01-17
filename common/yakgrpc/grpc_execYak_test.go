@@ -15,7 +15,7 @@ func TestGRPCMUSTPASS_LANGUAGE_YakitLog(t *testing.T) {
 		{"yakit.Info(\"yakit_info\")", "yakit_info"},
 		{"yakit.Info(\"yakit_%v\",\"info\")", "yakit_info"},
 		{"risk.NewRisk(\"1.1.1.1\")", ""},
-		{"yakit.Output(yakit.TableData(\"table\", {\n    \"id\": 1,\n    \"name\": \"张三\",\n}))", ""},
+		{"yakit.Output(yakit.TableData(\"table\", {\n    \"id\": 1,\n    \"name\": \"Zhang San\",\n}))", ""},
 	}
 	testCase2 := [][]string{
 		{"println(x\"{{base64(Hello Yak)}}\")", "SGVsbG8gWWFr"},
@@ -69,7 +69,7 @@ func TestGRPCMUSTPASS_LANGUAGE_YakitLog(t *testing.T) {
 		i++
 	}
 	_ = otherLog
-	// 由于CombinedOutput是异步的，可能由于延迟导致这里没有获取到全部输出
+	// Since CombinedOutput is asynchronous, all the output may not be obtained here due to delay
 	//for _, testCase := range testCase2 {
 	//	if !strings.Contains(otherLog, testCase[1]) {
 	//		t.Fatal("log stream not contains", testCase[1])

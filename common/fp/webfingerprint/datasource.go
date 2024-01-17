@@ -33,7 +33,7 @@ func LoadDefaultDataSource() ([]*WebRule, error) {
 	defRules := rules
 	rules = append(rules, DefaultWebFingerprintRules...)
 
-	// 加载用户自定义的规则库
+	// Load user-defined rule base
 	userDefinedPath := "data/user-wfp-rules"
 	files, err := embed.AssetDir(userDefinedPath)
 	if err != nil {
@@ -269,7 +269,7 @@ func MockRandomWebFingerPrints() ([]string, string, int) {
 		}
 	}
 
-	// 去重
+	// Remove duplicates.
 	ruleNames = utils.RemoveRepeatStringSlice(ruleNames)
 	log.Infof("Product count : %d", len(ruleNames))
 	host, port := MockWebFingerPrintByName(strings.Join(ruleNames, ","))

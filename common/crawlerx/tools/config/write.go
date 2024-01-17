@@ -46,7 +46,7 @@ func SaveConfigData(c *ConfigFile, out io.Writer) (err error) {
 				if keyName[0] == '#' {
 					keyName = "-"
 				}
-				//[SWH|+]:支持键名包含等号和冒号
+				//[SWH|+]: Supports key names containing equal signs and colons
 				if strings.Contains(keyName, `=`) || strings.Contains(keyName, `:`) {
 					if strings.Contains(keyName, "`") {
 						if strings.Contains(keyName, `"`) {

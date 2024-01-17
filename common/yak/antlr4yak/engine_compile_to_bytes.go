@@ -60,7 +60,7 @@ func HaveYakcCacheWithKey(code string, key []byte) ([]byte, bool) {
 		return yakcBytes.([]byte), true
 	}
 
-	// 完整性校验双 Hash
+	// Integrity Check Double Hash
 	dir := consts.GetDefaultYakitBaseTempDir()
 	absPath := filepath.Join(dir, fmt.Sprintf(".%v.yakc", codeHash))
 	SipAbsPath := filepath.Join(dir, fmt.Sprintf(".%v.yakc.sip", codeHash))

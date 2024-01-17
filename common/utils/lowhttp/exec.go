@@ -87,7 +87,7 @@ func HTTP(opts ...LowhttpOpt) (*LowhttpResponse, error) {
 				return response, nil
 			}
 
-			// 当跳转地址携带协议头时,强制更新forceHttps状态，自动升降级
+			// When jumping When the transfer address carries the protocol header, the forceHttps status is forcibly updated and automatically upgraded.
 			if strings.HasPrefix(strings.TrimSpace(target), "http://") {
 				forceHttps = false
 			} else if strings.HasPrefix(strings.TrimSpace(target), "https://") {
@@ -110,7 +110,7 @@ func HTTP(opts ...LowhttpOpt) (*LowhttpResponse, error) {
 			response, err = HTTPWithoutRedirect(newOpts...)
 			if err != nil {
 				log.Errorf("met error in redirect...: %s", err)
-				response.RawPacket = lastPacket.Response // 保留原始报文
+				response.RawPacket = lastPacket.Response // Keep the original message
 				return response, nil
 			}
 			responseRaw := &RedirectFlow{
@@ -120,7 +120,7 @@ func HTTP(opts ...LowhttpOpt) (*LowhttpResponse, error) {
 				RespRecord: response,
 			}
 			if responseRaw == nil {
-				response.RawPacket = lastPacket.Response // 保留原始报文
+				response.RawPacket = lastPacket.Response // Keep the original message
 				return response, nil
 			}
 			redirectRawPackets = append(redirectRawPackets, responseRaw)
@@ -199,7 +199,7 @@ func HTTPWithoutRedirect(opts ...LowhttpOpt) (*LowhttpResponse, error) {
 			return
 		}
 
-		// 保存 http flow
+		// Save the http flow
 		log.Debugf("should save url: %v", response.Url)
 		saveCtx, cancel := context.WithCancel(ctx)
 
@@ -363,16 +363,16 @@ func HTTPWithoutRedirect(opts ...LowhttpOpt) (*LowhttpResponse, error) {
 		}
 	}
 
-	// 逐个记录 response 中的内容
+	// Record the contents of the response one by one
 	response.Url = urlIns.String()
 
-	// 获取cookiejar
+	// Get cookiejar
 	cookiejar := GetCookiejar(session)
 	if session != nil {
 		cookies := cookiejar.Cookies(urlIns)
 
 		if cookies != nil {
-			// 复用session中的cookie
+			// Reuse the cookie in the session
 			requestPacket, err = AddOrUpgradeCookie(requestPacket, CookiesToString(cookies))
 			if err != nil {
 				return response, err
@@ -380,7 +380,7 @@ func HTTPWithoutRedirect(opts ...LowhttpOpt) (*LowhttpResponse, error) {
 		}
 	}
 
-	// 修复 host port
+	// Repair the host port
 	if port <= 0 || host == "" {
 		newHost, newPort, err := utils.ParseStringToHostPort(urlIns.String())
 		if err != nil {
@@ -443,7 +443,7 @@ func HTTPWithoutRedirect(opts ...LowhttpOpt) (*LowhttpResponse, error) {
 		nextProto = []string{H1}
 	}
 
-	// 需要用于标识连接 https gmTLS
+	// Needed to identify the connection https gmTLS
 	// configTLS
 	var dialopts []netx.DialXOption
 
@@ -479,7 +479,7 @@ func HTTPWithoutRedirect(opts ...LowhttpOpt) (*LowhttpResponse, error) {
 		dialopts = append(dialopts, netx.DialX_WithProxy(proxy...))
 	}
 
-	// 初次连接需要的
+	// Required for the initial connection
 	// retry use DialX
 	var dnsStart = time.Now()
 	var dnsEnd = time.Now()
@@ -624,7 +624,7 @@ RECONNECT:
 	var rawBytes []byte
 
 	if withConnPool {
-		//连接池分支
+		//Connection pool branch
 		pc := conn.(*persistConn)
 		writeErrCh := make(chan error, 1)
 		if option.BeforeDoRequest != nil {
@@ -655,7 +655,7 @@ RECONNECT:
 		for {
 			select {
 			case err := <-writeErrCh:
-				//写入失败，退出等待
+				//Write failure, exit and wait
 				if err != nil {
 					if pc.shouldRetryRequest(err) {
 						conn.(*persistConn).removeConn()
@@ -664,7 +664,7 @@ RECONNECT:
 					return nil, err
 				}
 			case re := <-resc:
-				//收到响应
+				//Received Respond to
 				if (re.resp == nil) == (re.err == nil) {
 					return nil, utils.Errorf("BUG: internal error: exactly one of res or err should be set; nil=%v", re.resp == nil)
 				}
@@ -689,13 +689,13 @@ RECONNECT:
 		}
 
 	} else {
-		//不使用连接池分支
+		//Do not use the connection pool branch
 		if conn != nil {
 			defer func() {
 				conn.Close()
 			}()
 		}
-		// 写报文
+		// Write the message
 		if option.BeforeDoRequest != nil {
 			requestPacket = option.BeforeDoRequest(requestPacket)
 		}
@@ -717,13 +717,13 @@ RECONNECT:
 			return response, errors.Wrap(err, "write request failed")
 		}
 
-		//TeeReader 用于畸形响应包: 即 ReadHTTPResponseFromBufioReader 无法解析但是conn中存在数据的情况
+		//TeeReader is used for malformed response packets: that is, ReadHTTPResponseFromBufioReader cannot be parsed but is in conn. When there is data
 		if option.DefaultBufferSize <= 0 {
 			option.DefaultBufferSize = 4096
 		}
 		httpResponseReader := bufio.NewReaderSize(io.TeeReader(conn, &responseRaw), option.DefaultBufferSize)
 
-		// 服务器响应第一个字节
+		// The server responds to the first byte
 	READ:
 		serverTimeStart := time.Now()
 		_ = conn.SetReadDeadline(serverTimeStart.Add(timeout))
@@ -748,7 +748,7 @@ RECONNECT:
 					authReq, err := auth.Authenticate(conn, option)
 					if err == nil {
 						_, err := conn.Write(authReq)
-						responseRaw.Reset() //发送认证请求成功，清空缓冲区
+						responseRaw.Reset() //The authentication request is sent successfully and the buffer is cleared
 						if err != nil {
 							return response, errors.Wrap(err, "write request failed")
 						}
@@ -768,9 +768,9 @@ RECONNECT:
 		if firstResponse == nil || respClose {
 			if len(responseRaw.Bytes()) == 0 {
 				return response, errors.Wrap(err, "empty result.")
-			} else { // peek 到了数据,但是无法解析,说明是畸形响应包
+			} else { // peeked the data, but it could not be parsed, indicating that it was a malformed response packet.
 				stableTimeout := timeout
-				if respClose && timeout < 1*time.Second { // 取设置timeout与1s的较小值
+				if respClose && timeout < 1*time.Second { // Take the smaller value of setting timeout and 1s
 					stableTimeout = 1 * time.Second
 				}
 				restBytes, _ := utils.ReadUntilStable(httpResponseReader, conn, stableTimeout, 300*time.Millisecond)
@@ -786,7 +786,7 @@ RECONNECT:
 			multiResponses = append(multiResponses, firstResponse)
 
 			// handle response
-			for noFixContentLength { // 尝试读取pipeline/smuggle响应包
+			for noFixContentLength { // Try to read the pipeline/smuggle response package
 				// log.Infof("checking next(pipeline/smuggle) response...")
 				nextResponse, err := utils.ReadHTTPResponseFromBufioReaderConn(httpResponseReader, conn, nil)
 				var nextRespClose bool
@@ -794,7 +794,7 @@ RECONNECT:
 					nextRespClose = nextResponse.Close
 				}
 				if err != nil || nextRespClose {
-					if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) { // 停止读取
+					if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) { // Stop reading
 						break
 					}
 					// read second response rest in buffer
@@ -827,7 +827,7 @@ RECONNECT:
 		}
 	}
 
-	// 更新cookiejar中的cookie
+	// Update the cookie in the cookie jar
 	if session != nil {
 		cookiejar.SetCookies(urlIns, firstResponse.Cookies())
 	}
@@ -887,7 +887,7 @@ STATUSCODERETRY:
 		return response, nil
 	}
 
-	// 如果不修复的话，默认服务器返回的东西也有点复杂，不适合做其他处理
+	// If not repaired, the things returned by the default server are also a bit complicated and not suitable for other processing
 	response.RawPacket = rawBytes
 	return response, nil
 }

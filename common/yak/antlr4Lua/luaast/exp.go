@@ -206,7 +206,7 @@ func (l *LuaTranslator) VisitPrefixExp(raw lua.IPrefixexpContext) interface{} {
 
 	args := i.AllNameAndArgs()
 
-	// 多个agr 例如 a:add(10):add(20).x 是闭包函数返回调用的情况 链式调用
+	// Multiple agr, for example a:add(10):add(20).x is the case of closure function return call chain call
 	for _, arg := range args { // at least one since it include LParen and RParen
 		l.VisitNameAndArgs(arg)
 	}

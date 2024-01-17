@@ -64,13 +64,13 @@ func TestName(t *testing.T) {
 		Message: "\u0000",
 	}
 
-	// 使用 json.Marshal 进行编码
+	// Use json.Marshal to encode
 	jsonData, err := json.Marshal(&myStruct)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
 
-	// 打印编码后的 JSON 数据
+	// and print the encoded JSON data.
 	fmt.Println(string(jsonData))
 }

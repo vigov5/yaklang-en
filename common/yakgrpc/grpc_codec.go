@@ -23,7 +23,7 @@ import (
 )
 
 func (s *Server) AutoDecode(ctx context.Context, req *ypb.AutoDecodeRequest) (*ypb.AutoDecodeResponse, error) {
-	if len(req.GetModifyResult()) == 0 { // 兼容旧版本
+	if len(req.GetModifyResult()) == 0 { // from the result to be compatible with older versions.
 		results := funk.Map(codec.AutoDecode(req.GetData()), func(i *codec.AutoDecodeResult) *ypb.AutoDecodeResult {
 			return &ypb.AutoDecodeResult{
 				Type:        i.Type,
@@ -44,10 +44,10 @@ func (s *Server) AutoDecode(ctx context.Context, req *ypb.AutoDecodeRequest) (*y
 		if modifyIndex == -1 {
 			return &ypb.AutoDecodeResponse{Results: modifyResult}, nil
 		}
-		for i := modifyIndex; i >= 0; i-- { // 从 result 推origin
+		for i := modifyIndex; i >= 0; i-- { // and push the origin
 			modifyResult[i].Modify = false
 			modifyResult[i].Origin = []byte(codec.EncodeByType(modifyResult[i].Type, modifyResult[i].Result))
-			if i-1 >= 0 { // 传递给上一级
+			if i-1 >= 0 { // is called, pass it to the upper level
 				modifyResult[i-1].Result = modifyResult[i].Origin
 			}
 		}
@@ -137,7 +137,7 @@ func (s *Server) Codec(ctx context.Context, req *ypb.CodecRequest) (*ypb.CodecRe
 		iv = []byte(ivStr)
 	}
 
-	// 如果是调用 Codec YakScript
+	// If Codec YakScript
 	if req.GetScriptName() != "" {
 		rsp := &ypb.CodecResponse{}
 		script, err := yakit.GetYakScriptByName(s.GetProfileDatabase(), req.GetScriptName())
@@ -1039,7 +1039,7 @@ func (s *Server) NewCodec(ctx context.Context, req *ypb.CodecRequestFlow) (*ypb.
 		text = result
 	}
 
-	// 如果是调用 Codec YakScript
+	// If Codec YakScript
 
 	if result == "" {
 		return nil, utils.Errorf("empty result")

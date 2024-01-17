@@ -22,7 +22,7 @@ func TestGRPCMUSTPASS_COMMON_yso(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	//测试获取所有的yso选项(ysoVerboses, t)
+	//Test to get all yso options (ysoVerboses, t)
 	assert.Equal(t, len(ysoVerboses.GetOptions()), len(yso.AllGadgets))
 	for _, option := range ysoVerboses.GetOptions() {
 		assert.Equal(t, yso.AllGadgets[option.GetName()].Name, option.GetName())

@@ -57,7 +57,7 @@ func _subdomainScan(target interface{}, opts ...subdomain.ConfigOption) (chan *s
 var SubDomainExports = map[string]interface{}{
 	"Scan": _subdomainScan,
 
-	// 选项
+	// option
 	"wildcardToStop":   subdomain.WithWildCardToStop,
 	"recursive":        subdomain.WithAllowToRecursive,
 	"workerConcurrent": subdomain.WithWorkerCount,
@@ -74,12 +74,12 @@ var SubDomainExports = map[string]interface{}{
 		return subdomain.WithTimeoutForEachHTTPSearch(utils.FloatSecondDuration(i))
 	},
 
-	// 自定义主字典
+	// Custom main dictionary
 	"mainDict": func(i interface{}) subdomain.ConfigOption {
 		return subdomain.WithMainDictionary(utils.StringAsFileParams(i))
 	},
 
-	// 递归字典
+	// recursive dictionary
 	"recursiveDict": func(i interface{}) subdomain.ConfigOption {
 		return subdomain.WithSubDictionary(utils.StringAsFileParams(i))
 	},

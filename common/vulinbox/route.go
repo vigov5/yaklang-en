@@ -34,12 +34,12 @@ type VulInfo struct {
 	Handler      func(http.ResponseWriter, *http.Request) `json:"-"`
 	Path         string
 	DefaultQuery string
-	// 名称
+	// Name
 	Title string
-	// 是否期望检出 Risk
+	// Whether to expect to check out Risk
 	RiskDetected bool
 	Headers      []*ypb.KVPair
-	// 具体期望结果
+	// Specific expected result
 	ExpectedResult map[string]int
 }
 
@@ -115,7 +115,7 @@ func (s *VulinServer) init() {
 	// agent ws connector
 	s.registerWSAgent()
 
-	// 通用型
+	// Universal
 	s.registerSQLinj()
 	s.registerXSS()
 	s.registerSSRF()
@@ -129,15 +129,15 @@ func (s *VulinServer) init() {
 	s.registerFastjson()
 	s.registerCsrf()
 
-	// 业务型
+	// Are operational
 	s.registerUserRoute()
 
-	//逻辑场景-购物商城
-	s.mallIndexRoute() //商城首页
-	s.mallUserRoute()  //登陆注册
-	s.mallCartRoute()  //购物车
+	//Logical scenario - shopping mall
+	s.mallIndexRoute() //Mall homepage
+	s.mallUserRoute()  //Login registration
+	s.mallCartRoute()  //Shopping cart
 
-	// 验证码
+	// Verification code
 	subVerificationRouter, vuls := verificationcode.Register(router)
 	for _, v := range vuls {
 		subVerificationRouter.GetRoute(v)
@@ -151,7 +151,7 @@ func (s *VulinServer) init() {
 	s.registerMiscRoute()
 	s.registerPipelineNSmuggle()
 
-	// 靶场是否是安全的？
+	// ranges safe?
 	if !s.safeMode {
 		s.registerPingCMDI()
 	}
@@ -167,9 +167,9 @@ func (s *VulinServer) genRoute() {
 	once.Do(func() {
 		groups := make(map[string][]*VulInfo)
 		err = s.router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
-			// 分组名
+			// Group name
 			var groupName string
-			// 如果当前路由有父路由，就代表这个路由在一个 group 中
+			// If the current route has a parent route, it means that this route is in a group
 			if len(ancestors) > 0 {
 				groupName = ancestors[0].GetName()
 			}
@@ -186,7 +186,7 @@ func (s *VulinServer) genRoute() {
 					}
 					return nil
 				}
-				// 一个组中不是所有的路由都有名称，只有需要在前端展示的路由才有名称
+				// Not all routes in a group have names. Only routes that need to be displayed on the front end have names.
 				if vulnInfo.Title != "" {
 					realRoutePath, err := route.GetPathTemplate()
 					if err != nil {
@@ -224,7 +224,7 @@ func (s *VulinServer) genRoute() {
 		for groupName, routes := range groups {
 			id := ""
 			if strings.Contains(groupName, "Unsafe Mode") {
-				// 当一个变量被作为 HTML attribute 插入时，无法使用 html/template
+				// When a variable is inserted as an HTML attribute, html cannot be used./template
 				id = `id="safestyle"`
 			}
 			routesData = append(routesData, &GroupedRoutes{
@@ -249,10 +249,10 @@ func (s *VulinServer) registerVulRouter() {
 		var results []*GroupedRoutes
 
 		if group == "" {
-			// 没有 group 参数时获取全部的 s.groupedRoutesCache
+			// Get all s.groupedRoutesCache when there is no group parameter.
 			results = s.groupedRoutesCache
 		} else {
-			// 当 group 参数存在时, 获取 GroupedRoutes 对应 GroupName 的 VulInfos
+			// When the group parameter exists, get the VulInfos of GroupedRoutes corresponding to GroupName
 			for _, groupedRoute := range s.groupedRoutesCache {
 				if strings.Contains(strings.ToLower(groupedRoute.GroupName), group) {
 					results = append(results, groupedRoute)
@@ -286,7 +286,7 @@ func addRouteWithVulInfo(router *mux.Router, info *VulInfo) {
 }
 
 func (s *VulinServer) GetGroupVulInfos(group string) []*VulInfo {
-	//	遍历 s.groupedRoutesCache 获取 s.groupedRoutesCache 中的指定的 []*vulInfo
+	//	Traverse s. groupedRoutesCache Gets the specified [] in s.groupedRoutesCache*vulInfo
 	for _, groupInfo := range s.groupedRoutesCache {
 		if groupInfo.GroupName == group {
 			return groupInfo.VulInfos

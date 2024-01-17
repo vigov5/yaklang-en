@@ -140,7 +140,7 @@ func (r *RPCClient) request(rootCtx context.Context, f, node string, req interfa
 		Uid: uid.String(), ctx: ctx, cancel: cancel,
 		Msg: &msg, RoutingKey: r.getRoutingKey(f, node),
 
-		// 用来标注 rpc 状态
+		// Used to mark rpc status
 		haveRequestSent:         abool.NewBool(false),
 		haveRequestSentCtx:      ReqCtx,
 		haveRequestSentFinished: ReqCancel,

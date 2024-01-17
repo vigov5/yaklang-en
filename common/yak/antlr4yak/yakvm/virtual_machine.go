@@ -13,11 +13,11 @@ import (
 type ExecFlag int
 
 const (
-	None   ExecFlag = 1 << iota // 默认创建新栈帧执行代码，执行后出栈
-	Trace                       // 执行后不出站
-	Sub                         // 使用栈顶的数据继续执行
-	Inline                      // 使用上一次执行的Trace继续执行
-	Asnyc                       // 异步执行
+	None   ExecFlag = 1 << iota // By default, a new stack frame is created to execute the code, and the stack is popped after execution.
+	Trace                       // does not exit the site after execution.
+	Sub                         // from the frame. Use the data on the top of the stack to continue executing
+	Inline                      // uses the last executed Trace to continue executing
+	Asnyc                       // . Asynchronous execution of
 )
 
 func GetFlag(flags ...ExecFlag) ExecFlag {
@@ -32,7 +32,7 @@ type YakitFeedbacker interface{}
 type (
 	BreakPointFactoryFun func(v *VirtualMachine) bool
 	VirtualMachine       struct {
-		// globalVar 是当前引擎的全局变量，属于引擎
+		// globalVar. It is a global variable of the current engine and belongs to the engine
 		globalVar map[string]interface{}
 		VMStack   *vmstack.Stack
 		rootScope *Scope
@@ -40,8 +40,8 @@ type (
 		// asyncWaitGroup
 		asyncWaitGroup *sync.WaitGroup
 		// debug
-		debug         bool // 内部debug
-		debugMode     bool // 外部debugger
+		debug         bool // internal debug
+		debugMode     bool // . External debugger
 		debugger      *Debugger
 		BreakPoint    []BreakPointFactoryFun
 		ThreadIDCount uint64
@@ -119,7 +119,7 @@ func NewWithSymbolTable(table *SymbolTable) *VirtualMachine {
 		// asyncWaitGroup
 		asyncWaitGroup: new(sync.WaitGroup),
 		// debug
-		ThreadIDCount: 1, // 初始是1
+		ThreadIDCount: 1, // is initially 1.
 	}
 	return v
 }
@@ -128,7 +128,7 @@ func New() *VirtualMachine {
 	return NewWithSymbolTable(NewSymbolTable())
 }
 
-// deepCopyLib 拷贝yaklang依赖，防止多个engine并行运行时对lib进行hook导致concurrent write map error
+// deepCopyLib copies yaklang dependencies to prevent multiple When the engine is running in parallel, hooking the lib causes a concurrent write map error.
 func deepCopyLib(libs map[string]interface{}) map[string]interface{} {
 	newLib := map[string]interface{}{}
 	for k, v := range libs {
@@ -141,14 +141,14 @@ func deepCopyLib(libs map[string]interface{}) map[string]interface{} {
 	return newLib
 }
 
-// ImportLibs 导入库到引擎的全局变量中
+// ImportLibs Import the library into the global variables of the engine. When
 func (n *VirtualMachine) ImportLibs(libs map[string]interface{}) {
 	for k, v := range deepCopyLib(libs) {
 		n.globalVar[k] = v
 	}
 }
 
-// SetVar 导入变量到引擎的全局变量中
+// SetVar imports variables into the global variables of the engine.
 func (n *VirtualMachine) SetVar(k string, v interface{}) {
 	n.globalVar[k] = v
 }
@@ -161,13 +161,13 @@ func (n *VirtualMachine) GetVar(name string) (interface{}, bool) {
 			return val.Value, true
 		}
 	} else {
-		// ivm 存在的时候，从 frame 中找变量
+		// ivm exists, find the variable
 		val, ok := ivm.(*Frame).CurrentScope().GetValueByName(name)
 		if ok {
 			return val.Value, true
 		}
 	}
-	// 如果不存在，根也找不到，那么就直接全局找
+	// . If it does not exist and the root cannot be found, then directly find
 	var_, ok := n.globalVar[name]
 	if ok {
 		return var_, true
@@ -204,7 +204,7 @@ func (v *VirtualMachine) ExecYakFunction(ctx context.Context, f *Function, args 
 		if f.sourceCode != "" {
 			frame.SetOriginCode(f.sourceCode)
 		}
-		// 闭包继承父作用域
+		// globally. The closure inherits the parent scope
 		// if v.config.GetClosureSupport() {
 		frame.scope = f.scope
 		frame.CreateAndSwitchSubScope(f.symbolTable)
@@ -319,7 +319,7 @@ func (v *VirtualMachine) Exec(ctx context.Context, f func(frame *Frame), flags .
 	vmstackLock.Unlock()
 
 	frame.debug = v.debug
-	// 初始化debugger
+	// . Initialize debugger
 	if v.debugMode && v.debugger != nil && v.debugger.initFunc != nil {
 		v.debugger.InitCallBack()
 	}
@@ -327,7 +327,7 @@ func (v *VirtualMachine) Exec(ctx context.Context, f func(frame *Frame), flags .
 
 	f(frame)
 
-	// 未设置Trace时执行后出站
+	// . When Trace is not set, it will exit after execution.
 	if flag&Trace != Trace {
 		vmstackLock.Lock()
 		v.VMStack.Pop()

@@ -18,7 +18,7 @@ func (y *YakCompiler) VisitReturnStmt(raw yak.IReturnStmtContext) interface{} {
 	defer recoverRange()
 	y.writeString("return")
 
-	// 这是一个压栈操作，虚拟机要记录返回值，所以需要 return 作为 OPCODE 去操作栈
+	// This is a stack push operation. The virtual machine needs to record the return value, so return is required as OPCODE to operate the stack.
 	if list := i.ExpressionList(); list != nil {
 		y.writeString(" ")
 		y.VisitExpressionList(list)

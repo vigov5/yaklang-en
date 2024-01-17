@@ -47,7 +47,7 @@ type HttpResource struct {
 	disableNotify bool
 }
 
-// 如果路由已存在，则跳过
+// If the route already exists, skip
 func (f *FacadeServer) AddHttpRoute(pattern string, rsc *HttpResource) {
 	f.httpMux.Lock()
 	_, ok := f.httpResource[pattern]
@@ -79,7 +79,7 @@ func (f *FacadeServer) OverwriteFileResource(pattern string, resource []byte) {
 	f.SaveHttpRoute(pattern, &HttpResource{resource: resource, responseType: HttpResourceType_File, times: -1})
 }
 
-// 如果路由已经存在，则覆盖原有的路由
+// . If the route already exists, overwrite the original route.
 func (f *FacadeServer) SaveHttpRoute(pattern string, resource *HttpResource) {
 	f.httpMux.Lock()
 	f.httpResource[pattern] = resource

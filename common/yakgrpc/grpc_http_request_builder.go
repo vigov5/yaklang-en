@@ -22,7 +22,7 @@ func (s *Server) DebugPlugin(req *ypb.DebugPluginRequest, stream ypb.Yak_DebugPl
 		return utils.Error("input / input packet is empty")
 	}
 
-	invalidRequest := pluginType != "yak" && input == "" && !req.GetHTTPRequestTemplate().GetIsRawHTTPRequest() // 非 yak 插件没有 input 也没有 http request
+	invalidRequest := pluginType != "yak" && input == "" && !req.GetHTTPRequestTemplate().GetIsRawHTTPRequest() // Non-yak plug-ins have no input and no http request
 	if invalidRequest {
 		return utils.Error("cannot find/extract debug target")
 	}

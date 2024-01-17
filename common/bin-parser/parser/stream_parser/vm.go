@@ -44,7 +44,7 @@ type YakNode struct {
 }
 
 func ConvertToYakNode(node *base.Node, operator func(node *base.Node) (func(bool), error)) *YakNode {
-	getRootNode := func(key string) *YakNode { // 需要处理mapData
+	getRootNode := func(key string) *YakNode { // Need to deal with mapData
 		rootMap := node.Ctx.GetItem(CfgRootMap).(map[string]*base.Node)
 		if v, ok := rootMap[key]; ok {
 			return ConvertToYakNode(v, operator)
@@ -397,7 +397,7 @@ func ExecOperator(node *base.Node, code string, operator func(node *base.Node) (
 		"deleteCtx": func(key string) {
 			node.Ctx.DeleteItem(key)
 		},
-		"getRootNode": func(key string) any { // 需要处理mapData
+		"getRootNode": func(key string) any { // Need to deal with mapData
 			rootMap := node.Ctx.GetItem(CfgRootMap).(map[string]*base.Node)
 			if v, ok := rootMap[key]; ok {
 				return ConvertToYakNode(v, operator)

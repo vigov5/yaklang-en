@@ -56,7 +56,7 @@ func StartRabbitMQ() error {
 
 	amqpUrl := GetAMQPUrl()
 
-	// 如果已经成功了
+	// If it has been successful
 	conn, err := amqp.Dial(amqpUrl)
 	if err == nil {
 		_ = conn.Close()

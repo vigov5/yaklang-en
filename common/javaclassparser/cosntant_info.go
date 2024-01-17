@@ -2,10 +2,10 @@ package javaclassparser
 
 /*
 *
-常量数据结构如下
+The constant data structure is as follows
 
 	cp_info {
-		u1 tag; -> 用来区分常量类型
+		u1 tag; -> Used to distinguish constant types
 		u2 Info[];
 	}
 */
@@ -28,15 +28,15 @@ const (
 
 /*
 *
-constant info类型的接口
+Constant info type interface
 */
 type ConstantInfo interface {
-	//从class data中读取常量信息
+	//Read constant information from class data
 	readInfo(reader *ClassParser)
 }
 
 /**
-从class data中读取并创建对应tag的constant Info
+Read from class data and create constant Info corresponding to the tag
 */
 //func readConstantInfo(reader *ClassReader) ConstantInfo {
 //	tag := reader.readUint8()
@@ -47,7 +47,7 @@ type ConstantInfo interface {
 
 /*
 *
-根据tag创建不同的constant Info
+Create different constant Info according to tags
 */
 func newConstantInfo(tag uint8) ConstantInfo {
 	switch tag {

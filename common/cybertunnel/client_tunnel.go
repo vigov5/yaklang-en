@@ -83,7 +83,7 @@ func (c *channelContext) run(ctx context.Context) {
 				c.dialed.Set()
 
 				// dial
-				// 创建一个新的 connection
+				// creates a new connection
 				addr := utils.HostPort(c.localHost, c.localPort)
 				osConn, err := netx.DialTCPTimeout(10*time.Second, addr)
 				if err != nil {
@@ -153,7 +153,7 @@ func dispatchOutput(ctx context.Context, output *tpb.TunnelOutput, localhost str
 	}()
 
 	/*
-		来往顺序要注意，不要因为一个 conn 导致顺序炸了
+		Pay attention to the order of communication, do not cause the order to explode because of a conn
 	*/
 	contextId := outputToVerbose(output)
 	chanCtx := getClientTunnelContext(ctx, contextId, output.FromId, output.RemoteAddr, localhost, localPort, client, fs...)

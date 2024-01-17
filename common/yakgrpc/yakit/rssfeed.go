@@ -72,21 +72,21 @@ type Briefing struct {
 
 var (
 	tagConditions = map[string][]string{
-		"工控":      {"工控", "IoT", "核电"},
-		"内核安全":    {"内核", "Kernel Vul", "内核漏洞", "内核模块", "提权", "BIOS"},
-		"RCE":     {"Remote Code Execution", "远程代码执行", "任意代码执行", "rbitrary code"},
-		"远程代码执行":  {"Remote Code Execution", "远程代码执行", "任意代码执行", "rbitrary code", "code execution"},
-		"黑产情报":    {"APT", "劫持", "投毒", "水坑", "鱼叉", "蠕虫", "钓鱼", "出售", "获利"},
-		"SDLC":    {"安全生命周期", "sdl", "Devsecops", "devops"},
+		"industrial control":      {"industrial control", "IoT", "Nuclear power"},
+		"Kernel security":    {"Kernel", "Kernel Vul", "Kernel vulnerability", "Kernel module", "Privilege escalation", "BIOS"},
+		"RCE":     {"Remote Code Execution", "Remote code execution", "Arbitrary code execution", "rbitrary code"},
+		"Remote code execution":  {"Remote Code Execution", "Remote code execution", "Arbitrary code execution", "rbitrary code", "code execution"},
+		"Black intelligence":    {"APT", "Hijacking", "Poisoning", "Puddle", "Harpoon", "Worm", "Phishing", "Selling", "Profit"},
+		"SDLC":    {"security life cycle", "sdl", "Devsecops", "devops"},
 		"CTF":     {"awd", "ctf"},
 		"0day":    {"0 day", "0day"},
-		"提权":      {"privilege escalation", "提权"},
-		"暴力破解":    {"brute-force", "暴力破解", "爆破"},
-		"DoS":     {"dos", "拒绝服务攻击"},
-		"SQL注入":   {"SQL injection", "SQL注入", "SQL 注入", "sqlinjection", "sqli"},
-		"XSS":     {"cross-site scripting", "XSS", "跨站脚本"},
-		"CSRF":    {"cross-site request forgery", "CSRF", "跨站请求伪造"},
-		"Exploit": {"exploit", "漏洞利用程序", "利用"},
+		"Privilege escalation":      {"privilege escalation", "Privilege escalation"},
+		"Brute force":    {"brute-force", "Brute force", "Exploding"},
+		"DoS":     {"dos", "Denial of service attack"},
+		"SQL injection":   {"SQL injection", "SQL injection", "SQL injection", "sqlinjection", "sqli"},
+		"XSS":     {"cross-site scripting", "XSS", "cross-site scripting"},
+		"CSRF":    {"cross-site request forgery", "CSRF", "cross-site request forgery"},
+		"Exploit": {"exploit", "Exploit", "Using"},
 	}
 
 	cveTitleRegexp = regexp.MustCompile(`CVE-\d+-\d+[ \t]*(\(.*?\))`)

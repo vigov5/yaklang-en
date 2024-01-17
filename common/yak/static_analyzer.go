@@ -50,7 +50,7 @@ func AnalyzeStaticYaklangWithType(code, codeTyp string) []*StaticAnalyzeResult {
 		case yakast.YakMergeError:
 			for _, e := range ret {
 				results = append(results, &StaticAnalyzeResult{
-					Message:         fmt.Sprintf("基础语法错误（Syntax Error）：%v", e.Message),
+					Message:         fmt.Sprintf("Basic syntax error (Syntax Error): %v", e.Message),
 					Severity:        "error",
 					StartLineNumber: e.StartPos.LineNumber,
 					StartColumn:     e.StartPos.ColumnNumber + 1,
@@ -61,13 +61,13 @@ func AnalyzeStaticYaklangWithType(code, codeTyp string) []*StaticAnalyzeResult {
 				})
 			}
 		default:
-			log.Error("静态分析失败：Yaklang 返回错误不标准")
+			log.Error("static analysis failed: Yaklang return error is not standard")
 		}
 	}
 
 	prog, err := ssaapi.Parse(code, pta.GetPluginSSAOpt(codeTyp)...)
 	if err != nil {
-		log.Error("SSA 解析失败：", err)
+		log.Error("SSA parsing failed:", err)
 		return results
 	}
 	pta.CheckPluginType(codeTyp, prog)

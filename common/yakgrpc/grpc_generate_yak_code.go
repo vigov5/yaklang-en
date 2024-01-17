@@ -34,10 +34,10 @@ func extractPacketToGenerateParams(isHttps bool, req []byte) map[string]interfac
 		header = strings.ReplaceAll(header, target, "{{params(target)}}")
 		header = strings.ReplaceAll(header, "`", "` + \"`\" + `")
 		if !isMultipart {
-			// 不是上传数据包的话，就处理一下转义就行
+			// If it is not uploading the data packet, just process the escape.
 			body = bytes.ReplaceAll(body, []byte("`"), []byte("` + \"`\" + `"))
 		} else {
-			// 如果是上传数据包，需要能识别出来上传的内容并重新进行编码
+			// If you are uploading a data packet, you need to be able to identify the uploaded content and re-encode it
 		}
 		packetRaw = lowhttp.ReplaceHTTPPacketBody([]byte(header), body, false)
 	}
@@ -101,7 +101,7 @@ if YAK_MAIN {
             println(string(rspBytes))
         }
 
-        // 处理结果
+        // processing result
         riskTarget = target
         if str.MatchAllOfRegexp(rspBytes, ` + "`" + `(?i)foundtextinRsp!` + "`" + `) || str.MatchAllOfSubString(rspBytes, "FoundTextInResponse") {
             urlIns, _ = str.ExtractURLFromHTTPRequestRaw(reqBytes, isHttps)
@@ -113,7 +113,7 @@ if YAK_MAIN {
             risk.NewRisk(
                 riskTarget, risk.severity("high"), risk.type("poc"),
                 risk.title("English Title"),            ## English Title for Risk
-                risk.titleVerbose("中文标题"),           ##  中文标题
+                risk.titleVerbose("Chinese title"), ## Chinese Title
                 risk.details({
                     "target": riskTarget,
                     "request": reqBytes,
@@ -126,7 +126,7 @@ if YAK_MAIN {
 
 /*
 type palm/common/mutate.(_httpResult) struct {
-  Fields(可用字段): 
+  Fields (available fields): 
       Url: string  
       Request: *http.Request  
       Error: error  
@@ -136,8 +136,8 @@ type palm/common/mutate.(_httpResult) struct {
       DurationMs: int64  
       Timestamp: int64  
       Payloads: []string  
-  StructMethods(结构方法/函数): 
-  PtrStructMethods(指针结构方法/函数): 
+  StructMethods (structural method/function): 
+  PtrStructMethods (pointer structure method/function): 
 }
 */
 
@@ -163,7 +163,7 @@ sendPacket = func(target) {
         poc.timeout(10),
         # poc.proxy("http://127.0.0.1:8083"),
         # poc.proxy("http://127.0.0.1:7890"),
-        poc.redirectTimes(3),  # 重定向次数
+        poc.redirectTimes(3), # Number of redirects
         poc.https(isHttps),
         poc.params({
             "target": target,
@@ -195,7 +195,7 @@ if YAK_MAIN {
         risk.NewRisk(
             riskTarget, risk.severity("high"), risk.type("poc"),
             risk.title("English Title"),            ## English Title for Risk
-            risk.titleVerbose("中文标题"),           ##  中文标题
+            risk.titleVerbose("Chinese title"), ## Chinese Title
             risk.details({
                 "target": riskTarget,
                 "request": reqBytes,
@@ -233,7 +233,7 @@ func (s *Server) GenerateCSRFPocByPacket(ctx context.Context, req *ypb.GenerateC
 func (s *Server) GenerateYakCodeByPacket(ctx context.Context, req *ypb.GenerateYakCodeByPacketRequest) (*ypb.GenerateYakCodeByPacketResponse, error) {
 	multipartReq := lowhttp.IsMultipartFormDataRequest(req.GetRequest())
 	if multipartReq {
-		// 处理上传数据包
+		// processes the uploaded data packet
 		return nil, utils.Errorf("multipart/form-data; need generate specially!")
 	}
 

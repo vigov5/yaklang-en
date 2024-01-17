@@ -118,7 +118,7 @@ func QueryNaslScriptByYakScriptRequest(db *gorm.DB, params *ypb.QueryYakScriptRe
 	return paging, ret, nil
 }
 
-// FilterNaslScript 过滤nasl脚本，支持关键词搜索，family过滤，排除和指定脚本名
+// FilterNaslScript filters nasl scripts, supports keyword search, family filtering, exclusion and specified script name
 func FilterNaslScript(db *gorm.DB, params *ypb.QueryYakScriptRequest) *gorm.DB {
 	if params.GetKeyword() != "" {
 		db = bizhelper.FuzzSearchWithStringArrayOrEx(db, []string{
@@ -131,7 +131,7 @@ func FilterNaslScript(db *gorm.DB, params *ypb.QueryYakScriptRequest) *gorm.DB {
 		db = bizhelper.FuzzQueryStringArrayOrLike(db, "family", familys)
 	}
 
-	// 排除特定脚本
+	// excludes specific scripts
 	db = bizhelper.ExactQueryExcludeStringArrayOr(db, "script_name", params.GetExcludeScriptNames())
 	if len(params.GetIncludedScriptNames()) > 0 {
 		if len(utils.StringArrayFilterEmpty(params.GetExcludeScriptNames())) > 0 {

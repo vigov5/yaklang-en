@@ -7,14 +7,14 @@ import (
 
 var Exports = map[string]interface{}{
 	"Start":       Start,
-	"depth":       core.WithSpiderDepth,     //扫描深度
-	"proxy":       core.WithBrowserProxy,    //代理地址 可选输入用户名密码
-	"headers":     core.WithHeader,          //指定headers 可以选择headers文件地址或json字符串
-	"strictUrl":   core.WithStrictUrlDetect, //检测url是否存在风险
-	"maxUrl":      core.WithUrlCount,        //url获得总数限制 超出后不再扫描
-	"whiteDomain": core.WithWhiteDomain,     //白名单
-	"blackDomain": core.WithBlackDomain,     //黑名单
-	"timeout":     core.WithTimeout,         //单链接超时
+	"depth":       core.WithSpiderDepth,     //Scanning depth.
+	"proxy":       core.WithBrowserProxy,    //Proxy address. Optional username and password.
+	"headers":     core.WithHeader,          //Specify headers. You can choose headers file address or json string.
+	"strictUrl":   core.WithStrictUrlDetect, //Check whether the URL is risky.
+	"maxUrl":      core.WithUrlCount,        //Limit on the total number of URLs obtained. No more scanning after exceeding
+	"whiteDomain": core.WithWhiteDomain,     //Whitelist
+	"blackDomain": core.WithBlackDomain,     //Blacklist
+	"timeout":     core.WithTimeout,         //Single link timeout
 
 	// BruteForce
 	"Bruteforce":          bruteforce.BruteForceStart,

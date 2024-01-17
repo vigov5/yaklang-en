@@ -16,7 +16,7 @@ func ReflectFuncToFunctionDoc(libName string, ret reflect.Type) (ExportsFunction
 	var returnTypes []*FieldDoc
 	var structDocs []*StructDoc
 
-	// 设置函数参数的点
+	// Points for setting function parameters
 	var inParams []reflect.Type
 	var isVariadic = ret.IsVariadic()
 	for i := range make([]int, ret.NumIn()) {
@@ -41,7 +41,7 @@ func ReflectFuncToFunctionDoc(libName string, ret reflect.Type) (ExportsFunction
 		})
 	}
 
-	// 设置函数返回值文档
+	// Setting function return value documentation
 	var returns []reflect.Type
 	for i := range make([]int, ret.NumOut()) {
 		p := ret.Out(i)

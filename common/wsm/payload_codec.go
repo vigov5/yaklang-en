@@ -1,9 +1,9 @@
 package wsm
 
 type PayloadCodecI interface {
-	// EchoResultEncodeFormYak payload 内部对回显结果的编码，混合编程，执行 yaklang
+	// EchoResultEncodeFormYak payload internally encodes the echo result, hybrid programming, and executes yaklang
 	EchoResultEncodeFormYak(raw []byte) ([]byte, error)
-	// EchoResultDecodeFormYak 对 payload 回显结果的解码
+	// EchoResultDecodeFormYak decodes the echo result of the payload
 	EchoResultDecodeFormYak(raw []byte) ([]byte, error)
 	SetPayloadScriptContent(content string)
 }

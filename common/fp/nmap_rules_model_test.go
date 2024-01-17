@@ -111,11 +111,11 @@ match echo m|^help\r\n\r\n$|
 }
 
 func TestParseNmapServiceProbeToRuleMap_DefaultPorts(t *testing.T) {
-	in := `## 这个数据包可以发送 RDP 的指纹检测数据包
+	in := `## This packet can send RDP fingerprint detection packet
 Probe TCP RdpSSLHybridAndHybridEx q|\x03\x00\x003.\xe0\x00\x00\x00\x00\x00\x43\x6f\x6f\x6b\x69\x65\x3a\x20\x6d\x73\x74\x73\x68\x61\x73\x68\x3dadministrator\x0d\x0a\x01\x00\x08\x00\x0b\x00\x00\x00|
 ports 3388,3389
 
-## 这里是测试数据包
+## Here is the test packet
 match rdp m|\x03.*| cpe:/a:microsoft:rdp1/a
 match rdp m|\x03\x00\x00\x13\x0e\xd0\x00\x00\x124\x00\x02\x00\x08\x00\x02\x00\x00\x00| cpe:/a:microsoft:rdp/a
 `

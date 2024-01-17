@@ -7,25 +7,25 @@ import (
 
 type UserCart struct {
 	gorm.Model
-	UserID          int     `gorm:"column:UserID"`          //用户ID
-	ProductName     string  `gorm:"column:ProductName"`     //商品名称
-	Description     string  `gorm:"column:Description"`     //商品描述
-	ProductPrice    float64 `gorm:"column:ProductPrice"`    //商品价格
-	ProductQuantity int     `gorm:"column:ProductQuantity"` //商品数量
-	TotalPrice      float64 `gorm:"column:TotalPrice"`      //商品总价
+	UserID          int     `gorm:"column:UserID"`          //User ID
+	ProductName     string  `gorm:"column:ProductName"`     //Product name
+	Description     string  `gorm:"column:Description"`     //Product description
+	ProductPrice    float64 `gorm:"column:ProductPrice"`    //Product price
+	ProductQuantity int     `gorm:"column:ProductQuantity"` //Product quantity
+	TotalPrice      float64 `gorm:"column:TotalPrice"`      //Total price of the product
 }
 
-// 加入购物车
+// Add to shopping cart
 func (s *dbm) AddCart(UserID int, cart UserCart) (err error) {
 	cart.UserID = UserID
-	cart.ProductQuantity = 1 // 设置默认的商品数量为1
+	cart.ProductQuantity = 1 // Set the default product quantity to 1
 	if err := s.db.Create(&cart).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-// 购物车商品数量加一
+// Add one to the number of products in the shopping cart
 func (s *dbm) AddCartQuantity(UserID int, ProductName string) (err error) {
 	var v UserCart
 	v.UserID = UserID
@@ -36,7 +36,7 @@ func (s *dbm) AddCartQuantity(UserID int, ProductName string) (err error) {
 	return nil
 }
 
-// 购物车商品数量减一，当ProductQuantity数量减为0时，删除该条商品记录
+// Shopping cart product The quantity is reduced by one. When the ProductQuantity quantity is reduced to 0, delete the product record
 func (s *dbm) SubCartQuantity(UserID int, ProductName string) (err error) {
 	var v UserCart
 	v.UserID = UserID
@@ -44,11 +44,11 @@ func (s *dbm) SubCartQuantity(UserID int, ProductName string) (err error) {
 	if err := s.db.Model(&v).Where("UserID = ? AND ProductName = ?", v.UserID, v.ProductName).Update("ProductQuantity", gorm.Expr("ProductQuantity - ?", 1)).Error; err != nil {
 		return err
 	}
-	//查询当前商品数量
+	//Query the current product quantity
 	if err := s.db.Where("UserID = ? AND ProductName = ?", v.UserID, v.ProductName).First(&v).Error; err != nil {
 		return err
 	}
-	//如果当前商品数量为0，删除该条商品记录
+	//If the current product quantity is 0 , delete the product record
 
 	if v.ProductQuantity == 0 {
 		if err := s.db.Where("UserID = ? AND ProductName = ?", v.UserID, v.ProductName).Delete(&v).Error; err != nil {
@@ -58,7 +58,7 @@ func (s *dbm) SubCartQuantity(UserID int, ProductName string) (err error) {
 	return nil
 }
 
-// 获取购物车
+// Get the shopping cart
 func (s *dbm) GetCart(UserID int) (userCart []UserCart, err error) {
 	var v UserCart
 	v.UserID = UserID
@@ -68,7 +68,7 @@ func (s *dbm) GetCart(UserID int) (userCart []UserCart, err error) {
 	return userCart, nil
 }
 
-// 获取购物车商品总数
+// Get the total number of products in the shopping cart
 func (s *dbm) GetUserCartCount(UserID int) (count int64, err error) {
 	var total struct {
 		Total int64
@@ -79,7 +79,7 @@ func (s *dbm) GetUserCartCount(UserID int) (count int64, err error) {
 	return total.Total, nil
 }
 
-// 通过user_id和商品名称删除购物车
+// Delete the shopping cart through user_id and product name
 func (s *dbm) DeleteCartByName(UserID int, ProductName string) (err error) {
 	var v UserCart
 	v.UserID = UserID
@@ -90,7 +90,7 @@ func (s *dbm) DeleteCartByName(UserID int, ProductName string) (err error) {
 	return nil
 }
 
-// 检车购物车是否存在
+// Check whether the shopping cart exists
 func (s *dbm) CheckCart(UserID int, ProductName string) (bool, error) {
 	var v UserCart
 	v.UserID = UserID
@@ -98,12 +98,12 @@ func (s *dbm) CheckCart(UserID int, ProductName string) (bool, error) {
 	err := s.db.Where("UserID = ? AND ProductName = ?", v.UserID, v.ProductName).First(&v).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			// 没有找到匹配的记录，返回 false
+			// No matching record is found, return false
 			return false, nil
 		}
-		// 查询过程中出现了错误，返回错误
+		// An error occurred during the query, return error
 		return false, err
 	}
-	// 找到了匹配的记录，返回 true
+	// Find a matching record, return true
 	return true, nil
 }

@@ -53,11 +53,11 @@ func TCPResultCallbackWrapper(callback TCPResultCallback) ResultCallback {
 type ConfigOption func(*Config)
 
 type Config struct {
-	// Templates 内部 HTTP 网络并发
+	// Templates Internal HTTP network concurrency
 	ConcurrentInTemplates int
-	// Templates 外部 HTTP 网络并发
+	// Templates External HTTP network concurrency
 	ConcurrentTemplates int
-	// ConcurrentTarget 批量扫描的并发
+	// ConcurrentTarget Concurrency for batch scans
 	ConcurrentTarget int
 
 	Callback ResultCallback
@@ -67,7 +67,7 @@ type Config struct {
 
 	EnableReverseConnectionFeature bool
 
-	// 搜索 yakit.YakScript
+	// Search yakit.YakScript
 	SingleTemplateRaw string
 	TemplateName      []string
 	FuzzQueryTemplate []string

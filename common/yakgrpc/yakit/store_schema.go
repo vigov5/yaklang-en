@@ -138,7 +138,7 @@ func UpdateYakitStore(db *gorm.DB, baseUrl string) error {
 	}
 
 	localDir := filepath.Join(consts.GetDefaultYakitBaseDir(), "yakit-resources")
-	// 解压 zip
+	// Unzip zip
 	_ = os.RemoveAll(localDir)
 	err = ziputil.DeCompress(localZip, localDir)
 	if err != nil {
@@ -202,7 +202,7 @@ func LoadYakitResources(dirName string) ([]*YakScript, []*MarkdownDoc, error) {
 			continue
 		}
 
-		// 设置模块加载白名单
+		// Set module loading whitelist
 		//if !utils.StringSliceContain(AvailableModuleTypes, r.Name) {
 		//	log.Infof("skipped type[%v]", r.Name)
 		//	continue
@@ -230,8 +230,8 @@ func LoadYakitResources(dirName string) ([]*YakScript, []*MarkdownDoc, error) {
 }
 
 func LoadPackage(typeStr string, basePath string) (*YakScript, *MarkdownDoc, error) {
-	// 检查每一个包
-	// 处理源信息
+	// Check each package
+	// Process source information
 	metaFile := utils.GetFirstExistedFile(
 		filepath.Join(basePath, "meta.yaml"),
 		filepath.Join(basePath, "meta.yml"),
@@ -417,7 +417,7 @@ func LoadYakitThirdpartySourceScripts(
 	if len(proxy) > 0 {
 		log.Infof("proxy: %v", proxy)
 	}
-	// 设置 client
+	// Set client
 	//client := utils.NewDefaultHTTPClient()
 	// Create a custom http(s) client with your config
 	tr := &http.Transport{

@@ -92,7 +92,7 @@ func (param *cliExtraParams) GetDefaultValue(i interface{}) interface{} {
 
 type SetCliExtraParam func(c *cliExtraParams)
 
-// help 用于输出命令行程序的帮助信息
+// help Used to output help information for the command line program
 // Example:
 // ```
 // cli.help()
@@ -114,7 +114,7 @@ func _help(w ...io.Writer) {
 	fmt.Fprintln(writer, "Flags:")
 	for _, param := range currentExtraParams {
 		paramType := param._type
-		// bool类型不显示paramType
+		// bool type does not display paramType
 		if paramType == "bool" {
 			paramType = ""
 		}
@@ -132,7 +132,7 @@ func _help(w ...io.Writer) {
 	}
 }
 
-// check 用于检查命令行参数是否合法，这主要检查必要参数是否传入与传入值是否合法
+// check is used to check whether the command line parameters are legal, which mainly checks the necessary parameters Whether the input and the input value are legal
 // Example:
 // ```
 // target = cli.String("target", cli.SetRequired(true))
@@ -152,8 +152,8 @@ func _cliCheck() {
 	}
 }
 
-// SetCliName 设置此命令行程序的名称
-// 这会在命令行输入 --help 或执行`cli.check()`后参数非法时显示
+// SetCliName Set the name of this command line program
+// This will be entered on the command line --help or execute `cli.check()` after the parameter When it is illegal,
 // Example:
 // ```
 // cli.SetCliName("example-tools")
@@ -162,8 +162,8 @@ func _cliSetName(name string) {
 	cliName = name
 }
 
-// SetDoc 设置此命令行程序的文档
-// 这会在命令行输入 --help 或执行`cli.check()`后参数非法时显示
+// SetDoc Set the document of this command line program
+// This will be entered on the command line --help or execute `cli.check()` after the parameter When it is illegal,
 // Example:
 // ```
 // cli.SetDoc("example-tools is a tool for example")
@@ -172,7 +172,7 @@ func _cliSetDocument(document string) {
 	cliDocument = document
 }
 
-// setDefaultValue 是一个选项函数，设置参数的默认值
+// setDefaultValue is an option function, sets the default value of the parameter
 // Example:
 // ```
 // cli.String("target", cli.SetDefaultValue("yaklang.com"))
@@ -183,8 +183,8 @@ func _cliSetDefaultValue(i interface{}) SetCliExtraParam {
 	}
 }
 
-// setHelp 是一个选项函数，设置参数的帮助信息
-// 这会在命令行输入 --help 或执行`cli.check()`后参数非法时显示
+// setHelp is an option function, set the help information of the parameter
+// This will be entered on the command line --help or execute `cli.check()` after the parameter When it is illegal,
 // Example:
 // ```
 // cli.String("target", cli.SetHelp("target host or ip"))
@@ -201,7 +201,7 @@ func SetTempArgs(args []string) SetCliExtraParam {
 	}
 }
 
-// setRequired 是一个选项函数，设置参数是否必须
+// setRequired is an option. Function, set whether the parameters must be
 // Example:
 // ```
 // cli.String("target", cli.SetRequired(true))
@@ -256,7 +256,7 @@ func _getAvailableParams(optName, optShortName string) []string {
 	return []string{fmt.Sprintf("-%v", optShortName), fmt.Sprintf("--%v", optName)}
 }
 
-// Args 获取命令行参数
+// Args.
 // Example:
 // ```
 // Args = cli.Args()
@@ -276,16 +276,16 @@ func _cliFromString(name string, opts ...SetCliExtraParam) (string, *cliExtraPar
 		args = param.tempArgs
 	}
 	if index+1 >= len(args) {
-		// 防止数组越界
+		// prevents the array from going out of bounds
 		return utils.InterfaceToString(param.GetDefaultValue("")), param
 	}
 	return args[index+1], param
 }
 
-// Bool 获取对应名称的命令行参数，并将其转换为 bool 类型返回
+// Bool Get the command line parameter of the corresponding name and convert it to bool type return
 // Example:
 // ```
-// verbose = cli.Bool("verbose") // --verbose 则为true
+// verbose = cli.Bool("verbose") // --verbose is true
 // ```
 func _cliBool(name string, opts ...SetCliExtraParam) bool {
 	c := _getExtraParams(name, opts...)
@@ -299,10 +299,10 @@ func _cliBool(name string, opts ...SetCliExtraParam) bool {
 	return true
 }
 
-// String 获取对应名称的命令行参数，并将其转换为 string 类型返回
+// Int Gets the command line parameter of the corresponding name and converts it to int type Returns
 // Example:
 // ```
-// target = cli.String("target") // --target yaklang.com 则 target 为 yaklang.com
+// target = cli.String("target") // --port 80 then the port is 80
 // ```
 func CliString(name string, opts ...SetCliExtraParam) string {
 	s, c := _cliFromString(name, opts...)
@@ -319,10 +319,10 @@ func parseInt(s string) int {
 	return int(i)
 }
 
-// Int 获取对应名称的命令行参数，并将其转换为 int 类型返回
+// Int gets the command line parameter of the corresponding name and converts it to int type returns
 // Example:
 // ```
-// port = cli.Int("port") // --port 80 则 port 为 80
+// port = cli.Int("port") // --port 80 then the port is 80
 // ```
 func _cliInt(name string, opts ...SetCliExtraParam) int {
 	s, c := _cliFromString(name, opts...)
@@ -342,10 +342,10 @@ func parseFloat(s string) float64 {
 	return float64(i)
 }
 
-// Float 获取对应名称的命令行参数，并将其转换为 float 类型返回
+// Float gets the command line parameter of the corresponding name and converts it to float type. Returns
 // Example:
 // ```
-// percent = cli.Float("percent") // --percent 0.5 则 percent 为 0.5
+// percent = cli.Float("percent") // --percent 0.5 Then the percent is 0.5
 func _cliFloat(name string, opts ...SetCliExtraParam) float64 {
 	s, c := _cliFromString(name, opts...)
 	c._type = "float"
@@ -355,11 +355,11 @@ func _cliFloat(name string, opts ...SetCliExtraParam) float64 {
 	return parseFloat(s)
 }
 
-// Urls 获取对应名称的命令行参数，根据","切割并尝试将其转换为符合URL格式并返回 []string 类型
+// Urls Get the command line parameters of the corresponding name, according to","cut and try to convert it into a URL format and return []string type
 // Example:
 // ```
 // urls = cli.Urls("urls")
-// // --urls yaklang.com:443,google.com:443 则 urls 为 ["https://yaklang.com", "https://google.com"]
+// // --targets yaklang.com,google.com Then targets are ["https://yaklang.com", "https://google.com"]
 // ```
 func _cliUrls(name string, opts ...SetCliExtraParam) []string {
 	s, c := _cliFromString(name, opts...)
@@ -381,11 +381,11 @@ func _cliPort(name string, opts ...SetCliExtraParam) []int {
 	return ret
 }
 
-// Hosts 获取对应名称的命令行参数，根据","切割并尝试解析CIDR网段并返回 []string 类型
+// Hosts get the command line parameters of the corresponding name. According to","and try to parse the CIDR network segment and return []string type
 // Example:
 // ```
 // hosts = cli.Hosts("hosts")
-// // --hosts 192.168.0.0/24,172.17.0.1 则 hosts 为 192.168.0.0/24对应的所有IP和172.17.0.1
+// // --hosts 192.168.0.0/24,172.17.0.1 then hosts is 192.168.0.0/. All IPs corresponding to 24 and 172.17.0.1
 func _cliHosts(name string, opts ...SetCliExtraParam) []string {
 	s, c := _cliFromString(name, opts...)
 	c._type = "hosts"
@@ -398,11 +398,11 @@ func _cliHosts(name string, opts ...SetCliExtraParam) []string {
 	return ret
 }
 
-// File 获取对应名称的命令行参数，根据其传入的值读取其对应文件内容并返回 []byte 类型
+// FileOrContent Gets the command line parameter of the corresponding name
 // Example:
 // ```
 // file = cli.File("file")
-// // --file /etc/passwd 则 file 为 /etc/passwd 文件中的内容
+// // --file /etc/passwd then file is /etc/passwd file
 // ```
 func _cliFile(name string, opts ...SetCliExtraParam) []byte {
 	s, c := _cliFromString(name, opts...)
@@ -428,13 +428,13 @@ func _cliFile(name string, opts ...SetCliExtraParam) []byte {
 	return raw
 }
 
-// FileOrContent 获取对应名称的命令行参数
-// 根据其传入的值尝试读取其对应文件内容，如果无法读取则直接返回，最后返回 []byte 类型
+// FileOrContent Get the command line parameters of the corresponding name
+// will try to read the corresponding file content based on the value passed in. If it cannot be read, it will return directly, and finally return []byte type
 // Example:
 // ```
 // foc = cli.FileOrContent("foc")
-// // --foc /etc/passwd 则 foc 为 /etc/passwd 文件中的内容
-// // --file "asd" 则 file 为 "asd"
+// // --foc /etc/passwd then foc is /etc/passwd file
+// // --file "asd" then file is "asd"
 // ```
 func _cliFileOrContent(name string, opts ...SetCliExtraParam) []byte {
 	s, c := _cliFromString(name, opts...)
@@ -448,13 +448,13 @@ func _cliFileOrContent(name string, opts ...SetCliExtraParam) []byte {
 	return ret
 }
 
-// LineDict 获取对应名称的命令行参数
-// 根据其传入的值尝试读取其对应文件内容，如果无法读取则作为字符串，最后根据换行符切割，返回 []string 类型
+// LineDict gets the command line parameter of the corresponding name
+// and tries to read its corresponding file based on the value passed in Content, if it cannot be read, it will be used as a string, and finally cut according to the newline character, return []string type
 // Example:
 // ```
 // dict = cli.LineDict("dict")
-// // --dict /etc/passwd 则 dict 为 /etc/passwd 文件中的逐行的内容
-// // --dict "asd" 则 dict 为 ["asd"]
+// // --dict /etc/passwd Then the dict is /etc/passwd file
+// // --dict "asd" then the dict is ["asd"]
 // ```
 func _cliLineDict(name string, opts ...SetCliExtraParam) []string {
 	s, c := _cliFromString(name, opts...)
@@ -469,12 +469,12 @@ func _cliLineDict(name string, opts ...SetCliExtraParam) []string {
 	return utils.ParseStringToLines(string(raw))
 }
 
-// YakitPlugin 获取名称为 yakit-plugin-file 的命令行参数
-// 根据其传入的值读取其对应文件内容并根据"|"切割并返回 []string 类型，表示各个插件名
+// named yakit-plugin-file. This will display
+// according to the value passed in. Read the corresponding file content and based on"|"cuts and returns the []string type. Indicates the name of each plug-in
 // Example:
 // ```
 // plugins = cli.YakitPlugin()
-// // --yakit-plugin-file plugins.txt 则 plugins 为 plugins.txt 文件中的各个插件名
+// // --yakit-plugin-file plugins.txt then plugins is plugins Each plug-in name in the .txt file
 // ```
 func _cliYakitPluginFiles(options ...SetCliExtraParam) []string {
 	paramName := "yakit-plugin-file"
@@ -495,11 +495,11 @@ func _cliYakitPluginFiles(options ...SetCliExtraParam) []string {
 	return utils.PrettifyListFromStringSplited(string(raw), "|")
 }
 
-// StringSlice 获取对应名称的命令行参数，将其字符串根据","切割返回 []string 类型
+// StringSlice Get the command line parameters of the corresponding name, cut the string according to","cutting returns []string type
 // Example:
 // ```
 // targets = cli.StringSlice("targets")
-// // --targets yaklang.com,google.com 则 targets 为 ["yaklang.com", "google.com"]
+// // --targets yaklang.com,google.com then targets is ["yaklang.com", "google.com"]
 // ```
 func CliStringSlice(name string, options ...SetCliExtraParam) []string {
 	rawStr, c := _cliFromString(name, options...)
@@ -527,43 +527,43 @@ var CliExports = map[string]interface{}{
 	"YakitPlugin": _cliYakitPluginFiles,
 	"StringSlice": CliStringSlice,
 
-	// 解析成 URL
+	// parses into URL
 	"Urls": _cliUrls,
 	"Url":  _cliUrls,
 
-	// 解析端口
+	// parsing port
 	"Ports": _cliPort,
 	"Port":  _cliPort,
 
-	// 解析网络目标
+	// parses the network target
 	"Hosts":   _cliHosts,
 	"Host":    _cliHosts,
 	"Network": _cliHosts,
 	"Net":     _cliHosts,
 
-	// 解析文件之类的
+	// Parse files and other
 	"File":          _cliFile,
 	"FileOrContent": _cliFileOrContent,
 	"LineDict":      _cliLineDict,
 
-	// 设置param属性
+	// Set the param attribute
 	"setHelp":     _cliSetHelpInfo,
 	"setDefault":  _cliSetDefaultValue,
 	"setRequired": _cliSetRequired,
-	// 设置中文名
+	// and sets the Chinese name
 	"setVerboseName": func(string) {},
-	// 设置参数组名
+	// Set the parameter group name
 	"setCliGroup": func(string) {},
-	// 设置是否多选 (只支持`cli.StringSlice`)
+	// Set whether to multi-select (only supports `cli.StringSlice`)
 	"setMultipleSelect": func(bool) {},
-	// 设置下拉框选项 (只支持`cli.StringSlice`)
+	// Set the drop-down box option (only supports `cli.StringSlice `)
 	"setSelectOption": func(string, string) {},
 
-	// 设置cli属性
+	// Set the cli attribute
 	"SetCliName": _cliSetName,
 	"SetDoc":     _cliSetDocument,
 
-	// 通用函数
+	// general function
 	"help":  _help,
 	"check": _cliCheck,
 }

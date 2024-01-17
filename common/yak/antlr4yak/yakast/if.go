@@ -34,26 +34,26 @@ func (y *YakCompiler) VisitIfStmt(raw yak.IIfStmtContext) interface{} {
 	y.VisitExpression(ifCond)
 	y.writeString(" ")
 
-	// if 条件为真，执行 if 语句块
-	// 使用 jmpf 来实现，如果 pop stack 之后的值被认为是 false，则跳转
+	// if condition is true, and the if statement block
+	// is implemented using jmpf. If the value after pop stack is considered false, then Jump to
 	var jmpfCode = y.pushJmpIfFalse()
 
-	// 编译 block
+	// for else. Compile block
 
 	y.VisitBlock(ifBlock)
 
 	var jmpToEnd []*yakvm.Code
 	jmpToEnd = append(jmpToEnd, y.pushJmp())
 
-	// 为 jmpf 实现操作
+	// is executed for jmpf.
 	jmpfCode.Unary = y.GetNextCodeIndex()
 	tableRecover()
 	for index := range i.AllElif() {
 		tableRecover = y.SwitchSymbolTableInNewScope("elif", uuid.New().String())
-		// elif 和 if 逻辑是一摸一样的，读一个 expression
-		// 然后使用 jmpf 跳转
-		// 但是 elif 有一个特殊的地方，就是需要在 if 语句块执行完毕之后
-		// 跳过 elif 语句块，所以需要在 elif 语句块的最后添加一个 jmp 指令
+		// . The logic of elif and if is exactly the same. Reading an expression
+		// and then use jmpf to jump to
+		// But elif has a special feature, that is, after the if statement block is executed, the
+		// skips the elif statement block, so you need to add a jmp instruction
 		y.writeStringWithWhitespace("elif")
 		y.VisitExpression(i.Expression(index + 1))
 		y.writeString(" ")
@@ -65,7 +65,7 @@ func (y *YakCompiler) VisitIfStmt(raw yak.IIfStmtContext) interface{} {
 		tableRecover()
 	}
 
-	// 为 else 设置好结尾符
+	// at the end of the elif statement block. Set the end character
 	if ielseBlock := i.ElseBlock(); ielseBlock != nil {
 		elseBlock := ielseBlock.(*yak.ElseBlockContext)
 		y.writeStringWithWhitespace("else")

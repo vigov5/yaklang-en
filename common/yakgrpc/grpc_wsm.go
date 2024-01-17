@@ -12,8 +12,8 @@ import (
 	"strings"
 )
 
-// TODO 何时清理缓存
-// 创建一个全局的 map 来存储 WebShellManager 实例
+// TODO When to clean cache
+// Create a global map to store WebShellManager instances
 var webShellManagerCache = make(map[int64]wsm.BaseShellManager)
 
 func (s *Server) getWebShellManager(id int64) (wsm.BaseShellManager, error) {

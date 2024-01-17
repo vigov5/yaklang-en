@@ -69,22 +69,22 @@ type BruteUtil struct {
 
 	delayer *utils.DelayWaiter
 
-	// 爆破任务的 callbacks
+	// Callbacks of the blasting task
 	callback BruteCallback
 
-	// 每一个执行结束的结果回掉
+	// Each execution ends. The result is returned
 	resultCallback BruteItemResultCallback
 
-	// 这个选项标志着，如果遇到了 Ok，则停止对当前目标的爆破
+	// This option marks that if OK is encountered, stop blasting the current target
 	OkToStop bool
 
-	// 完成阈值，这是一个整型
-	// 在爆破过程中会统计任务 Finished 的数量
-	// 一旦任务执行给的结果 Finished 的数量达到这个参数设置的值
-	// 马上结束对当前这个目标的爆破
+	// to complete the threshold, which is an integer.
+	// During the blasting process, the number of Finished tasks will be counted.
+	// Once the number of Finished results given by the task execution reaches the value set by this parameter
+	// Immediately end the blasting of the current target.
 	FinishingThreshold int
 
-	// OnlyNeedPassword 标志着这次爆破只需要密码进行爆破
+	// OnlyNeedPassword marks that this blast only requires Password blasting
 	OnlyNeedPassword bool
 
 	//
@@ -96,29 +96,29 @@ func (b *BruteUtil) SetResultCallback(cb BruteItemResultCallback) {
 }
 
 type BruteItemResult struct {
-	// 爆破类型
+	// Explosion type
 	Type string
 
-	// 标志着爆破成功
+	// Marks blasting success
 	Ok bool
 
-	// 标志着完成爆破/因为协议不对，或者是网络验证错误，等
+	// marks the completion of blasting/Because of the protocol Wrong, or there is a network verification error, wait.
 	Finished bool
 
-	// 标志着该用户名有问题，不应该再使用这个用户名
+	// indicates that there is a problem with the user name and should not be used again.
 	UserEliminated bool
 
-	// 该爆破只需要密码，不需要用户名
+	// This blast only requires a password, not a user name.
 	OnlyNeedPassword bool
 
-	// 爆破的目标
+	// The target of the blasting.
 	Target string
 
-	// 爆破的用户名与密码
+	// Username and password for blasting
 	Username string
 	Password string
 
-	// 爆破结果的 banner 依据，额外信息
+	// Banner basis for blasting results, additional information
 	ExtraInfo []byte
 }
 
@@ -268,10 +268,10 @@ func (b *BruteUtil) startProcessingTarget(target string, parentCtx context.Conte
 		usedPassword     = sync.Map{}
 	)
 
-	// 做爆破前的检查，检查目标合理性，如果不合理，马上结束
-	// 通常包含如下部分：
-	//    1. 检查目标合理性
-	//    2. 检查目标指纹
+	// Do a pre-blasting check to check the rationality of the target. If it is unreasonable, end it immediately
+	// Usually contains the following parts:
+	//    1. Check target plausibility
+	//    2. Check the target fingerprint
 	if b.beforeBruteCallback != nil {
 		if !b.beforeBruteCallback(target) {
 			return errors.Errorf("pre-checking target[%s] failed", target)
@@ -283,23 +283,23 @@ func (b *BruteUtil) startProcessingTarget(target string, parentCtx context.Conte
 			return errors.New("context canceled")
 		}
 
-		//// 退出爆破
+		//// Exit blasting
 		//if finished.IsSet() {
 		//	break
 		//}
 
-		// 计算子任务要求退出爆破次数
+		// Calculate the number of times the subtask requires exiting blasting
 		if atomic.LoadInt32(&finishedCount) >= int32(b.FinishingThreshold) && b.FinishingThreshold != 0 {
 			break
 		}
 
-		// 如果该爆破只要求密码不要求用户名
+		// If the blasting only requires a password and does not require a user name
 		if onlyNeedPassword.IsSet() {
 			if _, ok := usedPassword.Load(i.Password); ok {
-				// 如果这个密码已经被用过了，就马上进入下一组
+				// If this password has been used, immediately enter the next set of
 				continue
 			} else {
-				// 如果这个密码没有被用过，则记录该密码，并下一个
+				// If this password has not been used, record the password and the next
 				usedPassword.Store(i.Password, 1)
 			}
 		}
@@ -316,18 +316,18 @@ func (b *BruteUtil) startProcessingTarget(target string, parentCtx context.Conte
 				atomic.AddInt32(&process.count, 1)
 			}()
 
-			// 检查 context 是否已经被取消
+			// Check whether the context has been cancelled.
 			if err := currCtx.Err(); err != nil {
 				return
 			}
 
-			// 废弃的用户名
+			// Abandoned user name
 			if _, ok := eliminatedUsers.Load(item.Username); ok {
-				// 如果该用户名是被丢弃的，则应该直接不启动该任务的爆破
+				// If the user name is discarded, the blasting of the task should not be started directly
 				return
 			}
 
-			// 执行爆破函数
+			// Execute the blast function
 			result := b.callback(item)
 			if result == nil {
 				return
@@ -337,23 +337,23 @@ func (b *BruteUtil) startProcessingTarget(target string, parentCtx context.Conte
 				b.resultCallback(result)
 			}
 
-			// 是否遇到了爆破成功的情况？
+			// Have you encountered a situation where the blasting was successful?
 			if result.Ok && b.OkToStop {
 				//finished.Set()
 				cancel()
 			}
 
-			// 是否当前结果是完成？
+			// Is the current result complete?
 			if result.Finished {
 				atomic.AddInt32(&finishedCount, 1)
 			}
 
-			// 是否有结果发现这个目标是只需要密码的
+			// Is there any result and it is found that this target only requires a password?
 			if result.OnlyNeedPassword {
 				onlyNeedPassword.Set()
 			}
 
-			// 确定当前用户名已经是废掉的用户名，对当前目标不再使用当前这个用户名
+			// Make sure that the current user name is an obsolete user name. The current user name will no longer be used for the current target.
 			if result.UserEliminated {
 				eliminatedUsers.Store(item.Username, 1)
 			}
@@ -381,25 +381,25 @@ func (b *BruteUtil) popFirstTarget() (string, error) {
 	return e.Value.(string), nil
 }
 
-// 使用更合理的接口来构建 BruteUtil
+// Use a more reasonable interface to build BruteUtil
 
 type OptionsAction func(util *BruteUtil)
 
-// 这个选项控制整体的目标并发 默认值为 200
+// This option controls the overall target concurrency. The default value is 200
 func WithTargetsConcurrent(targetsConcurrent int) OptionsAction {
 	return func(util *BruteUtil) {
 		util.targetsSwg = utils.NewSizedWaitGroup(targetsConcurrent)
 	}
 }
 
-// 这个选项来控制每个目标最多同时执行多少个爆破任务，默认为 1
+// This option is used Controls how many blasting tasks each target can perform at the same time. The default is 1.
 func WithTargetTasksConcurrent(targetTasksConcurrent int) OptionsAction {
 	return func(util *BruteUtil) {
 		util.TargetTaskConcurrent = targetTasksConcurrent
 	}
 }
 
-// 这个选项来控制设置 Delayer
+// This option controls the settings Delayer
 func WithDelayerWaiter(minDelay, maxDelay int) (OptionsAction, error) {
 	dlr, err := utils.NewDelayWaiter(int32(minDelay), int32(maxDelay))
 	if err != nil {
@@ -410,42 +410,42 @@ func WithDelayerWaiter(minDelay, maxDelay int) (OptionsAction, error) {
 	}, nil
 }
 
-// 设置爆破任务
+// Set up the blasting task
 func WithBruteCallback(callback BruteCallback) OptionsAction {
 	return func(util *BruteUtil) {
 		util.callback = callback
 	}
 }
 
-// 设置结果回调
+// setting results. Callback
 func WithResultCallback(callback BruteItemResultCallback) OptionsAction {
 	return func(util *BruteUtil) {
 		util.resultCallback = callback
 	}
 }
 
-// 设置 OkToStop 选项
+// Set OkToStop option
 func WithOkToStop(t bool) OptionsAction {
 	return func(util *BruteUtil) {
 		util.OkToStop = t
 	}
 }
 
-// 设置阈值
+// Set the threshold
 func WithFinishingThreshold(t int) OptionsAction {
 	return func(util *BruteUtil) {
 		util.FinishingThreshold = t
 	}
 }
 
-// 设置只需要密码爆破
+// Set up only password blasting
 func WithOnlyNeedPassword(t bool) OptionsAction {
 	return func(util *BruteUtil) {
 		util.OnlyNeedPassword = t
 	}
 }
 
-// 设置爆破预检查函数
+// Set blasting pre-check function
 func WithBeforeBruteCallback(c func(string) bool) OptionsAction {
 	return func(util *BruteUtil) {
 		util.beforeBruteCallback = c

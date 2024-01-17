@@ -8,7 +8,7 @@ func TestPacketBatchScan(t *testing.T) {
 loglevel("info")
 productMode = cli.Bool("prod")
 
-// 获取 flowsID
+// Get flowsID
 flows = make([]int64)
 flowsFile = cli.String("flows-file")
 if flowsFile != "" {
@@ -18,22 +18,22 @@ if flowsFile != "" {
     }
 }
 
-if !productMode { yakit.StatusCard("调试模式", "TRUE") }
+if !productMode { yakit.StatusCard("Debug mode", "TRUE") }
 
 if len(flows) <= 0 && !productMode {
-    yakit.Info("调试模式补充 FlowID")
+    yakit.Info("Debug mode Supplement FlowID")
     flows = append(flows, 17)
 }
 
 caller, err = hook.NewMixPluginCaller()
 die(err)
 
-// 加载插件
+// Load plug-in
 plugins = cli.YakitPlugin() // yakit-plugin-file
 if len(plugins) <= 0 && !productMode {
-    // 设置默认插件，一般在这儿用于调试
+    // Set the default plug-in, generally used here for debugging
     plugins = [
-        "WebLogic_CVE-2022-21371目录遍历漏洞检测",
+        "WebLogic_CVE-2022-21371 directory traversal vulnerability detection",
     ]
 }
 loadedPlugins = []
@@ -44,30 +44,30 @@ for _, pluginName = range x.If(plugins == undefined, [], plugins) {
         failedPlugins = append(failedPlugins, pluginName)
         yakit.Error("load plugin[%s] failed: %s", pluginName, err)
     }else{
-        yakit.Info("加载插件：%v", pluginName)
+        yakit.Info("Load plug-in: %v", pluginName)
         loadedPlugins = append(loadedPlugins, pluginName)
     }
 }
 
 if len(failedPlugins)>0 {
-    yakit.StatusCard("插件加载失败数", len(failedPlugins))
+    yakit.StatusCard("Number of plug-in loading failures", len(failedPlugins))
 }
 
 if len(loadedPlugins) <= 0 {
-    yakit.StatusCard("执行失败", "没有插件被正确加载", "error")
-    die("没有插件加载")
+    yakit.StatusCard("Execution failed", "No plug-in is loaded Correctly load", "error")
+    die("No plug-in is loaded")
 }else{
-    yakit.StatusCard("插件加载数", len(loadedPlugins))
+    yakit.StatusCard("Number of plug-in loads", len(loadedPlugins))
 }
 
 packetRawFile = cli.String("packet-file")
 packetHttps = cli.Bool("packet-https")
 
-// 设置并发参数
+// Set concurrency parameters
 pluginConcurrent = 20
 packetConcurrent = 20
 
-// 设置异步，设置并发，设置 Wait
+// Set asynchronous, set concurrency, set Wait
 caller.SetDividedContext(true)
 caller.SetConcurrent(pluginConcurrent)
 defer caller.Wait()
@@ -83,7 +83,7 @@ handleHTTPFlow = func(flow) {
     reqBytes = []byte(codec.StrconvUnquote(flow.Request)[0])
     rspBytes = []byte(codec.StrconvUnquote(flow.Response)[0])
     _, body = poc.Split(rspBytes)
-    // 调用镜像流量功能，并控制要不要进行端口扫描插件调用
+    // Call the mirror traffic function and control whether to perform port scanning The plug-in calls
     caller.MirrorHTTPFlowEx(true, flow.IsHTTPS, flow.Url, reqBytes, rspBytes, body)
 }
 
@@ -105,12 +105,12 @@ handleHTTPRequestRaw = func(https, reqBytes) {
     caller.MirrorHTTPFlowEx(true, https, urlstr, reqBytes, rsp, body)
 }
 
-// 开始获取 HTTPFlow ID
+// Start getting HTTPFlow ID
 if len(flows) > 0 {
-    yakit.StatusCard("扫描历史数据包", len(flows))
+    yakit.StatusCard("Scan historical data packets", len(flows))
 	for result = range db.QueryHTTPFlowsByID(flows...) {
-		// 提交扫描任务：
-		yakit.Info("提交扫描任务:【%v】%v", result.Method, result.Url)
+		// Submit scanning task:
+		yakit.Info("Submit scanning task: [%v] %v", result.Method, result.Url)
 		handleHTTPFlow(result)
 	}
 }
@@ -118,14 +118,14 @@ if len(flows) > 0 {
 if packetRawFile != "" {
     raw, err = file.ReadFile(packetRawFile)
     if err != nil {
-        yakit.StatusCard("失败原因", "无法接收参数", "error")
+        yakit.StatusCard("Reason for failure", "cannot receive parameters", "error")
     }
     handleHTTPRequestRaw(packetHttps, raw)
 }
 `
-	Run("测试数据包测试", t, []YakTestCase{
+	Run("Test packet test", t, []YakTestCase{
 		{
-			Name: "测试数据包测试",
+			Name: "Test packet test",
 			Src:  test,
 		},
 	}...)

@@ -38,12 +38,12 @@ type Sm4Cipher struct {
 	block2  []byte
 }
 
-// sm4密钥参量
+// sm4 key parameter
 var fk = [4]uint32{
 	0xa3b1bac6, 0x56aa3350, 0x677d9197, 0xb27022dc,
 }
 
-// sm4密钥参量
+// sm4 key parameter
 var ck = [32]uint32{
 	0x00070e15, 0x1c232a31, 0x383f464d, 0x545b6269,
 	0x70777e85, 0x8c939aa1, 0xa8afb6bd, 0xc4cbd2d9,
@@ -55,7 +55,7 @@ var ck = [32]uint32{
 	0x10171e25, 0x2c333a41, 0x484f565d, 0x646b7279,
 }
 
-// sm4密钥参量
+// sm4 key parameter
 var sbox = [256]uint8{
 	0xd6, 0x90, 0xe9, 0xfe, 0xcc, 0xe1, 0x3d, 0xb7, 0x16, 0xb6, 0x14, 0xc2, 0x28, 0xfb, 0x2c, 0x05,
 	0x2b, 0x67, 0x9a, 0x76, 0x2a, 0xbe, 0x04, 0xc3, 0xaa, 0x44, 0x13, 0x26, 0x49, 0x86, 0x06, 0x99,
@@ -157,7 +157,7 @@ func l0(b uint32) uint32 { return b ^ rl(b, 13) ^ rl(b, 23) }
 
 func feistel0(x0, x1, x2, x3, rk uint32) uint32 { return x0 ^ l0(p(x1^x2^x3^rk)) }
 
-// 非线性变换τ(.)
+// Nonlinear transformation τ(.)
 func p(a uint32) uint32 {
 	return (uint32(sbox[a>>24]) << 24) ^ (uint32(sbox[(a>>16)&0xff]) << 16) ^ (uint32(sbox[(a>>8)&0xff]) << 8) ^ uint32(sbox[(a)&0xff])
 }
@@ -178,7 +178,7 @@ func permuteFinalBlock(b []byte, block []uint32) {
 	}
 }
 
-// 修改后的加密核心函数
+// Modified encryption core function
 func cryptBlock(subkeys []uint32, b []uint32, r []byte, dst, src []byte, decrypt bool) {
 	permuteInitialBlock(b, src)
 
@@ -401,7 +401,7 @@ func Sm4Ecb(key []byte, in []byte, mode bool, iv []byte) (out []byte, err error)
 	return out, nil
 }
 
-// 密码反馈模式（Cipher FeedBack (CFB)）
+// Cipher Feedback Mode (Cipher FeedBack (CFB))
 // https://blog.csdn.net/zy_strive_2012/article/details/102520356
 // https://blog.csdn.net/sinat_23338865/article/details/72869841
 func Sm4CFB(key []byte, in []byte, mode bool, iv []byte) (out []byte, err error) {
@@ -429,7 +429,7 @@ func Sm4CFB(key []byte, in []byte, mode bool, iv []byte) (out []byte, err error)
 	K := make([]byte, BlockSize)
 	cipherBlock := make([]byte, BlockSize)
 	plainBlock := make([]byte, BlockSize)
-	if mode { //加密
+	if mode { //Encryption
 		for i := 0; i < len(inData)/16; i++ {
 			if i == 0 {
 				c.Encrypt(K, iv)
@@ -444,17 +444,17 @@ func Sm4CFB(key []byte, in []byte, mode bool, iv []byte) (out []byte, err error)
 			//copy(cipherBlock,out_tmp)
 		}
 
-	} else { //解密
+	} else { //Decryption
 		var i int = 0
 		for ; i < len(inData)/16; i++ {
 			if i == 0 {
-				c.Encrypt(K, iv)                                      //这里是加密，而不是调用解密方法Decrypt
-				plainBlock = xor(K[:BlockSize], inData[i*16:i*16+16]) //获取明文分组
+				c.Encrypt(K, iv)                                      //Here is encryption, rather than calling the decryption method Decrypt
+				plainBlock = xor(K[:BlockSize], inData[i*16:i*16+16]) //Obtain plain text group
 				copy(out[i*16:i*16+16], plainBlock)
 				continue
 			}
 			c.Encrypt(K, inData[(i-1)*16:(i-1)*16+16])
-			plainBlock = xor(K[:BlockSize], inData[i*16:i*16+16]) //获取明文分组
+			plainBlock = xor(K[:BlockSize], inData[i*16:i*16+16]) //Obtain plain text group
 			copy(out[i*16:i*16+16], plainBlock)
 
 		}
@@ -468,7 +468,7 @@ func Sm4CFB(key []byte, in []byte, mode bool, iv []byte) (out []byte, err error)
 	return out, nil
 }
 
-// 输出反馈模式（Output feedback, OFB）
+// Output feedback mode (OFB)
 // https://blog.csdn.net/chengqiuming/article/details/82390910
 // https://blog.csdn.net/sinat_23338865/article/details/72869841
 func Sm4OFB(key []byte, in []byte, mode bool, iv []byte) (out []byte, err error) {
@@ -496,7 +496,7 @@ func Sm4OFB(key []byte, in []byte, mode bool, iv []byte) (out []byte, err error)
 	cipherBlock := make([]byte, BlockSize)
 	plainBlock := make([]byte, BlockSize)
 	shiftIV := make([]byte, BlockSize)
-	if mode { //加密
+	if mode { //Encryption
 		for i := 0; i < len(inData)/16; i++ {
 			if i == 0 {
 				c.Encrypt(K, iv)
@@ -511,17 +511,17 @@ func Sm4OFB(key []byte, in []byte, mode bool, iv []byte) (out []byte, err error)
 			copy(shiftIV, K[:BlockSize])
 		}
 
-	} else { //解密
+	} else { //Decryption
 		for i := 0; i < len(inData)/16; i++ {
 			if i == 0 {
-				c.Encrypt(K, iv)                                      //这里是加密，而不是调用解密方法Decrypt
-				plainBlock = xor(K[:BlockSize], inData[i*16:i*16+16]) //获取明文分组
+				c.Encrypt(K, iv)                                      //Here is encryption, rather than calling the decryption method Decrypt
+				plainBlock = xor(K[:BlockSize], inData[i*16:i*16+16]) //Obtain plain text group
 				copy(out[i*16:i*16+16], plainBlock)
 				copy(shiftIV, K[:BlockSize])
 				continue
 			}
 			c.Encrypt(K, shiftIV)
-			plainBlock = xor(K[:BlockSize], inData[i*16:i*16+16]) //获取明文分组
+			plainBlock = xor(K[:BlockSize], inData[i*16:i*16+16]) //Obtain plain text group
 			copy(out[i*16:i*16+16], plainBlock)
 			copy(shiftIV, K[:BlockSize])
 		}

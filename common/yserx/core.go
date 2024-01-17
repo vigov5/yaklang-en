@@ -1042,7 +1042,7 @@ func (p *JavaSerializationParser) readClassData(r io.Reader, c *JavaClassDesc) (
 	//	panic("ERROR: unable to parse external content element")
 	//}
 
-	// 从 super class 开始
+	// Start with super class
 	var classDataArray []JavaSerializable
 	targets := []*JavaClassDetails{c.Detail}
 	var temp = c.Detail

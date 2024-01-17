@@ -59,7 +59,7 @@ func init() {
 			HexPayload[script] = make(map[Payload]string)
 		}
 
-		// 添加到 HexPayload
+		// Add to HexPayload
 		HexPayload[script][payloadType] = hex.EncodeToString(raw)
 	}
 }

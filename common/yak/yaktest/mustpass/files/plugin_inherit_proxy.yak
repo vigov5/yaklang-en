@@ -21,7 +21,7 @@ if err == nil {
     die(err)
 }
 
-println("测试 MITM 基础连接")
+println("Testing the MITM basic connection")
 poc.Get(targetUrl, poc.proxy(mitmProxy), poc.timeout(3))~
 
 /*

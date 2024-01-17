@@ -118,12 +118,12 @@ assert b[2] == "c"
 
 
 b = []
-for i in "你好ww" {
+for i in "hello ww" {
 	dump(i)
 	b.Push(i)
 }
-assert b[0] == "你"
-assert b[1] == "好"
+assert b[0] == "has been covered in other tests. Your"
+assert b[1] == "Good"
 assert b[2] == "w"
 assert b[3] == "w"
 `
@@ -145,7 +145,7 @@ assert b"abc".EndsWith("c"),"EndsWith error"
 
 func TestChanAndINOP(t *testing.T) {
 	code := `
-assert true && "b" in "abc"  // in 的优先级要高于 &&
+assert true && "b" in "abc"  // Pseudo type conversion
 c = make(chan var, 1)
 c <- 1 > 0 &&  true
 d = <-c
@@ -156,7 +156,7 @@ assert d
 	}
 }
 
-// 本测试只针对try-catch与流程控制、return共用的情况,try-catch的其他情况在其他测试中已经覆盖
+// This test is only for the situation where try-catch is shared with process control and return. Other situations of try-catch are
 func TestTryCatchWithProcessControl(t *testing.T) {
 	code := `
 //return test
@@ -328,7 +328,7 @@ func TestNewExecutor_FixFunctionVariableParam(t *testing.T) {
 defer fn{
 	err := recover()
 	if !err.HasPrefix("function a params number not match"){
-		panic("参数匹配出错")
+		panic("Parameter matching error")
 	}
 }
 a = fn(a){
@@ -439,7 +439,7 @@ func TestNewExecutor_Priority(t *testing.T) {
 a =fn(){
 	return false
 }
-assert !a(), "非运算优先级测试失败"
+assert !a(), "Non-operation priority test failed"
 `
 	_marshallerTest(code)
 	_formattest(code)
@@ -448,22 +448,22 @@ assert !a(), "非运算优先级测试失败"
 func TestNewExecutor_Continue(t *testing.T) {
 	code := `
 
-//测试c风格for的continue
+//tested c-style for continue
 i0Times = 0
 for i = 0; i < 2; i++{
 	if i == 0{
 		i0Times++
-		assert i0Times < 2, "continue未更新迭代对象索引错误"
+		assert i0Times < 2, "continue not updated iteration object index error"
 		continue
 	}
 	dump(i)
 }
-//测试for range的continue
+//Test continue for range
 i0Times = 0
 for i = range 2{
 	if i == 0{
 		i0Times++
-		assert i0Times < 2, "continue未更新迭代对象索引错误"
+		assert i0Times < 2, "continue not updated iteration object index error"
 		continue
 	}
 	dump(i)
@@ -815,7 +815,7 @@ func _marshallerTest(i string) {
 			}
 
 			if v1.IsYakFunction() && v2.IsYakFunction() {
-				// 暂时只检查function code
+				// Domain
 				f1, f2 := v1.Value.(*yakvm.Function), v2.Value.(*yakvm.Function)
 				checkCodes(f1.GetCodes(), f2.GetCodes())
 
@@ -1003,7 +1003,7 @@ assert d[2] == 3
 func TestNewExecutor4(t *testing.T) {
 	codes := `
 assert libx.abc() == "called-abc"
-dump("基础语句测试")
+dump("basic statement test")
 // hello
 // Comment
 /*123123
@@ -1450,13 +1450,13 @@ func TestNewExecutor_Formatter2(t *testing.T) {
 		fmt.Println(v...)
 	})
 
-	// 超出长度换行的情况
+	// If the length exceeds the line break,
 	code := `p("aaaaaaaaaaaaaa", "bbbbbbbbbbbbbb", "cccccccccccccc", "ddddddddddddddd", "eeeeeeeeeeeeeee", "fffffffffffffffff", "ggggggggggggggggg", "hhhhhhhhhhhhhhhhhh")`
 	ftest(code)
-	// 每个参数一行的情况
+	// One line for each parameter
 	code = `p("longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglong", "bbbbbbbbbbbbbb", "cccccccccccccc", "ddddddddddddddd", "eeeeeeeeeeeeeee", "fffffffffffffffff", "ggggggggggggggggg", "hhhhhhhhhhhhhhhhhh")`
 	ftest(code)
-	// 超出长度换行的情况带...的情况
+	// If the length exceeds the line break, it will take. .. situation
 	code = `p("aaaaaaaaaaaaaa", "bbbbbbbbbbbbbb", "cccccccccccccc", "ddddddddddddddd", "eeeeeeeeeeeeeee", "fffffffffffffffff", "ggggggggggggggggg", vvv...)`
 	ftest(code)
 	code = `p("longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglong", "bbbbbbbbbbbbbb", "cccccccccccccc", "ddddddddddddddd", "eeeeeeeeeeeeeee", "fffffffffffffffff", "ggggggggggggggggg", vvv...)`
@@ -1695,7 +1695,7 @@ func TestNewExecutor_Eval(t *testing.T) {
 	eval(` + "`" + `eval("assert a == 1")` + "`" + `)
 `
 	_formattest(code)
-	// todo: frame没有注入eval函数，所以不进行测试
+	// todo: The frame does not inject the eval function, so the test is not performed
 	// _marshallerTest(code)
 }
 
@@ -2112,7 +2112,7 @@ gg = 6
 }
 assert b == 3
 assert gg == undefined
-// 测试 fallthrough
+// Name 1:
 f = 0
 switch {
 case 1:
@@ -2399,14 +2399,14 @@ b(a)
 assert d == undefined
 assert a == 1
 assert c == undefined
-dump("函数定义域一切正常")
+dump("Function domain everything is normal")
 s = make(map[int]int)
 for index in 4 {
     s[index] = index
 }
 assert len(s) == 4
 assert s[0] == 0
-dump("For 单独使用定义域一切正常")
+dump("For Using the domain alone, everything is fine")
 e = i => i+1
 for i in 4 {
     assert e(i) == i+1
@@ -2454,8 +2454,8 @@ assert b == 1
 assert a == 2
 index2 = 1
 for index3 = range 4 {}
-assert index2 == 1, "index2 被 for 覆盖"
-assert index3 == undefined, "index3 泄漏"
+assert index2 == 1, "index2 is covered by for"
+assert index3 == undefined, "index3 leak"
 a = {}
 for index = range 4 {
     c = index;
@@ -2465,7 +2465,7 @@ for index = range 4 {
 }
 sleep(0.5)
 dump(a)
-assert len(a) == 4, "for + goroutine 无法使用新符号"
+assert len(a) == 4, "for + goroutine cannot use new Symbol"
 `
 	_marshallerTest(code)
 	_formattest(code)
@@ -2480,13 +2480,13 @@ go func{
     dump("enter goroutine")
     sleep(0.5)
     a = 2
-    assert a == 2, "goroutine 内部执行错误"
+    assert a == 2, "Goroutine internal execution error"
     dump("exit goroutine")
 }
 assert a == 1
 sleep(1)
 dump(a)
-assert a == 2, "go定义域有问题", dump(a)
+assert a == 2, "Domain", dump(a)
 go func(){
     sleep(0.5)
     a++
@@ -2551,7 +2551,7 @@ c = 12
 for range 12 {c++}
 assert c == 24
 for range 12 {d = _; dump(d)}
-assert d == undefined, "d is out!!!!! 定义域失败！"
+assert d == undefined, "d is out!!!!! Domain failure!"
 `
 	_marshallerTest(code)
 	_formattest(code)
@@ -2652,7 +2652,7 @@ assert(count == 2)
 	_formattest(code)
 }
 
-// 这个有问题，复杂度不对
+// This is problematic, the complexity is wrong
 func TestNewExecutor2(t *testing.T) {
 	_formattest(`
 count=3
@@ -2683,7 +2683,7 @@ for ;; {
     }
 }
 assert(count==4)
-// 定义域
+// domain
 for count=1;;count++ {
     if count > 10 {
         break
@@ -3127,20 +3127,20 @@ f = [1] + true
 // efg := [1,2,3,4,5,1]
 // efg := [1,2,3,4,5,1.2]
 // dump(efg)
-//slice测试
+//slice test
 slice = [1,2,3,4,5]
 assert slice[::-3] == [5, 2]
 assert slice[::-1] == [5, 4, 3, 2, 1]
-//map测试
+//map test
 //a = {1:1,"1":"123",3:4}
 //dump(a[1])
-//string测试
+//string test
 //a = "123"
 //dump(a[:1]+"aaa")
 //dump(a[::-1])
 //dump(a[1:-1])
 //dump(a[0])
-//加法测试
+//Addition test
 //a = 'a'
 //dump(a)
 //a = {1.1:23, 4: "abc"}
@@ -3233,11 +3233,11 @@ assert f0() == 1 // !!
 	_formattest(code)
 }
 
-// 测试 assert/字符串索引、拼接/结构体、和map调用成员
+// Test assert/string index, splicing/Structure, and map call members
 func TestNewExecutor_MemberCall(t *testing.T) {
 	u := &user{
-		Name: "派大星",
-		Sex:  "男",
+		Name: "Paidaxing",
+		Sex:  "male",
 	}
 
 	Import("getGoStruct", func() interface{} {
@@ -3253,28 +3253,28 @@ func TestNewExecutor_MemberCall(t *testing.T) {
 	code := `
 //v = 1
 //v+=2
-//assert v == 2, "PlusEq运算失败"
-v = "你好"
-assert v[0] == '你', "解析char类型或索引字符串中的char失败"
-v = "你" + '好'
-assert v == "你好","string加char失败"
-v = '你'+"好"
-assert v == "你好","char加string失败"
+//assert v == 2, "PlusEq operation failed"
+v = "Hello"
+assert v[0] == 'has been covered in other tests. Your', "Failed to parse char type or char in index string"
+v = "has been covered in other tests. Your" + 'Good'
+assert v == "Hello","Failed to add char to string"
+v = 'has been covered in other tests. Your'+"Good"
+assert v == "Hello","char and string failed."
 
 // v = getGoStruct()
-// assert v.GetName() == "派大星", "获取go结构体成员（通过FunctionCall方式）失败"
-//assert v.Name == "派大星", "获取go结构体成员（通过Identity方式）失败"
+// assert v.GetName() == "Paidaxing", "Failed to obtain go structure members (via FunctionCall)"
+//assert v.Name == "Paidaxing", "failed to get go structure members (via Identity method)"
 // memberName = "Name"
-// assert v.$memberName == "派大星", "获取go结构体成员（通过Ref方式）失败"
-// assert v["Name"] == "派大星", "获取go结构体成员（通过SliceCall方式）失败"
-// v = {"name":"派大星"}
-// assert v.name == "派大星", "获取map成员失败"
+// assert v.$memberName == "Paidaxing", "Failed to obtain go structure members (via Ref method)"
+// assert v["Name"] == "Paidaxing", "fails to obtain go structure members (through SliceCall)."
+// v = {"name":"Paidaxing"}
+// assert v.name == "Paidaxing", "Get map Member failed"
 
 v = getRequest()
-assert v.Header.Add != nil, "获取typed-map的go内置方法失败"
+assert v.Header.Add != nil, "Failed to get the go built-in method of typed-map"
 
 v = getTestString()
-assert v.String() == "test", "获取typed-string的go内置方法失败"
+assert v.String() == "test", "Go built-in method of getting typed-string failed"
 `
 	_marshallerTest(code)
 	_formattest(code)
@@ -3306,27 +3306,27 @@ assert '\'a' == "'a"
 
 func TestNewExecutor_TemplateStringFix(t *testing.T) {
 	code := `
-name = "张三"
+name = "Zhang San"
 
-//测试double quote template
-assert f"姓名1: \$${name}\\1\n姓名2: \$${name}\\2" == ` + "`" + `姓名1: $张三\1
-姓名2: $张三\2` + "`" + `
+//test double quote template
+assert f"Name 1: \$${name}\\1\nName 2: \$${name}\\2" == ` + "`" + `Name 1: $Zhang San\1
+Name 2: $Zhang三\2` + "`" + `
 
-//测试double quote
-assert "姓名1: ${name}\\1\n姓名2: ${name}\\2" == ` + "`" + `姓名1: ${name}\1
-姓名2: ${name}\2` + "`" + `
+//Test double quote
+assert "Name 1: ${name}1 : \ ${name}\\2" == ` + "`" + `Name 1: ${name}\1
+Name 2: ${name}\2` + "`" + `
 
-//测试back tick template
-assert f` + "`" + `姓名1: \$${name}\\1
-姓名2: \$` + "\\`" + `${name}` + "\\`" + `\\2` + "`" + ` == "姓名1: $张三\\1\n姓名2: $` + "`" + `张三` + "`" + `\\2"
+//Test back tick template
+assert f` + "`" + `Name 1: \$${name}\\1
+Name 2: \$` + "\\`" + `${name}` + "\\`" + `\\2` + "`" + ` == "Name 1: $Zhang San\\1\nName 2: $` + "`" Zhang San "`" + `\\2"
 
-//测试back tick template with "\n"
-assert f` + "`" + `姓名1: \$${name}\\1\n姓名2: \$` + "\\`" + `${name}` + "\\`" + `\\2` + "`" + ` == "姓名1: $张三\\1\\n姓名2: $` + "`" + `张三` + "`" + `\\2"
+//test back tick "\n"
+assert f` + "`" + `Name 1: \$${name}\\1\nName 2: \$` + "\\`" + `${name}` + "\\`" + `\\2` + "`" + ` == "Name 1: $Name 2: $` + "`" Zhang San "`" + `\\2"
 
-//测试back tick
-assert ` + "`" + `姓名1: \$${name}\\1
-姓名2: \$${name}\\2` + "`" + ` == ` + "`" + `姓名1: \$${name}\\1
-姓名2: \$${name}\\2` + "`" + `
+//test back tick
+assert ` + "`" + `Name 1: \$${name}\\1
+Name 2: \$${name}\\2` + "`" + ` == ` + "`" + `Name 1: \$${name}\\1
+Name 2: \$${name}\\2` + "`" + `
 `
 	_marshallerTest(code)
 	_formattest(code)
@@ -3341,11 +3341,11 @@ func TestNewExecutor_TemplateString(t *testing.T) {
 	assert f'\"a' == '"a'
 	assert f'\'a' == "'a"
 	
-	name = f"小明"
+	name = f"Xiao Ming"
 	age = 18
-	assert f"${name} + 1" == "小明 + 1"
+	assert f"${name} + 1" == "Xiao Ming + 1"
 	a = f"username: ${name} password: ${age+1}"
-	assert a == "username: 小明 password: 19"
+	assert a == "username: Xiaoming password: 19"
 	`
 
 	_marshallerTest(code)
@@ -3357,11 +3357,11 @@ func TestNewExecutor_TemplateStringSingleQuote(t *testing.T) {
 	abc = f'abc${1+1}'; 
 	assert abc == 'abc2'
 
-	name = f'小明'
+	name = f'Xiao Ming'
 	age = 18
-	assert f'${name} + 1' == '小明 + 1'
+	assert f'${name} + 1' == 'Xiao Ming + 1'
 	a = f'username: ${name} password: ${age+1}'
-	assert a == 'username: 小明 password: 19'
+	assert a == 'username: Xiaoming password: 19'
 	`
 
 	_marshallerTest(code)
@@ -3406,7 +3406,7 @@ assert e(5, [1,2,3]...) == 6 + 3 + 1 + 2, e(5, [1,2,3]...)
 
 func TestNewExecutor_VariableFunctionParam(t *testing.T) {
 	code := `
-names = ["张三","李四","王五","赵六","田七","周八","吴九","郑十"]
+names = ["Zhang San","Li Si","Wang Wu","Zhao Liu","Tian Qi","Weekly","Wu Jiu","Zheng Shi"]
 p = 0
 func test(name){
     assert name == names[p],"expect " + names[p] + ", but get " + name 
@@ -3426,20 +3426,20 @@ dumpNames(names...)
 }
 
 func TestNewExecutor_StringSlice(t *testing.T) {
-	code := `assert ("派大星"[0:1]+"小星" == "派小星"), "expect"+"派小星"`
+	code := `assert ("Paidaxing"[0:1]+"Xiaoxing" == "Pai Xiaoxing"), "expect"+"Pai Xiaoxing"`
 	_marshallerTest(code)
 	_formattest(code)
 }
 
 func TestNewExecutor_FackTypeCase(t *testing.T) {
 	code := `
-// 空值类型转换判断
+// Null value type conversion judgment
 assert int() == 0
 assert string() == ""
 assert []byte() == b""
 assert float() == 0.0
-//伪类型转换
-//Yak内置类型：int（char）、float、string、bool
+//pseudo-type conversion
+//Yak built-in types: int (char), float, string, bool
 assert int(123) == 123, "convert int to int failed"
 assert int(123.0) == 123, "convert float to int failed"
 assert int("123") == 123, "convert string to int failed"
@@ -3729,10 +3729,10 @@ assert getStringSliceArgumentType([]) == "[]string", "auto convert [] to []strin
 }
 
 /*
-变量检查的粗略实现，需要实现数据流分析后实现更精确的检查
-目标：通过静态代码分析检查出执行时可能会出现的错误，需要尽可能依据代码执行顺序检查
+variable checking requires more precise checking after data flow analysis.
+Goal: Check out errors that may occur during execution through static code analysis. You need to check
 
-1. 编译时检查使用未声明的变量，但对于全局定义的变量允许在非立即执行的函数内部使用
+1. Compilation time check Use undeclared variables, but globally defined variables are allowed to be used inside non-immediately executed functions.
 */
 func TestExecWithStrictMode(t *testing.T) {
 	for index, testCase := range [][]string{

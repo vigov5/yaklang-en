@@ -28,27 +28,27 @@ var PcapCommand = cli.Command{
 		},
 		cli.StringFlag{
 			Name:  "device,d",
-			Usage: "网卡（可选多个,使用逗号分隔）",
+			Usage: "network card (optional multiple, separated by commas)",
 		},
 		cli.StringFlag{
 			Name:  "input",
-			Usage: "pcap文件路径",
+			Usage: "pcap file path",
 		},
 		cli.StringFlag{
 			Name:  "output",
-			Usage: "过滤后的流量导出路径",
+			Usage: "filtered traffic export path",
 		},
 		cli.BoolFlag{
 			Name:  "v",
-			Usage: "输出详细信息",
+			Usage: "output details",
 		},
 		cli.StringFlag{
 			Name:  "suricata",
-			Usage: "suricata规则文件路径",
+			Usage: "suricata rule file path",
 		},
 		cli.StringFlag{
 			Name:  "suricata-rule-keyword,k",
-			Usage: `suricata规则关键字，可选多个，使用逗号分隔`,
+			Usage: `suricata rule keyword, multiple optional, separated by commas`,
 		},
 	},
 	Action: func(c *cli.Context) error {

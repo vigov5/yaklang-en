@@ -54,7 +54,7 @@ func init() {
 	}
 }
 
-// LoadCVE 从本地的CVE json数据加载构造数据库
+// LoadCVE loads the constructed database from local CVE json data
 func LoadCVE(fileDir, DbPath string, years ...int) {
 	manager := cveresources.GetManager(DbPath)
 
@@ -103,7 +103,7 @@ func LoadCVEByFileName(fileName string, manager *cveresources.SqliteManager) (sh
 	return true, nil
 }
 
-// DownLoad 从NVD下载CVE json数据到本地
+// DownLoad downloads CVE json data from NVD to local
 func DownLoad(dir string) error {
 	for name, url := range CveDataFeed {
 		log.Infof("start to download from: %v", url)

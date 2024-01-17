@@ -89,8 +89,8 @@ func (f *FuzzTagAST) readTagNode(t []*token, index int, deep int) (fb []Executab
 		}
 	}()
 
-	// 一般有两种情况
-	// 第一种是不带括号的参数的，这种的话，基本就是替换，无所谓
+	// There are generally two situations
+	// when the number of parsing layers is greater than the number of prefabricated layers. The first one is a parameter without parentheses. In this case, it is basically replacement, it does not matter
 	tagOpen := t[index]
 	if tagOpen.Type != TokenType_TAG_OPEN {
 		return []ExecutableNode{NewDataNode(tagOpen)}, originIndex + 1
@@ -187,7 +187,7 @@ func (f *FuzzTagAST) readMethodNode(t []*token, index int, inParam bool, deep in
 
 		for {
 			if now().Type == TokenType_RIGHT_PAREN {
-				// 读到节点了
+				// The node has been read
 				rawBuf.Write(now().Raw)
 				index++
 				break
@@ -201,14 +201,14 @@ func (f *FuzzTagAST) readMethodNode(t []*token, index int, inParam bool, deep in
 						rawBuf.Write(node.ToBytes())
 					}
 				}
-			} else { // 解析函数嵌套
-				if v, ok := buildinMethodPrefix[methodPrefix]; ok && v <= deep { // 如果有定义函数prefix，则当解析层数大于预制层数时停止解析
+			} else { // Analytical function nesting
+				if v, ok := buildinMethodPrefix[methodPrefix]; ok && v <= deep { // If there is a defined function prefix, then stop parsing
 					rightParenthesisNumber := 0
 					start := false
-					for i := index; i < len(t); i++ { // 遍历token，匹配小括号
+					for i := index; i < len(t); i++ { // . Traverse the token and match the parentheses
 						nowToken := t[i]
-						if nowToken.Type == TokenType_TAG_CLOSE { // 结束匹配
-							if rightParenthesisNumber >= v { // 闭合括号数符合条件
+						if nowToken.Type == TokenType_TAG_CLOSE { // End matching
+							if rightParenthesisNumber >= v { // The number of closed brackets meets the conditions
 								nodes = append(nodes, NewDataNode(t[index:i-deep]...))
 								index = i - deep
 								break

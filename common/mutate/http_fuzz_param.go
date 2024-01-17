@@ -38,43 +38,43 @@ var (
 func PositionTypeVerbose(pos httpParamPositionType) string {
 	switch pos {
 	case posMethod:
-		return "HTTP方法"
+		return "HTTP methods"
 	case posBody:
 		return "Body"
 	case posGetQuery:
-		return "GET参数"
+		return "GET parameters"
 	case posGetQueryBase64:
-		return "GET参数(Base64)"
+		return "GET parameters (Base64)"
 	case posGetQueryJson:
-		return "GET参数(JSON)"
+		return "GET parameter (JSON)"
 	case posGetQueryBase64Json:
-		return "GET参数(Base64+JSON)"
+		return "GET parameter (Base64+JSON)"
 	case posPathAppend:
-		return "URL路径(追加)"
+		return "URL path (append )"
 	case posPathBlock:
-		return "URL路径(分块)"
+		return "URL path (chunked)"
 	case posPath:
-		return "URL路径"
+		return "URL path"
 	case posHeader:
 		return "Header"
 	case posPostQuery:
-		return "POST参数"
+		return "POST parameters"
 	case posPostQueryBase64:
-		return "POST参数(Base64)"
+		return "POST parameter (Base64)"
 	case posPostQueryJson:
-		return "POST参数(JSON)"
+		return "POST parameters (JSON)"
 	case posPostQueryBase64Json:
-		return "POST参数(Base64+JSON)"
+		return "POST parameter (Base64+JSON)"
 	case posPostJson:
-		return "JSON-Body参数"
+		return "JSON-Body parameters"
 	case posCookie:
-		return "Cookie参数"
+		return "Cookie parameters"
 	case posCookieBase64:
-		return "Cookie参数(Base64)"
+		return "Cookie parameters (Base64)"
 	case posCookieJson:
-		return "Cookie参数(JSON)"
+		return "Cookie parameters (JSON)"
 	case posCookieBase64Json:
-		return "Cookie参数(Base64+JSON)"
+		return "Cookie parameter (Base64+JSON)"
 	default:
 		return string(pos)
 	}

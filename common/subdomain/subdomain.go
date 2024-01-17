@@ -68,11 +68,11 @@ type SubdomainScanner struct {
 	dnsQuerierSwg *utils.SizedWaitGroup
 	dnsClient     *dns.Client
 
-	// 结果回调函数
+	// Result callback function
 	resultCallbacks []ResultCallback
 
-	// 解析失败回调
-	// 解析失败不是由爆破调用的，这个调用链只会涉及到搜索以及域传送
+	// Parse failure callback
+	// Parse Failure is not called by blast, this call chain only involves search and domain transfer
 	resultFailedCallbacks []ResultCallback
 
 	resultCacher *sync.Map
@@ -111,7 +111,7 @@ func NewSubdomainScanner(config *SubdomainScannerConfig, targets ...string) (*Su
 	return NewSubdomainScannerWithLogger(config, nil, targets...)
 }
 
-// 追加目标
+// Append target
 func (s *SubdomainScanner) Feed(targets ...string) {
 	s.targets = append(s.targets, targets...)
 }
@@ -121,19 +121,19 @@ func (s *SubdomainScanner) RunWithContext(ctx context.Context) error {
 		return errors.New("empty targets list")
 	}
 
-	// 规范化 modes
+	// Normalized modes
 	modes := removeRepeatedMode(s.config.Modes...)
 	if len(modes) <= 0 {
 		return errors.New("subdomain scan modes is empty.")
 	}
 
-	// 限制目标并发
+	// Limit target concurrency
 	swg := utils.NewSizedWaitGroup(s.config.ParallelismTasksCount)
 	defer swg.Wait()
 
-	// 规范化 targets
+	// Normalized targets
 	for _, t := range removeRepeatedTargets(s.targets...) {
-		// 这个 swg 用来限制整个目标的并发
+		// This swg is used to limit the concurrency of the entire target
 		err := swg.AddWithContext(ctx)
 		if err != nil || ctx.Err() != nil {
 			return err
@@ -142,15 +142,15 @@ func (s *SubdomainScanner) RunWithContext(ctx context.Context) error {
 		go func(target string) {
 			defer swg.Done()
 
-			// 在针对特定目标进行子域名检测的时候，应该使用为目标单独生成的带 TimeoutSeconds 的 Context
+			// When detecting subdomain names for specific targets, you should use the one generated separately for the target. Context with TimeoutSeconds
 			ctx, _ := context.WithTimeout(ctx, s.config.TimeoutForEachTarget)
 
-			// 针对不同模式启动 goroutine 并发
+			// Start goroutine for different modes Concurrency
 			wg := utils.NewSizedWaitGroup(3)
 			defer wg.Wait()
 			for _, mode := range modes {
 
-				// 使用 AddWithContext 安全取消队列中的任务
+				// Use AddWithContext to safely cancel tasks in the queue
 				err := wg.AddWithContext(ctx)
 				if err != nil {
 					return
@@ -190,7 +190,7 @@ func (s *SubdomainScanner) Run() error {
 	return s.RunWithContext(context.Background())
 }
 
-// 设置发现子域名的回调
+// Set the callback for discovering subdomain names
 type ResultCallback func(*SubdomainResult)
 
 func (s *SubdomainScanner) OnResult(cb ResultCallback) {
@@ -198,7 +198,7 @@ func (s *SubdomainScanner) OnResult(cb ResultCallback) {
 }
 
 func (s *SubdomainScanner) onResult(result *SubdomainResult) {
-	// 如果是缓存了的域名结果，就别报告了
+	// If it is a cached domain name result, do not report it
 	if _, ok := s.resultCacher.LoadOrStore(result.Hash(), result); ok {
 		return
 	}
@@ -208,7 +208,7 @@ func (s *SubdomainScanner) onResult(result *SubdomainResult) {
 	}
 }
 
-// 设置解析失败子域名的回调函数
+// Set the callback function for subdomain names that failed to resolve
 func (s *SubdomainScanner) OnResolveFailedResult(cb ResultCallback) {
 	s.resultFailedCallbacks = append(s.resultFailedCallbacks, cb)
 }

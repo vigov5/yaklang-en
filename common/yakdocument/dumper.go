@@ -211,7 +211,7 @@ func convertMethodToDoc(m reflect.Method, ptr bool, structName string, cache *sy
 	if err != nil {
 		return &MethodDoc{
 			Ptr:         ptr,
-			Description: fmt.Sprintf("`%v` 方法：", m.Name),
+			Description: fmt.Sprintf("`%v` method:", m.Name),
 			StructName:  structName,
 			Name:        m.Name,
 			Params:      nil,

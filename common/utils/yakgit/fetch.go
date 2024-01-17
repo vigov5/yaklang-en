@@ -7,7 +7,7 @@ import (
 	"github.com/yaklang/yaklang/common/utils"
 )
 
-// Fetch 用于指定一个本地仓库，并从其远程仓库中获取代码，它还可以接收零个到多个选项函数，用于影响获取行为
+// Fetch is used to specify a local repository and obtain code from its remote repository. It can also receive zero to multiple option functions to affect the retrieval behavior.
 // Example:
 // ```
 // git.Fetch("C:/Users/xxx/Desktop/yaklang", git.verify(false), git.remote("origin"), git.fetchAllTags(true))

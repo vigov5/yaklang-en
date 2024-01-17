@@ -23,7 +23,7 @@ func (s *VulinServer) registerMiscRoute() {
 func (s *VulinServer) registerMiscResponse() {
 	var router = s.router
 
-	r := router.PathPrefix("/misc/response").Name("一些精心构造的畸形/异常/测试响应").Subrouter()
+	r := router.PathPrefix("/misc/response").Name("Some carefully constructed malformations/Exceptions/Test the response").Subrouter()
 	addRouteWithVulInfo(r, &VulInfo{
 		Handler: func(writer http.ResponseWriter, request *http.Request) {
 			defer func() {
@@ -35,7 +35,7 @@ func (s *VulinServer) registerMiscResponse() {
 			writer.Write(bytes.Repeat([]byte{'a'}, ret))
 		},
 		Path:  "/content_length?cl=1024",
-		Title: "通过(cl=int)定义响应体长度",
+		Title: "Define the response body length through (cl=int)",
 	})
 
 	addRouteWithVulInfo(r, &VulInfo{
@@ -56,7 +56,7 @@ func (s *VulinServer) registerMiscResponse() {
 `))
 		},
 		Path:  "/webpack-ssa-ir-test.html",
-		Title: "测试普通爬虫的 Webpack 处理能力",
+		Title: "Test the Webpack processing capabilities of ordinary crawlers",
 	})
 
 	addRouteWithVulInfo(r, &VulInfo{
@@ -100,31 +100,31 @@ func (s *VulinServer) registerMiscResponse() {
 			Path: "/javascript-ssa-ir-basic/3.js",
 			Handler: func(writer http.ResponseWriter, request *http.Request) {
 				writer.Header().Set("Content-Type", "application/javascript")
-				writer.Write([]byte(`// 创建一个新的 XMLHttpRequest 对象
+				writer.Write([]byte(`// Create a new XMLHttpRequest object
 var xhr = new XMLHttpRequest();
 
-// 配置请求类型为 POST，以及目标 URL
+// Configure the request type as POST, and the target URL
 xhr.open('POST', 'deep.js', true);
 
-// 设置所需的 HTTP 请求头
+// Set required HTTP request headers
 xhr.setRequestHeader('HackedJS', 'AAA');
 
-// 设置请求完成后的回调函数
+// Set the callback function after the request is completed
 xhr.onreadystatechange = function() {
-  // 检查请求是否完成
+  // Check whether the request is completed
   if (xhr.readyState === XMLHttpRequest.DONE) {
-    // 检查请求是否成功
+    // Check whether the request is successful
     if (xhr.status === 200) {
-      // 请求成功，处理响应数据
+      // The request is successful, process the response data
       console.log(xhr.responseText);
     } else {
-      // 请求失败，打印状态码
+      // request fails, print status code
       console.error('Request failed with status:', xhr.status);
     }
   }
 };
 
-// 发送请求，可以在此处发送任何需要的数据
+// Send the request, you can send it here Any required data
 xhr.send();`))
 			},
 		},
@@ -154,7 +154,7 @@ fetch('/misc/response/fetch/basic.action')
     return response.text();
   })
   .then(data => {
-    console.log(data); // 这里是你的页面内容
+    console.log(data); // Here is your page content
   })
   .catch(error => {
     console.error('There has been a problem with your fetch operation:', error);
@@ -167,6 +167,6 @@ fetch('/misc/response/fetch/basic.action')
 </body>
 `))
 		},
-		Title: "测试普通爬虫的基础JS处理能力",
+		Title: "Test the basic JS processing capabilities of ordinary crawlers",
 	})
 }

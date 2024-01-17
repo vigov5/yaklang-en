@@ -13,16 +13,16 @@ import (
 type ExtractedData struct {
 	gorm.Model
 
-	// sourcetype 一般来说是标注数据来源
+	// sourcetype generally marks the data source
 	SourceType string `gorm:"index"`
 
-	// trace id 表示数据源的 ID
+	// trace id represents the ID of the data source
 	TraceId string `gorm:"index"`
 
-	// 提取数据的正则数据
+	// Regular data for extracting data
 	Regexp string
 
-	// 规则 Verbose
+	// Rule Verbose
 	RuleVerbose string
 
 	// UTF8 safe escape

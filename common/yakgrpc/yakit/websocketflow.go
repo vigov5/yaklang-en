@@ -13,7 +13,7 @@ import (
 type WebsocketFlow struct {
 	gorm.Model
 
-	// HTTPFlow 过来的应该有 WebsocketHash
+	// HTTPFlow should have WebsocketHash
 	WebsocketRequestHash string `json:"websocket_request_hash" gorm:"index"`
 
 	FrameIndex  int    `json:"frame_index" gorm:"index"`
@@ -25,7 +25,7 @@ type WebsocketFlow struct {
 }
 
 type WebsocketFlowShare struct {
-	// HTTPFlow 过来的应该有 WebsocketHash
+	// HTTPFlow should have WebsocketHash
 	WebsocketRequestHash string
 
 	FrameIndex  int

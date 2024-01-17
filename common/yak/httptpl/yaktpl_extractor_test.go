@@ -9,7 +9,7 @@ import (
 
 func TestYakExtractor_Execute(t *testing.T) {
 	for index, extractor := range [][]any{
-		{ // extractor_test: 正则提取一条数据
+		{ // extractor_test: Extract a piece of data with regularity
 			`HTTP/1.1 200 Ok
 Content-Type: text/html; charset=utf-8
 
@@ -23,7 +23,7 @@ Content-Type: text/html; charset=utf-8
 			"k1",
 			"DOCTYPE html",
 		},
-		{ // extractor_test: 使用正则捕获提取一条数据
+		{ // extractor_test: Use regular capture to extract a piece of data
 			`HTTP/1.1 200 Ok
 Content-Type: text/html; charset=utf-8
 
@@ -38,7 +38,7 @@ Content-Type: text/html; charset=utf-8
 			"k1",
 			"html",
 		},
-		{ // extractor_test: 使用正则捕获，从header提取一条数据
+		{ // from the body. extractor_test: Use regular capture to extract one piece of data from the header.
 			`HTTP/1.1 200 Ok
 Content-Type: text/html; charset=utf-8
 
@@ -54,7 +54,7 @@ Content-Type: text/html; charset=utf-8
 			"k1",
 			"",
 		},
-		{ // extractor_test: 使用json提取器，从body提取一条数据
+		{ // extractor_test: Use the json extractor to extract a piece of data from the body
 			`HTTP/1.1 200 Ok
 Content-Type: text/html; charset=utf-8
 
@@ -68,7 +68,7 @@ Content-Type: text/html; charset=utf-8
 			"k1",
 			"12312312",
 		},
-		{ // extractor_test: 使用json提取器，从body提取一条数据(测试提取不同变量)
+		{ // extractor_test : Use the json extractor to extract a piece of data from the body (test to extract different variables)
 			`HTTP/1.1 200 Ok
 Content-Type: text/html; charset=utf-8
 
@@ -82,7 +82,7 @@ Content-Type: text/html; charset=utf-8
 			"k1",
 			"123",
 		},
-		{ // extractor_test: 使用xpath提取器，从body提取元素属性
+		{ // extractor_test: Use the xpath extractor to extract element attributes
 			`HTTP/1.1 200 Ok
 Content-Type: text/html; charset=utf-8
 
@@ -98,7 +98,7 @@ Content-Type: text/html; charset=utf-8
 			"k1",
 			"ABC",
 		},
-		{ // extractor_test: 使用xpath提取器，从body提取多条元素属性
+		{ // extractor_test: Use the xpath extractor to extract multiple element attributes
 			`HTTP/1.1 200 Ok
 Content-Type: text/html; charset=utf-8
 
@@ -116,7 +116,7 @@ Content-Type: text/html; charset=utf-8
 			"k1",
 			"abc,def",
 		},
-		{ // extractor_test: 使用xpath提取器，使用更复杂的xpath语法从body提取元素属性
+		{ // extractor_test: Use the xpath extractor to use a more complex xpath Syntax to extract element attributes from body
 			`HTTP/1.1 200 Ok
 Content-Type: text/html; charset=utf-8
 
@@ -209,7 +209,7 @@ Content-Type: text/html; charset=utf-8
 			"cc",
 			"799.00",
 		},
-		{ // 使用nuclei-dsl提取并生成数据
+		{ // from the body. Use nuclei-dsl to extract and generate data
 			`HTTP/1.1 200 Ok
 Content-Type: text/html; charset=utf-8
 

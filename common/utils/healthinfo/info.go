@@ -24,12 +24,12 @@ import (
 )
 
 var (
-	// 缓存上次采样的网络 IO
+	// Cache the last sampled network IO
 	lastCheckNetIO       time.Time
 	lastKBytesNetRecvAll uint64
 	lastKBytesNetSendAll uint64
 
-	// 缓存上次采样的硬盘 IO 数据
+	// Cache the last sampled hard disk IO data
 	lastCheckDiskIO        time.Time
 	lastKBytesDiskWriteAll uint64
 	lastKBytesDiskReadAll  uint64
@@ -68,7 +68,7 @@ func runTop(ctx context.Context) (*health.HealthInfo, error) {
 		*/
 		cmd := exec.CommandContext(
 			ctx,
-			"top", "-l", "1", "-n", "0", // 只显示一次，并且不开放进程信息
+			"top", "-l", "1", "-n", "0", // Only display once and do not open process information
 		)
 		output, err := cmd.CombinedOutput()
 		if err != nil {
@@ -144,7 +144,7 @@ func runTop(ctx context.Context) (*health.HealthInfo, error) {
 		*/
 		cmd := exec.CommandContext(
 			ctx,
-			"top", "-b", "-n", "1", "-p", "1", // 只显示一次
+			"top", "-b", "-n", "1", "-p", "1", // Only display once
 		)
 		output, err := cmd.CombinedOutput()
 		if err != nil {
@@ -246,11 +246,11 @@ func healthInfoFromGopsutil() (*health.HealthInfo, error) {
 	return detail, nil
 }
 
-// NewHealthInfo 获取系统健康信息
+// NewHealthInfo Get system health information
 //
 //	2023.5.10: TODO: disk rate is waiting for fixing;
 func NewHealthInfo(ctx context.Context) (*health.HealthInfo, error) {
-	// 硬盘读写暂时有点问题
+	// There is a temporary problem with hard disk reading and writing
 	info, err := healthInfoFromGopsutil()
 	if err != nil {
 		log.Infof("gopsutil(v3) native cannot fetch info: %v, try by top...", err)
@@ -264,7 +264,7 @@ func NewHealthInfo(ctx context.Context) (*health.HealthInfo, error) {
 		return nil, utils.Errorf("fetch system health info failed: %s", err)
 	}
 
-	// 计算网络 IO
+	// Calculate the network IO
 	var ioUpload float64 = 0
 	var ioDownload float64 = 0
 	if stats, err := net.IOCountersWithContext(ctx, true); err == nil && len(stats) > 0 {

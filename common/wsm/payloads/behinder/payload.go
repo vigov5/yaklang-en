@@ -26,17 +26,17 @@ func GetRawClass(binPayload string, params map[string]string) ([]byte, error) {
 		fields := clsObj.FindConstStringFromPool(k)
 		fields.Value = v
 	}
-	// 随机更换类名 原始类名是这样的 net/behinder/payload/java/xxx
+	// Randomly replace the class name. The original class name is like this. net/behinder/payload/java/xxx
 	err = clsObj.SetClassName(payloads.RandomClassName())
 	if err != nil {
 		return nil, err
 	}
-	// 随机更换 文件名
+	// Randomly replace the file name.
 	err = clsObj.SetSourceFileName(utils.RandNumberStringBytes(6))
 	if err != nil {
 		return nil, err
 	}
-	// 修改为Jdk 1.5 冰蝎原版是 50(1.6),测了几下发现 49(1.5) 也行
+	// Modified to Jdk 1.5. The original version of Ice Scorpion is 50 (1.6). After a few tests, it was found that 49 (1.5) is also OK.
 	clsObj.MajorVersion = 49
 	return clsObj.Bytes(), nil
 }
@@ -65,7 +65,7 @@ func GetRawPHP(binPayload string, params map[string]string) ([]byte, error) {
 	return []byte(code), nil
 }
 
-// 获取 php 代码中需要更改的 params
+// Get the params that need to be changed in the php code.
 func getPhpParams(phpPayload []byte) []string {
 	paramList := make([]string, 0, 2)
 	mainRegex := regexp.MustCompile(`main\s*\([^)]*\)`)

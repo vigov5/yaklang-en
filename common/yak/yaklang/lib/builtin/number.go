@@ -615,7 +615,7 @@ func Sub(a, b interface{}) interface{} {
 	return panicUnsupportedOp2("-", a, b)
 }
 
-// max 返回多个值中的最大值，这只对数字类型有效
+// max Returns the maximum value among multiple values. This is only valid for numeric types.
 // Example:
 // ```
 // max(1,2,3,4,5) // 5
@@ -635,7 +635,7 @@ func Max(args ...interface{}) (max interface{}) {
 	return panicUnsupportedFn("max", args)
 }
 
-// min 返回多个值中的最小值，这只对数字类型有效
+// min Returns the minimum value among multiple values. This is only valid for numeric types.
 // Example:
 // ```
 // min(1,2,3,4,5) // 1

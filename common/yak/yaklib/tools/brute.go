@@ -34,31 +34,31 @@ var BruterExports = map[string]interface{}{
 type yakBruter struct {
 	debug bool `json:"debug"`
 
-	// 设置用户与密码爆破字典
+	// Set user and password blasting dictionary
 	userList []string
 	passList []string
 
-	// 设置爆破相关处理函数
+	// Set blasting related processing functions
 	bruteType     string `json:"brute_type"`
 	coreHandler   bruteutils.BruteCallback
 	resultHandler func(res *bruteutils.BruteItemResult)
 
-	// 同时支持多少个并发目标同时测试？默认 256
+	// support for testing at the same time? Default 256
 	concurrentTarget int
 
-	// 同时每个目标的并发
+	// At the same time, the concurrency of each target
 	concurrent int
 
-	// 每个目标每两次测试之间间隔最小
+	// Minimum interval between two tests for each target. How many concurrent targets can
 	minDelay int
 
-	// 每个目标每两次测试间隔最大
+	// Maximum interval between two tests for each target
 	maxDelay int
 
 	// okToStop
 	okToStop bool
 
-	// 完成阈值
+	// Completion threshold
 	finishingThreshold int
 }
 
@@ -175,7 +175,7 @@ func (y *yakBruter) Start(targets ...string) (chan *bruteutils.BruteItemResult, 
 				if !b.Ok {
 					return
 				}
-				// 更新hit_count，+1
+				// Update hit_count, +1
 				db := consts.GetGormProfileDatabase()
 				payloads, err := yakit.QueryPayloadWithoutPaging(db, "", "", b.Username)
 				if err != nil {

@@ -11,7 +11,7 @@ yakit.AutoInitYakit()
 
 debug = cli.Have("debug")
 if debug {
-    yakit.Info("调试模式已开启")
+    yakit.Info("debugging mode is enabled")
 }
 
 proxyStr = str.TrimSpace(cli.String("proxy"))
@@ -20,12 +20,12 @@ if proxyStr != "" {
     proxy = str.SplitAndTrim(proxyStr, ",")
 }
 
-# 综合扫描
+# Comprehensive scan
 yakit.SetProgress(0.1)
 plugins = [cli.String("plugin")]
 filter = str.NewFilter()
 
-plugins = ["FastJSON 漏洞检测 via DNSLog"]
+plugins = ["FastJSON vulnerability detection via DNSLog"]
 
 /*
     load plugin
@@ -60,7 +60,7 @@ if ports == "" {
 targetRaw = cli.String("target")
 targetRaw = "http://192.168.101.177:8084/"
 if targetRaw == "" { ## empty
-    yakit.StatusCard("扫描失败", "目标为空")
+    yakit.StatusCard("Scan failure", "The target is empty")
     return
 }
 
@@ -78,11 +78,11 @@ for _, line = range str.ParseStringToLines(targetRaw) {
 //     targets = ["127.0.0.1:8080"]
 // }
 
-// 限制并发
+// Limit concurrency
 swg = sync.NewSizedWaitGroup(1)
 
 handleUrl = func(t) {
-	yakit.Info("开始针对 %v 进行基础爬虫（10 requests）", t)
+	yakit.Info("Start basic crawling for %v (10 requests)", t)
     res, err = crawler.Start(t, crawler.maxRequest(10), crawler.proxy(proxy...))
     if err != nil {
         yakit.Error("create crawler failed: %s", err)
@@ -109,7 +109,7 @@ handleUrl = func(t) {
 }
 
 handlePorts = func(t) {
-	yakit.Info("处理目标：%v 插件：%v", t, plugins)
+	yakit.Info("Processing target: %v Plug-in: %v", t, plugins)
     host, port, _ = str.ParseStringToHostPort(t)
     originHost = ""
     if port > 0 {
@@ -123,7 +123,7 @@ handlePorts = func(t) {
     if port > 0 {
         result, err = servicescan.ScanOne(originHost, port, servicescan.probeTimeout(10), servicescan.proxy(proxy...))
         if err != nil {
-            yakit.Info("指定端口：%v 不开放", host)
+            yakit.Info(". Specified port: %v is not open.", host)
             return
         }
         manager.HandleServiceScanResult(result)
@@ -131,7 +131,7 @@ handlePorts = func(t) {
     }
 
     if port <= 0 {
-        yakit.Info("开始扫描端口：%v", t)
+        yakit.Info("Start scanning port: %v", t)
         res, err = servicescan.Scan(host, ports)
         if err != nil {
             yakit.Error("servicescan %v failed: %s", t)
@@ -144,7 +144,7 @@ handlePorts = func(t) {
     }
 }
 
-// 设置结果处理方案
+// Set the result processing plan
 handleTarget = func(t, isUrl) {
     hash = codec.Sha256(sprint(t, ports, isUrl))
     if filter.Exist(hash) {
@@ -176,7 +176,7 @@ for _, target = range targets {
     handleTarget(target, false)
 }
 
-// 等待所有插件执行完毕
+// Wait for all plug-ins to be executed
 swg.Wait()
 manager.Wait()
 `,

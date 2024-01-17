@@ -36,17 +36,17 @@ type NodeBase struct {
 	// map[string]*tickerFunc
 	tickerFuncs *sync.Map
 
-	// 表示是否注册成功
+	// Indicates whether the registration is successful.
 	isRegistered *abool.AtomicBool
 
 	// []func()
-	//    当成功注册之后会执行这个函数
+	//    will execute this function after successful registration.
 	afterRegisterFuncs []func()
 
-	// 接受通知的处理函数
+	// is the processing function for receiving notifications.
 	onNotificationComingFuncs []func(msg *amqp.Delivery)
 
-	// 脚本执行引擎
+	// script execution engine
 	ScriptExecutor *yak.ScriptEngine
 
 	//

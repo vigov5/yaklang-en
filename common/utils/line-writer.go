@@ -16,7 +16,7 @@ func NewFileLineWriter(file string, flag int, perm fs.FileMode) (*fileLineWriter
 	if err != nil {
 		return nil, err
 	}
-	// 追加时，假如最后一个字符不是换行符，则添加换行符
+	// When appending, if the last character is not a newline character, add a newline character
 	if flag&os.O_APPEND != 0 {
 		state, err := f.Stat()
 		if err != nil {
