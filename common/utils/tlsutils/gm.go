@@ -38,6 +38,53 @@ func GetX509GMServerTlsConfigWithAuth(ca, server, serverKey []byte, auth bool) (
 	return &config, nil
 }
 
+func GetX509GMServerTlsConfigWithOnly(ca, server, serverKey []byte, auth bool) (*gmtls.Config, error) {
+	// Generate a signing certificate and key
+	signCert, signKey, err := GenerateGMSelfSignedCertKey("SignCert")
+	if err != nil {
+		return nil, err
+	}
+
+	// Generate an encryption certificate and key
+	encipherCert, encipherKey, err := GenerateGMSelfSignedCertKey("EncipherCert")
+	if err != nil {
+		return nil, err
+	}
+
+	p := x509.NewCertPool()
+	if !p.AppendCertsFromPEM(ca) {
+		return nil, errors.New("append ca pem error")
+	}
+
+	// Create a signing certificate pair
+	signCertPair, err := gmtls.X509KeyPair(signCert, signKey)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create an encryption certificate pair
+	encipherCertPair, err := gmtls.X509KeyPair(encipherCert, encipherKey)
+	if err != nil {
+		return nil, err
+	}
+
+	_, _ = signCertPair, encipherCertPair
+	//rsaKey, err := gmtls.X509KeyPair(server, serverKey)
+
+	config := gmtls.Config{
+		GMSupport:          &gmtls.GMSupport{},
+		Certificates:       []gmtls.Certificate{signCertPair, encipherCertPair},
+		ClientCAs:          p,
+		InsecureSkipVerify: false,
+	}
+	if auth {
+		config.ClientAuth = gmtls.RequireAndVerifyClientCert
+	}
+	return &config, nil
+	//return gmtls.NewBasicAutoSwitchConfig(&signCertPair, &encipherCertPair, &rsaKey)
+
+}
+
 func SignGMServerCrtNKeyWithParams(ca []byte, privateKey []byte, cn string, notAfter time.Time, auth bool) ([]byte, []byte, error) {
 	// Parse the key of ca
 	var pkey *sm2.PrivateKey

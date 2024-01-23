@@ -9,7 +9,7 @@ func TestMisc_DatabaseTest(t *testing.T) {
 
 	cases := []YakTestCase{
 		{
-			Name: "测试数据库",
+			Name: "Test Database",
 			Src: fmt.Sprintf(`
 for result = range db.QueryHTTPFlowsByID(1443) {
 	dump(result)
@@ -18,5 +18,5 @@ for result = range db.QueryHTTPFlowsByID(1443) {
 		},
 	}
 
-	Run("测试数据库链接", t, cases...)
+	Run("Test Database Link", t, cases...)
 }

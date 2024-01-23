@@ -63,12 +63,12 @@ func GetProjectAstPackages() (map[string]*ast.Package, *token.FileSet, error) {
 }
 
 type DocumentHelper struct {
-	Libs          map[string]*ScriptLib
-	Functions     map[string]*FuncDecl
-	Instances     map[string]*LibInstance
-	StructMethods map[string]*ScriptLib // Structure method, name -> All structures and structure pointer methods
-
-	hooks []func(h *DocumentHelper)
+	Libs                map[string]*ScriptLib
+	Functions           map[string]*FuncDecl
+	Instances           map[string]*LibInstance
+	StructMethods       map[string]*ScriptLib // Struct methods, names -> all struct and struct pointer methods
+	DeprecatedFunctions []*FuncDecl
+	hooks               []func(h *DocumentHelper)
 }
 
 func RegisterHook(hook func(h *DocumentHelper)) {
@@ -362,7 +362,12 @@ func AnyTypeToLibInstance(libName, name string, typ reflect.Type, value interfac
 		pkgPath = typ.Elem().PkgPath()
 		typName = typ.Elem().Name()
 	}
-	typName = fmt.Sprintf("%s.%s", pkgPath, typName)
+	if typName == "" {
+		typName = typ.String()
+	}
+	if pkgPath != "" {
+		typName = fmt.Sprintf("%s.%s", pkgPath, typName)
+	}
 
 	return &LibInstance{
 		LibName:      libName,

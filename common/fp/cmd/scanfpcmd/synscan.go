@@ -141,8 +141,8 @@ var SynScanCmd = cli.Command{
 			// web fingerprints
 			fp.WithWebFingerprintRule(webRules),
 
-			// Open Web fingerprint recognition
-			fp.WithForceEnableWebFingerprint(true),
+			// Turn on web fingerprinting
+			fp.WithForceEnableAllFingerprint(true),
 
 			// enable TCP scan
 			fp.WithTransportProtos(fp.TCP),

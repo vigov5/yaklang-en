@@ -37,7 +37,7 @@ func (s *Server) AddToNavigation(ctx context.Context, req *ypb.AddToNavigationRe
 			}
 		}
 		if len(errVerbose) > 0 {
-			return nil, utils.Errorf(strings.Join(errVerbose, ",") + "加载失败")
+			return nil, utils.Errorf(strings.Join(errVerbose, ",") + "Failed to load")
 		}
 	}
 	return &ypb.Empty{}, nil

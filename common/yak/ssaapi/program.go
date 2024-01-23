@@ -9,6 +9,7 @@ import (
 
 type Program struct {
 	Program *ssa.Program
+	config  *config
 }
 
 func NewProgram(prog *ssa.Program) *Program {
@@ -21,6 +22,9 @@ func (p *Program) Show() *Program {
 	p.Program.Show()
 	return p
 }
+func (p *Program) AddConfig(c *config) {
+	p.config = c
+}
 
 func (p *Program) IsNil() bool {
 	return utils.IsNil(p) || utils.IsNil(p.Program)
@@ -28,16 +32,6 @@ func (p *Program) IsNil() bool {
 
 func (p *Program) GetErrors() ssa.SSAErrors {
 	return p.Program.GetErrors()
-}
-
-func (p *Program) NewError(tag string, message string) {
-	p.Program.AddError(&ssa.SSAError{
-		Pos:     ssa.NewRange(ssa.NewPosition(0, 1, 0), ssa.NewPosition(0, 1, 1), ""),
-		Tag:     ssa.ErrorTag(tag),
-		Message: message,
-		Kind:    ssa.Error,
-	})
-
 }
 
 func (p *Program) GetValueById(id int) (*Value, error) {

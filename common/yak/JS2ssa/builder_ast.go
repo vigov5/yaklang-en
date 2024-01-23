@@ -339,7 +339,7 @@ func (b *astbuilder) buildOnlyRightSingleExpression(stmt JS.ISingleExpressionCon
 				break
 			}
 
-			// ('<<' | '>>' | '>>>') 缺>>>
+			// ('<<' | '>>' | '>>>') Missing>>>
 			if s, ok := stmt.(*JS.BitShiftExpressionContext); ok {
 				if op := s.LeftShiftArithmetic(); op != nil {
 					single, Op, IsBinOp = s, ssa.OpShl, true
@@ -424,8 +424,8 @@ func (b *astbuilder) buildOnlyRightSingleExpression(stmt JS.ISingleExpressionCon
 	}
 
 	// advanced expression
-	// 处理的时候需要知道哪些是高级逻辑：
-	// on the lvalue side. The advanced logic needs to be processed into a feature similar to “. Branch” behavior, which generally involves“. Short-circuit”特性；
+	// What do you need to know about high-level logic when processing:
+	// on the lvalue side. The advanced logic needs to be processed into a feature similar to “. Branch” behavior, which generally involves“. Short-circuit”features;
 	// . It does not mean that it must be a binary operation
 	// is missing For example: false && dump() This expression, dump() will not Executed, because the result of false && dump() must be false
 	handlePrimaryBinaryOperation := func() ssa.Value {
@@ -776,7 +776,10 @@ func (b *astbuilder) buildFunctionExpression(stmt *JS.FunctionExpressionContext)
 
 		newFunc, symbol := b.NewFunc(funcName)
 		current := b.CurrentBlock
-		buildFunc := func() {
+		// buildFunc := func() {
+		{
+			recoverRange := b.SetRange(s.BaseParserRuleContext)
+
 			b.FunctionBuilder = b.PushFunction(newFunc, symbol, current)
 
 			if p, ok := s.ArrowFunctionParameters().(*JS.ArrowFunctionParametersContext); ok {
@@ -798,9 +801,9 @@ func (b *astbuilder) buildFunctionExpression(stmt *JS.FunctionExpressionContext)
 
 			b.Finish()
 			b.FunctionBuilder = b.PopFunction()
-		}
 
-		b.AddSubFunction(buildFunc)
+			recoverRange()
+		}
 
 		if funcName != "" {
 			b.WriteVariable(funcName, newFunc)
@@ -816,9 +819,9 @@ func (b *astbuilder) buildFunctionExpression(stmt *JS.FunctionExpressionContext)
 			newFunc, symbol := b.NewFunc(funcName)
 			current := b.CurrentBlock
 
-			buildFunc := func() {
-				recoverRange := b.SetRange(stmt.BaseParserRuleContext)
-				defer recoverRange()
+			// buildFunc := func() {
+			{
+				// recoverRange := b.SetRange(&stmt.BaseParserRuleContext)
 
 				b.FunctionBuilder = b.PushFunction(newFunc, symbol, current)
 
@@ -832,9 +835,9 @@ func (b *astbuilder) buildFunctionExpression(stmt *JS.FunctionExpressionContext)
 
 				b.Finish()
 				b.FunctionBuilder = b.PopFunction()
-			}
 
-			b.AddSubFunction(buildFunc)
+				// recoverRange()
+			}
 
 			if funcName != "" {
 				b.WriteVariable(funcName, newFunc)
@@ -948,8 +951,6 @@ func (b *astbuilder) buildAssignmentOperatorContext(stmt *JS.AssignmentOperatorC
 }
 
 func (b *astbuilder) buildIdentifierExpression(text string, IslValue bool, forceAssign bool) (ssa.Value, ssa.LeftValue) {
-	// recoverRange := b.SetRange(stmt.BaseParserRuleContext)
-	// defer recoverRange()
 
 	if IslValue {
 		if b.GetFromCmap(text) {
@@ -1133,7 +1134,10 @@ func (b *astbuilder) buildObjectLiteral(stmt *JS.ObjectLiteralContext) ssa.Value
 			newFunc, symbol := b.NewFunc(funcName)
 			current := b.CurrentBlock
 
-			buildFunc := func() {
+			// buildFunc := func() {
+			{
+				recoverRange := b.SetRange(pro.BaseParserRuleContext)
+
 				b.FunctionBuilder = b.PushFunction(newFunc, symbol, current)
 
 				if s, ok := pro.FormalParameterList().(*JS.FormalParameterListContext); ok {
@@ -1147,9 +1151,8 @@ func (b *astbuilder) buildObjectLiteral(stmt *JS.ObjectLiteralContext) ssa.Value
 				b.Finish()
 				b.FunctionBuilder = b.PopFunction()
 
+				recoverRange()
 			}
-
-			b.AddSubFunction(buildFunc)
 
 			if funcName != "" {
 				b.WriteVariable(funcName, newFunc)
@@ -1586,7 +1589,10 @@ func (b *astbuilder) buildFunctionDeclaration(stmt *JS.FunctionDeclarationContex
 
 	newFunc, symbol := b.NewFunc(funcName)
 	current := b.CurrentBlock
-	buildFunc := func() {
+	// buildFunc := func() {
+	{
+		recoverRange := b.SetRange(stmt.BaseParserRuleContext)
+
 		b.FunctionBuilder = b.PushFunction(newFunc, symbol, current)
 
 		if s, ok := stmt.FormalParameterList().(*JS.FormalParameterListContext); ok {
@@ -1600,9 +1606,8 @@ func (b *astbuilder) buildFunctionDeclaration(stmt *JS.FunctionDeclarationContex
 		b.Finish()
 		b.FunctionBuilder = b.PopFunction()
 
+		recoverRange()
 	}
-
-	b.AddSubFunction(buildFunc)
 
 	if funcName != "" {
 		b.WriteVariable(funcName, newFunc)

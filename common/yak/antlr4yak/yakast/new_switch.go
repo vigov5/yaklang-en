@@ -75,14 +75,14 @@ func (y *YakCompiler) VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 		y.panicCompilerError(CreateSymbolError, symbolName)
 	}
 
-	// 将表达式的值放入符号中
+	// . Put the value of the expression into the symbol
 	if e := i.Expression(); e != nil {
 		y.VisitExpression(i.Expression())
 		y.pushListWithLen(1)
-		// 设置左值，这个左值是一个新建的符号！
+		// at the beginning. Set the lvalue, this lvalue is a newly created symbol!
 		y.pushLeftRef(expressionResultID)
 		y.pushListWithLen(1)
-		// 为右值创建一个符号，这个符号为 rightExpressionSymbol
+		// creates a symbol for the rvalue, this symbol is rightExpressionSymbol
 		y.pushOperator(yakvm.OpAssign)
 		y.writeString(" {")
 	} else {
@@ -164,7 +164,7 @@ func (y *YakCompiler) VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 					continue
 				}
 				stmt := istmt.(*yak.StatementContext)
-				// 忽略开头的empty
+				// . Ignore the empty
 				if i == 0 && stmt.Empty() != nil {
 					continue
 				}
@@ -224,7 +224,7 @@ func (y *YakCompiler) VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 				continue
 			}
 			stmt := istmt.(*yak.StatementContext)
-			// 忽略开头的empty
+			// . Ignore the empty
 			if i == 0 && stmt.Empty() != nil {
 				continue
 			}
@@ -259,9 +259,9 @@ func (y *YakCompiler) VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 	jmp2Default.Unary = defaultCodeAddress
 
 	// handler fallthough
-	// 设置fallthrough跳转到下个statementlist的位置
+	// . Set the fallthrough to jump to the position of the next statement list
 	for _, b := range _fallthrough {
-		// 最后一个的fallthrough应该跳转到default
+		// . The last fallthrough should jump to the default
 		if b.Unary == lenOfAllCases-1 {
 			b.Unary = defaultCodeAddress
 		} else {
@@ -270,7 +270,7 @@ func (y *YakCompiler) VisitSwitchStmt(raw yak.ISwitchStmtContext) interface{} {
 		b.Op2 = yakvm.NewIntValue(2)
 	}
 
-	// 设置跳转到switch结尾的位置
+	// Set the jump to the position at the end of the switch
 	for _, jmp := range jmpToEnd {
 		jmp.Unary = endCodewithScopeEnd
 	}

@@ -481,25 +481,25 @@ func GBKSafeString(s []byte) (string, error) {
 }
 
 func EscapeInvalidUTF8Byte(s []byte) string {
-	// 这个操作返回的结果和原始字符串是非等价的
+	// The result returned by this operation is not equivalent to the original string
 	ret := make([]rune, 0, len(s)+20)
 	start := 0
 	for {
 		r, size := utf8.DecodeRune(s[start:])
 		if r == utf8.RuneError {
-			// 说明是空的
+			// The description is empty
 			if size == 0 {
 				break
 			} else {
-				// 不是 rune
+				// Not rune
 				ret = append(ret, []rune(fmt.Sprintf("\\x%02x", s[start]))...)
 			}
 		} else {
-			// 不是换行之类的控制字符
+			// Not a control character such as line break
 			if unicode.IsControl(r) && !unicode.IsSpace(r) {
 				ret = append(ret, []rune(fmt.Sprintf("\\x%02x", r))...)
 			} else {
-				// 正常字符
+				// Normal characters
 				ret = append(ret, r)
 			}
 		}

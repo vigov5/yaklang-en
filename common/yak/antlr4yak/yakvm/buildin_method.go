@@ -15,7 +15,7 @@ type buildinMethod struct {
 	IsVariadicParam bool
 	Snippet         string
 
-	// 执行的核心函数
+	// core functions executed
 	HandlerFactory MethodFactory
 
 	// Description of this built-in method

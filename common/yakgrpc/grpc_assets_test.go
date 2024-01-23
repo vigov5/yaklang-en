@@ -19,7 +19,7 @@ func TestServer_QueryDomains(t *testing.T) {
 		panic(err)
 	}
 
-	/*rsp, err := client.QueryDomains(context.Background(), &ypb.QueryDomainsRequest{Title: "百度"})
+	/*rsp, err := client.QueryDomains(context.Background(), &ypb.QueryDomainsRequest{Title: "Baidu"})
 	die(err)
 
 	//println(rsp.String())

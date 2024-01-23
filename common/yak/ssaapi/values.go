@@ -149,6 +149,8 @@ func (v Values) GetDefs() Values {
 
 type Value struct {
 	runtimeCtx *omap.OrderedMap[string, *Value]
+	EffectOn   Values
+	DependOn   Values
 
 	node ssa.InstructionNode
 	// cache
@@ -169,6 +171,9 @@ func NewValue(n ssa.InstructionNode) *Value {
 }
 
 func (v *Value) GetId() int {
+	if v.node == nil {
+		return -1
+	}
 	return v.node.GetId()
 }
 
@@ -189,6 +194,13 @@ func (i *Value) StringWithSource() string {
 }
 
 func (i *Value) GetName() string { return i.node.GetName() }
+
+func (i *Value) GetVerboseName() string {
+	if i.node.GetName() != "" {
+		return i.node.GetName()
+	}
+	return fmt.Sprintf(`t%d: %v`, i.GetId(), i.String())
+}
 
 func (i *Value) Show()           { fmt.Println(i) }
 func (i *Value) ShowWithSource() { fmt.Println(i.StringWithSource()) }

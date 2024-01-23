@@ -8,10 +8,11 @@
     <title>购物车 - 购物商城</title>
 
     <!-- Google Fonts -->
-    <link href='https://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet'
+    <link href='https://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600&display=swap' rel='stylesheet'
         type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300&display=swap' rel='stylesheet'
+        type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Raleway:400,100&display=swap' rel='stylesheet' type='text/css'>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="/static/css/mall/bootstrap.min.css">
@@ -381,10 +382,10 @@
     </div> <!-- End footer bottom area -->
 
     <!-- Latest jQuery form server -->
-    <script src="https://code.jquery.com/jquery.min.js"></script>
+    <script src="/static/js/mall/jquery.min.js"></script>
 
     <!-- Bootstrap JS form CDN -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="/static/js/mall/bootstrap.min.js"></script>
 
     <!-- jQuery sticky menu -->
     <script src="/static/js/mall/owl.carousel.min.js"></script>
@@ -397,25 +398,13 @@
     <script src="/static/js/mall/main.js"></script>
     <script>
         //显示通知消息
-        function showNotification(message,event) {
+        function showNotification(message, event) {
             event.preventDefault();
             alert(message);
             // 设置一段时间后自动隐藏提示框
             setTimeout(function () {
                 notification.style.display = "none";
             }, 6000);
-        }
-        function purchaseSelected(event) {
-            event.preventDefault();
-            var selectedProducts = [];
-            var checkboxes = document.getElementsByClassName('product-checkbox');
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) {
-                    selectedProducts.push(checkboxes[i].value);
-                }
-            }
-            // 在这里执行购买函数，例如：
-            // purchaseProducts(selectedProducts);
         }
 
         //获取userID和productName
@@ -530,7 +519,7 @@
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        showNotification(xhr.responseText,event);
+                        showNotification(xhr.responseText, event);
                         //刷新页面
                         window.location.reload();
                     } else if (xhr.status === 0) {
@@ -538,7 +527,7 @@
                         console.log('Request was aborted');
                     } else {
                         // 删除购物车失败，显示错误消息
-                        showNotification("删除购物车失败: " + xhr.responseText,event);
+                        showNotification("删除购物车失败: " + xhr.responseText, event);
                         window.location.reload();
                     }
                 }
@@ -562,7 +551,7 @@
                         window.location.href = "/mall/shop/index";
                     } else {
                         // 登出失败，显示错误消息
-                        showNotification("Logout failed: " + xhr.responseText,event);
+                        showNotification("Logout failed: " + xhr.responseText, event);
                     }
                 }
             };

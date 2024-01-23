@@ -13,7 +13,7 @@ func TestGRPCMUSTPASS_CSRF(t *testing.T) {
 		panic(err)
 	}
 
-	pluginName := "CSRF 表单保护与 CORS 配置不当检测"
+	pluginName := "CSRF form protection and CORS misconfiguration detection"
 	vul := VulInfo{
 		Path: []string{
 			"/csrf/unsafe",

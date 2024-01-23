@@ -7,29 +7,26 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
+	"math/big"
+	"net"
+	"time"
+
 	"github.com/pkg/errors"
 	"github.com/yaklang/yaklang/common/gmsm/gmtls"
 	"github.com/yaklang/yaklang/common/gmsm/sm2"
 	x509gm "github.com/yaklang/yaklang/common/gmsm/x509"
 	"github.com/yaklang/yaklang/common/log"
 	"github.com/yaklang/yaklang/common/utils"
-	"math/big"
-	"net"
-	"time"
-)
 
-import (
 	cryptorand "crypto/rand"
 )
 
 func GenerateSelfSignedCertKey(host string, alternateIPs []net.IP, alternateDNS []string) ([]byte, []byte, error) {
-	//return GenerateSelfSignedCertKeyWithCommonName("Yakit MITM Root CA", host, alternateIPs, alternateDNS)
+	// return GenerateSelfSignedCertKeyWithCommonName("Yakit MITM Root CA", host, alternateIPs, alternateDNS)
 	return GenerateSelfSignedCertKeyWithCommonName("Yakit MITM Root CA", host, alternateIPs, alternateDNS)
 }
 
-var (
-	defaultTLSServerConfig *tls.Config
-)
+var defaultTLSServerConfig *tls.Config
 
 func NewDefaultTLSServer(conn net.Conn) *tls.Conn {
 	if defaultTLSServerConfig == nil {
@@ -98,7 +95,7 @@ func GenerateCRLWithExistedList(ca, key []byte, existedRevoked ...pkix.RevokedCe
 			Number:              sid,
 			ThisUpdate:          now,
 			NextUpdate:          now.Add(24 * time.Hour),
-			//ExtraExtensions:     nil,
+			// ExtraExtensions:     nil,
 		}, caCert, caKey,
 	)
 	if err != nil {
@@ -166,15 +163,16 @@ func GenerateSelfSignedCertKeyWithCommonName(commonName, host string, alternateI
 }
 
 func init() {
-	utils.RegisterDefaultTLSConfigGenerator(func() (*tls.Config, *gmtls.Config, *tls.Config, *gmtls.Config, []byte, []byte) {
+	utils.RegisterDefaultTLSConfigGenerator(func() (*tls.Config, *gmtls.Config, *gmtls.Config, *tls.Config, *gmtls.Config, []byte, []byte) {
 		ca, key, _ := GenerateSelfSignedCertKeyWithCommonName("test", "127.0.0.1", nil, nil)
 		sCa, sKey, _ := SignServerCrtNKey(ca, key)
 		cCa, cKey, _ := SignClientCrtNKey(sCa, sKey)
 		stls, _ := GetX509ServerTlsConfig(ca, sCa, sKey)
 		mstls, _ := GetX509MutualAuthServerTlsConfig(ca, sCa, sKey)
 		gmtlsConfig, _ := GetX509GMServerTlsConfigWithAuth(ca, sCa, sKey, false)
+		onlyGmtlsTestConfig, _ := GetX509GMServerTlsConfigWithOnly(ca, sCa, sKey, false)
 		mgmtlsConfig, _ := GetX509GMServerTlsConfigWithAuth(ca, sCa, sKey, true)
-		return stls, gmtlsConfig, mstls, mgmtlsConfig, cCa, cKey
+		return stls, gmtlsConfig, onlyGmtlsTestConfig, mstls, mgmtlsConfig, cCa, cKey
 	})
 }
 
@@ -200,8 +198,24 @@ func GenerateSelfSignedCertKeyWithCommonNameEx(commonName, org, host string, alt
 	return SelfSignCACertificateAndPrivateKey(commonName, WithSelfSign_SignTo(hosts...), WithSelfSign_EnableAuth(auth), WithSelfSign_PrivateKey(priv), WithSelfSign_Organization(org))
 }
 
+// SignX509ClientCertAndKey Based on the given CA certificate and private key, generate Client certificate and key, return the client certificate and key in PEM format with error
+// Example:
+// ```
+// ca, key, err = tls.GenerateRootCA("yaklang.io")
+// cert, sKey, err = tls.SignX509ServerCertAndKey(ca, key)
+// ```
 func SignServerCrtNKey(ca []byte, key []byte) (cert []byte, sKey []byte, _ error) {
 	return SignServerCrtNKeyWithParams(ca, key, "Server", time.Now().Add(time.Hour*24*365*99), true)
+}
+
+// SignServerCertAndKey Based on the given CA certificate and private key , generate a server certificate and key that does not contain authentication, return the server certificate and key in PEM format with an error
+// Example:
+// ```
+// ca, key, err = tls.GenerateRootCA("yaklang.io")
+// cert, sKey, err = tls.SignServerCertAndKey(ca, key)
+// ```
+func SignServerCrtNKeyWithoutAuth(ca []byte, key []byte) (cert []byte, sKey []byte, _ error) {
+	return SignServerCrtNKeyWithParams(ca, key, "Server", time.Now().Add(time.Hour*24*365*99), false)
 }
 
 func SignServerCrtNKeyEx(ca []byte, key []byte, commonName string, auth bool) (cert []byte, sKey []byte, _ error) {
@@ -275,10 +289,31 @@ func SignServerCrtNKeyWithParams(ca []byte, key []byte, cn string, notAfter time
 	return certBuffer.Bytes(), keyBuffer.Bytes(), nil
 }
 
+// SignX509ClientCertAndKey Based on the given CA certificate and private key, generate the client certificate and key, return the client certificate and key in PEM format with error
+// Example:
+// ```
+// ca, key, err = tls.GenerateRootCA("yaklang.io")
+// cert, sKey, err = tls.SignX509ClientCertAndKey(ca, key)
+// ```
 func SignClientCrtNKey(ca, key []byte) ([]byte, []byte, error) {
 	return SignClientCrtNKeyWithParams(ca, key, "Client", time.Now().Add(time.Hour*24*365*99), true)
 }
 
+// SignClientCertAndKey Based on the given CA certificate and private key, generate the client certificate without certification and Key, returns the client certificate and key in PEM format with errors
+// Example:
+// ```
+// ca, key, err = tls.GenerateRootCA("yaklang.io")
+// cert, sKey, err = tls.SignClientCertAndKey(ca, key)
+// ```
+func SignClientCrtNKeyWithoutAuth(ca, key []byte) ([]byte, []byte, error) {
+	return SignClientCrtNKeyWithParams(ca, key, "Client", time.Now().Add(time.Hour*24*365*99), false)
+}
+
+// GenerateSM2KeyPair Generates an SM2 public and private key pair, returns in PEM format Public and private keys with error
+// Example:
+// ```
+// pub, pri, err := tls.GenerateSM2KeyPair()
+// ```
 func SM2GenerateKeyPair() ([]byte, []byte, error) {
 	priKey, err := sm2.GenerateKey(cryptorand.Reader)
 	if err != nil {
@@ -312,6 +347,11 @@ func SM2GenerateKeyPair() ([]byte, []byte, error) {
 	return pubResults.Bytes(), priResult.Bytes(), nil
 }
 
+// GenerateRSAKeyPair Generates an RSA public and private key pair according to the given bit size, returns the public key and private key in PEM format with errors
+// Example:
+// ```
+// pub, pri, err := tls.GenerateRSAKeyPair(2048)
+// ```
 func RSAGenerateKeyPair(bitSize int) ([]byte, []byte, error) {
 	p, err := rsa.GenerateKey(cryptorand.Reader, bitSize)
 	if err != nil {
@@ -319,7 +359,7 @@ func RSAGenerateKeyPair(bitSize int) ([]byte, []byte, error) {
 	}
 	pubKey := &p.PublicKey
 
-	var priKeyBytes = x509.MarshalPKCS1PrivateKey(p)
+	priKeyBytes := x509.MarshalPKCS1PrivateKey(p)
 	pemPriBlock := &pem.Block{Type: "RSA PRIVATE KEY", Bytes: priKeyBytes}
 	var priResult bytes.Buffer
 	err = pem.Encode(&priResult, pemPriBlock)
@@ -365,7 +405,7 @@ func SignClientCrtNKeyWithParams(ca, key []byte, cn string, notAfter time.Time, 
 		KeyUsage: x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign | x509.KeyUsageCRLSign,
 		ExtKeyUsage: []x509.ExtKeyUsage{
 			x509.ExtKeyUsageClientAuth,
-			//x509.ExtKeyUsageServerAuth,
+			// x509.ExtKeyUsageServerAuth,
 		},
 		BasicConstraintsValid: true,
 		IsCA:                  false,

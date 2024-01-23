@@ -34,10 +34,10 @@ type BaseCase struct {
 
 /*
 type github.com/yaklang/yaklang/common/mutate.(FuzzHTTPRequest) struct {
-  Fields(可用字段):
+  Fields (available fields):
       Opts: []mutate.BuildFuzzHTTPRequestOption
-  StructMethods(结构方法/函数):
-  PtrStructMethods(指针结构方法/函数):
+  StructMethods (structural method)/Function):
+  PtrStructMethods (pointer structural method/Function):
       func Exec(v1 ...func HttpPoolConfigOption(v1: *mutate.httpPoolConfig) ) return(chan *mutate._httpResult, error)
       func ExecFirst(v1 ...func HttpPoolConfigOption(v1: *mutate.httpPoolConfig) ) return(*mutate._httpResult, error)
       func FirstFuzzHTTPRequest() return(*mutate.FuzzHTTPRequest)

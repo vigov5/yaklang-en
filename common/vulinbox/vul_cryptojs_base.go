@@ -540,7 +540,9 @@ setTimeout(function(){
 					}
 
 					var blocks []string
-					blocks = append(blocks, block("decryption front end Content successful", string(origin)))
+					blocks = append(blocks, block("Decrypted front-end content successfully", string(origin)))
+					username := utils.MapGetString(params, "username")
+					password := utils.MapGetString(params, "password")
 					if isLogined(username, password) {
 						blocks = append(blocks, block("Username and password verification successful", "Congratulations, your login is successful!"))
 					} else {

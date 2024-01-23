@@ -8,10 +8,11 @@ import (
 	"strings"
 
 	"github.com/samber/lo"
+	"github.com/yaklang/yaklang/common/utils"
 	"github.com/yaklang/yaklang/common/yak/antlr4yak/yakvm"
-	pta "github.com/yaklang/yaklang/common/yak/plugin_type_analyzer"
 	"github.com/yaklang/yaklang/common/yak/ssa"
 	"github.com/yaklang/yaklang/common/yak/ssaapi"
+	pta "github.com/yaklang/yaklang/common/yak/static_analyzer"
 	"github.com/yaklang/yaklang/common/yak/yakdoc"
 	"github.com/yaklang/yaklang/common/yak/yakdoc/doc"
 	"github.com/yaklang/yaklang/common/yakgrpc/ypb"
@@ -248,14 +249,18 @@ func shouldExport(key string) bool {
 }
 
 func getFuncDeclDesc(funcDecl *yakdoc.FuncDecl, typStr string) string {
-	desc := fmt.Sprintf("```go\nfunc %s\n```\n\n%s", funcDecl.Decl, funcDecl.Document)
+	document := funcDecl.Document
+	if document != "" {
+		document = "\n\n" + document
+	}
+	desc := fmt.Sprintf("```go\nfunc %s\n```%s", funcDecl.Decl, document)
 	desc = strings.Replace(desc, "func(", typStr+"(", 1)
 	desc = yakdoc.ShrinkTypeVerboseName(desc)
 	return desc
 }
 
-func getInstanceDesc(instance *yakdoc.LibInstance) string {
-	desc := fmt.Sprintf("```go\nconst %s %s = %s\n```", instance.InstanceName, getGolangTypeStringByTypeStr(instance.Type), instance.ValueStr)
+func getConstInstanceDesc(instance *yakdoc.LibInstance) string {
+	desc := fmt.Sprintf("```go\nconst %s = %s\n```", instance.InstanceName, instance.ValueStr)
 	desc = yakdoc.ShrinkTypeVerboseName(desc)
 	return desc
 }
@@ -289,37 +294,35 @@ func getInstancesAndFuncDecls(word string, containPoint bool) (map[string]*yakdo
 	}
 }
 
-func getFuncDescByDecls(funcDecls map[string]*yakdoc.FuncDecl, typName string, isStruct bool, tab bool) string {
+func getFuncDescByDecls(funcDecls map[string]*yakdoc.FuncDecl, callback func(decl *yakdoc.FuncDecl) string) string {
 	desc := ""
-	methodNames := lo.MapToSlice(funcDecls, func(methodName string, _ *yakdoc.FuncDecl) string {
-		return methodName
-	})
-	sort.Strings(methodNames)
+	methodNames := utils.GetSortedMapKeys(funcDecls)
 
 	for _, methodName := range methodNames {
-		funcDecl := funcDecls[methodName]
-		funcDesc := ""
-		if isStruct {
-			funcDesc = fmt.Sprintf("func (%s) %s\n", typName, strings.TrimPrefix(funcDecl.Decl, "func"))
-		} else {
-			funcDesc = funcDecl.Decl + "\n"
-		}
-		if tab {
-			funcDesc = "    " + funcDesc
-		}
-		desc += funcDesc
+		desc += callback(funcDecls[methodName])
 	}
 
 	return desc
 }
 
-func getFuncDescBytypeStr(typStr string, typName string, isStruct bool, tab bool) string {
+func getFuncDescBytypeStr(typStr string, typName string, isStruct, tab bool) string {
 	lib, ok := doc.DefaultDocumentHelper.StructMethods[typStr]
 	if !ok {
 		return ""
 	}
 
-	return getFuncDescByDecls(lib.Functions, typName, isStruct, tab)
+	return getFuncDescByDecls(lib.Functions, func(decl *yakdoc.FuncDecl) string {
+		funcDesc := ""
+		if isStruct {
+			funcDesc = fmt.Sprintf("func (%s) %s\n", typName, strings.TrimPrefix(decl.Decl, "func"))
+		} else {
+			funcDesc = decl.Decl + "\n"
+		}
+		if tab {
+			funcDesc = "    " + funcDesc
+		}
+		return funcDesc
+	})
 }
 
 func getBuiltinFuncDeclAndDoc(name string, bareTyp ssa.Type) (desc string, doc string) {
@@ -382,13 +385,11 @@ func getFuncDeclAndDocBySSAValue(name string, v *ssaapi.Value) (desc string, doc
 		funcTyp, ok := ssa.ToFunctionType(bareTyp)
 		if ok {
 			desc = getFuncTypeDesc(funcTyp, lastName)
-			desc = strings.TrimLeft(desc, "```go ")
-			desc = strings.TrimRight(desc, "```")
 			return
 		}
 	}
 
-	// built-in method
+	// type built-in method
 	desc, document = getBuiltinFuncDeclAndDoc(lastName, bareTyp)
 	if desc != "" {
 		return
@@ -404,12 +405,23 @@ func getExternLibDesc(name, typName string) string {
 		// break
 		return ""
 	}
-	desc := fmt.Sprintf("```go\ntype %s library {\n", name)
-	methodDescriptions := getFuncDescByDecls(lib.Functions, typName, false, true)
-	desc += methodDescriptions
-	desc += "}"
-	desc += "\n```"
-	return desc
+
+	var builder strings.Builder
+	// desc :=
+	// desc = yakdoc.ShrinkTypeVerboseName(desc)
+
+	builder.WriteString(fmt.Sprintf("```go\npackage %s\n\n", name))
+	instanceKeys := utils.GetSortedMapKeys(lib.Instances)
+	for _, key := range instanceKeys {
+		instance := lib.Instances[key]
+		builder.WriteString(yakdoc.ShrinkTypeVerboseName(fmt.Sprintf("const %s %s = %s\n", instance.InstanceName, getGolangTypeStringByTypeStr(instance.Type), instance.ValueStr)))
+	}
+	builder.WriteRune('\n')
+	builder.WriteString(getFuncDescByDecls(lib.Functions, func(decl *yakdoc.FuncDecl) string {
+		return yakdoc.ShrinkTypeVerboseName(fmt.Sprintf("func %s\n", decl.Decl))
+	}))
+	builder.WriteString("\n```")
+	return builder.String()
 }
 
 func getDescFromSSAValue(name string, v *ssaapi.Value) string {
@@ -429,6 +441,7 @@ func getDescFromSSAValue(name string, v *ssaapi.Value) string {
 			funcDecl := getFuncDeclByName(name)
 			if funcDecl != nil {
 				desc = getFuncDeclDesc(funcDecl, typStr)
+				break
 			}
 			// user-defined function
 			funcTyp, ok := ssa.ToFunctionType(bareTyp)
@@ -487,7 +500,7 @@ func getDescFromSSAValue(name string, v *ssaapi.Value) string {
 			// standard library constant
 			instance := getInstanceByName(name)
 			if instance != nil {
-				desc = getInstanceDesc(instance)
+				desc = getConstInstanceDesc(instance)
 			}
 		} else {
 			// structure / interface method
@@ -496,6 +509,11 @@ func getDescFromSSAValue(name string, v *ssaapi.Value) string {
 				funcDecl, ok := lib.Functions[lastName]
 				if ok {
 					desc = getFuncDeclDesc(funcDecl, lastName)
+				} else {
+					instance, ok := lib.Instances[lastName]
+					if ok {
+						desc = yakdoc.ShrinkTypeVerboseName(fmt.Sprintf("```go\nfield %s %s\n```", instance.InstanceName, getGolangTypeStringByTypeStr(instance.Type)))
+					}
 				}
 			} else {
 				// built-in method
@@ -727,24 +745,22 @@ func OnCompletion(prog *ssaapi.Program, req *ypb.YaklangLanguageSuggestionReques
 			break
 		}
 
-		rTyp.GetMethod()
-		for _, key := range rTyp.Keys {
-			// filters out non-exported fields
-			if !shouldExport(key.String()) {
+		lib, ok := doc.DefaultDocumentHelper.StructMethods[typStr]
+		if !ok {
+			return ret
+		}
+		for _, instance := range lib.Instances {
+			// Filter out non-exported fields
+			if !shouldExport(instance.InstanceName) {
 				continue
 			}
-			keyStr := key.String()
+			keyStr := instance.InstanceName
 			ret = append(ret, &ypb.SuggestionDescription{
 				Label:       keyStr,
 				Description: "",
 				InsertText:  keyStr,
 				Kind:        "Field",
 			})
-		}
-
-		lib, ok := doc.DefaultDocumentHelper.StructMethods[typStr]
-		if !ok {
-			return ret
 		}
 
 		for methodName, funcDecl := range lib.Functions {

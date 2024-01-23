@@ -1093,8 +1093,8 @@ func pochttp(packet []byte, config *_pocConfig) (*lowhttp.LowhttpResponse, error
 	return response, err
 }
 
-// HTTPEx is similar to HTTP. It sends a request and returns a response structure, request structure and error. Its first parameter can receive []byte, string, http.Request structure, and then it can receive zero to multiple request options, which are used to configure this request, such as setting a timeout or modifying the request. Message etc.
-// will be added. You can use the desc function to view the available fields and methods in the structure.
+// HTTPEx is similar to HTTP. It sends a request and returns a response structure, request structure and error. Its first parameter can receive []byte, string, http.Request structure, Next, you can receive zero to multiple request options for configuring this request, such as setting a timeout, or modifying the request message, etc.
+// You can use the desc function to view the available fields and methods in the structure.
 // Example:
 // ```
 // rsp, req, err = poc.HTTPEx(`GET / HTTP/1.1\r\nHost: www.yaklang.com\r\n\r\n`, poc.https(true), poc.replaceHeader("AAA", "BBB")) // sends a GET request based on HTTPS protocol to yaklang.com, and adds a request header AAA, whose value is BBB.
@@ -1130,7 +1130,7 @@ func BuildRequest(i interface{}, opts ...PocConfig) []byte {
 	return packet
 }
 
-// HTTP sends the request and returns the original response message, original request message and error. Its first parameter can Receive []byte, string, http.Request structure, and then you can receive zero to multiple request options, which are used to configure this request, such as setting the timeout, or modifying the request message, etc.
+// HTTP sends the request and returns the original response message. The original request message and error, its first parameter can receive []byte, string, http.Request structure, and then it can receive zero to multiple request options, which are used to configure this request, such as setting Timeout, or modify the request message, etc.
 // Example:
 // ```
 // poc.HTTP("GET / HTTP/1.1\r\nHost: www.yaklang.com\r\n\r\n", poc.https(true), poc.replaceHeader("AAA", "BBB")) // yaklang.com sends a request based on HTTPS GET request of the protocol, and add a request header AAA, whose value is BBB
@@ -1144,7 +1144,7 @@ func HTTP(i interface{}, opts ...PocConfig) (rsp []byte, req []byte, err error) 
 	return response.RawPacket, lowhttp.FixHTTPPacketCRLF(packet, config.NoFixContentLength), err
 }
 
-// Do sends a request with the specified request method to the specified URL and returns the response structure. Request structure and error. The first parameter is the request method, and the second parameter is the URL string. Next, you can receive zero to multiple request options, which are used to configure this request, such as setting a timeout. time, or modify the request message, etc.
+// Do sends a request with the specified request method to the specified URL and returns the response structure, request structure and error. The first parameter is the request method, and the first parameter is the request method. Two parameter URL string, then you can receive zero to multiple request options, which are used to configure this request, such as setting the timeout, or modifying the request message, etc.
 
 // will be added. You can use the desc function to view the available fields and methods in the structure.
 // Example:

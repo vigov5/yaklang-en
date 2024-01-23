@@ -213,8 +213,8 @@ die(nuclei.UpdateDatabase())`, "main")
 				// web fingerprints
 				fp.WithWebFingerprintRule(webRules),
 
-				// Open Web fingerprint recognition
-				fp.WithForceEnableWebFingerprint(true),
+				// 打开 Web 指纹识别
+				fp.WithForceEnableAllFingerprint(true),
 
 				// enable TCP scan
 				fp.WithTransportProtos(fp.TCP),
@@ -447,7 +447,7 @@ die(nuclei.UpdateDatabase())`, "main")
 				fp.WithWebFingerprintRule(webRules),
 			)
 			options = append(
-				options, fp.WithForceEnableWebFingerprint(true),
+				options, fp.WithForceEnableAllFingerprint(true),
 			)
 
 			config := fp.NewConfig(options...)
@@ -492,7 +492,7 @@ die(nuclei.UpdateDatabase())`, "main")
 					portSwg.Add()
 					go scanCore(
 						host, tcpPort,
-						fp.WithForceEnableWebFingerprint(true),
+						fp.WithForceEnableAllFingerprint(true),
 						fp.WithOnlyEnableWebFingerprint(c.Bool("web")),
 						fp.WithTransportProtos(fp.TCP),
 					)

@@ -134,7 +134,7 @@ func init() {
 					return r.Len()
 				}
 			}),
-			Description: "获取长度",
+			Description: "Get the length",
 		},
 		"Capability": {
 			Name: "Capability",

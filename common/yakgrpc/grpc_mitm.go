@@ -333,6 +333,8 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 	autoForward := utils.NewBool(true)
 	autoForwardCh := make(chan struct{}, 1)
 
+	filterWebSocket := utils.NewBool(false)
+
 	go func() {
 		defer close(autoForwardCh)
 		for {
@@ -551,6 +553,13 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 				})
 				continue
 			}
+
+			// Whether to filter ws
+			if reqInstance.GetFilterWebsocket() {
+				filterWebSocket.SetTo(reqInstance.GetFilterWebsocket())
+				continue
+			}
+
 			//defer func() {
 			//	recover()
 			//}()
@@ -613,7 +622,11 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 		originRspRaw := raw[:]
 		finalResult = originRspRaw
 
-		// Save to the database
+		if filterWebSocket.IsSet() {
+			return originRspRaw
+		}
+
+		// and save it to the database
 		wshash := utils.CalcSha1(fmt.Sprintf("%p", req), fmt.Sprintf("%p", rsp), ts)
 		err := yakit.SaveFromServerWebsocketFlow(s.GetProjectDatabase(), wshash, requireWsFrameIndexByWSHash(wshash), raw[:])
 		if err != nil {
@@ -919,6 +932,10 @@ func (s *Server) MITM(stream ypb.Yak_MITMServer) error {
 				return
 			}
 		}()
+
+		if filterWebSocket.IsSet() {
+			return raw
+		}
 
 		isTls, urlStr := lowhttp.ExtractWebsocketURLFromHTTPRequest(req)
 		var extName string

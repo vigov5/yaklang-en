@@ -86,7 +86,7 @@ sqlInjectionChecking = func(https, request) {
         token = sprint(token)
         info(f"Payload: ${len(payloads)} Prefix:${len(prefix)} Suffix:${len(suffix)} TOKEN is the most accurate detection of MD5 type Payload for " + sprint(token))
 
-        /* 最准确的 MD5 型 Payload 的检测 */
+        /* The most accurate detection of MD5 payloads */
         var finished = false
         for p in prefix {
             for s in suffix {

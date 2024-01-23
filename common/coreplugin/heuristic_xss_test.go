@@ -13,7 +13,7 @@ func TestGRPCMUSTPASS_XSS(t *testing.T) {
 		panic(err)
 	}
 
-	pluginName := "基础 XSS 检测"
+	pluginName := "Basic XSS detection"
 
 	vul := VulInfo{
 		Path: []string{

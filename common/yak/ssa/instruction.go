@@ -176,18 +176,22 @@ func NewExternLib(variable string, builder *FunctionBuilder) *ExternLib {
 	return e
 }
 
-func NewParam(variable string, isFreeValue bool, fun *FunctionBuilder) *Parameter {
+func NewParam(variable string, isFreeValue bool, builder *FunctionBuilder) *Parameter {
 	p := &Parameter{
 		anInstruction: NewInstruction(),
 		anValue:       NewValue(),
 		IsFreeValue:   isFreeValue,
 	}
 	p.SetName(variable)
-	p.SetFunc(fun.Function)
-	p.SetBlock(fun.EnterBlock)
-	p.SetRange(fun.GetRange())
+	p.SetFunc(builder.Function)
+	p.SetBlock(builder.EnterBlock)
+	p.SetRange(builder.CurrentRange)
 	p.GetProgram().SetVirtualRegister(p)
 	// p.GetProgram().SetInstructionWithName(variable, p)
+	p.Function = builder.Function
+	p.FormalParameterIndex = len(builder.Param)
+	p.FormalParameterVariadic = builder.hasEllipsis
+	p.FormalParameterName = variable
 	return p
 }
 

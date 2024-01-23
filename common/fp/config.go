@@ -51,11 +51,11 @@ type Config struct {
 	// Active Mode. The ActiveMode here should be consistent with the current configuration, so there is no need to set
 
 	//
-	// ForceEnableWebFingerprint means forced detection of Web fingerprints
-	ForceEnableWebFingerprint bool
+	// ForceEnableAllFingerprint indicates forced detection of Web fingerprints.
+	ForceEnableAllFingerprint bool
 
-	// OnlyEnableWebFingerprint indicates the value for Web fingerprinting.
-	//    When this option is True, the behavior will override ForceEnableWebFingerprint
+	// OnlyEnableWebFingerprint indicates the value of Web fingerprint recognition.
+	//    When this option is True, the behavior will override ForceEnableAllFingerprint.
 	OnlyEnableWebFingerprint bool
 
 	// Disable special Web fingerprint scanning
@@ -185,7 +185,7 @@ func (c *Config) init() {
 	c.ProbesConcurrentMax = 5
 	c.OnlyEnableWebFingerprint = false
 	c.DisableWebFingerprint = false
-	c.ForceEnableWebFingerprint = false
+	c.ForceEnableAllFingerprint = false
 	c.WebFingerprintUseAllRules = true
 	c.CrawlerMaxUrlCount = 5
 	c.PoolSize = 20
@@ -289,18 +289,15 @@ func WithProbeTimeoutHumanRead(f float64) ConfigOption {
 	}
 }
 
-func WithForceEnableWebFingerprint(b bool) ConfigOption {
+func WithForceEnableAllFingerprint(b bool) ConfigOption {
 	return func(config *Config) {
-		config.ForceEnableWebFingerprint = b
+		config.ForceEnableAllFingerprint = b
 	}
 }
 
 func WithOnlyEnableWebFingerprint(b bool) ConfigOption {
 	return func(config *Config) {
 		config.OnlyEnableWebFingerprint = b
-		if b {
-			config.ForceEnableWebFingerprint = true
-		}
 	}
 }
 

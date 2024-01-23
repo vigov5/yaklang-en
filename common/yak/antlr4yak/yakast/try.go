@@ -99,7 +99,7 @@ func (y *YakCompiler) _VisitTryStmt(raw yak.ITryStmtContext) interface{} {
 		y.panicCompilerError(compileError, "cannot create yak function from compiler")
 	}
 
-	// 配置函数
+	// Configuration function
 	y.pushValue(&yakvm.Value{
 		TypeVerbose: "anonymous-function",
 		Value:       yakFn,

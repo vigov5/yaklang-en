@@ -1,9 +1,12 @@
 package tools
 
 import (
+	"context"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"github.com/yaklang/yaklang/common/fp"
 	"github.com/yaklang/yaklang/common/synscan"
+	"github.com/yaklang/yaklang/common/utils"
 	"sync"
 	"testing"
 	"time"
@@ -97,4 +100,62 @@ func Test_scanFingerprint1(t *testing.T) {
 	}()
 
 	wg.Wait()
+}
+
+func Test_scanFingerprint2(t *testing.T) {
+	mockGMHost, mockGMPort := utils.DebugMockOnlyGMHTTP(context.Background(), nil)
+	t.Logf("mockGMHost: %v, mockGMPort: %v", mockGMHost, mockGMPort)
+	type args struct {
+		target string
+		port   string
+		opts   []fp.ConfigOption
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    fp.PortState
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name: "When the GM Tls site enables all(), it should return OPEN",
+			args: args{
+				target: mockGMHost,
+				port:   fmt.Sprint(mockGMPort),
+				opts: []fp.ConfigOption{
+					fp.WithActiveMode(true),
+					fp.WithForceEnableAllFingerprint(true),
+					fp.WithOnlyEnableWebFingerprint(true),
+					fp.WithTransportProtos(fp.TCP),
+				},
+			},
+			want:    fp.OPEN,
+			wantErr: assert.NoError,
+		},
+		{
+			name: "When the GM Tls site enables only web(), it should return CLOSE",
+			args: args{
+				target: mockGMHost,
+				port:   fmt.Sprint(mockGMPort),
+				opts: []fp.ConfigOption{
+					fp.WithActiveMode(true),
+					//fp.WithForceEnableAllFingerprint(true),
+					fp.WithOnlyEnableWebFingerprint(true),
+					fp.WithTransportProtos(fp.TCP),
+				},
+			},
+			want:    fp.CLOSED,
+			wantErr: assert.NoError,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := scanFingerprint(tt.args.target, tt.args.port, tt.args.opts...)
+			if !tt.wantErr(t, err, fmt.Sprintf("scanFingerprint(%v, %v)", tt.args.target, tt.args.port)) {
+				return
+			}
+			for v := range got {
+				assert.Equalf(t, tt.want, v.State, "scanFingerprint(%v, %v)", tt.args.target, tt.args.port)
+			}
+		})
+	}
 }

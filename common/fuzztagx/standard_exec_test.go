@@ -34,7 +34,7 @@ var testMap = map[string]func(string) []string{
 	},
 }
 
-// 同步渲染数量测试
+// . Synchronous rendering quantity test
 func TestSyncRender(t *testing.T) {
 	for i, testcase := range [][2]any{
 		//{
@@ -79,7 +79,7 @@ func TestSyncRender(t *testing.T) {
 	}
 }
 
-// 畸形测试
+// Malformation test
 func TestDeformityTag(t *testing.T) {
 	for _, v := range [][]string{
 		{"{{echo(${<{{echo(a)}}})}}", "${<a}"},
@@ -97,7 +97,7 @@ func TestDeformityTag(t *testing.T) {
 		{"{{xx12:-_(1)}}[[[[}}", "[[[[}}"},
 		{"{{xx12:-_:::::::(2)}}[[[[}}", "[[[[}}"},
 		{"{{xx12:-_()}}[[[[}}", "[[[[}}"},
-		//{"{{xx12:-_(____)____)}}[[[[}}", "{{xx12:-_(____)____)}}[[[[}}"}, // {{xx12:-_(____)____)}}应该被正确解析
+		//{"{{xx12:-_(____)____)}}[[[[}}", "{{xx12:-_(____)____)}}[[[[}}"}, // {{xx12:-_(____)____)}}should be parsed correctly.
 		{"{{xx12:-_(____\\)____)}}[[[[}}", "[[[[}}"},
 		{"{{xx12:-_(____\\)} }____)}}{[[[[}}", "{[[[[}}"},
 		{"{{xx12:-_(____)} }}____)}}[[[[}}", "{{xx12:-_(____)} }}____)}}[[[[}}"},
@@ -109,7 +109,7 @@ func TestDeformityTag(t *testing.T) {
 		{"{{{{get1}}{{1[[[[}}", "{{1{{1[[[[}}"},
 		{"{{i{{get1}}nt(1-2)}}", ""},
 		{"{{", "{{"},
-		//{"{{echo(123123\\))}}", "123123)"}, // 括号不需要转义
+		//{"{{echo(123123\\))}}", "123123)"}, // brackets do not need to be escaped.
 		//{"{{print(list{\\())}}", "{{print(list{\\())}}"},
 		//{"{{print(list{\\(\\))}}", ""},
 		{"{{{echo(123)}}", "{123"},
@@ -131,7 +131,7 @@ func TestDeformityTag(t *testing.T) {
 	}
 }
 
-// Tag名后换行
+// Newline after the tag name
 func TestNewLineAfterTagName(t *testing.T) {
 	var m = map[string]func(string) []string{
 		"s": func(s string) []string {
@@ -167,15 +167,15 @@ func TestExecuteBug1(t *testing.T) {
 	}
 }
 
-// 转义
+// Escape
 func TestEscape(t *testing.T) {
 	for _, v := range [][]string{
 		{"{{echo(\\{{)}})}}", "{{)}}"},
-		{"\\{{echo(1)}}", "\\1"},                   // 标签外不转义
-		{"\\{{echo(1)\\}}", "\\{{echo(1)\\}}"},     // {{之后开始tag语法，需要转义，\}}转义后不能作为标签闭合符号，导致标签解析失败，原文输出
-		{"\\{{echo(1)\\}}}}", "\\{{echo(1)\\}}}}"}, // 标签解析成功，但由于标签内数据`echo(1)}`编译失败，导致原文输出
-		//{`{{echo({{echo(\\\\)}})}}`, `\\`},         // 多层标签嵌套转义
-		{`{{echo({{echo(\\)}})}}`, `\\`}, // \不转义
+		{"\\{{echo(1)}}", "\\1"},                   // Do not escape outside tags
+		{"\\{{echo(1)\\}}", "\\{{echo(1)\\}}"},     // {{Then start the tag syntax, which needs to be escaped. \}}. After escaping, it cannot be used as a label closing symbol, causing label parsing to fail. The original text output
+		{"\\{{echo(1)\\}}}}", "\\{{echo(1)\\}}}}"}, // The tag parsing is successful, but because the data in the tag is `echo(1)}`Compilation fails, resulting in original text output
+		//{`{{echo({{echo(\\\\)}})}}`, `\\`},         // Multi-layer Tag nested escaping
+		{`{{echo({{echo(\\)}})}}`, `\\`}, // \not escaped.
 		{`{{echo(C:\Abc\tmp)}}`, `C:\Abc\tmp`},
 	} {
 		res, err := ExecuteWithStringHandler(v[0], map[string]func(string2 string) []string{
@@ -268,8 +268,8 @@ func TestMagicLabel(t *testing.T) {
 
 func TestRawTag(t *testing.T) {
 	for _, v := range [][]string{
-		{"{{=asdasd=}}", "asdasd"},                                  // 常规
-		{`\{{=hello{{=hello\{{=world=}}`, `\{{=hellohello{{=world`}, // 测试 raw tag转义
+		{"{{=asdasd=}}", "asdasd"},                                  // Regular
+		{`\{{=hello{{=hello\{{=world=}}`, `\{{=hellohello{{=world`}, // Test raw tag escape
 	} {
 		res, err := ExecuteWithStringHandler(v[0], map[string]func(string2 string) []string{
 			"echo": func(s string) []string {
@@ -286,8 +286,8 @@ func TestRawTag(t *testing.T) {
 }
 func TestMutiTag(t *testing.T) {
 	for _, v := range [][]string{
-		{"{{echo({{={{echo()}}=}})}}", "{{echo()}}"}, // 常规
-		//{`{{echo({{=}}=}})}}`, `}}`}, // 测试嵌套（raw标签应该屏蔽所有语法）
+		{"{{echo({{={{echo()}}=}})}}", "{{echo()}}"}, // Regular
+		//{`{{echo({{=}}=}})}}`, `}}`}, // Test nesting (raw tags should block all syntax)
 	} {
 		res, err := ExecuteWithStringHandler(v[0], map[string]func(string2 string) []string{
 			"echo": func(s string) []string {
@@ -303,9 +303,9 @@ func TestMutiTag(t *testing.T) {
 	}
 }
 
-// 测试标签执行出错的情况
+// Test tag execution errors
 func TestErrors(t *testing.T) {
-	// 执行出错的几种情况：标签编译错误（返回原文）、未找到函数名（生成空？）、函数内部执行出错继续生成
+	// Several cases of execution errors: Tag compilation error (return to original text ), function name not found (generated empty?), internal execution error of the function, continue to generate
 	res, err := ExecuteWithStringHandler("{{panic(error}}", testMap)
 	if err != nil {
 		t.Fatal(err)

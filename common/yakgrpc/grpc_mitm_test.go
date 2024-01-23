@@ -740,7 +740,7 @@ a, b, _ = poc.HTTP(string(packet), poc.proxy(getParam("proxy")), poc.https(true)
 						h2Test = true
 					} else if len(flows) == 0 {
 						t.Fatal("/mitm/test/h2/drop/token/" + token + " not found")
-					} else if !strings.Contains(flows[0].Tags, "被丢弃") {
+					} else if !strings.Contains(flows[0].Tags, "thrown away") {
 						t.Fatal("/mitm/test/h2/drop/token/" + token + "should indicate user manually drop in http history")
 					} else {
 						t.Fatal("unknown err")

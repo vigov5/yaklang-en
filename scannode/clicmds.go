@@ -15,7 +15,7 @@ var DistYakCommand = cli.Command{
 		var err error
 		args := c.Args()
 		if len(args) > 0 {
-			// args 被解析到了，说明后面跟着文件，去读文件出来吧
+			// args has been parsed, indicating that it is followed by a file. Read the file.
 			file := args[0]
 			if file != "" {
 				var absFile = file

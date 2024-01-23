@@ -184,7 +184,7 @@ func (c *S5Config) HandleS5Request(conn net.Conn) (net.Conn, error) {
 	}
 	_ = reserved
 
-	// 要连接的具体目标
+	// The specific target to connect to
 	var targetHost string
 
 	var addrBytesRaw []byte
@@ -245,7 +245,7 @@ func (c *S5Config) HandleS5Request(conn net.Conn) (net.Conn, error) {
 		return nil, utils.Error("BUG: act conn is nil")
 	}
 
-	// 告诉客户端已成功连接到目标服务器
+	// Tell the client that it has successfully connected to the target server
 	reply := []byte{socks5Version, replySuccess, 0x00}
 	host, _, _ := utils.ParseStringToHostPort(actConn.RemoteAddr().String())
 	if utils.IsIPv4(host) {
@@ -303,7 +303,7 @@ func (c *S5Config) ConnectionFallback(src, proxiedConn net.Conn) error {
 	ctxSrc := ctxio.NewReaderWriter(wCtx, src)
 	ctxDst := ctxio.NewReaderWriter(wCtx, dst)
 
-	// 从 src 读取数据，写入 dst
+	// Read data from src and write to dst
 	go func() {
 		defer func() {
 			cancel()
@@ -320,7 +320,7 @@ func (c *S5Config) ConnectionFallback(src, proxiedConn net.Conn) error {
 		}
 	}()
 
-	// 从 dst 读取数据，写入 src
+	// Read data from dst and write to src
 	go func() {
 		defer func() {
 			cancel()

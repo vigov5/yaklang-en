@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -152,8 +153,24 @@ func _cliCheck() {
 	}
 }
 
+func CliCheckWithContext(cancel context.CancelFunc) func() {
+	return func() {
+		if helpParam.foundArgsIndex() != -1 {
+			_help()
+			cancel()
+		} else if cliParamInvalid.IsSet() {
+			errorMsg = strings.TrimSpace(errorMsg)
+			if len(errorMsg) > 0 {
+				fmt.Printf("Error:\n  %s\n\n", errorMsg)
+			}
+			_help()
+
+		}
+	}
+}
+
 // SetCliName Set the name of this command line program
-// This will be entered on the command line --help or execute `cli.check()` after the parameter When it is illegal,
+// This will display
 // Example:
 // ```
 // cli.SetCliName("example-tools")
@@ -371,6 +388,12 @@ func _cliUrls(name string, opts ...SetCliExtraParam) []string {
 	return ret
 }
 
+// Ports Get the command line parameters of the corresponding name, set the parameter group name according to","and"-"cut and try to parse the port and return [ ]int type
+// Example:
+// ```
+// ports = cli.Ports("ports")
+// // --ports 10086-10088,23333, then ports are [10086, 10087, 10088, 23333]
+// ```
 func _cliPort(name string, opts ...SetCliExtraParam) []int {
 	s, c := _cliFromString(name, opts...)
 	c._type = "port"
@@ -428,8 +451,25 @@ func _cliFile(name string, opts ...SetCliExtraParam) []byte {
 	return raw
 }
 
-// FileOrContent Get the command line parameters of the corresponding name
-// will try to read the corresponding file content based on the value passed in. If it cannot be read, it will return directly, and finally return []byte type
+// FileNames obtains the command line parameters of the corresponding names, obtains all selected file paths, and returns the []string type.
+// Example:
+// ```
+// file = cli.FileNames("file")
+// // --file /etc/passwd,/etc/hosts, then file is ["/etc/passwd", "/etc/hosts"]
+// ```
+func _cliFileNames(name string, opts ...SetCliExtraParam) []string {
+	rawStr, c := _cliFromString(name, opts...)
+	c._type = "file-names"
+
+	if rawStr == "" {
+		return []string{}
+	}
+
+	return utils.PrettifyListFromStringSplited(rawStr, ",")
+}
+
+// FileOrContent Get the command line with the corresponding name Parameters
+// attempts to read the corresponding file content based on the passed in value. If it cannot be read, it returns directly, and finally returns []byte. Type
 // Example:
 // ```
 // foc = cli.FileOrContent("foc")
@@ -512,6 +552,43 @@ func CliStringSlice(name string, options ...SetCliExtraParam) []string {
 	return utils.PrettifyListFromStringSplited(rawStr, ",")
 }
 
+// setVerboseName is an option function, set the Chinese name of the parameter
+// Example:
+// ```
+// cli.String("target", cli.setVerboseName("target"))
+// ```
+func _cliSetVerboseName(verboseName string) {
+}
+
+// setGroup Yes An option function, set the parameter group
+// Example:
+// ```
+// cli.String("target", cli.setGroup("common"))
+// cli.Int("port", cli.setGroup("common"))
+// cli.Int("threads", cli.setGroup("request"))
+// cli.Int("retryTimes", cli.setGroup("request"))
+// ```
+func _cliSetGroup(group string) {
+}
+
+// setMultiSelect is an option function, Set whether the parameter can be multi-selected
+// This option is only effective in `cli.StringSlice`
+// Example:
+// ```
+// cli.StringSlice("targets", cli.setMultiSelect(true))
+// ```
+func _cliSetMultiSelect(multiSelect bool) {
+}
+
+// setSelectOption is an option function, set the parameter drop-down box option
+// This option is only effective in `cli.StringSlice`
+// Example:
+// ```
+// cli.StringSlice("targets", cli.setSelectOption("Drop-down box option", "drop-down box value"))
+// ```
+func _cliSetSelectOption(name, value string) {
+}
+
 var CliExports = map[string]interface{}{
 	"Args":        _getArgs,
 	"Bool":        _cliBool,
@@ -543,6 +620,7 @@ var CliExports = map[string]interface{}{
 
 	// Parse files and other
 	"File":          _cliFile,
+	"FileNames":     _cliFileNames,
 	"FileOrContent": _cliFileOrContent,
 	"LineDict":      _cliLineDict,
 
@@ -550,14 +628,14 @@ var CliExports = map[string]interface{}{
 	"setHelp":     _cliSetHelpInfo,
 	"setDefault":  _cliSetDefaultValue,
 	"setRequired": _cliSetRequired,
-	// and sets the Chinese name
-	"setVerboseName": func(string) {},
-	// Set the parameter group name
-	"setCliGroup": func(string) {},
-	// Set whether to multi-select (only supports `cli.StringSlice`)
-	"setMultipleSelect": func(bool) {},
-	// Set the drop-down box option (only supports `cli.StringSlice `)
-	"setSelectOption": func(string, string) {},
+	// set the Chinese name
+	"setVerboseName": _cliSetVerboseName,
+	// 设置参数组名
+	"setCliGroup": _cliSetGroup,
+	// set whether to multi-select (only supports `cli.StringSlice`)
+	"setMultipleSelect": _cliSetMultiSelect,
+	// Set the drop-down box option (only supports `cli.StringSlice`)
+	"setSelectOption": _cliSetSelectOption,
 
 	// Set the cli attribute
 	"SetCliName": _cliSetName,

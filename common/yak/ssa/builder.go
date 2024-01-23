@@ -4,14 +4,12 @@ import (
 	"reflect"
 
 	"github.com/yaklang/yaklang/common/log"
+	"github.com/yaklang/yaklang/common/utils"
 )
 
 // Function builder API
 type FunctionBuilder struct {
 	*Function
-
-	// build sub-function
-	subFuncBuild []func()
 
 	target *target // for break and continue
 	labels map[string]*BasicBlock
@@ -42,7 +40,6 @@ func NewBuilder(f *Function, parent *FunctionBuilder) *FunctionBuilder {
 		Function:      f,
 		target:        &target{},
 		labels:        make(map[string]*BasicBlock),
-		subFuncBuild:  make([]func(), 0),
 		deferExpr:     make([]*Call, 0),
 		CurrentBlock:  nil,
 		CurrentRange:  nil,
@@ -101,23 +98,32 @@ func (b *FunctionBuilder) AddUnsealedBlock(block *BasicBlock) {
 
 // finish current function builder
 func (b *FunctionBuilder) Finish() {
-	b.ScopeEnd()
-	// fmt.Println("finish func: ", b.Name)
-
 	// sub-function
-	for _, builder := range b.subFuncBuild {
-		builder()
-	}
 	b.SetDefineFunc()
+	//TODO: handler `goto` syntax and notice function reentrant for `Feed(code)`
 	for _, block := range b.unsealedBlock {
 		block.Sealed()
+		b.unsealedBlock = []*BasicBlock{}
 	}
 	// set defer function
-	if len(b.deferExpr) > 0 {
-		b.CurrentBlock = b.NewBasicBlock("defer")
-		for _, call := range b.deferExpr {
-			b.EmitOnly(call)
+	if deferLen := len(b.deferExpr); deferLen > 0 {
+		endBlock := b.CurrentBlock
+
+		deferBlock := b.GetDeferBlock()
+		b.CurrentBlock = deferBlock
+		for _, i := range b.deferExpr {
+			if len(deferBlock.Insts) == 0 {
+				deferBlock.Insts = append(deferBlock.Insts, i)
+			} else {
+				// b.EmitInstructionBefore()
+				deferBlock.Insts = utils.InsertSliceItem(deferBlock.Insts, Instruction(i), 0)
+			}
+			// b.EmitInstructionBefore(i, deferBlock.LastInst())
+			// b.EmitOnly(b.deferExpr[i])
 		}
+		b.deferExpr = []*Call{}
+
+		b.CurrentBlock = endBlock
 	}
 	// re-calculate return type
 	for _, ret := range b.Return {
@@ -126,6 +132,7 @@ func (b *FunctionBuilder) Finish() {
 		recoverRange()
 	}
 
+	b.ScopeEnd()
 	// function finish
 	b.Function.Finish()
 }
@@ -152,6 +159,11 @@ func (b *FunctionBuilder) SetDefineFunc() {
 			}
 			f.Param[index].SetType(typ)
 		}
+		for name, fv := range f.FreeValues {
+			if v := b.ReadVariable(name, false); v == nil {
+				fv.NewError(Error, SSATAG, ValueUndefined(name))
+			}
+		}
 		_ = funTyp
 		return true
 	}
@@ -168,11 +180,6 @@ func (b *FunctionBuilder) SetDefineFunc() {
 			}
 		}
 	}
-}
-
-// sub-function builder
-func (b *FunctionBuilder) AddSubFunction(builder func()) {
-	b.subFuncBuild = append(b.subFuncBuild, builder)
 }
 
 // function stack

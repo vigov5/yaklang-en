@@ -192,7 +192,7 @@ func TestB(t *testing.T) {
 	$(document).ready(function(){
 		$("button").click(function(){
 		  $.get("/example/jquery/demo_test.asp",function(data,status){
-			alert("数据：" + data + "\n状态：" + status);
+			alert("Data:" + data + "\nStatus:" + status);
 		  });
 		});
 	  });
@@ -207,4 +207,44 @@ func TestB(t *testing.T) {
 	u.Show()
 	u2 := u.Filter(func(v *Value) bool { return v.IsCall() })
 	fmt.Println(reflect.TypeOf(u2))
+}
+
+func TestFeedCode(t *testing.T) {
+
+	code1 := `
+	a = 1 
+	b = "first line" 
+	c = 1
+	defer println("defer 1")
+	`
+
+	code2 := `
+	if a == 1 {
+		b = "second line"
+	}
+
+	defer println("defer 2")
+	f = (a) => {
+		println(c) // FreeValue
+		println(a)
+	}
+	`
+
+	code3 := `
+	send(b)
+	f()
+	defer println("defer 3")
+	`
+
+	prog, err := Parse(code1, WithFeedCode())
+	if err != nil {
+		t.Fatal(err)
+	}
+	prog.Feed(code2)
+	prog.Feed(code3)
+	// prog.Finish()
+	prog.Show()
+
+	prog.Ref("f").Show()
+
 }

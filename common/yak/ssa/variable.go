@@ -1,7 +1,6 @@
 package ssa
 
 import (
-	"github.com/yaklang/yaklang/common/log"
 	"github.com/yaklang/yaklang/common/utils"
 )
 
@@ -37,8 +36,8 @@ func (i *IdentifierLV) Assign(v Value, f *FunctionBuilder) {
 	if i.isSideEffect {
 		if beforeSSAValue != nil {
 			beforeSSAValue.AddMask(v)
-		} else {
-			log.Warn("freeValueParameter is nil, conflict, side effect cannot find the relative freevalue! maybe a **BUG**")
+			// } else {
+			// 	log.Warn("freeValueParameter is nil, conflict, side effect cannot find the relative freevalue! maybe a **BUG**")
 		}
 		f.AddSideEffect(i.name, v)
 	}
@@ -152,7 +151,7 @@ func (b *FunctionBuilder) ReadVariable(variable string, create bool) Value {
 		}
 	})
 
-	if ret == nil {
+	if ret == nil || b.CurrentRange == nil {
 		return ret
 	}
 
@@ -285,25 +284,5 @@ func (b *FunctionBuilder) BuildFreeValue(variable string) Value {
 }
 
 func (b *FunctionBuilder) CanBuildFreeValue(name string) bool {
-	parent := b.parentBuilder
-	scope := b.parentScope
-	block := b.parentCurrentBlock
-	for parent != nil {
-		name = scope.GetLocalVariable(name)
-		v := parent.readVariableByBlock(name, block, false)
-		if v != nil {
-			// if v not extern instance
-			// or value assign by extern instance (extern instance but name not equal)
-			if (!v.IsExtern()) || (v.IsExtern() && v.GetName() != name) {
-				return true
-			}
-		}
-
-		// parent symbol and block
-		scope = parent.parentScope
-		block = parent.parentCurrentBlock
-		// next parent
-		parent = parent.parentBuilder
-	}
-	return false
+	return b.parentBuilder != nil
 }

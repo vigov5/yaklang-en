@@ -246,7 +246,7 @@ reportInstance.Markdown(sprintf(
     `
 This test found the following vulnerabilities and compliance risks:
 
-- Total:**%v**个
+- Total:**%v**indivual
 - Critical:<span style="color:#8B0000;font-weight:bold">%v</span>
 - High risk:<span style="color:#FF4500;font-weight:bold">%v</span>
 - Medium risk:<span style="color:#FFA500;font-weight:bold">%v</span>

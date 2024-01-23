@@ -332,7 +332,7 @@ var FingerprintScanExports = map[string]interface{}{
 	// Scan all services
 	"all": func() fp.ConfigOption {
 		return func(config *fp.Config) {
-			config.ForceEnableWebFingerprint = true
+			config.ForceEnableAllFingerprint = true
 		}
 	},
 }

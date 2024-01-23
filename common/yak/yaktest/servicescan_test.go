@@ -32,7 +32,7 @@ for result in servicescan.Scan("47.52.100.1/24", "80")~ {
 }
 `},
 	}
-	Run("Yak SYNSCAN 测试", t, cases...)
+	Run("Yak SYNSCAN test", t, cases...)
 }
 
 func TestServiceScan2(t *testing.T) {
@@ -49,7 +49,7 @@ println(r.String())
 println(count)
 `},
 	}
-	Run("Yak SYNSCAN 测试", t, cases...)
+	Run("Yak SYNSCAN test", t, cases...)
 }
 
 func TestServiceScan3(t *testing.T) {
@@ -66,7 +66,7 @@ println(r.String())
 println(count)
 `},
 	}
-	Run("Yak SYNSCAN 测试", t, cases...)
+	Run("Yak SYNSCAN test", t, cases...)
 }
 
 func TestServiceScan3_TLS(t *testing.T) {
@@ -83,7 +83,7 @@ println(r.String())
 println(count)
 `},
 	}
-	Run("Yak SYNSCAN 测试", t, cases...)
+	Run("Yak SYNSCAN test", t, cases...)
 }
 
 func TestServiceScan4_RDP(t *testing.T) {
@@ -100,5 +100,5 @@ println(r.String())
 println(count)
 `},
 	}
-	Run("Yak SYNSCAN 测试", t, cases...)
+	Run("Yak SYNSCAN test", t, cases...)
 }

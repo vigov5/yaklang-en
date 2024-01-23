@@ -114,7 +114,7 @@ func LoadCertificatesConfig(i any) error {
 			certs := make([]tls.Certificate, len(ret.Certificates), len(ret.Certificates)+len(presetClientCertificates))
 			copy(certs, ret.Certificates)
 			certs = append(certs, presetClientCertificates...)
-			ret.Certificates = make([]tls.Certificate, 0)
+			ret.Certificates = certs
 			ret.GetClientCertificate = func(info *tls.CertificateRequestInfo) (*tls.Certificate, error) {
 				for _, cert := range certs {
 					err := info.SupportsCertificate(&cert)
@@ -126,7 +126,19 @@ func LoadCertificatesConfig(i any) error {
 				return nil, utils.Errorf("all [%v] certificates are tested, no one is supported for %v", len(certs), info.Version)
 			}
 		} else {
+			// server requests a client certificate, if the client does not configure a certificate, whether the handshake can be completed depends on the server configuration.
+			if len(presetClientCertificates) == 0 {
+				return nil
+			}
 			ret.GetClientCertificate = func(info *tls.CertificateRequestInfo) (*tls.Certificate, error) {
+				// server requests a client certificate, if the client does not configure a certificate, whether the handshake can be completed depends on the server configuration.
+				//if len(presetClientCertificates) == 0 {
+				//	log.Warn("server request client certificate, but no client certificate configured")
+				//	// sendClientCertificate is not allowed to send nil, otherwise it will panic so try to send an empty certificate
+				//	// This solution may cause the server to reject the handshake because it may try to verify an empty certificate.
+				//	// This method may fail if the server is configured to VerifyClientCertIfGiven, and it expects that the certificate must be valid if provided by the client. When the
+				//	return &tls.Certificate{}, nil
+				//}
 				for _, cert := range presetClientCertificates {
 					err := info.SupportsCertificate(&cert)
 					if err != nil {

@@ -12,21 +12,21 @@ import (
 )
 
 func TestPKCS7SM2(t *testing.T) {
-	priv, err := sm2.GenerateKey(nil) // 生成密钥对
+	priv, err := sm2.GenerateKey(nil) // Generate key pair
 	if err != nil {
 		t.Fatal(err)
 	}
-	privPem, err := WritePrivateKeyToPem(priv, nil) // 生成密钥文件
+	privPem, err := WritePrivateKeyToPem(priv, nil) // Generate key file
 	if err != nil {
 		t.Fatal(err)
 	}
 	pubKey, _ := priv.Public().(*sm2.PublicKey)
-	pubkeyPem, err := WritePublicKeyToPem(pubKey)       // 生成公钥文件
-	privKey, err := ReadPrivateKeyFromPem(privPem, nil) // 读取密钥
+	pubkeyPem, err := WritePublicKeyToPem(pubKey)       // Generate public key file
+	privKey, err := ReadPrivateKeyFromPem(privPem, nil) // Read key
 	if err != nil {
 		t.Fatal(err)
 	}
-	pubKey, err = ReadPublicKeyFromPem(pubkeyPem) // 读取公钥
+	pubKey, err = ReadPublicKeyFromPem(pubkeyPem) // Read public key
 	if err != nil {
 		t.Fatal(err)
 	}

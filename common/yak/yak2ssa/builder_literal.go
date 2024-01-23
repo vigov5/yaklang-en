@@ -180,11 +180,11 @@ func (b *astbuilder) buildNumericLiteral(stmt *yak.NumericLiteralContext) ssa.Va
 		var intStr = strings.ToLower(originIntStr)
 		var resultInt64 int64
 		switch true {
-		case strings.HasPrefix(intStr, "0b"): // 二进制
+		case strings.HasPrefix(intStr, "0b"): // Binary
 			resultInt64, err = strconv.ParseInt(intStr[2:], 2, 64)
-		case strings.HasPrefix(intStr, "0x"): // 十六进制
+		case strings.HasPrefix(intStr, "0x"): // Hexadecimal
 			resultInt64, err = strconv.ParseInt(intStr[2:], 16, 64)
-		case strings.HasPrefix(intStr, "0o"): // 八进制
+		case strings.HasPrefix(intStr, "0o"): // Octal
 			resultInt64, err = strconv.ParseInt(intStr[2:], 8, 64)
 		case len(intStr) > 1 && intStr[0] == '0':
 			resultInt64, err = strconv.ParseInt(intStr[1:], 8, 64)

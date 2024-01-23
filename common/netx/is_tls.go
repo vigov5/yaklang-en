@@ -4,7 +4,9 @@ import (
 	"context"
 	"crypto/tls"
 	"github.com/ReneKroon/ttlcache"
+	"github.com/yaklang/yaklang/common/log"
 	"github.com/yaklang/yaklang/common/utils"
+	"strings"
 	"time"
 )
 
@@ -16,7 +18,8 @@ func IsTLSService(addr string, proxies ...string) bool {
 		return result.(bool)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	isHttps := false
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	conn, err := DialTCPTimeout(5*time.Second, addr, proxies...)
@@ -24,17 +27,33 @@ func IsTLSService(addr string, proxies ...string) bool {
 		defer conn.Close()
 		host, _, _ := utils.ParseStringToHostPort(addr)
 		loopBack := utils.IsLoopback(host)
-		tlsConn := tls.Client(conn, &tls.Config{InsecureSkipVerify: true, MinVersion: tls.VersionSSL30, ServerName: host})
-		if err = tlsConn.HandshakeContext(ctx); err != nil {
-			if !loopBack {
-				isTlsCached.SetWithTTL(addr, false, 30*time.Second)
+		tlsConn := tls.Client(conn, &tls.Config{
+			InsecureSkipVerify: true,
+			MinVersion:         tls.VersionSSL30,
+			MaxVersion:         tls.VersionTLS13,
+			ServerName:         host,
+		})
+
+		err = tlsConn.HandshakeContext(ctx)
+		if err == nil {
+			isHttps = true // The handshake is successful, set isHttps to true
+			//// Get the connection status
+			//state := tlsConn.ConnectionState()
+			//// Print the cipher suite used
+			//log.Infof("Cipher Suite: %s\n", tls.CipherSuiteName(state.CipherSuite))
+		} else {
+			log.Infof("TLS handshake failed: %v", err)
+			// Check whether the error message contains a specific TLS error
+			if strings.Contains(err.Error(), "handshake failure") || strings.Contains(err.Error(), "protocol version not supported") || strings.HasSuffix(err.Error(), "unsupported elliptic curve") {
+				isHttps = true
 			}
-			return false
 		}
+
+		// Set the cache according to the value of isHttps
 		if !loopBack {
-			isTlsCached.SetWithTTL(addr, true, 30*time.Second)
+			isTlsCached.SetWithTTL(addr, isHttps, 30*time.Second)
 		}
-		return true
 	}
-	return false
+
+	return isHttps
 }

@@ -10,7 +10,7 @@ import (
 )
 
 type Config struct {
-	// 发包必须的几个字段
+	// Several fields necessary for sending a package
 	Iface     *net.Interface
 	GatewayIP net.IP
 	SourceIP  net.IP

@@ -183,7 +183,7 @@ func TestFormat(t *testing.T) {
 		{"dd/MM/YYYY HH:mm:ss z", "03/02/2007 16:05:06 UTC"},
 
 		{"dd/MM/YYYY HH:mm:ss z ZZ", "03/02/2007 16:05:06 UTC +00:00"},
-		{"dd/MM/YYYY HH:mm:ss a 世 z Z", "03/02/2007 16:05:06 PM 世 UTC +0000"},
+		{"dd/MM/YYYY HH:mm:ss a One z Z", "03/02/2007 16:05:06 PM One UTC +0000"},
 	}
 
 	for _, test := range tests {

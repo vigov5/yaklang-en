@@ -63,7 +63,7 @@ func v3Brute(item *BruteItem, alg gosnmp.SnmpV3AuthProtocol) *BruteItemResult {
 		},
 	}
 
-	// 尝试连接连接失败不再爆破
+	// Failed attempts to connect will no longer explode.
 	err := snmpConfig.Connect()
 	if err != nil {
 		result.Finished = true

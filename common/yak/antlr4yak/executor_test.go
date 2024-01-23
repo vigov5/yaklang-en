@@ -3310,7 +3310,7 @@ name = "Zhang San"
 
 //test double quote template
 assert f"Name 1: \$${name}\\1\nName 2: \$${name}\\2" == ` + "`" + `Name 1: $Zhang San\1
-Name 2: $Zhang三\2` + "`" + `
+Name 2: $Zhangä¸‰\2` + "`" + `
 
 //Test double quote
 assert "Name 1: ${name}1 : \ ${name}\\2" == ` + "`" + `Name 1: ${name}\1

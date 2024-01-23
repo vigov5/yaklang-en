@@ -22,7 +22,7 @@ func (s *Server) PortScan(req *ypb.PortScanRequest, stream ypb.Yak_PortScanServe
 		Script: string(scanPortScript),
 	}
 
-	// 把文件写到本地。
+	// writes files locally.
 	tmpTargetFile, err := ioutil.TempFile("", "yakit-portscan-*.txt")
 	if err != nil {
 		return utils.Errorf("create temp target file failed: %s", err)
@@ -93,14 +93,14 @@ func (s *Server) PortScan(req *ypb.PortScanRequest, stream ypb.Yak_PortScanServe
 		})
 	}
 
-	// 主动发包
+	// actively sends packages.
 	if req.GetActive() {
 		reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{
 			Key: "active",
 		})
 	}
 
-	// 设置指纹扫描的并发
+	// Set the concurrency of fingerprint scanning.
 	if req.GetConcurrent() > 0 {
 		reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{
 			Key:   "concurrent",
@@ -113,7 +113,7 @@ func (s *Server) PortScan(req *ypb.PortScanRequest, stream ypb.Yak_PortScanServe
 		})
 	}
 
-	// 设置 SYN 扫描的并发
+	// sets the concurrency of SYN scans
 	if req.GetSynConcurrent() > 0 {
 		reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{Key: "syn-concurrent", Value: fmt.Sprint(req.GetSynConcurrent())})
 	} else {
@@ -139,7 +139,7 @@ func (s *Server) PortScan(req *ypb.PortScanRequest, stream ypb.Yak_PortScanServe
 		})
 	}
 
-	// 爬虫设置
+	// crawler settings.
 	if req.GetEnableBasicCrawler() {
 		reqParams.Params = append(reqParams.Params, &ypb.ExecParamItem{
 			Key: "enable-basic-crawler",

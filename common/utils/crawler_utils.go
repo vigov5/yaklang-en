@@ -45,7 +45,7 @@ func StarAsWildcardToRegexp(prefix string, target string) (*regexp.Regexp, error
 
 	var re string
 	if !strings.Contains(target, "/") {
-		// 不包含路径匹配，那么通配符不应该包含路径和问号
+		// Does not contain path matching, then the wildcard should not contain the path and question mark
 		if !strings.Contains(target, "*") {
 			re = fmt.Sprintf(urlFilterTmp, regexp.QuoteMeta(target))
 		} else {
@@ -63,7 +63,7 @@ func StarAsWildcardToRegexp(prefix string, target string) (*regexp.Regexp, error
 			domainRegex, pathRegex string
 		)
 
-		// 匹配域名部分
+		// matches the domain name part
 		if !strings.Contains(domain, "*") {
 			domainRegex = fmt.Sprintf(urlFilterTmp, regexp.QuoteMeta(domain))
 		} else {
@@ -71,7 +71,7 @@ func StarAsWildcardToRegexp(prefix string, target string) (*regexp.Regexp, error
 			domainRegex = strings.ReplaceAll(domainRegex, "WILDCARD", "[^/^?^#^&]*")
 		}
 
-		// 匹配路径部分
+		// matches the path part
 		if strings.Contains(path, "*") {
 			pathRegex = strings.ReplaceAll(path, "*", ".*")
 		}

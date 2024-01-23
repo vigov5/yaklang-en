@@ -6,7 +6,7 @@ import (
 )
 
 func TestUnquoteInvalidUTF8(t *testing.T) {
-	raw := "你好"
+	raw := "Hello"
 	hexStr := ""
 
 	for _, r := range []byte(raw) {

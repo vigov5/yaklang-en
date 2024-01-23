@@ -258,7 +258,7 @@ func (bf *BruteForce) Start(url string, opts ...ConfigMethod) (string, string) {
 			}
 			// log.Info("obresult: %s", obresult)
 			fmt.Println("obresult: ", obresult)
-			if strings.Contains(obresult, "验证码") || strings.Contains(obresult, "captcha") || strings.Contains(obresult, "\\u9a8c\\u8bc1\\u7801") {
+			if strings.Contains(obresult, "Verification code") || strings.Contains(obresult, "captcha") || strings.Contains(obresult, "\\u9a8c\\u8bc1\\u7801") {
 				if bf.captcha == nil {
 					log.Errorf("captcha error happened but captcha not found. quit.")
 					return "", ""
@@ -289,7 +289,7 @@ func (bf *BruteForce) Start(url string, opts ...ConfigMethod) (string, string) {
 					}
 					// log.Info("obresult: %s", obresult)
 					fmt.Println("obresult: ", obresult)
-					if obresult != "" && !strings.Contains(obresult, "验证码") && !strings.Contains(obresult, "captcha") && !strings.Contains(obresult, "\\u9a8c\\u8bc1\\u7801") {
+					if obresult != "" && !strings.Contains(obresult, "Verification code") && !strings.Contains(obresult, "captcha") && !strings.Contains(obresult, "\\u9a8c\\u8bc1\\u7801") {
 						break
 					}
 					repeatNum++

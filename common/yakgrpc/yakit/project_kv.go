@@ -20,19 +20,19 @@ type ProjectGeneralStorage struct {
 
 	Key string `json:"key" gorm:"unique_index"`
 
-	// 经过 JSON + Strconv
+	// Through JSON + Strconv
 	Value string `json:"value"`
 
-	// 过期时间
+	// Expiration time
 	ExpiredAt time.Time
 
 	// YAKIT SUBPROC_ENV
 	ProcessEnv bool
 
-	// 帮助信息，描述这个变量是干嘛的
+	// Help information, describe what this variable does
 	Verbose string
 
-	// 描述变量所在的组是啥
+	// Describe the group the variable is in.
 	Group string
 }
 

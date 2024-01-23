@@ -1641,7 +1641,7 @@ func init() {
 			panic(fmt.Sprintf("method `DES` is not implement"))
 			return nil, nil
 		},
-		//源码里没找到
+		//Not found in the source code
 		"pop3_get_banner": func(engine *Engine, params *NaslBuildInMethodParam) (interface{}, error) {
 			port := params.getParamByName("port", -1).Int()
 			if port == -1 {

@@ -38,7 +38,7 @@ func (t *testServer) OpenPort(inputStream ypb.Yak_OpenPortServer) error {
 		port = firstInput.Port
 	}
 
-	// 处理监听端口的 TCP 连接
+	// Process the TCP connection of the listening port
 	addr := utils.HostPort(host, port)
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
@@ -48,7 +48,7 @@ func (t *testServer) OpenPort(inputStream ypb.Yak_OpenPortServer) error {
 	defer lis.Close()
 
 	for {
-		// 处理对方的 Conn
+		// Process the other partys Conn
 		conn, err := lis.Accept()
 		if err != nil {
 			log.Errorf("accept from %v failed: %s", addr, err)

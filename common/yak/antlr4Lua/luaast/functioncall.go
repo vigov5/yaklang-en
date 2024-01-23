@@ -14,8 +14,8 @@ func (l *LuaTranslator) VisitFunctionCall(raw lua.IFunctioncallContext) interfac
 		return nil
 	}
 
-	// 函数调用需要先把参数压栈
-	// 调用的时候，call n 表示要取多少数出来
+	// Function calls need to push the parameters onto the stack first. When calling
+	// , call n indicates how much to take out.
 	varOrExp := i.VarOrExp()
 	args := i.AllNameAndArgs()
 

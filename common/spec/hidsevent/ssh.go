@@ -11,12 +11,12 @@ import (
 	"os"
 )
 
-// 1. 获取 SSH 精确版本信息
-// 2. 配置文件, 公钥私钥监控
-// 3. 配置文件关键选项:
-//    1. 是否允许密码登录
-//    2. 是否允许空密码
-//    3. 密钥登录
+// 1. Obtain SSH accurate version information
+// 2. Configuration file, public key and private key monitoring
+// 3. Configuration file key options:
+//    1. Whether to allow password login
+//    2. Whether to allow empty passwords
+//    3. Key login
 
 type SSHInfo struct {
 	Version                string `json:"version"`

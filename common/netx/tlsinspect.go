@@ -1,16 +1,14 @@
 package netx
 
 import (
+	"crypto/tls"
 	"fmt"
-	"github.com/yaklang/yaklang/common/utils"
-	"github.com/yaklang/yaklang/common/utils/tlsutils"
 	"strings"
 	"time"
-)
 
-import (
-	"crypto/tls"
 	"github.com/yaklang/yaklang/common/log"
+	"github.com/yaklang/yaklang/common/utils"
+	"github.com/yaklang/yaklang/common/utils/tlsutils"
 )
 
 type TLSInspectResult struct {
@@ -30,6 +28,11 @@ func (t TLSInspectResult) Show() {
 	fmt.Println(t.Description)
 }
 
+// Inspect checks the TLS certificate of the target address and returns its certificate information and errors
+// Example:
+// ```
+// cert, err := tls.Inspect("yaklang.io:443")
+// ```
 func TLSInspect(addr string) ([]*TLSInspectResult, error) {
 	host, port, _ := utils.ParseStringToHostPort(addr)
 	if port <= 0 {

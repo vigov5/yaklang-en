@@ -29,17 +29,17 @@ const (
 
 var i18n = map[CompilerLanguage]map[constError]string{
 	zh: {
-		breakError:                 "break 语句只能在 for 或 switch 中使用",
-		continueError:              "continue 语句只能在 for 中使用",
-		fallthroughError:           "fallthrough 语句只能在 switch 中使用",
-		sliceCallNoParamError:      "切片操作至少需要一个参数",
-		sliceCallTooManyParamError: "切片操作参数过多",
-		assertExpressionError:      "assert 语句第二个参数必须是表达式",
-		notImplemented:             "[%s] 未实现",
-		forceCreateSymbolFailed:    "BUG: 无法强制创建符号 `%s`",
-		autoCreateSymbolFailed:     "BUG: 无法自动创建符号 `%s`",
-		integerIsTooLarge:          "无法解析 `%s` 为整数, 因为对于int64来说太大了",
-		contParseNumber:            "无法解析数字字面量: %s",
+		breakError:                 "break statement can only be used in for or switch",
+		continueError:              "continue statement can only be used in for",
+		fallthroughError:           "The fallthrough statement can only be used in switch",
+		sliceCallNoParamError:      "The slicing operation requires at least one parameter",
+		sliceCallTooManyParamError: "slicing operation has too many parameters",
+		assertExpressionError:      "The second parameter of the assert statement must be an expression",
+		notImplemented:             "[%s]",
+		forceCreateSymbolFailed:    "BUG: Unable to force creation of symbol `%s`",
+		autoCreateSymbolFailed:     "BUG: Unable to automatically create symbol `%s`",
+		integerIsTooLarge:          "Unable to parse `%s` as an integer , because it is too large for int64",
+		contParseNumber:            "Unable to parse numeric literal: %s",
 	},
 }
 

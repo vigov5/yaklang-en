@@ -77,7 +77,7 @@ func IsGenericURLParam(key string, value interface{}) bool {
 }
 
 func IsSensitiveJSON(data []byte) bool {
-	// 检测 key: 'key': "key": \'key\': \"key\": Several forms of keys. If it is the following keyword, it is considered to be sensitive information. The path starting with
+	// ćŁ€ćµ‹ key: 'key': "key": \'key\': \"key\": Several forms of keys. If it is the following keyword, it is considered to be sensitive information. The path starting with
 	return sensitiveJSONKeyRegex.Match(data)
 }
 

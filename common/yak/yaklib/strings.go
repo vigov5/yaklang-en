@@ -2,10 +2,11 @@ package yaklib
 
 import (
 	"encoding/json"
-	"github.com/yaklang/yaklang/common/xhtml"
 	"path/filepath"
 	"strings"
 	"unicode"
+
+	"github.com/yaklang/yaklang/common/xhtml"
 
 	"github.com/yaklang/yaklang/common/domainextractor"
 	"github.com/yaklang/yaklang/common/filter"
@@ -426,6 +427,15 @@ func toJsonIndentStr(d interface{}) string {
 	return string(raw)
 }
 
+// RandomUpperAndLower returns a string with random upper and lower case
+// Example:
+// ```
+// str.RandomUpperAndLower("target") // TArGeT
+// ```
+func randomUpperAndLower(s string) string {
+	return xhtml.RandomUpperAndLower(s)
+}
+
 var StringsExport = map[string]interface{}{
 	// Basic string tools
 	"IndexAny":       IndexAny,
@@ -470,7 +480,7 @@ var StringsExport = map[string]interface{}{
 
 	// The unique
 	"RandStr":                utils.RandStringBytes,
-	"Random":                 xhtml.RandomUpperAndLower,
+	"Random":                 randomUpperAndLower,
 	"f":                      _sfmt,
 	"SplitAndTrim":           utils.PrettifyListFromStringSplited,
 	"StringSliceContains":    utils.StringSliceContain,

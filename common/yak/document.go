@@ -53,6 +53,32 @@ func ClearHelper(helper *yakdoc.DocumentHelper) {
 	clearFieldParamsType(helper.Functions)
 }
 
+func GetDeprecatedFunctionDecls(helper *yakdoc.DocumentHelper) []*yakdoc.FuncDecl {
+	getDeprecatedFunctionList := func(funcs map[string]*yakdoc.FuncDecl) []*yakdoc.FuncDecl {
+		results := make([]*yakdoc.FuncDecl, 0)
+		for _, funcDecl := range funcs {
+			if funcDecl.Document == "" {
+				continue
+			}
+			if strings.Contains(funcDecl.Document, "! Deprecated.") {
+				results = append(results, funcDecl)
+			}
+		}
+		return results
+	}
+	results := make([]*yakdoc.FuncDecl, 0)
+	results = append(results, getDeprecatedFunctionList(helper.Functions)...)
+	for _, lib := range helper.Libs {
+		results = append(results, getDeprecatedFunctionList(lib.Functions)...)
+	}
+
+	for _, lib := range helper.StructMethods {
+		results = append(results, getDeprecatedFunctionList(lib.Functions)...)
+	}
+
+	return results
+}
+
 func IsSameTypeName(typName1, typName2 string) bool {
 	return typName1 == typName2 || "*"+typName1 == typName2 || typName1 == "*"+typName2
 }
@@ -229,7 +255,7 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 			}
 		}
 	}
-	// . The standard library function may return a structure, and we also need to get the method signature and document of its structure to
+	// The standard library function may return a structure, and we also need to get the members of the structure, method signatures and documentation
 	handleTypes := make([]reflect.Type, 0)
 
 	var getTypeFromReflectFunctionType func(typ reflect.Type, level int) []reflect.Type
@@ -303,10 +329,10 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 		filter[typ] = struct{}{}
 
 		var (
-			structName string
-			pkgPath    string
-			documents  map[string]string
-			isStruct   bool
+			structName          string
+			pkgPath             string
+			documents           map[string]string
+			isStructOrInterface bool
 
 			pkg *ast.Package
 			ok  bool
@@ -323,12 +349,12 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 
 		typKind := typ.Kind()
 		if typKind == reflect.Struct || typKind == reflect.Interface {
-			isStruct = true
+			isStructOrInterface = true
 			pkgPath = typ.PkgPath()
 			structName = typ.Name()
 
 		} else if typKind == reflect.Ptr {
-			isStruct = typ.Elem().Kind() == reflect.Struct || typ.Elem().Kind() == reflect.Interface
+			isStructOrInterface = typ.Elem().Kind() == reflect.Struct || typ.Elem().Kind() == reflect.Interface
 			pkgPath = typ.Elem().PkgPath()
 			structName = typ.Elem().Name()
 		} else if typKind == reflect.Func {
@@ -339,7 +365,7 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 			}
 		}
 
-		if structName == "" || !isStruct {
+		if structName == "" || !isStructOrInterface {
 			continue
 		}
 
@@ -360,7 +386,39 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 		lib := &yakdoc.ScriptLib{
 			Name:      structName,
 			Functions: make(map[string]*yakdoc.FuncDecl),
+			Instances: make(map[string]*yakdoc.LibInstance),
 		}
+		// members
+		if typKind == reflect.Struct || typKind == reflect.Pointer {
+			targetTyp := typ
+			if typKind == reflect.Pointer {
+				targetTyp = typ.Elem()
+			}
+			if targetTyp.Kind() == reflect.Struct {
+				var getTypMember func(typ reflect.Type)
+				getTypMember = func(typ reflect.Type) {
+					for i := 0; i < typ.NumField(); i++ {
+						field := typ.Field(i)
+						if !field.Anonymous {
+							lib.Instances[field.Name] = yakdoc.AnyTypeToLibInstance(structName, field.Name, field.Type, nil)
+							continue
+						}
+						lib.Instances[field.Name] = yakdoc.AnyTypeToLibInstance(structName, field.Name, field.Type, nil)
+
+						innerTyp := field.Type
+						if innerTyp.Kind() == reflect.Pointer {
+							innerTyp = innerTyp.Elem()
+						}
+						if innerTyp.Kind() == reflect.Struct {
+							getTypMember(innerTyp)
+						}
+					}
+				}
+				getTypMember(targetTyp)
+			}
+		}
+
+		// methods and documentation
 		for i := 0; i < typ.NumMethod(); i++ {
 			method := typ.Method(i)
 			methodName := method.Name
@@ -515,6 +573,7 @@ func EngineToDocumentHelperWithVerboseInfo(engine *antlr4yak.Engine) *yakdoc.Doc
 	// to call Callback, inject some other function annotations
 	helper.Callback()
 	ClearHelper(helper)
+	helper.DeprecatedFunctions = GetDeprecatedFunctionDecls(helper)
 	return helper
 }
 
